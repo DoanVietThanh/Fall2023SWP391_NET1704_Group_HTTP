@@ -1,6 +1,11 @@
 .App {
 }
 
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .btn {
   font-size: 14px;
   color: #fff;
@@ -15,6 +20,7 @@
   opacity: 0.9;
 }
 
+/* Slider */
 .slider-img {
   position: relative;
   width: 100%;
@@ -29,8 +35,8 @@
 
 .slider-hero {
   position: absolute;
-  width: 560px;
-  height: 560px;
+  width: 500px;
+  height: 500px;
   right: 5%;
   top: 50%;
   z-index: 10;
@@ -54,4 +60,36 @@
   top: 50%;
   z-index: 10;
   transform: translateY(-50%);
+}
+
+/* Footer  */
+
+.footer-icons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2px;
+  border: solid #fff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+}
+
+.footer-ul {
+  padding-left: 20px;
+  list-style-type: circle;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  li: {
+    font-size: 16px;
+    color: #758295;
+  }
+}
+
+.footer-link {
+  background: #172336;
+  border-radius: 20px;
+  backdrop-filter: blur(100px);
+  padding: 40px;
 }

@@ -1,4 +1,4 @@
-import './App.css';
+import './App.scss';
 import Toast from './components/Toastify';
 import RouterApp from './routes/RouterApp';
 
