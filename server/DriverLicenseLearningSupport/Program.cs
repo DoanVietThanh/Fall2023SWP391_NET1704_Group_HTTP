@@ -1,3 +1,16 @@
+using AutoMapper;
+using DriverLicenseLearningSupport.Entities;
+using DriverLicenseLearningSupport.Mapping;
+using DriverLicenseLearningSupport.Models.Config;
+using DriverLicenseLearningSupport.Services;
+using DriverLicenseLearningSupport.Services.impl;
+using DriverLicenseLearningSupport.Services.Impl;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +19,69 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Add DbContext
+var connectionStr = builder.Configuration.GetConnectionString("ConnStr");
+builder.Services.AddDbContext<DriverLicenseLearningSupportContext>(options => 
+    options.UseSqlServer(connectionStr)
+);
+
+// Add AppSettings 
+var appSettings = builder.Configuration.GetSection("AppSettings");
+builder.Services.Configure<AppSettings>(appSettings);
+
+// Add Authentication
+var secretKey = builder.Configuration.GetValue<string>("AppSettings:SecretKey");
+var secretKeyBytes = Encoding.UTF8.GetBytes(secretKey);
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(opt => {
+                opt.TokenValidationParameters = new TokenValidationParameters
+                {
+                    // auto provide token
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+
+                    // Sign in token 
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(secretKeyBytes)
+                };                    
+            });
+
+// Add Services
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<ILicenseTypeService, LicenseTypeService>();
+builder.Services.AddScoped<IAddressService, AddressService>();
+builder.Services.AddScoped<IMemberService, MemberService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+
+// Add Email Configs
+var emailConfig = builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+builder.Services.AddSingleton(emailConfig);
+
+// Add AutoMapper
+var mapperConfig = new MapperConfiguration(mc => {
+    mc.AddProfile(new ApplicationMapper());
+});
+
+IMapper mapper = mapperConfig.CreateMapper();
+builder.Services.AddSingleton(mapper);
+builder.Services.AddMvc();
+
+// Add Config for required Email
+builder.Services.Configure<IdentityOptions>(opts => 
+    opts.SignIn.RequireConfirmedEmail = true);
+builder.Services.Configure<DataProtectionTokenProviderOptions>(opts =>
+    // token valid for next 10 hours
+    opts.TokenLifespan = TimeSpan.FromHours(10));
+
+
+// Add CORS
+builder.Services.AddCors(p => p.AddPolicy("Cors", policy =>
+{
+    policy.WithOrigins("*")
+          .AllowAnyHeader()
+          .AllowAnyMethod();
+}));
 
 var app = builder.Build();
 
@@ -17,6 +93,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("Cors");
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
