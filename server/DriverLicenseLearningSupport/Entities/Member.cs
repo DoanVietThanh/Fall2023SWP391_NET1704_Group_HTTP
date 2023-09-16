@@ -1,0 +1,38 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace DriverLicenseLearningSupport.Entities
+{
+    public partial class Member
+    {
+        public Member()
+        {
+            CourseReservations = new HashSet<CourseReservation>();
+            ExamGrades = new HashSet<ExamGrade>();
+            ExamHistories = new HashSet<ExamHistory>();
+            FeedBacks = new HashSet<FeedBack>();
+            LicenseRegisterForms = new HashSet<LicenseRegisterForm>();
+            RollCallBooks = new HashSet<RollCallBook>();
+        }
+
+        public string MemberId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public DateTime? DateBirth { get; set; }
+        public string Phone { get; set; }
+        public bool? IsActive { get; set; }
+        public string AddressId { get; set; }
+        public string Email { get; set; }
+        public int? LicenseTypeId { get; set; }
+
+        public virtual Address Address { get; set; }
+        public virtual Account EmailNavigation { get; set; }
+        public virtual LicenseType LicenseType { get; set; }
+        public virtual ICollection<CourseReservation> CourseReservations { get; set; }
+        public virtual ICollection<ExamGrade> ExamGrades { get; set; }
+        public virtual ICollection<ExamHistory> ExamHistories { get; set; }
+        public virtual ICollection<FeedBack> FeedBacks { get; set; }
+        public virtual ICollection<LicenseRegisterForm> LicenseRegisterForms { get; set; }
+        public virtual ICollection<RollCallBook> RollCallBooks { get; set; }
+    }
+}
