@@ -7,25 +7,21 @@ namespace DriverLicenseLearningSupport.Validation
     {
         public RegisterRequestValidator()
         {
-            RuleFor(x => x.FirstName)
-                .Matches("^[a-zA-Z ]+$")
-                .WithMessage("First name not contain number or special character");
-            RuleFor(x => x.LastName)
-                .Matches("^[a-zA-Z ]+$")
-                .WithMessage("Last name not contain number or special character");
             RuleFor(x => x.Username)
                 .EmailAddress()
-                .WithMessage("Wrong email format");
-            RuleFor(x => x.Username)
-                .NotEmpty()
-                .WithMessage("Please input email");
-            RuleFor(x => x.Password)
-                .Matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$")
-                .WithMessage("Password must 8 length, contains at least one uppercase letter" +
-                ", one digit");
+                .WithMessage("Vui lòng nhập lại email!");
+            RuleFor(x => x.FirstName)
+                .Matches("^[a-zA-Z ]+$")
+                .WithMessage("Họ không chứa số hoặc ký tự đặc biệt");
+            RuleFor(x => x.LastName)
+                .Matches("^[a-zA-Z ]+$")
+                .WithMessage("Tên không chứa số hoặc ký tự đặc biệt");
             RuleFor(x => x.Phone)
                 .Matches("[0-9]{10,12}")
-                .WithMessage("Phone number must contains 10-12 number");
+                .WithMessage("Số điện thoại từ 10-12 ký tự");
+            RuleFor(x => x.Password)
+                .Matches("^(?=.[A-Z])(?=.\\d).{8,}$")
+                .WithMessage("Mật khẩu độ dài ít nhất 8 ký tự, chứa ít nhất 1 chữ cái viết hoa và 1 số");
         }
     }
 }

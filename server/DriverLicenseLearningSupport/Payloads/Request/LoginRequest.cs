@@ -1,8 +1,11 @@
-﻿namespace DriverLicenseLearningSupport.Payloads.Request
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DriverLicenseLearningSupport.Payloads.Request
 {
     public class LoginRequest
     {
-        public string username { get; set; }
-        public string password { get; set; }
+        [Required(ErrorMessage = "Username is required")]
+        public string Username { get; set; }
+        public string Password { get; set; }
     }
 }

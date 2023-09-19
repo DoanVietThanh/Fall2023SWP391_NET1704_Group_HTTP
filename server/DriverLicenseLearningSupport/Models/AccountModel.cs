@@ -8,6 +8,6 @@ namespace DriverLicenseLearningSupport.Models
         public string Password { get; set; }
         public int RoleId { get; set; }
         public bool IsActive { get; set; }
-        public Role Role { get; set; }
+        public RoleModel Role { get; set; }
     }
 }

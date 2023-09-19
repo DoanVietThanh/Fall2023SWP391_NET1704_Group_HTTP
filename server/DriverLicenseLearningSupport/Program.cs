@@ -1,7 +1,10 @@
+using Amazon.S3;
 using AutoMapper;
 using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Mapping;
 using DriverLicenseLearningSupport.Models.Config;
+using DriverLicenseLearningSupport.Repositories;
+using DriverLicenseLearningSupport.Repositories.Impl;
 using DriverLicenseLearningSupport.Services;
 using DriverLicenseLearningSupport.Services.impl;
 using DriverLicenseLearningSupport.Services.Impl;
@@ -49,10 +52,23 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 // Add Services
 builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<ILicenseTypeService, LicenseTypeService>();
-builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<IMemberService, MemberService>();
+builder.Services.AddScoped<IStaffService, StaffService>();
+builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<ILicenseTypeService, LicenseTypeService>();
+builder.Services.AddScoped<IJobTitleService, JobTitleService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
+
+// Add Repositories
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IMemberRepository, MemberRepository>();
+builder.Services.AddScoped<IStaffRepository, StaffRepository>();
+builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<ILicenseTypeRepository, LicenseTypeRepository>();
+builder.Services.AddScoped<IJobTitleRepository, JobTitleRepository>();
+
 
 // Add Email Configs
 var emailConfig = builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
@@ -82,6 +98,14 @@ builder.Services.AddCors(p => p.AddPolicy("Cors", policy =>
           .AllowAnyHeader()
           .AllowAnyMethod();
 }));
+
+// Amazon Lambda Hosting
+builder.Services.AddAWSLambdaHosting(LambdaEventSource.RestApi);
+
+// Amazon S3
+builder.Services.AddSingleton<IAmazonS3, AmazonS3Client>();
+builder.Services.AddSingleton<IImageService, ImageService>();
+
 
 var app = builder.Build();
 

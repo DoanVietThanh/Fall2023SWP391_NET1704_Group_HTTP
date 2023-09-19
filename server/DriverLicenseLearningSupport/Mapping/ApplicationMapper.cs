@@ -9,9 +9,12 @@ namespace DriverLicenseLearningSupport.Mapping
         public ApplicationMapper()
         {
             CreateMap<Account, AccountModel>().ReverseMap();
+            CreateMap<Member, MemberModel>().ReverseMap();
+            CreateMap<Staff, StaffModel>().ReverseMap();
             CreateMap<LicenseType, LicenseTypeModel>().ReverseMap();
             CreateMap<Address, AddressModel>().ReverseMap();
-            CreateMap<Member, MemberModel>().ReverseMap();
+            CreateMap<Role, RoleModel>().ReverseMap();
+            CreateMap<JobTitle, JobTitleModel>().ReverseMap();
         }
     }
 }

@@ -9,10 +9,10 @@ namespace DriverLicenseLearningSupport.Payloads.Request
     public class RegisterRequest
     {
         // Account Info
-        [Required(ErrorMessage = "User Name is required")]
+        [Required(ErrorMessage = "Vui lòng nhập tài khoản")]
         public string Username { get; set; }
 
-        [Required(ErrorMessage = "Password is required")]
+        [Required(ErrorMessage = "Vui lòng nhập mật khẩu")]
         public string Password { get; set; }
 
 
@@ -24,15 +24,19 @@ namespace DriverLicenseLearningSupport.Payloads.Request
 
 
         // Address Info
-        [Required(ErrorMessage = "Street is required")]
+        [Required(ErrorMessage = "Vui lòng nhập Đường")]
         public string Street { get; set; }
-        [Required(ErrorMessage = "District is required")]
+        [Required(ErrorMessage = "Vui lòng nhập Quận")]
         public string District { get; set; }
-        [Required(ErrorMessage = "City is required")]
+        [Required(ErrorMessage = "Vui lòng nhập Thành Phố")]
         public string City { get; set; }
+
+        // License Type
+        [Required(ErrorMessage = "Vui lòng chọn loại bằng lái")]
+        public int LicenseTypeId { get; set; }
     }
 
-    public static class SignUpRequestExtension
+    public static class RegisterRequestExtension
     {
         public static AccountModel ToAccountModel(this RegisterRequest reqObj)
         {
@@ -53,7 +57,8 @@ namespace DriverLicenseLearningSupport.Payloads.Request
                 LastName = reqObj.LastName,
                 DateBirth = DateTime.ParseExact(reqObj.DateBirth, formatDate,
                 CultureInfo.InvariantCulture),
-                Phone = reqObj.Phone
+                Phone = reqObj.Phone,
+                LicenseTypeId = reqObj.LicenseTypeId,
             };
         }
 

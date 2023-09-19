@@ -7,16 +7,12 @@ namespace DriverLicenseLearningSupport.Validation
     {
         public LoginValidator()
         {
-            RuleFor(x => x.username)
+            RuleFor(x => x.Username)
                 .EmailAddress()
-                .WithMessage("Wrong email format");
-            RuleFor(x => x.username)
-                .NotEmpty()
-                .WithMessage("Please input email"); 
-            RuleFor(x => x.password)
+                .WithMessage("Email sai format");
+            RuleFor(x => x.Password)
                 .Matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$")
-                .WithMessage("Password must 8 length, contains at least one uppercase letter" +
-                ", one digit");
+                .WithMessage("Mật khẩu độ dài ít nhất 8 ký tự, chứa ít nhất 1 chữ cái viết hoa và 1 số");
         }
     }
 }
