@@ -1,26 +1,31 @@
 ﻿using AutoMapper;
 using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
+using DriverLicenseLearningSupport.Repositories.Impl;
 using DriverLicenseLearningSupport.Services.Impl;
 
 namespace DriverLicenseLearningSupport.Services
 {
     public class AddressService : IAddressService
     {
-        private readonly DriverLicenseLearningSupportContext _context;
+        private readonly IAddressRepository _addressRepository;
         private readonly IMapper _mapper;
 
-        public AddressService(DriverLicenseLearningSupportContext context,
+        public AddressService(IAddressRepository addressRepository,
             IMapper mapper)
         {
-            _context = context;
+            _addressRepository = addressRepository;
             _mapper = mapper;
         }
         public async Task<bool> CreateAsync(AddressModel address)
         {
-            var addressEntity = _mapper.Map<Address>(address);
-            await _context.Addresses.AddAsync(addressEntity);
-            return await _context.SaveChangesAsync() > 0 ? true : false;
+           var addressEntity = _mapper.Map<Address>(address);
+           return await _addressRepository.CreateAsync(addressEntity);
+        }
+
+        public async Task<AddressModel> FindByIdAsync(Guid id)
+        {
+            return await _addressRepository.FindByIdAsync(id.ToString());
         }
     }
 }

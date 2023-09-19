@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
+using DriverLicenseLearningSupport.Repositories.Impl;
 using DriverLicenseLearningSupport.Services.impl;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,21 +9,20 @@ namespace DriverLicenseLearningSupport.Services
 {
     public class LicenseTypeService : ILicenseTypeService
     {
-        private readonly DriverLicenseLearningSupportContext _context;
-        private readonly IMapper _mapper;
+        private readonly ILicenseTypeRepository _licenseTypeRepository;
 
-        public LicenseTypeService(DriverLicenseLearningSupportContext context,
-            IMapper mapper)
+        public LicenseTypeService(ILicenseTypeRepository licenseTypeRepository)
         {
-            _context = context;
-            _mapper = mapper;
+            _licenseTypeRepository = licenseTypeRepository;
+        }
+        public async Task<IEnumerable<LicenseTypeModel>> FindAllAsync()
+        {
+            return await _licenseTypeRepository.FindAllAsync();
         }
 
-        public async Task<IEnumerable<LicenseTypeModel>> GetAllAsync()
+        public async Task<LicenseTypeModel> FindByIdAsync(int id)
         {
-            var licenseTypesEntity = await _context.LicenseTypes.ToListAsync();
-            var result = _mapper.Map<IEnumerable<LicenseTypeModel>>(licenseTypesEntity);
-            return result;
+            return await _licenseTypeRepository.FindByIdAsync(id);
         }
     }
 }

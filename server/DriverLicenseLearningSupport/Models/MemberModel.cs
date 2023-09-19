@@ -1,4 +1,6 @@
-﻿namespace DriverLicenseLearningSupport.Models
+﻿using DriverLicenseLearningSupport.Entities;
+
+namespace DriverLicenseLearningSupport.Models
 {
     public class MemberModel
     {
@@ -7,9 +9,13 @@
         public string LastName { get; set; }
         public DateTime? DateBirth { get; set; }
         public string Phone { get; set; }
+        public string AvatarImage { get; set; }
         public bool? IsActive { get; set; }
         public string? AddressId { get; set; }
         public string Email { get; set; }
         public int? LicenseTypeId { get; set; }
+        public virtual AddressModel Address { get; set; }
+        public virtual AccountModel EmailNavigation { get; set; }
+        public virtual LicenseTypeModel LicenseType { get; set; }
     }
 }

@@ -7,6 +7,31 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="Properties\serviceDependencies.DriverLicenseLearningSupport - Web Deploy.json" />
+    <Content Include="Properties\serviceDependencies.json" />
+    <Content Include="Properties\ServiceDependencies\DriverLicenseLearningSupport - Web Deploy\apis1.arm.json" />
+    <Content Include="Properties\ServiceDependencies\DriverLicenseLearningSupport - Web Deploy\profile.arm.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Properties\PublishProfiles\DriverLicenseLearningSupport - Web Deploy.pubxml.user" />
+    <None Include="Properties\serviceDependencies.DriverLicenseLearningSupport - Web Deploy.json.user" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.1" />
+    <PackageReference Include="FluentValidation" Version="6.4.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.22" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.22">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.22" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.21">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="NETCore.MailKit" Version="2.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 

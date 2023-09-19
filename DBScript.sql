@@ -15,11 +15,12 @@ GO
 CREATE TABLE [dbo].Account(
 	email NVARCHAR(255) PRIMARY KEY NOT NULL,
 	password NVARCHAR(255) NOT NULL,
-	role_id INT NOT NULL
+	role_id INT NOT NULL,
+	is_active BIT
 )
 GO
 CREATE TABLE [dbo].Address(
-	address_id INT PRIMARY KEY identity(1,1),
+	address_id NVARCHAR(255) PRIMARY KEY,
 	street NVARCHAR(255) NOT NULL,
 	district NVARCHAR(155) NOT NULL,
 	city NVARCHAR(155) NOT NULL,
@@ -27,13 +28,13 @@ CREATE TABLE [dbo].Address(
 )
 GO
 CREATE TABLE [dbo].Member(
-	member_id INT PRIMARY KEY,--guid type
+	member_id NVARCHAR(255) PRIMARY KEY,--guid type
 	first_name NVARCHAR(155) NOT NULL,
 	last_name NVARCHAR(155) NOT NULL,
 	date_birth DATETIME,
 	phone NVARCHAR(15),
 	is_active BIT,
-	address_id INT,
+	address_id NVARCHAR(255),
 	email nvarchar(255),
 	license_type_id INT
 )
@@ -50,7 +51,7 @@ CREATE TABLE [dbo].Job_Title(
 )
 GO
 CREATE TABLE [dbo].Staff(
-	staff_id INT PRIMARY KEY, 
+	staff_id NVARCHAR(255) PRIMARY KEY, 
 	first_name NVARCHAR(155) NOT NULL,
 	last_name NVARCHAR(155) NOT NULL,
 	date_birth DATETIME NOT NULL,
@@ -58,13 +59,13 @@ CREATE TABLE [dbo].Staff(
 	is_active BIT,
 	avatar_image NVARCHAR(100),
 	email NVARCHAR(255),
-	address_id INT,
+	address_id NVARCHAR(255),
 	job_title_id INT,
 	license_type_id INT
 )
 GO
 CREATE TABLE [dbo].Course(
-	course_id INT PRIMARY KEY,
+	course_id NVARCHAR(255) PRIMARY KEY,
 	course_title NVARCHAR(255) NOT NULL,
 	course_desc NVARCHAR(MAX),
 	cost FLOAT NOT NULL,
@@ -79,21 +80,21 @@ CREATE TABLE [dbo].Curriculum(
 )
 GO
 CREATE TABLE [dbo].Course_Curriculum(
-	course_id INT identity(1,1),
+	course_id NVARCHAR(255),
 	curriculum_id INT,
 
 	PRIMARY KEY (course_id, curriculum_id)
 )
 GO
 CREATE TABLE [dbo].Course_Reservation(
-	course_reservation_id INT PRIMARY KEY identity(1,1),
+	course_reservation_id NVARCHAR(255) PRIMARY KEY,
 	course_start_date DATETIME NOT NULL,
 	create_date DATETIME,
 	last_modified_date DATETIME,
 	last_modified_by INT,
-	member_id INT NOT NULL,
-	course_id INT NOT NULL,
-	staff_id INT NOT NULL,
+	member_id NVARCHAR(255) NOT NULL,
+	course_id NVARCHAR(255) NOT NULL,
+	staff_id NVARCHAR(255) NOT NULL,
 	course_reservation_status_id INT,
 	invoice_id INT
 )
@@ -126,23 +127,22 @@ CREATE TABLE [dbo].Vehicle(
 	vehicle_id INT PRIMARY KEY identity(1,1),
 	vehicle_license_plate NVARCHAR(155) NOT NULL,
 	register_date DATETIME,
-	vehicle_type_id INT,
-
+	vehicle_type_id INT
 )
 GO
 CREATE TABLE [dbo].Course_Schedule(
 	course_schedule_id INT PRIMARY KEY identity(1,1),
 	teaching_date DATETIME NOT NULL,
-	staff_id INT NOT NULL,
-	course_reservation_id INT NOT NULL,
-	vehicle_id INT,
+	staff_id NVARCHAR(255) NOT NULL,
+	course_reservation_id NVARCHAR(255) NOT NULL,
+	vehicle_id INT
 )
 GO
 CREATE TABLE [dbo].Roll_Call_Book(
 	roll_call_book_id INT PRIMARY KEY identity(1,1),
 	isAbsence BIT,
 	comment NVARCHAR(255),
-	member_id INT NOT NULL,
+	member_id NVARCHAR(255) NOT NULL,
 	course_schedule_id INT NOT NULL
 )
 GO
@@ -150,9 +150,9 @@ CREATE TABLE [dbo].FeedBack(
 	feedback_id INT PRIMARY KEY identity(1,1),
 	content NVARCHAR(255),
 	rating_star INT,
-	member_id INT,
-	staff_id INT,
-	course_id INT
+	member_id NVARCHAR(255),
+	staff_id NVARCHAR(255),
+	course_id NVARCHAR(255)
 )
 GO
 CREATE TABLE [dbo].License_Register_Form_Status(
@@ -167,7 +167,7 @@ CREATE TABLE [dbo].License_Register_Form(
 	identity_card_image NVARCHAR(100),
 	health_certification_image NVARCHAR(100),
 	create_date DATETIME,
-	member_id INT,
+	member_id NVARCHAR(255),
 	register_form_status_id INT,
 	license_type_id INT
 )
@@ -203,7 +203,7 @@ CREATE TABLE [dbo].Exam_Question(
 )
 GO
 CREATE TABLE [dbo].Exam_Grade(
-	member_id INT,
+	member_id NVARCHAR(255),
 	practice_exam_id INT,
 	point FLOAT,
 	question_id INT NOT NULL,
@@ -214,7 +214,7 @@ CREATE TABLE [dbo].Exam_Grade(
 )
 GO
 CREATE TABLE [dbo].Exam_History(
-	member_id INT,
+	member_id NVARCHAR(255),
 	practice_exam_id INT,
 	total_grade INT,
 	total_right_answer INT,
@@ -228,7 +228,7 @@ CREATE TABLE [dbo].Exam_History(
 GO
 CREATE TABLE [dbo].Blog(
 	blog_id INT PRIMARY KEY identity(1,1),
-	staff_id INT,
+	staff_id NVARCHAR(255),
 	content NVARCHAR(MAX),
 	create_date DATETIME,
 	last_modified_date DATETIME
