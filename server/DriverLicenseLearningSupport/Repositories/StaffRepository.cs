@@ -24,17 +24,18 @@ namespace DriverLicenseLearningSupport.Repositories
             return await _context.SaveChangesAsync() > 0 ? true : false;
         }
 
-        public async Task<StaffModel> FindByEmailAsync(string email)
+        public async Task<StaffModel> GetByEmailAsync(string email)
         {
             var staffEntity = await _context.Staffs.Where(x => x.Email == email)
                                                    .FirstOrDefaultAsync();
             return _mapper.Map<StaffModel>(staffEntity);
         }
 
-        public async Task<StaffModel> FindByIdAsync(Guid id)
+        public async Task<StaffModel> GetAsync(Guid id)
         {
             var staffEntity = await _context.Staffs.Where(x => x.StaffId == id.ToString())
                                                    .FirstOrDefaultAsync();
+            if(staffEntity is not null) staffEntity.EmailNavigation.Password = null!;
             return _mapper.Map<StaffModel>(staffEntity);
         }
     }

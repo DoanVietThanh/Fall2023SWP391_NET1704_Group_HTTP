@@ -24,14 +24,15 @@ namespace DriverLicenseLearningSupport.Repositories
             return await _context.SaveChangesAsync() > 0 ? true : false;
         }
 
-        public async Task<AccountModel> FindByEmailAsync(string email)
+
+        public async Task<AccountModel> GetByEmailAsync(string email)
         {
             var accountEntity = await _context.Accounts.Where(x => x.Email == email)
                                                  .FirstOrDefaultAsync();
             return _mapper.Map<AccountModel>(accountEntity);
         }
 
-        public async Task<AccountModel> FindByUsernameAndPasswordAsync(string username, string password)
+        public async Task<AccountModel> GetByUsernameAndPasswordAsync(string username, string password)
         {
             var accountEntity = await _context.Accounts.Where(x => x.Email == username 
                                                             && x.Password == password)
@@ -44,6 +45,16 @@ namespace DriverLicenseLearningSupport.Repositories
             var account = await _context.Accounts.Where(x => x.Email == email)
                                                  .FirstOrDefaultAsync();
             if(account != null) account.Password = newPassword;
+            return await _context.SaveChangesAsync() > 0 ? true : false;
+        }
+        public async Task<bool> DeleteAsync(string email)
+        {
+            // get by email
+            var account = await _context.Accounts.Where(x => x.Email == email)
+                                                 .FirstOrDefaultAsync();
+            // remove
+            _context.Accounts.Remove(account);
+            // save changes and return
             return await _context.SaveChangesAsync() > 0 ? true : false;
         }
     }

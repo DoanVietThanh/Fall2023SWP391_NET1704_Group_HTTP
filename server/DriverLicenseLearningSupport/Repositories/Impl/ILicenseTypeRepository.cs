@@ -4,7 +4,9 @@ namespace DriverLicenseLearningSupport.Repositories.Impl
 {
     public interface ILicenseTypeRepository
     {
-        Task<IEnumerable<LicenseTypeModel>> FindAllAsync();
-        Task<LicenseTypeModel> FindByIdAsync(int id);
+        Task<IEnumerable<LicenseTypeModel>> GetAllAsync();
+        Task<LicenseTypeModel> GetAsync(int id);
+        Task<LicenseTypeModel> GetByDescAsync(string licenseTypeDesc);
+
     }
 }

@@ -1,12 +1,12 @@
 using Amazon.S3;
 using AutoMapper;
 using DriverLicenseLearningSupport.Entities;
+using DriverLicenseLearningSupport.Exceptions;
 using DriverLicenseLearningSupport.Mapping;
 using DriverLicenseLearningSupport.Models.Config;
 using DriverLicenseLearningSupport.Repositories;
 using DriverLicenseLearningSupport.Repositories.Impl;
 using DriverLicenseLearningSupport.Services;
-using DriverLicenseLearningSupport.Services.impl;
 using DriverLicenseLearningSupport.Services.Impl;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -106,6 +106,8 @@ builder.Services.AddCors(p => p.AddPolicy("Cors", policy =>
 //builder.Services.AddSingleton<IAmazonS3, AmazonS3Client>();
 //builder.Services.AddSingleton<IImageService, ImageService>();
 
+// Middleware Exception
+//builder.Services.AddTransient<ExceptionMiddleware>();
 
 var app = builder.Build();
 
@@ -123,6 +125,9 @@ app.UseCors("Cors");
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+// Add Middleware Exceptions
+//app.ConfigureExceptionMiddleware();
 
 app.MapControllers();
 

@@ -23,11 +23,22 @@ namespace DriverLicenseLearningSupport.Repositories
             return await _context.SaveChangesAsync() > 0 ? true : false;
         }
 
-        public async Task<AddressModel> FindByIdAsync(string id)
+        public async Task<AddressModel> GetAsync(string id)
         {
             var addressEntity = await _context.Addresses.Where(x => x.AddressId == id)
                                                         .FirstOrDefaultAsync();
             return _mapper.Map<AddressModel>(addressEntity);
         }
+        public async Task<bool> DeleteAsync(Guid id)
+        {
+            // get by id
+            var address = await _context.Addresses.Where(x => x.AddressId == id.ToString())
+                                                  .FirstOrDefaultAsync();
+            // remove
+            _context.Addresses.Remove(address);
+            // save changes and return
+            return await _context.SaveChangesAsync() > 0 ? true : false;
+        }
+
     }
 }

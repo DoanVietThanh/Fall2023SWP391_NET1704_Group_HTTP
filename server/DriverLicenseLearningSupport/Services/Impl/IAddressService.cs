@@ -6,6 +6,7 @@ namespace DriverLicenseLearningSupport.Services.Impl
     public interface IAddressService
     {
         Task<bool> CreateAsync(AddressModel address);
-        Task<AddressModel> FindByIdAsync(Guid id);
+        Task<AddressModel> GetAsync(Guid id);
+        Task<bool> DeleteAsync(Guid id);
     }
 }

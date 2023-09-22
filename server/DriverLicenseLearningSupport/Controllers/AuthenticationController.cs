@@ -5,7 +5,6 @@ using DriverLicenseLearningSupport.Validation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Globalization;
-using DriverLicenseLearningSupport.Services.impl;
 using DriverLicenseLearningSupport.Services.Impl;
 using Microsoft.AspNetCore.Authorization;
 using System.ComponentModel.DataAnnotations;
@@ -17,6 +16,10 @@ using AutoMapper.Execution;
 using DriverLicenseLearningSupport.Services;
 using System.Net;
 using System.IO;
+using Amazon.Runtime.Internal.Endpoints.StandardLibrary;
+using System;
+using static System.Collections.Specialized.BitVector32;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace DriverLicenseLearningSupport.Controllers
 {
@@ -90,12 +93,12 @@ namespace DriverLicenseLearningSupport.Controllers
             Object accountInfo;
             if (account.Role.Name.Equals("Member")){
                 // get member info
-                accountInfo = await _memberService.FindByEmailAsync(account.Email);
+                accountInfo = await _memberService.GetByEmailAsync(account.Email);
             } 
             else 
             {
                 // get staff (mentor/staff/admin) info
-                accountInfo = await _staffService.FindByEmailAsync(account.Email);
+                accountInfo = await _staffService.GetByEmailAsync(account.Email);
             }
 
             // generate jwt bearer token
@@ -118,7 +121,7 @@ namespace DriverLicenseLearningSupport.Controllers
         public async Task<IActionResult> Register()
         {
             // get all license type
-            var licenseTypes = await _licenseTypeService.FindAllAsync();
+            var licenseTypes = await _licenseTypeService.GetAllAsync();
             return Ok(new BaseResponse
             {
                 StatusCode = StatusCodes.Status200OK,
@@ -143,7 +146,7 @@ namespace DriverLicenseLearningSupport.Controllers
             }
 
             // check exist account
-            var accountExist = await _accountService.FindByEmailAsync(reqObj.Username);
+            var accountExist = await _accountService.GetByEmailAsync(reqObj.Username);
             if (accountExist != null)
             {
                 return StatusCode(StatusCodes.Status403Forbidden,
@@ -175,7 +178,7 @@ namespace DriverLicenseLearningSupport.Controllers
             await _memberService.CreateAsync(member);
 
             // find created member
-            member = await _memberService.FindByIdAsync(Guid.Parse(memberId));
+            member = await _memberService.GetAsync(Guid.Parse(memberId));
 
             return Ok(new BaseResponse {
                 StatusCode = StatusCodes.Status200OK,
@@ -195,11 +198,11 @@ namespace DriverLicenseLearningSupport.Controllers
         public async Task<IActionResult> StaffRegister()
         {
             // get all license type
-            var licenseTypes = await _licenseTypeService.FindAllAsync();
+            var licenseTypes = await _licenseTypeService.GetAllAsync();
             // get all job title
-            var jobTitles = await _jobTitleService.FindAllAsync();
+            var jobTitles = await _jobTitleService.GetAllAsync();
             // get all account roles
-            var roles = await _roleService.FindAllAsync();
+            var roles = await _roleService.GetAllAsync();
 
             return Ok(new BaseResponse { 
                 StatusCode = StatusCodes.Status200OK,
@@ -231,7 +234,7 @@ namespace DriverLicenseLearningSupport.Controllers
             }
 
             // check account exist
-            var accountExist = await _accountService.FindByEmailAsync(reqObj.Username);
+            var accountExist = await _accountService.GetByEmailAsync(reqObj.Username);
             if(accountExist != null)
             {
                 return StatusCode(StatusCodes.Status403Forbidden,
@@ -263,7 +266,7 @@ namespace DriverLicenseLearningSupport.Controllers
             await _staffService.CreateAsync(staff);
 
             // find created staff by id
-            staff = await _staffService.FindByIdAsync(Guid.Parse(staffId));
+            staff = await _staffService.GetAsync(Guid.Parse(staffId));
 
             return Ok(new BaseResponse { 
                 StatusCode = StatusCodes.Status200OK,
@@ -280,15 +283,14 @@ namespace DriverLicenseLearningSupport.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ForgotPassword([Required] [EmailAddress] string email)
         {
-            var account = await _accountService.FindByEmailAsync(email);
+            var account = await _accountService.GetByEmailAsync(email);
             if (account != null)
             {
                 var passwordResetToken = (new JwtHelper(_appSettings)).GeneratePasswordResetToken(email);
                 // Url + Action + Controller 
-                // var forgotPasswordLink = Url.Action("ResetPassword", "Authentication", new { passwordResetToken, email = account.Email }, Request.Scheme);
+                //var forgotPasswordLink = Url.Action("ResetPassword", "Authentication", new { passwordResetToken, email = account.Email }, Request.Scheme);
                 var forgotPasswordLink = Url.Action("ResetPassword", "Authentication",
-                values: new { passwordResetToken, email = account.Email }, protocol: "http", host: "localhost:3000");
-
+                    values: new { passwordResetToken, email = account.Email }, Request.Scheme, host: "localhost:3000");
                 var message = new EmailMessage(new string[] { account.Email! }, "Forgot Password Link", forgotPasswordLink!);
                 _emailService.SendEmail(message);
                 
@@ -314,7 +316,7 @@ namespace DriverLicenseLearningSupport.Controllers
         [Route("authentication/reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPassword resetPassword) 
         {
-            var account = await _accountService.FindByEmailAsync(resetPassword.Email);
+            var account = await _accountService.GetByEmailAsync(resetPassword.Email);
             if(account != null) 
             {
                 var newPasswordEncrypt = PasswordHelper.ConvertToEncrypt(resetPassword.Password);

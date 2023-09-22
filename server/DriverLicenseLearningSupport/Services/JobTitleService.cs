@@ -14,14 +14,14 @@ namespace DriverLicenseLearningSupport.Services
             _jobTitleRepository = jobTitleRepository;
         }
 
-        public async Task<IEnumerable<JobTitleModel>> FindAllAsync()
+        public async Task<IEnumerable<JobTitleModel>> GetAllAsync()
         {
-            return await _jobTitleRepository.FindAllAsync();
+            return await _jobTitleRepository.GetAllAsync();
         }
 
-        public async Task<JobTitleModel> FindByIdAsync(int id)
+        public async Task<JobTitleModel> GetAsync(int id)
         {
-            return await _jobTitleRepository.FindByIdAsync(id);
+            return await _jobTitleRepository.GetAsync(id);
         }
     }
 }

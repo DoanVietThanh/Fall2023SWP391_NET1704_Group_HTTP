@@ -4,7 +4,7 @@ namespace DriverLicenseLearningSupport.Repositories.Impl
 {
     public interface IJobTitleRepository
     {
-        Task<IEnumerable<JobTitleModel>> FindAllAsync();
-        Task<JobTitleModel> FindByIdAsync(int id);
+        Task<IEnumerable<JobTitleModel>> GetAllAsync();
+        Task<JobTitleModel> GetAsync(int id);
     }
  }
