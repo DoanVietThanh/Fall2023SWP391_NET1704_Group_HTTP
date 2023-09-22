@@ -20,7 +20,7 @@ namespace DriverLicenseLearningSupport.Validation
                 .Matches("[0-9]{10,12}")
                 .WithMessage("Số điện thoại từ 10-12 ký tự");
             RuleFor(x => x.Password)
-                .Matches("^(?=.[A-Z])(?=.\\d).{8,}$")
+                .Matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$")
                 .WithMessage("Mật khẩu độ dài ít nhất 8 ký tự, chứa ít nhất 1 chữ cái viết hoa và 1 số");
         }
     }

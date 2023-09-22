@@ -1,14 +1,11 @@
 import React from 'react';
-import { toastError, toastSuccess } from '../../components/Toastify';
 import Header from '../../components/Header';
-import LastestBlog from './LastestBlog';
-import UpComingEvent from './UpComingEvent';
-import MeetMentor from './MeetMentor';
-import PopularCourses from './PopularCourses';
-import Welcome from './Welcome';
-import Slider from './Slider';
-import TopCategories from './TopCategories';
+import { toastError } from '../../components/Toastify';
 import Footer from './../../components/Footer';
+import LastestBlog from './LastestBlog';
+import Slider from './Slider';
+import Welcome from './Welcome';
+import RatedMentor from './RatedMentor';
 
 const HomePage = () => {
   const notify = (message) => {
@@ -19,11 +16,8 @@ const HomePage = () => {
       <Header />
       <Slider />
       <div className='px-4'>
-        <TopCategories />
         <Welcome />
-        <PopularCourses />
-        <MeetMentor />
-        <UpComingEvent />
+        <RatedMentor />
         <LastestBlog />
       </div>
       <Footer />

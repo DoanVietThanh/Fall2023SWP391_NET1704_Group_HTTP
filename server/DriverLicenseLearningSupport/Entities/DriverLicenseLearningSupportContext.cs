@@ -627,7 +627,7 @@ namespace DriverLicenseLearningSupport.Entities
 
                 entity.Property(e => e.AvatarImage)
                     .HasMaxLength(100)
-                    .HasColumnName("avartar_image");
+                    .HasColumnName("avatar_image");
 
                 entity.Property(e => e.Phone)
                     .HasMaxLength(15)

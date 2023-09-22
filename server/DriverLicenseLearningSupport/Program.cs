@@ -100,11 +100,11 @@ builder.Services.AddCors(p => p.AddPolicy("Cors", policy =>
 }));
 
 // Amazon Lambda Hosting
-builder.Services.AddAWSLambdaHosting(LambdaEventSource.RestApi);
+//builder.Services.AddAWSLambdaHosting(LambdaEventSource.RestApi);
 
 // Amazon S3
-builder.Services.AddSingleton<IAmazonS3, AmazonS3Client>();
-builder.Services.AddSingleton<IImageService, ImageService>();
+//builder.Services.AddSingleton<IAmazonS3, AmazonS3Client>();
+//builder.Services.AddSingleton<IImageService, ImageService>();
 
 
 var app = builder.Build();

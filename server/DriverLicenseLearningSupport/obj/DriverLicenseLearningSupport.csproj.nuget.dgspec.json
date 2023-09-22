@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Thanh Thu\\Desktop\\SWP\\Fall2023SWP391_NET1704_Group_HTTP\\server\\DriverLicenseLearningSupport\\DriverLicenseLearningSupport.csproj": {}
+    "D:\\FPT\\Kì 5\\SWP\\server\\DriverLicenseLearningSupport\\DriverLicenseLearningSupport.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Thanh Thu\\Desktop\\SWP\\Fall2023SWP391_NET1704_Group_HTTP\\server\\DriverLicenseLearningSupport\\DriverLicenseLearningSupport.csproj": {
+    "D:\\FPT\\Kì 5\\SWP\\server\\DriverLicenseLearningSupport\\DriverLicenseLearningSupport.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Thanh Thu\\Desktop\\SWP\\Fall2023SWP391_NET1704_Group_HTTP\\server\\DriverLicenseLearningSupport\\DriverLicenseLearningSupport.csproj",
+        "projectUniqueName": "D:\\FPT\\Kì 5\\SWP\\server\\DriverLicenseLearningSupport\\DriverLicenseLearningSupport.csproj",
         "projectName": "DriverLicenseLearningSupport",
-        "projectPath": "C:\\Users\\Thanh Thu\\Desktop\\SWP\\Fall2023SWP391_NET1704_Group_HTTP\\server\\DriverLicenseLearningSupport\\DriverLicenseLearningSupport.csproj",
-        "packagesPath": "C:\\Users\\Thanh Thu\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Thanh Thu\\Desktop\\SWP\\Fall2023SWP391_NET1704_Group_HTTP\\server\\DriverLicenseLearningSupport\\obj\\",
+        "projectPath": "D:\\FPT\\Kì 5\\SWP\\server\\DriverLicenseLearningSupport\\DriverLicenseLearningSupport.csproj",
+        "packagesPath": "C:\\Users\\doanv\\.nuget\\packages\\",
+        "outputPath": "D:\\FPT\\Kì 5\\SWP\\server\\DriverLicenseLearningSupport\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Thanh Thu\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\doanv\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -40,6 +40,10 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "AWSSDK.S3": {
+              "target": "Package",
+              "version": "[3.7.203.17, )"
+            },
             "AutoMapper.Extensions.Microsoft.DependencyInjection": {
               "target": "Package",
               "version": "[6.1.1, )"
@@ -96,7 +100,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.401\\RuntimeIdentifierGraph.json"
         }
       }
     }
