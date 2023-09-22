@@ -93,6 +93,17 @@ const RegisterPage = () => {
 
           <div>
             <p className='font-medium capitalize'>
+              <Link
+                to='/forgot-password'
+                className='text-blue-400 text-[20px] py-2'
+              >
+                Forgot Password
+              </Link>
+            </p>
+          </div>
+
+          <div>
+            <p className='font-medium capitalize'>
               Already have an account?{' '}
               <Link to='/login' className='text-blue-400'>
                 Sign In here

@@ -5,16 +5,18 @@ import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
 import { useFormik } from 'formik';
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import * as yup from 'yup';
 import Footer from '../../components/Footer';
 import Header from '../../components/Header';
 import { login } from '../../features/auth/authSlice';
+import axios from 'axios';
+import { toastError, toastSuccess } from './../../components/Toastify';
 
 let schema = yup.object().shape({
-  username: yup
+  email: yup
     .string()
     .min(10, 'Length should be more 10 chars')
     .email('Email should be valid')
@@ -27,45 +29,55 @@ let schema = yup.object().shape({
       'Password có chữ đầu ghi Hoa, có ít nhất 1 số'
     )
     .required('Password is Required'),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref('password'), null], 'Passwords chưa trùng khớp'),
 });
 
-const LoginPage = () => {
+const ShowForgetPass = () => {
+  const [searchParams] = useSearchParams();
+  const passwordResetToken = searchParams.get('passwordResetToken');
+  const email = searchParams.get('email');
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user, isSuccess, isError, isLoading } = useSelector(
-    (state) => state.auth
-  );
   const [showPassword, setShowPassword] = useState(false);
-
+  const baseServerURL = process.env.REACT_APP_SERVER_API;
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
   };
 
   const formik = useFormik({
     initialValues: {
-      username: '',
+      email: '',
       password: '',
+      confirmPassword: '',
     },
     validationSchema: schema,
     onSubmit: async (values) => {
-      dispatch(login(values));
+      const result = await axios.post(
+        `${baseServerURL}/authentication/reset-password`,
+        values
+      );
+      console.log(
+        '🚀 ~ file: ShowForgetPass.jsx:59 ~ onSubmit: ~ result:',
+        result
+      );
+      if (result.data.statusCode === 200) {
+        toastSuccess(result.data.message);
+        navigate('/login');
+        return;
+      } else {
+        toastError('Something went wrong');
+      }
     },
   });
-
-  useEffect(() => {
-    if (isSuccess) {
-      navigate('/home');
-    } else {
-      navigate('');
-    }
-  }, [user, isError, isLoading, isSuccess]);
 
   return (
     <div>
       <Header />
       <div className='center my-8'>
         <div className='border border-1 w-[40%] flex flex-col justify-center items-center p-8'>
-          <Typography variant='h4'>Sign In</Typography>
+          <Typography variant='h4'>Get New Password</Typography>
           <p>Fill in the fields below to sign into your account.</p>
           <form
             action=''
@@ -77,12 +89,12 @@ const LoginPage = () => {
               label='Email Address'
               variant='outlined'
               className='w-full'
-              onChange={formik.handleChange('username')}
-              onBlur={formik.handleBlur('username')}
-              value={formik.values.username}
+              onChange={formik.handleChange('email')}
+              onBlur={formik.handleBlur('email')}
+              value={formik.values.email}
             />{' '}
             <div className='error text-red-900'>
-              {formik.touched.username && formik.errors.username}
+              {formik.touched.email && formik.errors.email}
             </div>
             <TextField
               label='Mật khẩu'
@@ -113,32 +125,37 @@ const LoginPage = () => {
             <div className='error text-red-900'>
               {formik.touched.password && formik.errors.password}
             </div>
-            <Stack direction={'row-reverse'}>
-              <FormControlLabel
-                control={<Checkbox />}
-                label='Remember Password'
-              />
-            </Stack>
-            <button className='btn'>Login</button>
+            <TextField
+              label='Nhập lại Mật khẩu'
+              variant='outlined'
+              fullWidth
+              onChange={formik.handleChange('confirmPassword')}
+              onBlur={formik.handleBlur('confirmPassword')}
+              value={formik.values.confirmPassword}
+              type={showPassword ? 'text' : 'password'}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    <IconButton
+                      aria-label='Toggle password visibility'
+                      onClick={handleTogglePassword}
+                      edge='end'
+                    >
+                      {showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <div className='error text-red-900'>
+              {formik.touched.confirmPassword && formik.errors.confirmPassword}
+            </div>
+            <button className='btn'>Submit</button>
           </form>
-
-          <div>
-            <p className='font-medium capitalize'>
-              Don’t remember password ?{' '}
-              <Link to='/forgot-password' className='text-blue-400 py-2'>
-                Forgot Password Here
-              </Link>
-            </p>
-          </div>
-
-          <div>
-            <p className='font-medium capitalize'>
-              Don’t have an account ?{' '}
-              <Link to='/register' className='text-blue-400'>
-                Sign up here
-              </Link>
-            </p>
-          </div>
         </div>
       </div>
       <Footer />
@@ -146,6 +163,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
-
-// {{LOCAL}}/authentication/forgot-password?email=thanhdvse171867@fpt.edu.vn
+export default ShowForgetPass;

@@ -8,9 +8,6 @@ import Welcome from './Welcome';
 import RatedMentor from './RatedMentor';
 
 const HomePage = () => {
-  const notify = (message) => {
-    toastError(message);
-  };
   return (
     <>
       <Header />

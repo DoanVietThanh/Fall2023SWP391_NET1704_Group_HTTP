@@ -40,13 +40,13 @@ const Footer = () => {
     <footer
       className={`footer bg-[${theme.color.bgFooterColor}] p-8 text-white`}
     >
-      <InView onChange={handleInViewChange}>
+      {/* <InView onChange={handleInViewChange}>
         {({ inView, ref }) => (
           <div ref={ref}>
             {inView ? <ComponentToDetect data={1000} /> : <>bug</>}
           </div>
         )}
-      </InView>
+      </InView> */}
       <div className='flex flex-row justify-around items-center py-4'>
         <div className='flex gap-2'>
           <div className='footer-icons '>

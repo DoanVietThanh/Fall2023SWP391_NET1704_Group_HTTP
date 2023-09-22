@@ -285,7 +285,10 @@ namespace DriverLicenseLearningSupport.Controllers
             {
                 var passwordResetToken = (new JwtHelper(_appSettings)).GeneratePasswordResetToken(email);
                 // Url + Action + Controller 
-                var forgotPasswordLink = Url.Action("ResetPassword", "Authentication", new { passwordResetToken, email = account.Email }, Request.Scheme);
+                // var forgotPasswordLink = Url.Action("ResetPassword", "Authentication", new { passwordResetToken, email = account.Email }, Request.Scheme);
+                var forgotPasswordLink = Url.Action("ResetPassword", "Authentication",
+                values: new { passwordResetToken, email = account.Email }, protocol: "http", host: "localhost:3000");
+
                 var message = new EmailMessage(new string[] { account.Email! }, "Forgot Password Link", forgotPasswordLink!);
                 _emailService.SendEmail(message);
                 
@@ -304,14 +307,7 @@ namespace DriverLicenseLearningSupport.Controllers
         [Route("authentication/reset-password")]
         public async Task<IActionResult> ResetPassword(string passwordResetToken, string email) 
         {
-            var token = PasswordHelper.ConvertToDecrypt(passwordResetToken);
-            if(token != null) 
-                return Ok(new { passwordResetToken, email });
-            return BadRequest(new BaseResponse
-            {
-                StatusCode = StatusCodes.Status400BadRequest,
-                Message = "Wrong token format!"
-            });
+            return Ok(new { passwordResetToken, email });
         }
 
         [HttpPost]
