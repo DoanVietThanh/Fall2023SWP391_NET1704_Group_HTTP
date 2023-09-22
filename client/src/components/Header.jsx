@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import theme from '../theme';
 import images from '../assets/img';
 import { Link } from 'react-router-dom';
@@ -14,8 +14,10 @@ import {
   BsTwitter,
   BsYoutube,
 } from 'react-icons/bs';
+import { useSelector } from 'react-redux';
 
 const Header = () => {
+  const { user } = useSelector((state) => state.auth);
   return (
     <div className={`bg-[${theme.color.mainColor}] border-b-2`}>
       <div
@@ -41,14 +43,17 @@ const Header = () => {
           <BsTwitter />
           <BsLinkedin />
           <BsYoutube />
-          <Link to='/login'>
-            <button className='btn-login ml-2 hover:opacity-80'>
-              Login / Register
-            </button>
-          </Link>
-          <Link to={`/profile`} className='hover:text-rose-400'>
-            ThanhDoan
-          </Link>
+          {user?.accountInfo ? (
+            <Link to={`/profile`} className='hover:text-rose-400'>
+              {`${user.accountInfo?.firstName} ${user.accountInfo?.lastName}`}
+            </Link>
+          ) : (
+            <Link to='/login'>
+              <button className='btn-login ml-2 hover:opacity-80'>
+                Login / Register
+              </button>
+            </Link>
+          )}
         </div>
       </div>
 
