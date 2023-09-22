@@ -3,7 +3,6 @@ using AutoMapper.Execution;
 using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Repositories.Impl;
-using DriverLicenseLearningSupport.Services.impl;
 using DriverLicenseLearningSupport.Services.Impl;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,18 +35,21 @@ namespace DriverLicenseLearningSupport.Services
             return await _staffRepository.CreateAsync(staffEntity);
         }
 
-        public async Task<StaffModel> FindByEmailAsync(string email)
+        public async Task<StaffModel> GetByEmailAsync(string email)
         {
-            var staff =  await _staffRepository.FindByEmailAsync(email);
-            staff.LicenseType = await _licenseTypeService.FindByIdAsync(Convert.ToInt32(staff.LicenseTypeId));
-            staff.Address = await _addressService.FindByIdAsync(Guid.Parse(staff.AddressId));
-            staff.JobTitle = await _jobTitleService.FindByIdAsync(Convert.ToInt32(staff.JobTitleId));
+            var staff =  await _staffRepository.GetByEmailAsync(email);
+            if(staff is not null)
+            {
+                staff.LicenseType = await _licenseTypeService.GetAsync(Convert.ToInt32(staff.LicenseTypeId));
+                staff.Address = await _addressService.GetAsync(Guid.Parse(staff.AddressId));
+                staff.JobTitle = await _jobTitleService.GetAsync(Convert.ToInt32(staff.JobTitleId));
+            }
             return staff;
         }
 
-        public async Task<StaffModel> FindByIdAsync(Guid id)
+        public async Task<StaffModel> GetAsync(Guid id)
         {
-            return await _staffRepository.FindByIdAsync(id);
+            return await _staffRepository.GetAsync(id);
         }
     }
 }

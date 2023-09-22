@@ -2,7 +2,7 @@
 using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Repositories.Impl;
-using DriverLicenseLearningSupport.Services.impl;
+using DriverLicenseLearningSupport.Services.Impl;
 using Microsoft.EntityFrameworkCore;
 
 namespace DriverLicenseLearningSupport.Services
@@ -15,14 +15,19 @@ namespace DriverLicenseLearningSupport.Services
         {
             _licenseTypeRepository = licenseTypeRepository;
         }
-        public async Task<IEnumerable<LicenseTypeModel>> FindAllAsync()
+        public async Task<IEnumerable<LicenseTypeModel>> GetAllAsync()
         {
-            return await _licenseTypeRepository.FindAllAsync();
+            return await _licenseTypeRepository.GetAllAsync();
         }
 
-        public async Task<LicenseTypeModel> FindByIdAsync(int id)
+        public async Task<LicenseTypeModel> GetAsync(int id)
         {
-            return await _licenseTypeRepository.FindByIdAsync(id);
+            return await _licenseTypeRepository.GetAsync(id);
+        }
+
+        public async Task<LicenseTypeModel> GetByDescAsync(string licenseTypeDesc)
+        {
+            return await _licenseTypeRepository.GetByDescAsync(licenseTypeDesc);
         }
     }
 }

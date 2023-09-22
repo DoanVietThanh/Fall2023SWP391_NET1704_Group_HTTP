@@ -18,16 +18,23 @@ namespace DriverLicenseLearningSupport.Repositories
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<LicenseTypeModel>> FindAllAsync()
+        public async Task<IEnumerable<LicenseTypeModel>> GetAllAsync()
         {
-            var licenseTypesEntity = await _context.LicenseTypes.ToListAsync();
-            return _mapper.Map<IEnumerable<LicenseTypeModel>>(licenseTypesEntity);
+            var licenseTypesEntities = await _context.LicenseTypes.ToListAsync();
+            return _mapper.Map<IEnumerable<LicenseTypeModel>>(licenseTypesEntities);
         }
 
-        public async Task<LicenseTypeModel> FindByIdAsync(int id)
+        public async Task<LicenseTypeModel> GetAsync(int id)
         {
             var licenseTypesEntity = await _context.LicenseTypes.Where(x => x.LicenseTypeId == id)
                                                                 .FirstOrDefaultAsync();
+            return _mapper.Map<LicenseTypeModel>(licenseTypesEntity);
+        }
+
+        public async Task<LicenseTypeModel> GetByDescAsync(string licenseTypeDesc)
+        {
+            var licenseTypesEntity = await _context.LicenseTypes.Where(x => x.LicenseTypeDesc.Equals(licenseTypeDesc))
+                                                               .FirstOrDefaultAsync();
             return _mapper.Map<LicenseTypeModel>(licenseTypesEntity);
         }
     }

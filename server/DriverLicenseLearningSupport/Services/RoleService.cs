@@ -12,9 +12,14 @@ namespace DriverLicenseLearningSupport.Services
         {
             _roleRepository = roleRepository;
         }
-        public async Task<IEnumerable<RoleModel>> FindAllAsync()
+        public async Task<IEnumerable<RoleModel>> GetAllAsync()
         {
-            return await _roleRepository.FindAllAsync();
+            return await _roleRepository.GetAllAsync();
+        }
+
+        public async Task<RoleModel> GetMemberRoleIdAsync()
+        {
+            return await _roleRepository.GetMemberRoleIdAsync();
         }
     }
 }

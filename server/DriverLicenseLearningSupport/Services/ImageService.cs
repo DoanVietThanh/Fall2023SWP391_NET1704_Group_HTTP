@@ -61,15 +61,26 @@ namespace DriverLicenseLearningSupport.Services
 
         public async Task<string> GetPreSignedURL(Guid id)
         {
-            GetPreSignedUrlRequest request = new GetPreSignedUrlRequest
+            var awsAccessKeyId = "AKIAREKH23Z6WA54BHXA";
+            var awsSecretAccessKey = "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";
+            var awsCredentials = new Amazon.Runtime.BasicAWSCredentials(awsAccessKeyId, awsSecretAccessKey);
+
+            var s3Config = new AmazonS3Config
             {
-                BucketName = BucketName,
-                Key = $"profile_images/{id}",
-                Expires = DateTime.Now.AddDays(10)
+                RegionEndpoint = Amazon.RegionEndpoint.APSoutheast1
             };
 
-            string path = _s3.GetPreSignedURL(request);
-            return path;
+            using(var s3Client = new AmazonS3Client(awsCredentials, s3Config))
+            {
+                var request = new GetPreSignedUrlRequest
+                {
+                    BucketName = BucketName,
+                    Key = $"profile_images/{id}",
+                    Expires = DateTime.Now.AddDays(1),
+                    Verb = HttpVerb.GET
+                };
+                return s3Client.GetPreSignedURL(request);
+            }
         }
 
         public async Task<DeleteObjectResponse?> DeleteImageAsync(Guid id)

@@ -2,8 +2,9 @@
 using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Repositories.Impl;
-using DriverLicenseLearningSupport.Services.impl;
+using DriverLicenseLearningSupport.Services.Impl;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Principal;
 
 namespace DriverLicenseLearningSupport.Services
 {
@@ -24,10 +25,10 @@ namespace DriverLicenseLearningSupport.Services
 
         public async Task<AccountModel> CheckLoginAsync(string username, string password)
         {
-            var account = await _accountRepository.FindByUsernameAndPasswordAsync(username, password);
+            var account = await _accountRepository.GetByUsernameAndPasswordAsync(username, password);
             if (account != null)
             {
-                var roleModel = await _roleRepository.FindByIdAsync(account.RoleId);
+                var roleModel = await _roleRepository.GetAsync(account.RoleId);
                 account.Role = roleModel;
             }
             return account;
@@ -39,14 +40,25 @@ namespace DriverLicenseLearningSupport.Services
             return await _accountRepository.CreateAsync(accountEntity);
         }
 
-        public async Task<AccountModel> FindByEmailAsync(string email)
+
+        public async Task<AccountModel>GetByEmailAsync(string email)
         {
-            return await _accountRepository.FindByEmailAsync(email);
+            var account = await _accountRepository.GetByEmailAsync(email);
+            if (account != null)
+            {
+                var roleModel = await _roleRepository.GetAsync(account.RoleId);
+                account.Role = roleModel;
+            }
+            return account;
         }
 
         public async Task<bool> ResetPasswordAsync(string email, string newPassword)
         {
             return await _accountRepository.ResetPasswordAsync(email, newPassword);
+        }
+        public async Task<bool> DeleteAsync(string email)
+        {
+            return await _accountRepository.DeleteAsync(email);
         }
     }
 }

@@ -18,16 +18,23 @@ namespace DriverLicenseLearningSupport.Repositories
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<RoleModel>> FindAllAsync()
+        public async Task<IEnumerable<RoleModel>> GetAllAsync()
         {
             var roleEntities = await _context.Roles.ToListAsync();
             return _mapper.Map<IEnumerable<RoleModel>>(roleEntities);
         }
 
-        public async Task<RoleModel> FindByIdAsync(int id)
+        public async Task<RoleModel> GetAsync(int id)
         {
             var roleEntity = await _context.Roles.Where(x => x.RoleId == id)
                                                  .FirstOrDefaultAsync();
+            return _mapper.Map<RoleModel>(roleEntity);
+        }
+
+        public async Task<RoleModel> GetMemberRoleIdAsync()
+        {
+            var roleEntity = await _context.Roles.Where(x => x.Name.Equals("Member"))
+                                                  .FirstOrDefaultAsync();
             return _mapper.Map<RoleModel>(roleEntity);
         }
     }

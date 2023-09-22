@@ -23,9 +23,14 @@ namespace DriverLicenseLearningSupport.Services
            return await _addressRepository.CreateAsync(addressEntity);
         }
 
-        public async Task<AddressModel> FindByIdAsync(Guid id)
+
+        public async Task<AddressModel> GetAsync(Guid id)
         {
-            return await _addressRepository.FindByIdAsync(id.ToString());
+            return await _addressRepository.GetAsync(id.ToString());
+        }
+        public async Task<bool> DeleteAsync(Guid id)
+        {
+            return await _addressRepository.DeleteAsync(id);
         }
     }
 }

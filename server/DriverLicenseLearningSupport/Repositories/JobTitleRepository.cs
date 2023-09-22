@@ -18,13 +18,13 @@ namespace DriverLicenseLearningSupport.Repositories
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<JobTitleModel>> FindAllAsync()
+        public async Task<IEnumerable<JobTitleModel>> GetAllAsync()
         {
             var JobTitleEntities = await _context.JobTitles.ToListAsync();
             return _mapper.Map<IEnumerable<JobTitleModel>>(JobTitleEntities);
         }
 
-        public async Task<JobTitleModel> FindByIdAsync(int id)
+        public async Task<JobTitleModel> GetAsync(int id)
         {
             var jobTitleEntity = await _context.JobTitles.Where(x => x.JobTitleId == id)
                                                          .FirstOrDefaultAsync();
