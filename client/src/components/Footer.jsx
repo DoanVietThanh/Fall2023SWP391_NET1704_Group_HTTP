@@ -1,14 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
 import images from './../assets/img/index';
-
 import { BsTelephone } from 'react-icons/bs';
 import { MdOutlineEmail, MdAddLocation } from 'react-icons/md';
 import theme from '../theme';
+import { useSpring, animated } from 'react-spring';
+import { useInView, InView } from 'react-intersection-observer';
+
+function ComponentToDetect({ data }) {
+  const [ref, inView] = useInView();
+  const { number } = useSpring({
+    from: { number: 0 },
+    number: data,
+    delay: 500,
+    config: { mass: 1, tension: 20, friction: 10 },
+  });
+  if (inView) {
+  }
+
+  return (
+    <div ref={ref}>
+      {inView ? (
+        <animated.div>{inView && number.to((n) => n.toFixed(0))}</animated.div>
+      ) : null}
+    </div>
+  );
+}
+
 const Footer = () => {
+  const handleInViewChange = (inView) => {
+    if (inView) {
+      console.log('Phần tử hiện ra trong viewport');
+      // Thực hiện các tác vụ khi phần tử hiện ra trong viewport
+    } else {
+      console.log('Phần tử ra khỏi viewport');
+      // Thực hiện các tác vụ khi phần tử ra khỏi viewport
+    }
+  };
   return (
     <footer
       className={`footer bg-[${theme.color.bgFooterColor}] p-8 text-white`}
     >
+      {/* <InView onChange={handleInViewChange}>
+        {({ inView, ref }) => (
+          <div ref={ref}>
+            {inView ? <ComponentToDetect data={1000} /> : <>bug</>}
+          </div>
+        )}
+      </InView> */}
       <div className='flex flex-row justify-around items-center py-4'>
         <div className='flex gap-2'>
           <div className='footer-icons '>

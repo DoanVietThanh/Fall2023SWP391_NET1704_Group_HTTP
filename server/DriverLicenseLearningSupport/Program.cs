@@ -103,8 +103,8 @@ builder.Services.AddCors(p => p.AddPolicy("Cors", policy =>
 //builder.Services.AddAWSLambdaHosting(LambdaEventSource.RestApi);
 
 // Amazon S3
-builder.Services.AddSingleton<IAmazonS3, AmazonS3Client>();
-builder.Services.AddSingleton<IImageService, ImageService>();
+//builder.Services.AddSingleton<IAmazonS3, AmazonS3Client>();
+//builder.Services.AddSingleton<IImageService, ImageService>();
 
 // Middleware Exception
 //builder.Services.AddTransient<ExceptionMiddleware>();

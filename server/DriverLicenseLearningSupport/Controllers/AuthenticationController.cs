@@ -39,7 +39,6 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly ILicenseTypeService _licenseTypeService;
         private readonly IJobTitleService _jobTitleService;
         private readonly IRoleService _roleService;
-        private readonly IImageService _imageService;
         private readonly AppSettings _appSettings;
 
         public AuthenticationController(IAccountService accountService,
@@ -50,7 +49,6 @@ namespace DriverLicenseLearningSupport.Controllers
             ILicenseTypeService licenseTypeService,
             IJobTitleService jobTitleService,
             IRoleService roleService,
-            IImageService imageService,
             IOptionsMonitor<AppSettings> monitor)
         {
             _accountService = accountService;
@@ -61,7 +59,6 @@ namespace DriverLicenseLearningSupport.Controllers
             _licenseTypeService = licenseTypeService;
             _jobTitleService = jobTitleService;
             _roleService = roleService;
-            _imageService = imageService;
             _appSettings = monitor.CurrentValue;
         }
 
@@ -292,9 +289,8 @@ namespace DriverLicenseLearningSupport.Controllers
                 var passwordResetToken = (new JwtHelper(_appSettings)).GeneratePasswordResetToken(email);
                 // Url + Action + Controller 
                 //var forgotPasswordLink = Url.Action("ResetPassword", "Authentication", new { passwordResetToken, email = account.Email }, Request.Scheme);
-                var forgotPasswordLink = Url.Action("ResetPassword", "Authentication", 
-                    values: new { passwordResetToken, email = account.Email }, Request.Scheme, host:"localhost:3000");
-
+                var forgotPasswordLink = Url.Action("ResetPassword", "Authentication",
+                    values: new { passwordResetToken, email = account.Email }, Request.Scheme, host: "localhost:3000");
                 var message = new EmailMessage(new string[] { account.Email! }, "Forgot Password Link", forgotPasswordLink!);
                 _emailService.SendEmail(message);
                 
@@ -313,7 +309,7 @@ namespace DriverLicenseLearningSupport.Controllers
         [Route("authentication/reset-password")]
         public async Task<IActionResult> ResetPassword(string passwordResetToken, string email) 
         {
-             return Ok(new { passwordResetToken, email });
+            return Ok(new { passwordResetToken, email });
         }
 
         [HttpPost]

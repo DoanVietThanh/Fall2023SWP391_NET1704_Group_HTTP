@@ -34,6 +34,7 @@ CREATE TABLE [dbo].Member(
 	date_birth DATETIME,
 	phone NVARCHAR(15),
 	is_active BIT,
+	avatar_image NVARCHAR(100),
 	address_id NVARCHAR(255),
 	email nvarchar(255),
 	license_type_id INT

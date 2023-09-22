@@ -32,7 +32,7 @@ const Slider = () => {
         <div className='w-full relative'>
           <div className='slider-img'>
             <img
-              className='slider-bg'
+              className='slider-bg '
               src={`/img/bgSlider1.png`}
               alt='slider'
             />

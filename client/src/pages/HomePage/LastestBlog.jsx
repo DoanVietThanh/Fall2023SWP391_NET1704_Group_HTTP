@@ -48,9 +48,8 @@ const listBlog = [
 
 const LastestBlog = () => {
   return (
-    <div className='my-8'>
+    <div className='m-8'>
       <div className='my-8'>
-        <p className='capitalize text-[16px] font-medium'>Our Blogs</p>
         <div className='flex items-center justify-between'>
           <div className='text-[36px] font-medium'>Lastest Blogs</div>
           <button className='btn flex items-center justify-center gap-2'>
@@ -64,7 +63,7 @@ const LastestBlog = () => {
           modules={[Pagination, Autoplay]}
           loop={true}
           slidesPerView={3}
-          spaceBetween={80}
+          spaceBetween={40}
           autoplay={{
             delay: 2000,
             disableOnInteraction: false,
@@ -72,7 +71,7 @@ const LastestBlog = () => {
           pagination={{ clickable: true }}
         >
           {listBlog.map((blogItem, index) => (
-            <SwiperSlide>
+            <SwiperSlide key={blogItem.author}>
               <div className='border border-1 p-8'>
                 <div className='pb-4'>
                   <img
