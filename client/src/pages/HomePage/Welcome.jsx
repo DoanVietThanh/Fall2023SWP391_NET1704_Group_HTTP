@@ -8,7 +8,11 @@ const Welcome = () => {
       <div className='flex-1 border border-1 overflow-hidden'>
         <div className='relative w-full h-[460px]'>
           <div className='absolute rounded-lg top-0 w-full'>
-            <img src='/img/about2.png' alt='About' className='w-full' />
+            <img
+              src='/img/about2.png'
+              alt='About'
+              className='w-full object-cover'
+            />
           </div>
 
           <div className='absolute right-0'>

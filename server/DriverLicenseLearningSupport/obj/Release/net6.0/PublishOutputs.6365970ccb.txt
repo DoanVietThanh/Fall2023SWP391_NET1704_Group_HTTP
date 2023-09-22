@@ -8,6 +8,9 @@ D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\O
 D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\AWSSDK.Core.dll
 D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\AWSSDK.S3.dll
+D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\EPPlus.dll
+D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\EPPlus.Interfaces.dll
+D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\EPPlus.System.Drawing.dll
 D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\FluentValidation.dll
 D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\MailKit.dll
 D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\Microsoft.AspNetCore.Authentication.JwtBearer.dll
@@ -24,6 +27,7 @@ D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\O
 D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\Microsoft.IdentityModel.Protocols.dll
 D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\Microsoft.IdentityModel.Tokens.dll
+D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\Microsoft.IO.RecyclableMemoryStream.dll
 D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\Microsoft.OpenApi.dll
 D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\Microsoft.Win32.SystemEvents.dll
 D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\MimeKit.dll
@@ -37,6 +41,7 @@ D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\O
 D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\System.Drawing.Common.dll
 D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\System.IdentityModel.Tokens.Jwt.dll
 D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\System.Runtime.Caching.dll
+D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\System.Security.Cryptography.Pkcs.dll
 D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\System.Security.Cryptography.ProtectedData.dll
 D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\System.Security.Permissions.dll
 D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\System.Windows.Extensions.dll
@@ -60,10 +65,11 @@ D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\O
 D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
 D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
 D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
-D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\runtimes\win\lib\netcoreapp3.0\Microsoft.Win32.SystemEvents.dll
-D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\runtimes\unix\lib\netcoreapp3.0\System.Drawing.Common.dll
-D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll
+D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\runtimes\win\lib\net6.0\System.Drawing.Common.dll
 D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\runtimes\win\lib\netstandard2.0\System.Runtime.Caching.dll
+D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\runtimes\win\lib\net6.0\System.Security.Cryptography.Pkcs.dll
 D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
 D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll
 D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\DriverLicenseLearningSupport.deps.json

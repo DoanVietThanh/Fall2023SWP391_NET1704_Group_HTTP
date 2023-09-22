@@ -52,13 +52,15 @@ const Slider = () => {
               <button className='btn'>30% OFF</button>
             </div>
             <h1 className='font-bold text-[60px] leading-2 mt-8'>
-              Education Is Create Better
-              <span className={`text-[${theme.color.mainColor}]`}> Future</span>
+              Driving Lisence Learning
+              <span className={`text-[${theme.color.mainColor}]`}>
+                {' '}
+                Support
+              </span>
             </h1>
-            <p className='font-medium text-sky-950 text-[20px]'>
-              Education can be thought of as the transmission of the values and
-              accumulated knowledge of a society. In this sense, it is
-              equivalent.
+            <p className='font-medium text-sky-950 text-[24px]'>
+              Lot E2a-7, Street D1, D. D1, Long Thanh My, Thu Duc City, Ho Chi
+              Minh City 700000
             </p>
             <button className='btn w-[200px] flex items-center justify-center gap-4 mt-4'>
               Get Started <AiOutlineArrowRight size={20} />

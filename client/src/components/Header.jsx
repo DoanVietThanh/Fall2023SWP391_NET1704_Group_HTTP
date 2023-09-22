@@ -15,9 +15,18 @@ import {
   BsYoutube,
 } from 'react-icons/bs';
 import { useSelector } from 'react-redux';
+import { Button, Menu, MenuItem } from '@mui/material';
 
 const Header = () => {
   const { user } = useSelector((state) => state.auth);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   return (
     <div className={`bg-[${theme.color.mainColor}] border-b-2`}>
       <div
@@ -44,9 +53,43 @@ const Header = () => {
           <BsLinkedin />
           <BsYoutube />
           {user?.accountInfo ? (
-            <Link to={`/profile`} className='hover:text-rose-400'>
-              {`${user.accountInfo?.firstName} ${user.accountInfo?.lastName}`}
-            </Link>
+            <div>
+              <Button
+                id='basic-button'
+                aria-controls={open ? 'basic-menu' : undefined}
+                aria-haspopup='true'
+                aria-expanded={open ? 'true' : undefined}
+                onClick={handleClick}
+              >
+                <div className='flex justify-center items-center'>
+                  <div className='flex justify-center items-center'>
+                    <img
+                      src='https://scontent.fsgn5-10.fna.fbcdn.net/v/t39.30808-6/326718942_3475973552726762_6277150844361274430_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=a2f6c7&_nc_ohc=OAw9KYbwIYQAX9p4Tu9&_nc_ht=scontent.fsgn5-10.fna&oh=00_AfA86LZGE5THISarUceKKdD_G35FxPWHNR0dsFrdfrlnAQ&oe=6512B32C'
+                      alt='Avatar'
+                      className='rounded-full w-[40px] h-[40px] object-cover'
+                    />
+                  </div>
+                  <h2 className='text-white text-[20px] pl-2'>
+                    {`${user.accountInfo?.firstName} ${user.accountInfo?.lastName}`}
+                  </h2>
+                </div>
+              </Button>
+              <Menu
+                id='basic-menu'
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                  'aria-labelledby': 'basic-button',
+                }}
+              >
+                <MenuItem onClick={handleClose}>
+                  <Link to={`/profile`}>Profile</Link>
+                </MenuItem>
+                <MenuItem onClick={handleClose}>My account</MenuItem>
+                <MenuItem onClick={handleClose}>Logout</MenuItem>
+              </Menu>
+            </div>
           ) : (
             <Link to='/login'>
               <button className='btn-login ml-2 hover:opacity-80'>
