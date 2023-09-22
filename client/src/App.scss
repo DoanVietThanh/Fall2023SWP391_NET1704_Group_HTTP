@@ -20,6 +20,16 @@
   opacity: 0.9;
 }
 
+.btn-login {
+  font-size: 14px;
+  color: #0d5ef4;
+  font-weight: 700;
+  border-radius: 4px;
+  text-transform: uppercase;
+  padding: 12px 20px;
+  background-color: #fff;
+}
+
 /* Slider */
 .slider-img {
   position: relative;
@@ -28,7 +38,7 @@
 }
 
 .slider-bg {
-  height: 80vh;
+  height: 600px;
   width: 100%;
   opacity: 0.7;
 }

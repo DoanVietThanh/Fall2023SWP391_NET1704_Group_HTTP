@@ -1,19 +1,19 @@
 import * as React from 'react';
 import theme from '../theme';
+import images from '../assets/img';
+import { Link } from 'react-router-dom';
 import {
-  AiOutlineMail,
-  AiOutlineClockCircle,
-  AiOutlineYoutube,
   AiOutlineArrowRight,
+  AiOutlineClockCircle,
+  AiOutlineMail,
 } from 'react-icons/ai';
 import {
-  BsTelephone,
   BsFacebook,
-  BsTwitter,
   BsLinkedin,
+  BsTelephone,
+  BsTwitter,
   BsYoutube,
 } from 'react-icons/bs';
-import images from '../assets/img';
 
 const Header = () => {
   return (
@@ -35,10 +35,20 @@ const Header = () => {
         </div>
         <div className='flex justify-center items-center gap-4'>
           Follow us
-          <BsFacebook />
+          <Link to='https://www.facebook.com/fullstack2k3/'>
+            <BsFacebook />
+          </Link>
           <BsTwitter />
           <BsLinkedin />
           <BsYoutube />
+          <Link to='/login'>
+            <button className='btn-login ml-2 hover:opacity-80'>
+              Login / Register
+            </button>
+          </Link>
+          <Link to={`/profile`} className='hover:text-rose-400'>
+            ThanhDoan
+          </Link>
         </div>
       </div>
 
@@ -47,7 +57,9 @@ const Header = () => {
           <img className='h-[80px]' src={images.logo} alt='logo' />
         </div>
         <div className='flex gap-16 text-[16px] font-medium uppercase'>
-          <div>Home</div>
+          <Link to='/'>
+            <div>Home</div>
+          </Link>
           <div>Course</div>
           <div>Teachers</div>
           <div>Pages</div>

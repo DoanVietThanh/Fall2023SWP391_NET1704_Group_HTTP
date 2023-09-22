@@ -36,7 +36,6 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly ILicenseTypeService _licenseTypeService;
         private readonly IJobTitleService _jobTitleService;
         private readonly IRoleService _roleService;
-        private readonly IImageService _imageService;
         private readonly AppSettings _appSettings;
 
         public AuthenticationController(IAccountService accountService,
@@ -47,7 +46,6 @@ namespace DriverLicenseLearningSupport.Controllers
             ILicenseTypeService licenseTypeService,
             IJobTitleService jobTitleService,
             IRoleService roleService,
-            IImageService imageService,
             IOptionsMonitor<AppSettings> monitor)
         {
             _accountService = accountService;
@@ -58,7 +56,6 @@ namespace DriverLicenseLearningSupport.Controllers
             _licenseTypeService = licenseTypeService;
             _jobTitleService = jobTitleService;
             _roleService = roleService;
-            _imageService = imageService;
             _appSettings = monitor.CurrentValue;
         }
 
