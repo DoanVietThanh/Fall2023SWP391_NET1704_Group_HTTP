@@ -48,6 +48,15 @@ namespace DriverLicenseLearningSupport.Repositories
             // get by email
             var memberEntity = await _context.Members.Where(x => x.Email.Equals(email))
                                                      .FirstOrDefaultAsync();
+            // get license form (if any)
+            if (memberEntity is not null) 
+            {
+                memberEntity.LicenseForm = await _context.LicenseRegisterForms.Where(x => x.LicenseFormId == memberEntity.LicenseFormId)
+                                                                              .FirstOrDefaultAsync();
+                memberEntity.LicenseForm.RegisterFormStatus = await _context.LicenseRegisterFormStatuses
+                    .Where(x => x.RegisterFormStatusId == memberEntity.LicenseForm.RegisterFormStatusId)
+                    .FirstOrDefaultAsync();
+            }
             // map to model and return
             return _mapper.Map<MemberModel>(memberEntity);
         }
@@ -94,8 +103,7 @@ namespace DriverLicenseLearningSupport.Repositories
             // filter by name
             if (!String.IsNullOrEmpty(filters.Name))
             {
-                members = members.Where(x => x.FirstName.Contains(filters.Name) 
-                                || x.LastName.Contains(filters.Name));
+                members = members.Where(x => string.Concat(x.FirstName, " ", x.LastName).Contains(filters.Name));
             }
 
             // filter by birthdate

@@ -29,7 +29,7 @@ namespace DriverLicenseLearningSupport.Controllers
         // DateTime format
         public static string dateFormat = "yyyy-MM-dd";
         // Default avatar
-        public static string defaultAvatar = "1e4486a9-4f8e-45c1-b021-9be582701e3d";
+        public static string defaultAvatar = "a42e811d-d22b-4ede-b955-1437ebaeeb9d";
         // Dependency Injection Obj
         private readonly IAccountService _accountService;
         private readonly IAddressService _addressService;
@@ -37,6 +37,7 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly IStaffService _staffService;
         private readonly IEmailService _emailService;
         private readonly ILicenseTypeService _licenseTypeService;
+        private readonly ILicenseRegisterFormService _licenseRegisterFormService;
         private readonly IJobTitleService _jobTitleService;
         private readonly IRoleService _roleService;
         private readonly AppSettings _appSettings;
@@ -47,8 +48,10 @@ namespace DriverLicenseLearningSupport.Controllers
             IEmailService emailService,
             IStaffService staffService,
             ILicenseTypeService licenseTypeService,
+            ILicenseRegisterFormService licenseRegisterFormService,
             IJobTitleService jobTitleService,
             IRoleService roleService,
+            IImageService imageService,
             IOptionsMonitor<AppSettings> monitor)
         {
             _accountService = accountService;
@@ -57,6 +60,7 @@ namespace DriverLicenseLearningSupport.Controllers
             _staffService = staffService;
             _emailService = emailService;
             _licenseTypeService = licenseTypeService;
+            _licenseRegisterFormService = licenseRegisterFormService;
             _jobTitleService = jobTitleService;
             _roleService = roleService;
             _appSettings = monitor.CurrentValue;
@@ -72,7 +76,8 @@ namespace DriverLicenseLearningSupport.Controllers
             if (!result.IsValid) // cause validation errors
             {
                 // return BadRequest with ValidationProblemDetails
-                return BadRequest(new ErrorResponse { 
+                return BadRequest(new ErrorResponse
+                {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Errors = result.ToProblemDetails()
                 });
@@ -84,18 +89,20 @@ namespace DriverLicenseLearningSupport.Controllers
 
             if (account == null) // account not exists
                 // return Unauthorized 
-                return Unauthorized(new BaseResponse { 
+                return Unauthorized(new BaseResponse
+                {
                     StatusCode = StatusCodes.Status401Unauthorized,
                     Message = "Wrong username or password!",
                 });
 
             // get account info by role
             Object accountInfo;
-            if (account.Role.Name.Equals("Member")){
+            if (account.Role.Name.Equals("Member"))
+            {
                 // get member info
                 accountInfo = await _memberService.GetByEmailAsync(account.Email);
-            } 
-            else 
+            }
+            else
             {
                 // get staff (mentor/staff/admin) info
                 accountInfo = await _staffService.GetByEmailAsync(account.Email);
@@ -109,7 +116,7 @@ namespace DriverLicenseLearningSupport.Controllers
             {
                 StatusCode = StatusCodes.Status200OK,
                 Message = "Login Success",
-                Data = new 
+                Data = new
                 {
                     Token = token,
                     AccountInfo = accountInfo
@@ -132,19 +139,6 @@ namespace DriverLicenseLearningSupport.Controllers
         [HttpPost("authentication")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest reqObj)
         {
-            // validation
-            RegisterRequestValidator validator = new RegisterRequestValidator();
-            var result = await validator.ValidateAsync(reqObj);
-            if (!result.IsValid)
-            {
-                // return BadRequest with ValidationProblemDetails
-                return BadRequest(new BaseResponse
-                {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Data = result.ToProblemDetails()
-                });
-            }
-
             // check exist account
             var accountExist = await _accountService.GetByEmailAsync(reqObj.Username);
             if (accountExist != null)
@@ -155,35 +149,44 @@ namespace DriverLicenseLearningSupport.Controllers
                         StatusCode = StatusCodes.Status403Forbidden,
                         Message = "Email already exist!"
                     });
-            } 
+            }
 
             // generate account
             var account = reqObj.ToAccountModel();
-            await _accountService.CreateAsync(account);
+            // validate account model
+            var accountValidateResult = await account.ValidateAsync();
+            if (accountValidateResult is not null) return BadRequest(new ErrorResponse
+            {
+                StatusCode = StatusCodes.Status400BadRequest,
+                // ValidationProblemDetails <- errors[]
+                Errors = accountValidateResult
+            });
 
             // generate address
             var address = reqObj.ToAddressModel();
             var addressId = Guid.NewGuid().ToString();
-            address.AddressId = addressId; 
-            await _addressService.CreateAsync(address);
+            address.AddressId = addressId;
 
             // generate member
             var member = reqObj.ToMemberModel(dateFormat);
             var memberId = Guid.NewGuid().ToString();
             member.MemberId = memberId;
-            member.Email = reqObj.Username;
-            member.AddressId = addressId;
+            member.EmailNavigation = account;
+            member.Address = address;
             member.IsActive = true;
             member.AvatarImage = defaultAvatar;
+
+            // create member
             await _memberService.CreateAsync(member);
 
             // find created member
             member = await _memberService.GetAsync(Guid.Parse(memberId));
 
-            return Ok(new BaseResponse {
+            return Ok(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status200OK,
                 Message = "Register Success",
-                Data = new 
+                Data = new
                 {
                     Account = account,
                     Address = address,
@@ -204,9 +207,10 @@ namespace DriverLicenseLearningSupport.Controllers
             // get all account roles
             var roles = await _roleService.GetAllAsync();
 
-            return Ok(new BaseResponse { 
+            return Ok(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status200OK,
-                Data = new 
+                Data = new
                 {
                     LicenseTypes = licenseTypes,
                     JobTitles = jobTitles,
@@ -220,22 +224,9 @@ namespace DriverLicenseLearningSupport.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> StaffRegister([FromBody] StaffRegisterRequest reqObj)
         {
-            // validation
-            StaffRegisterRequestValidator validator = new StaffRegisterRequestValidator();
-            var result = await validator.ValidateAsync(reqObj);
-            if (!result.IsValid)
-            {
-                // return BadRequest with ValidationProblemDetails
-                return BadRequest(new ErrorResponse
-                {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Errors = result.ToProblemDetails()
-                });
-            }
-
             // check account exist
             var accountExist = await _accountService.GetByEmailAsync(reqObj.Username);
-            if(accountExist != null)
+            if (accountExist != null)
             {
                 return StatusCode(StatusCodes.Status403Forbidden,
                     new BaseResponse()
@@ -247,28 +238,37 @@ namespace DriverLicenseLearningSupport.Controllers
 
             //generate account
             var account = reqObj.ToAccountModel();
-            await _accountService.CreateAsync(account);
+            // validate account model
+            var accountValidateResult = await account.ValidateAsync();
+            if (accountValidateResult is not null) return BadRequest(new ErrorResponse
+            {
+                StatusCode = StatusCodes.Status400BadRequest,
+                // ValidationProblemDetails <- errors[]
+                Errors = accountValidateResult
+            });
 
             // generate address
             var address = reqObj.ToAddressModel();
             var addressId = Guid.NewGuid().ToString();
             address.AddressId = addressId;
-            await _addressService.CreateAsync(address);
 
             // generate staff
             var staff = reqObj.ToStaffModel(dateFormat);
             var staffId = Guid.NewGuid().ToString();
             staff.StaffId = staffId;
-            staff.Email = reqObj.Username;
-            staff.AddressId = addressId;
+            staff.EmailNavigation = account;
+            staff.Address = address;
             staff.IsActive = true;
             staff.AvatarImage = defaultAvatar;
+
+            // create staff
             await _staffService.CreateAsync(staff);
 
             // find created staff by id
             staff = await _staffService.GetAsync(Guid.Parse(staffId));
 
-            return Ok(new BaseResponse { 
+            return Ok(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status200OK,
                 Message = "Register Sucess",
                 Data = new
@@ -281,7 +281,7 @@ namespace DriverLicenseLearningSupport.Controllers
         [HttpPost]
         [Route("authentication/forgot-password")]
         [AllowAnonymous]
-        public async Task<IActionResult> ForgotPassword([Required] [EmailAddress] string email)
+        public async Task<IActionResult> ForgotPassword([Required][EmailAddress] string email)
         {
             var account = await _accountService.GetByEmailAsync(email);
             if (account != null)
@@ -293,13 +293,15 @@ namespace DriverLicenseLearningSupport.Controllers
                     values: new { passwordResetToken, email = account.Email }, Request.Scheme, host: "localhost:3000");
                 var message = new EmailMessage(new string[] { account.Email! }, "Forgot Password Link", forgotPasswordLink!);
                 _emailService.SendEmail(message);
-                
-                return Ok(new BaseResponse {
+
+                return Ok(new BaseResponse
+                {
                     StatusCode = StatusCodes.Status200OK,
                     Message = $"Password change request has been sent to Email {account.Email}. Please see email and access link"
                 });
             }
-            return BadRequest(new BaseResponse { 
+            return BadRequest(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status400BadRequest,
                 Message = "Unable to send email, please try again!"
             });
@@ -307,23 +309,25 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpGet]
         [Route("authentication/reset-password")]
-        public async Task<IActionResult> ResetPassword(string passwordResetToken, string email) 
+        public async Task<IActionResult> ResetPassword(string passwordResetToken, string email)
         {
             return Ok(new { passwordResetToken, email });
         }
 
         [HttpPost]
         [Route("authentication/reset-password")]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPassword resetPassword) 
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPassword resetPassword)
         {
             var account = await _accountService.GetByEmailAsync(resetPassword.Email);
-            if(account != null) 
+            if (account != null)
             {
                 var newPasswordEncrypt = PasswordHelper.ConvertToEncrypt(resetPassword.Password);
                 await _accountService.ResetPasswordAsync(resetPassword.Email, newPasswordEncrypt);
 
-                return Ok(new BaseResponse {
-                    StatusCode = StatusCodes.Status200OK, Message = "Password changed successfully"
+                return Ok(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = "Password changed successfully"
                 });
             }
             return StatusCode(StatusCodes.Status400BadRequest,

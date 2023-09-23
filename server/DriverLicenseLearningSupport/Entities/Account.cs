@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace DriverLicenseLearningSupport.Entities
 {
-
     public partial class Account
     {
         public Account()

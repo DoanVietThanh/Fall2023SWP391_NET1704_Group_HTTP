@@ -41,7 +41,7 @@ namespace DriverLicenseLearningSupport.Services
         }
 
 
-        public async Task<AccountModel>GetByEmailAsync(string email)
+        public async Task<AccountModel> GetByEmailAsync(string email)
         {
             var account = await _accountRepository.GetByEmailAsync(email);
             if (account != null)
