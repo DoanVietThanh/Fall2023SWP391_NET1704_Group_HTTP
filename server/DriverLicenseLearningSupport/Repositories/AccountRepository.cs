@@ -11,7 +11,7 @@ namespace DriverLicenseLearningSupport.Repositories
         private readonly DriverLicenseLearningSupportContext _context;
         private readonly IMapper _mapper;
 
-        public AccountRepository(DriverLicenseLearningSupportContext context, 
+        public AccountRepository(DriverLicenseLearningSupportContext context,
             IMapper mapper)
         {
             _context = context;
@@ -34,17 +34,17 @@ namespace DriverLicenseLearningSupport.Repositories
 
         public async Task<AccountModel> GetByUsernameAndPasswordAsync(string username, string password)
         {
-            var accountEntity = await _context.Accounts.Where(x => x.Email == username 
+            var accountEntity = await _context.Accounts.Where(x => x.Email == username
                                                             && x.Password == password)
                                                        .FirstOrDefaultAsync();
-            return _mapper.Map<AccountModel>(accountEntity);    
+            return _mapper.Map<AccountModel>(accountEntity);
         }
 
         public async Task<bool> ResetPasswordAsync(string email, string newPassword)
         {
             var account = await _context.Accounts.Where(x => x.Email == email)
                                                  .FirstOrDefaultAsync();
-            if(account != null) account.Password = newPassword;
+            if (account != null) account.Password = newPassword;
             return await _context.SaveChangesAsync() > 0 ? true : false;
         }
         public async Task<bool> DeleteAsync(string email)

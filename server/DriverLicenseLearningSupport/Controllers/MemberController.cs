@@ -6,6 +6,7 @@ using DriverLicenseLearningSupport.Models.Config;
 using DriverLicenseLearningSupport.Payloads.Filters;
 using DriverLicenseLearningSupport.Payloads.Request;
 using DriverLicenseLearningSupport.Payloads.Response;
+using DriverLicenseLearningSupport.Services;
 using DriverLicenseLearningSupport.Services.Impl;
 using DriverLicenseLearningSupport.Utils;
 using DriverLicenseLearningSupport.Validation;
@@ -17,6 +18,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using OfficeOpenXml;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Security.Principal;
 using System.Threading.Tasks;
@@ -29,15 +31,17 @@ namespace DriverLicenseLearningSupport.Controllers
         // DateTime format
         public static string dateFormat = "yyyy-MM-dd";
         // Default Avatar
-        public static string defaultAvatar = "1e4486a9-4f8e-45c1-b021-9be582701e3d";
+        public static string defaultAvatar = "a42e811d-d22b-4ede-b955-1437ebaeeb9d";
         // Dependency Injection
         private readonly IMemberService _memberService;
         private readonly ILicenseTypeService _licenseTypes;
-        private readonly IMemoryCache _memoryCache;
+        private readonly ILicenseRegisterFormService _licenseFormRegisterService;
         private readonly ILicenseTypeService _licenseTypeService;
         private readonly IAddressService _addressService;
         private readonly IAccountService _accountService;
         private readonly IRoleService _roleService;
+        private readonly IImageService _imageService;
+        private readonly IMemoryCache _memoryCache;
         private readonly AppSettings _appSettings;
         // cache key
         private readonly static string _cacheKey = "MembersCacheKey";
@@ -48,6 +52,8 @@ namespace DriverLicenseLearningSupport.Controllers
             IAddressService addressService,
             IAccountService accountService,
             IRoleService roleService,
+            ILicenseRegisterFormService licenseFormRegisterService,
+            IImageService imageService,
             IOptionsMonitor<AppSettings> monitor)
         {
             _memberService = memberService;
@@ -57,18 +63,23 @@ namespace DriverLicenseLearningSupport.Controllers
             _addressService = addressService;
             _accountService = accountService;
             _roleService = roleService;
+            _licenseFormRegisterService = licenseFormRegisterService;
+            _imageService = imageService;
             _appSettings = monitor.CurrentValue;
         }
 
+
+        // Member Management
         [HttpGet]
         [Route("members/add")]
         [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> AddMember() 
+        public async Task<IActionResult> AddMember()
         {
             // get all license types 
             var licenseTypes = await _licenseTypeService.GetAllAsync();
             // response
-            return Ok(new BaseResponse { 
+            return Ok(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status200OK,
                 Data = new { LicenseTypes = licenseTypes }
             });
@@ -77,7 +88,7 @@ namespace DriverLicenseLearningSupport.Controllers
         [HttpPost]
         [Route("members/add")]
         [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> AddMember([FromBody] MemberAddRequest reqObj) 
+        public async Task<IActionResult> AddMember([FromBody] MemberAddRequest reqObj)
         {
 
             // check email already exist
@@ -92,7 +103,8 @@ namespace DriverLicenseLearningSupport.Controllers
             var account = reqObj.ToAccountModel();
             // validate account model
             var accountValidateResult = await account.ValidateAsync();
-            if (accountValidateResult is not null) return BadRequest(new ErrorResponse { 
+            if (accountValidateResult is not null) return BadRequest(new ErrorResponse
+            {
                 StatusCode = StatusCodes.Status400BadRequest,
                 // ValidationProblemDetails <- errors[]
                 Errors = accountValidateResult
@@ -132,10 +144,10 @@ namespace DriverLicenseLearningSupport.Controllers
 
             // add member
             member = await _memberService.CreateAsync(member);
-            if (member is not null) 
+            if (member is not null)
                 // get member license type desc
                 member.LicenseType = await _licenseTypes.GetAsync(Convert.ToInt32(member.LicenseTypeId));
-            
+
 
             return new ObjectResult(new { Member = member }) { StatusCode = StatusCodes.Status201Created };
         }
@@ -148,7 +160,8 @@ namespace DriverLicenseLearningSupport.Controllers
             // get member by id
             var member = await _memberService.GetAsync(id);
             // not found nay member match id
-            if(member is null) return NotFound(new BaseResponse { 
+            if (member is null) return NotFound(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status404NotFound,
                 Message = "Not found any member match id"
             });
@@ -215,7 +228,7 @@ namespace DriverLicenseLearningSupport.Controllers
         [HttpGet]
         [Route("members/{page:int}/filters")]
         [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> GetAllMemberByFilter([FromQuery] MemberFilter filters, [FromRoute] int page = 1) 
+        public async Task<IActionResult> GetAllMemberByFilter([FromQuery] MemberFilter filters, [FromRoute] int page = 1)
         {
             // get all members
             var members = await _memberService.GetAllByFilterAsync(filters);
@@ -225,15 +238,17 @@ namespace DriverLicenseLearningSupport.Controllers
             var result = PaginatedList<MemberModel>.CreateByIEnumerable(members, page, pageSize);
 
             // not found any members
-            if (result.Count == 0) return NotFound(new BaseResponse { 
+            if (result.Count == 0) return NotFound(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status400BadRequest,
                 Message = "Not found any members"
             });
 
             // return members, totalPage, pageIndex
-            return Ok(new BaseResponse { 
+            return Ok(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status200OK,
-                Data = new 
+                Data = new
                 {
                     Members = result,
                     TotalPage = result.TotalPage,
@@ -261,7 +276,8 @@ namespace DriverLicenseLearningSupport.Controllers
             // delete address
             await _addressService.DeleteAsync(Guid.Parse(member.AddressId));
 
-            return Ok(new BaseResponse { 
+            return Ok(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status200OK,
                 Message = $"Delete member {id} successfully"
             });
@@ -284,7 +300,7 @@ namespace DriverLicenseLearningSupport.Controllers
             });
 
             // return data response <- found member
-            return Ok(new BaseResponse 
+            return Ok(new BaseResponse
             {
                 StatusCode = StatusCodes.Status200OK,
                 Data = new
@@ -293,39 +309,36 @@ namespace DriverLicenseLearningSupport.Controllers
                     LicenseTypes = licenseTypes
                 }
             });
-        }       
- 
+        }
+
         [HttpPut]
         [Route("members/{id:Guid}/update")]
         [Authorize]
         public async Task<IActionResult> UpdateMember([FromRoute] Guid id, [FromBody] MemberUpdateRequest reqObj)
         {
-            // validator
-            var validator = new MemberUpdateRequestValidator();
-            var result = await validator.ValidateAsync(reqObj);
-
-            if (!result.IsValid) // Cause errors   
-            {
-                // return ErrorResponse with ValidationProblemDetails <- error[]
-                return BadRequest(new ErrorResponse
-                {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Errors = result.ToProblemDetails()
-                });
-            }
             // convert to member model <- extension method
             var member = reqObj.ToMemberModel(dateFormat);
+            // validator
+            var errors = await member.ValidateAsync();
+            if (errors is not null) return BadRequest(new ErrorResponse
+            {
+                StatusCode = StatusCodes.Status400BadRequest,
+                // ValidationProblemDetails <- errors[]
+                Errors = errors
+            });
             // update status
             var isSucess = await _memberService.UpdateAsync(id, member);
 
             // update failed <- not found 
-            if (!isSucess) return NotFound(new BaseResponse { 
+            if (!isSucess) return NotFound(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status404NotFound,
                 Message = $"Not foud any member match id {id}"
             });
 
             // update success
-            return Ok(new BaseResponse { 
+            return Ok(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status200OK,
                 Data = $"Update member {id} sucessfully"
             });
@@ -334,7 +347,7 @@ namespace DriverLicenseLearningSupport.Controllers
         [HttpGet]
         [Route("members/export-excel")]
         [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> ExportToExcel([FromQuery] MemberFilter filters)  
+        public async Task<IActionResult> ExportToExcel([FromQuery] MemberFilter filters)
         {
             // Get courses by filters
             var members = await _memberService.GetAllByFilterAsync(filters);
@@ -343,17 +356,17 @@ namespace DriverLicenseLearningSupport.Controllers
             // Create stream contain file
             var stream = new MemoryStream();
 
-            using(var xlPackgage = new ExcelPackage(stream)) 
+            using (var xlPackgage = new ExcelPackage(stream))
             {
                 // Define a worksheet
                 var worksheet = xlPackgage.Workbook.Worksheets.Add("Members");
-                
+
                 // First Row
                 var startRow = 3;
 
                 // Worksheet details
                 worksheet.Cells["A1"].Value = "List of Members";
-                using(var r = worksheet.Cells["A1:C1"])
+                using (var r = worksheet.Cells["A1:C1"])
                 {
                     // Merge next 2 col
                     r.Merge = true;
@@ -372,7 +385,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 worksheet.Cells["J2"].Value = "License Type";
                 // Table rows
                 var row = startRow;
-                foreach(var m in members)
+                foreach (var m in members)
                 {
                     // Get member address
                     m.Address = await _addressService.GetAsync(Guid.Parse(m.AddressId));
@@ -406,11 +419,11 @@ namespace DriverLicenseLearningSupport.Controllers
         [HttpPost]
         [Route("members/import-excel")]
         [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> ImportToExcel(IFormFile file) 
+        public async Task<IActionResult> ImportToExcel(IFormFile file)
         {
-            if(ModelState.IsValid) 
+            if (ModelState.IsValid)
             {
-                if(file?.Length > 0) 
+                if (file?.Length > 0)
                 {
                     // Starting import to excel
                     // Create file stream
@@ -523,7 +536,7 @@ namespace DriverLicenseLearningSupport.Controllers
                         var totalMembers = createdMembers.Count();
 
                         // clear cache
-                        if(_memoryCache.Get(_cacheKey) is not null)
+                        if (_memoryCache.Get(_cacheKey) is not null)
                             _memoryCache.Remove(_cacheKey);
 
                         // Import Sucessfully
@@ -537,22 +550,90 @@ namespace DriverLicenseLearningSupport.Controllers
                 }
             }
             // Import Failed
-            return BadRequest(new BaseResponse { 
+            return BadRequest(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status400BadRequest,
                 Message = "Import excel file failed."
             });
         }
 
+        //[HttpGet]
+        //[Route("members/clear-cache")]
+        //[Authorize(Roles = "Admin,Staff")]
+        //public async Task<IActionResult> ClearCache()
+        //{
+        //    // clear cache
+        //    if (_memoryCache.Get(_cacheKey) is not null)
+        //        _memoryCache.Remove(_cacheKey);
+        //    return Ok();
+        //}
+
+
+        // License Register Form
         [HttpGet]
-        [Route("members/clear-cache")]
-        [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> ClearCache()
+        [Route("members/license-form")]
+        public async Task<IActionResult> LicenseFormRegister()
         {
-            // clear cache
-            if (_memoryCache.Get(_cacheKey) is not null)
-                _memoryCache.Remove(_cacheKey);
-            return Ok();
+            var licenseTypes = await _licenseTypes.GetAllAsync();
+
+            if (licenseTypes is null) return StatusCode(StatusCodes.Status500InternalServerError, new BaseResponse
+            {
+                StatusCode = StatusCodes.Status500InternalServerError,
+                Message = "Something went wrong"
+            });
+
+            return Ok(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Data = licenseTypes
+            });
         }
 
+        [HttpPost]
+        [Route("members/license-form")]
+        public async Task<IActionResult> LicenseFormRegister([FromForm] LicenseRegisterFormRequest reqObj)
+        {
+            // validator 
+            var validator = new Validation.LicenseRegisterFormValidator();
+            // validate fields
+            var result = await validator.ValidateAsync(reqObj);
+            if (!result.IsValid) // cause errors
+            {
+                // generate ValidationProblemDetails and return error resp
+                return BadRequest(new ErrorResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Errors = result.ToProblemDetails()
+                });
+            }
+
+            // check already exist
+
+            // generate image id
+            var imageId = Guid.NewGuid();
+            // upload image
+            await _imageService.UploadImageAsync(imageId, reqObj.Image);
+
+            // generate identity image id
+            var identityImage = Guid.NewGuid();
+            // upload image
+            await _imageService.UploadImageAsync(identityImage, reqObj.IdentityImage);
+
+            // generate health certification image id
+            // upload image
+            var healthCerImage = Guid.NewGuid();
+            await _imageService.UploadImageAsync(healthCerImage, reqObj.HealthCertificationImage);
+
+            // generate license form register
+            var licenseRegisterFormModel = reqObj.ToLicenseFormRegisterModel();
+
+            // create license form register
+            var lfRegister = await _licenseFormRegisterService.CreateAsync(licenseRegisterFormModel, reqObj.MemberId);
+
+            if (lfRegister is null) return StatusCode(
+                StatusCodes.Status500InternalServerError, "Something went wrong");
+
+            return new ObjectResult(new { LicenseRegisterForm = lfRegister }) { StatusCode = StatusCodes.Status201Created };
+        }
     }
 }

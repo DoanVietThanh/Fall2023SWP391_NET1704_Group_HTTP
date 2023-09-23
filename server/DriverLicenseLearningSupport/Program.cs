@@ -25,7 +25,7 @@ builder.Services.AddSwaggerGen();
 
 // Add DbContext
 var connectionStr = builder.Configuration.GetConnectionString("ConnStr");
-builder.Services.AddDbContext<DriverLicenseLearningSupportContext>(options => 
+builder.Services.AddDbContext<DriverLicenseLearningSupportContext>(options =>
     options.UseSqlServer(connectionStr)
 );
 
@@ -47,7 +47,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     // Sign in token 
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(secretKeyBytes)
-                };                    
+                };
             });
 
 // Add Services
@@ -59,6 +59,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<ILicenseTypeService, LicenseTypeService>();
 builder.Services.AddScoped<IJobTitleService, JobTitleService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<ILicenseRegisterFormService, LicenseRegisterFormService>();
 
 // Add Repositories
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
@@ -68,6 +69,7 @@ builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<ILicenseTypeRepository, LicenseTypeRepository>();
 builder.Services.AddScoped<IJobTitleRepository, JobTitleRepository>();
+builder.Services.AddScoped<ILicenseRegisterFormRepository, LicenseRegisterFormRepository>();
 
 
 // Add Email Configs
@@ -84,7 +86,7 @@ builder.Services.AddSingleton(mapper);
 builder.Services.AddMvc();
 
 // Add Config for required Email
-builder.Services.Configure<IdentityOptions>(opts => 
+builder.Services.Configure<IdentityOptions>(opts =>
     opts.SignIn.RequireConfirmedEmail = true);
 builder.Services.Configure<DataProtectionTokenProviderOptions>(opts =>
     // token valid for next 10 hours
@@ -103,8 +105,8 @@ builder.Services.AddCors(p => p.AddPolicy("Cors", policy =>
 //builder.Services.AddAWSLambdaHosting(LambdaEventSource.RestApi);
 
 // Amazon S3
-//builder.Services.AddSingleton<IAmazonS3, AmazonS3Client>();
-//builder.Services.AddSingleton<IImageService, ImageService>();
+builder.Services.AddSingleton<IAmazonS3, AmazonS3Client>();
+builder.Services.AddSingleton<IImageService, ImageService>();
 
 // Middleware Exception
 //builder.Services.AddTransient<ExceptionMiddleware>();

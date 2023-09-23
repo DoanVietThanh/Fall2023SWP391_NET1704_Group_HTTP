@@ -1,16 +1,9 @@
 ﻿using DriverLicenseLearningSupport.Entities;
-using System;
-using System.Collections.Generic;
 
-namespace DriverLicenseLearningSupport.Entities
+namespace DriverLicenseLearningSupport.Models
 {
-    public partial class LicenseRegisterForm
+    public class LicenseRegisterFormModel
     {
-        public LicenseRegisterForm()
-        {
-            Members = new HashSet<Member>();
-        }
-
         public int LicenseFormId { get; set; }
         public string LicenseFormDesc { get; set; }
         public string Image { get; set; }
@@ -20,8 +13,7 @@ namespace DriverLicenseLearningSupport.Entities
         public int? RegisterFormStatusId { get; set; }
         public int? LicenseTypeId { get; set; }
 
-        public virtual LicenseType LicenseType { get; set; }
-        public virtual LicenseRegisterFormStatus RegisterFormStatus { get; set; }
-        public virtual ICollection<Member> Members { get; set; }
+        public virtual LicenseTypeModel LicenseType { get; set; }
+        public virtual LicenseRegisterFormStatusModel RegisterFormStatus { get; set; }
     }
 }

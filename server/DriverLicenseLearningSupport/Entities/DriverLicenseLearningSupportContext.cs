@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection.Emit;
+using DriverLicenseLearningSupport.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -35,13 +37,12 @@ namespace DriverLicenseLearningSupport.Entities
         public virtual DbSet<LicenseType> LicenseTypes { get; set; }
         public virtual DbSet<Member> Members { get; set; }
         public virtual DbSet<PaymentType> PaymentTypes { get; set; }
-        public virtual DbSet<PracticeExam> PracticeExams { get; set; }
+        public virtual DbSet<Question> Questions { get; set; }
         public virtual DbSet<QuestionAnswer> QuestionAnswers { get; set; }
-        public virtual DbSet<QuestionBank> QuestionBanks { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<RollCallBook> RollCallBooks { get; set; }
-        public virtual DbSet<StatisticalReport> StatisticalReports { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
+        public virtual DbSet<TheoryExam> TheoryExams { get; set; }
         public virtual DbSet<Vehicle> Vehicles { get; set; }
         public virtual DbSet<VehicleType> VehicleTypes { get; set; }
         public virtual DbSet<Staff> Staffs { get; set; }
@@ -51,7 +52,7 @@ namespace DriverLicenseLearningSupport.Entities
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=ASUSG513;Initial Catalog=DriverLicenseLearningSupport;uid=sa;password=12345");
+                optionsBuilder.UseSqlServer("Data Source=ASUSG513;Initial Catalog=DriverLicenseLearningSupport;User ID=sa;password=12345");
             }
         }
 
@@ -60,7 +61,7 @@ namespace DriverLicenseLearningSupport.Entities
             modelBuilder.Entity<Account>(entity =>
             {
                 entity.HasKey(e => e.Email)
-                    .HasName("PK__Account__AB6E6165C7635D88");
+                    .HasName("PK__Account__AB6E61654B826F2E");
 
                 entity.ToTable("Account");
 
@@ -68,14 +69,14 @@ namespace DriverLicenseLearningSupport.Entities
                     .HasMaxLength(255)
                     .HasColumnName("email");
 
+                entity.Property(e => e.IsActive).HasColumnName("is_active");
+
                 entity.Property(e => e.Password)
                     .IsRequired()
                     .HasMaxLength(255)
                     .HasColumnName("password");
 
                 entity.Property(e => e.RoleId).HasColumnName("role_id");
-
-                entity.Property(e => e.IsActive).HasColumnName("is_active");
 
                 entity.HasOne(d => d.Role)
                     .WithMany(p => p.Accounts)
@@ -145,7 +146,7 @@ namespace DriverLicenseLearningSupport.Entities
                         r => r.HasOne<Blog>().WithMany().HasForeignKey("BlogId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_BlogTag_BlogId"),
                         j =>
                         {
-                            j.HasKey("BlogId", "TagId").HasName("PK__Blog_Tag__5D5CC0030A761718");
+                            j.HasKey("BlogId", "TagId").HasName("PK__Blog_Tag__5D5CC00327B18D52");
 
                             j.ToTable("Blog_Tag");
 
@@ -214,7 +215,7 @@ namespace DriverLicenseLearningSupport.Entities
                         r => r.HasOne<Course>().WithMany().HasForeignKey("CourseId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_CourseCurriculum_CourseId"),
                         j =>
                         {
-                            j.HasKey("CourseId", "CurriculumId").HasName("PK__Course_C__FE6B74697BF9D46E");
+                            j.HasKey("CourseId", "CurriculumId").HasName("PK__Course_C__FE6B74698DF86E95");
 
                             j.ToTable("Course_Curriculum");
 
@@ -362,8 +363,8 @@ namespace DriverLicenseLearningSupport.Entities
 
             modelBuilder.Entity<ExamGrade>(entity =>
             {
-                entity.HasKey(e => new { e.MemberId, e.PracticeExamId })
-                    .HasName("PK__Exam_Gra__870D3ACB636CFC4B");
+                entity.HasKey(e => new { e.MemberId, e.TheoryExamId })
+                    .HasName("PK__Exam_Gra__708CEAE7AED483F1");
 
                 entity.ToTable("Exam_Grade");
 
@@ -371,7 +372,7 @@ namespace DriverLicenseLearningSupport.Entities
                     .HasMaxLength(255)
                     .HasColumnName("member_id");
 
-                entity.Property(e => e.PracticeExamId).HasColumnName("practice_exam_id");
+                entity.Property(e => e.TheoryExamId).HasColumnName("theory_exam_id");
 
                 entity.Property(e => e.Email)
                     .HasMaxLength(255)
@@ -389,23 +390,23 @@ namespace DriverLicenseLearningSupport.Entities
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ExamGrade_MemberId");
 
-                entity.HasOne(d => d.PracticeExam)
-                    .WithMany(p => p.ExamGrades)
-                    .HasForeignKey(d => d.PracticeExamId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ExamGrade_PracticeExamId");
-
                 entity.HasOne(d => d.Question)
                     .WithMany(p => p.ExamGrades)
                     .HasForeignKey(d => d.QuestionId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ExamGrade_QuestionId");
+
+                entity.HasOne(d => d.TheoryExam)
+                    .WithMany(p => p.ExamGrades)
+                    .HasForeignKey(d => d.TheoryExamId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ExamGrade_TheoryExamId");
             });
 
             modelBuilder.Entity<ExamHistory>(entity =>
             {
-                entity.HasKey(e => new { e.MemberId, e.PracticeExamId })
-                    .HasName("PK__Exam_His__870D3ACB6108E8F5");
+                entity.HasKey(e => new { e.MemberId, e.TheoryExamId })
+                    .HasName("PK__Exam_His__708CEAE7CB394EC0");
 
                 entity.ToTable("Exam_History");
 
@@ -413,7 +414,7 @@ namespace DriverLicenseLearningSupport.Entities
                     .HasMaxLength(255)
                     .HasColumnName("member_id");
 
-                entity.Property(e => e.PracticeExamId).HasColumnName("practice_exam_id");
+                entity.Property(e => e.TheoryExamId).HasColumnName("theory_exam_id");
 
                 entity.Property(e => e.IsPassed).HasColumnName("is_passed");
 
@@ -433,11 +434,11 @@ namespace DriverLicenseLearningSupport.Entities
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ExamHistory_MemberId");
 
-                entity.HasOne(d => d.PracticeExam)
+                entity.HasOne(d => d.TheoryExam)
                     .WithMany(p => p.ExamHistories)
-                    .HasForeignKey(d => d.PracticeExamId)
+                    .HasForeignKey(d => d.TheoryExamId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_History_PracticeExamId");
+                    .HasConstraintName("FK_ExamHistory_TheoryExamId");
             });
 
             modelBuilder.Entity<FeedBack>(entity =>
@@ -515,7 +516,7 @@ namespace DriverLicenseLearningSupport.Entities
             modelBuilder.Entity<LicenseRegisterForm>(entity =>
             {
                 entity.HasKey(e => e.LicenseFormId)
-                    .HasName("PK__License___CBEF3B14EB4B032E");
+                    .HasName("PK__License___CBEF3B140D7D53D3");
 
                 entity.ToTable("License_Register_Form");
 
@@ -543,21 +544,12 @@ namespace DriverLicenseLearningSupport.Entities
 
                 entity.Property(e => e.LicenseTypeId).HasColumnName("license_type_id");
 
-                entity.Property(e => e.MemberId)
-                    .HasMaxLength(255)
-                    .HasColumnName("member_id");
-
                 entity.Property(e => e.RegisterFormStatusId).HasColumnName("register_form_status_id");
 
                 entity.HasOne(d => d.LicenseType)
                     .WithMany(p => p.LicenseRegisterForms)
                     .HasForeignKey(d => d.LicenseTypeId)
                     .HasConstraintName("FK_LicenseTypeId");
-
-                entity.HasOne(d => d.Member)
-                    .WithMany(p => p.LicenseRegisterForms)
-                    .HasForeignKey(d => d.MemberId)
-                    .HasConstraintName("FK_MemberId");
 
                 entity.HasOne(d => d.RegisterFormStatus)
                     .WithMany(p => p.LicenseRegisterForms)
@@ -568,7 +560,7 @@ namespace DriverLicenseLearningSupport.Entities
             modelBuilder.Entity<LicenseRegisterFormStatus>(entity =>
             {
                 entity.HasKey(e => e.RegisterFormStatusId)
-                    .HasName("PK__License___BD2B9B64245822C8");
+                    .HasName("PK__License___BD2B9B645A2A7D3E");
 
                 entity.ToTable("License_Register_Form_Status");
 
@@ -603,6 +595,10 @@ namespace DriverLicenseLearningSupport.Entities
                     .HasMaxLength(255)
                     .HasColumnName("address_id");
 
+                entity.Property(e => e.AvatarImage)
+                    .HasMaxLength(100)
+                    .HasColumnName("avatar_image");
+
                 entity.Property(e => e.DateBirth)
                     .HasColumnType("datetime")
                     .HasColumnName("date_birth");
@@ -623,11 +619,9 @@ namespace DriverLicenseLearningSupport.Entities
                     .HasMaxLength(155)
                     .HasColumnName("last_name");
 
-                entity.Property(e => e.LicenseTypeId).HasColumnName("license_type_id");
+                entity.Property(e => e.LicenseFormId).HasColumnName("license_form_id");
 
-                entity.Property(e => e.AvatarImage)
-                    .HasMaxLength(100)
-                    .HasColumnName("avatar_image");
+                entity.Property(e => e.LicenseTypeId).HasColumnName("license_type_id");
 
                 entity.Property(e => e.Phone)
                     .HasMaxLength(15)
@@ -642,6 +636,11 @@ namespace DriverLicenseLearningSupport.Entities
                     .WithMany(p => p.Members)
                     .HasForeignKey(d => d.Email)
                     .HasConstraintName("FK_Member_Email");
+
+                entity.HasOne(d => d.LicenseForm)
+                    .WithMany(p => p.Members)
+                    .HasForeignKey(d => d.LicenseFormId)
+                    .HasConstraintName("FK_Member_LicenseRegisterFormId");
 
                 entity.HasOne(d => d.LicenseType)
                     .WithMany(p => p.Members)
@@ -660,24 +659,43 @@ namespace DriverLicenseLearningSupport.Entities
                     .HasColumnName("payment_type_desc");
             });
 
-            modelBuilder.Entity<PracticeExam>(entity =>
+            modelBuilder.Entity<Question>(entity =>
             {
-                entity.ToTable("Practice_Exam");
+                entity.ToTable("Question");
 
-                entity.Property(e => e.PracticeExamId).HasColumnName("practice_exam_id");
+                entity.Property(e => e.QuestionId).HasColumnName("question_id");
+
+                entity.Property(e => e.Image)
+                    .HasMaxLength(100)
+                    .HasColumnName("image");
+
+                entity.Property(e => e.IsParalysis).HasColumnName("is_Paralysis");
 
                 entity.Property(e => e.LicenseTypeId).HasColumnName("license_type_id");
 
-                entity.Property(e => e.TotalAnswerRequired).HasColumnName("total_answer_required");
-
-                entity.Property(e => e.TotalQuestion).HasColumnName("total_question");
-
-                entity.Property(e => e.TotalTime).HasColumnName("total_time");
+                entity.Property(e => e.QuestionAnswerDesc).HasColumnName("question_answer_desc");
 
                 entity.HasOne(d => d.LicenseType)
-                    .WithMany(p => p.PracticeExams)
+                    .WithMany(p => p.Questions)
                     .HasForeignKey(d => d.LicenseTypeId)
-                    .HasConstraintName("FK_PracticeExam_LicenseTypeId");
+                    .HasConstraintName("FK_Question_LicenseTypeId");
+
+                entity.HasMany(d => d.TheoryExams)
+                    .WithMany(p => p.Questions)
+                    .UsingEntity<Dictionary<string, object>>(
+                        "ExamQuestion",
+                        l => l.HasOne<TheoryExam>().WithMany().HasForeignKey("TheoryExamId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_ExamQuestion_TheoryExamId"),
+                        r => r.HasOne<Question>().WithMany().HasForeignKey("QuestionId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_ExamQuestion_QuestionId"),
+                        j =>
+                        {
+                            j.HasKey("QuestionId", "TheoryExamId").HasName("PK__Exam_Que__ECD57A9A06C3BC52");
+
+                            j.ToTable("Exam_Question");
+
+                            j.IndexerProperty<int>("QuestionId").HasColumnName("question_id");
+
+                            j.IndexerProperty<int>("TheoryExamId").HasColumnName("theory_exam_id");
+                        });
             });
 
             modelBuilder.Entity<QuestionAnswer>(entity =>
@@ -696,48 +714,6 @@ namespace DriverLicenseLearningSupport.Entities
                     .WithMany(p => p.QuestionAnswers)
                     .HasForeignKey(d => d.QuestionId)
                     .HasConstraintName("FK_QuestionAnswer_QuestionId");
-            });
-
-            modelBuilder.Entity<QuestionBank>(entity =>
-            {
-                entity.HasKey(e => e.QuestionId)
-                    .HasName("PK__Question__2EC21549596626B6");
-
-                entity.ToTable("Question_Bank");
-
-                entity.Property(e => e.QuestionId).HasColumnName("question_id");
-
-                entity.Property(e => e.Image)
-                    .HasMaxLength(100)
-                    .HasColumnName("image");
-
-                entity.Property(e => e.IsParalysis).HasColumnName("is_Paralysis");
-
-                entity.Property(e => e.LicenseTypeId).HasColumnName("license_type_id");
-
-                entity.Property(e => e.QuestionAnswerDesc).HasColumnName("question_answer_desc");
-
-                entity.HasOne(d => d.LicenseType)
-                    .WithMany(p => p.QuestionBanks)
-                    .HasForeignKey(d => d.LicenseTypeId)
-                    .HasConstraintName("FK_QuestionBank_LicenseTypeId");
-
-                entity.HasMany(d => d.PracticeExams)
-                    .WithMany(p => p.Questions)
-                    .UsingEntity<Dictionary<string, object>>(
-                        "ExamQuestion",
-                        l => l.HasOne<PracticeExam>().WithMany().HasForeignKey("PracticeExamId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_ExamQuestion_PracticeExamId"),
-                        r => r.HasOne<QuestionBank>().WithMany().HasForeignKey("QuestionId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_ExamQuestion_QuestionId"),
-                        j =>
-                        {
-                            j.HasKey("QuestionId", "PracticeExamId").HasName("PK__Exam_Que__1B54AAB65F5D805A");
-
-                            j.ToTable("Exam_Question");
-
-                            j.IndexerProperty<int>("QuestionId").HasColumnName("question_id");
-
-                            j.IndexerProperty<int>("PracticeExamId").HasColumnName("practice_exam_id");
-                        });
             });
 
             modelBuilder.Entity<Role>(entity =>
@@ -783,30 +759,6 @@ namespace DriverLicenseLearningSupport.Entities
                     .HasConstraintName("FK_RollCallBook_MemberId");
             });
 
-            modelBuilder.Entity<StatisticalReport>(entity =>
-            {
-                entity.HasKey(e => e.ReportId)
-                    .HasName("PK__Statisti__779B7C58578556A3");
-
-                entity.ToTable("Statistical_Report");
-
-                entity.Property(e => e.ReportId).HasColumnName("report_id");
-
-                entity.Property(e => e.TotalActiveMember).HasColumnName("total_active_member");
-
-                entity.Property(e => e.TotalBlog).HasColumnName("total_blog");
-
-                entity.Property(e => e.TotalCourse).HasColumnName("total_course");
-
-                entity.Property(e => e.TotalCourseSchedule).HasColumnName("total_course_schedule");
-
-                entity.Property(e => e.TotalMember).HasColumnName("total_member");
-
-                entity.Property(e => e.TotalMentor).HasColumnName("total_mentor");
-
-                entity.Property(e => e.TotalRevenue).HasColumnName("total_revenue");
-            });
-
             modelBuilder.Entity<Tag>(entity =>
             {
                 entity.ToTable("Tag");
@@ -816,6 +768,26 @@ namespace DriverLicenseLearningSupport.Entities
                 entity.Property(e => e.TagName)
                     .HasMaxLength(155)
                     .HasColumnName("tag_name");
+            });
+
+            modelBuilder.Entity<TheoryExam>(entity =>
+            {
+                entity.ToTable("Theory_Exam");
+
+                entity.Property(e => e.TheoryExamId).HasColumnName("theory_exam_id");
+
+                entity.Property(e => e.LicenseTypeId).HasColumnName("license_type_id");
+
+                entity.Property(e => e.TotalAnswerRequired).HasColumnName("total_answer_required");
+
+                entity.Property(e => e.TotalQuestion).HasColumnName("total_question");
+
+                entity.Property(e => e.TotalTime).HasColumnName("total_time");
+
+                entity.HasOne(d => d.LicenseType)
+                    .WithMany(p => p.TheoryExams)
+                    .HasForeignKey(d => d.LicenseTypeId)
+                    .HasConstraintName("FK_TheoryExam_LicenseTypeId");
             });
 
             modelBuilder.Entity<Vehicle>(entity =>

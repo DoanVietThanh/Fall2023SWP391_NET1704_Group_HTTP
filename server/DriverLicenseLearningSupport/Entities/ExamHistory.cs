@@ -6,7 +6,7 @@ namespace DriverLicenseLearningSupport.Entities
     public partial class ExamHistory
     {
         public string MemberId { get; set; }
-        public int PracticeExamId { get; set; }
+        public int TheoryExamId { get; set; }
         public int? TotalGrade { get; set; }
         public int? TotalRightAnswer { get; set; }
         public int? TotalQuestion { get; set; }
@@ -15,6 +15,6 @@ namespace DriverLicenseLearningSupport.Entities
         public bool? IsPassed { get; set; }
 
         public virtual Member Member { get; set; }
-        public virtual PracticeExam PracticeExam { get; set; }
+        public virtual TheoryExam TheoryExam { get; set; }
     }
 }

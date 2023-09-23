@@ -10,6 +10,6 @@ namespace DriverLicenseLearningSupport.Entities
         public bool? IsTrue { get; set; }
         public int? QuestionId { get; set; }
 
-        public virtual QuestionBank Question { get; set; }
+        public virtual Question Question { get; set; }
     }
 }

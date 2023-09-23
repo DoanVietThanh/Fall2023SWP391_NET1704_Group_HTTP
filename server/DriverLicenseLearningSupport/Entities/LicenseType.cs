@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Amazon.S3.Model;
+using System;
 using System.Collections.Generic;
 
 namespace DriverLicenseLearningSupport.Entities
@@ -9,8 +10,8 @@ namespace DriverLicenseLearningSupport.Entities
         {
             LicenseRegisterForms = new HashSet<LicenseRegisterForm>();
             Members = new HashSet<Member>();
-            PracticeExams = new HashSet<PracticeExam>();
-            QuestionBanks = new HashSet<QuestionBank>();
+            Questions = new HashSet<Question>();
+            TheoryExams = new HashSet<TheoryExam>();
             Staffs = new HashSet<Staff>();
         }
 
@@ -19,8 +20,8 @@ namespace DriverLicenseLearningSupport.Entities
 
         public virtual ICollection<LicenseRegisterForm> LicenseRegisterForms { get; set; }
         public virtual ICollection<Member> Members { get; set; }
-        public virtual ICollection<PracticeExam> PracticeExams { get; set; }
-        public virtual ICollection<QuestionBank> QuestionBanks { get; set; }
+        public virtual ICollection<Question> Questions { get; set; }
+        public virtual ICollection<TheoryExam> TheoryExams { get; set; }
         public virtual ICollection<Staff> Staffs { get; set; }
     }
 }

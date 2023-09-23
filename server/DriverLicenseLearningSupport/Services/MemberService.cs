@@ -12,6 +12,7 @@ namespace DriverLicenseLearningSupport.Services
         private readonly IAddressService _addressService;
         private readonly ILicenseTypeService _licenseTypeService;
         private readonly IAccountService _accountService;
+        private readonly IImageService _imageService;
         private readonly IMemberRepository _memberRepository;
         private readonly IMapper _mapper;
 
@@ -19,12 +20,14 @@ namespace DriverLicenseLearningSupport.Services
             IAddressService addressService,
             ILicenseTypeService licenseTypeService,
             IAccountService accountService,
+            IImageService imageService,
             IMapper mapper)
         {
             _memberRepository = memberRepository;
             _addressService = addressService;
             _licenseTypeService = licenseTypeService;
-            _accountService = accountService; 
+            _accountService = accountService;
+            _imageService = imageService;
             _mapper = mapper;
         }
 
@@ -45,8 +48,18 @@ namespace DriverLicenseLearningSupport.Services
             {
                 member.LicenseType = await _licenseTypeService.GetAsync(Convert.ToInt32(member.LicenseTypeId));
                 member.Address = await _addressService.GetAsync(Guid.Parse(member.AddressId));
-                member.EmailNavigation = await _accountService.GetByEmailAsync(member.Email);
                 member.EmailNavigation.Password = null!;
+                member.AvatarImage = await _imageService.GetPreSignedURL(Guid.Parse(member.AvatarImage));
+                
+                if (member.LicenseForm is not null)
+                {
+                    member.LicenseForm.Image 
+                        = await _imageService.GetPreSignedURL(Guid.Parse(member.LicenseForm.Image));
+                    member.LicenseForm.IdentityCardImage 
+                        = await _imageService.GetPreSignedURL(Guid.Parse(member.LicenseForm.IdentityCardImage));
+                    member.LicenseForm.HealthCertificationImage 
+                        = await _imageService.GetPreSignedURL(Guid.Parse(member.LicenseForm.HealthCertificationImage));
+                }
             }
             return member;
         }
@@ -59,6 +72,7 @@ namespace DriverLicenseLearningSupport.Services
                 member.Address = await _addressService.GetAsync(Guid.Parse(member.AddressId));
                 member.EmailNavigation = await _accountService.GetByEmailAsync(member.Email);
                 member.EmailNavigation.Password = null!;
+                member.AvatarImage = await _imageService.GetPreSignedURL(Guid.Parse(member.AvatarImage));
             }
             return member;
         }
