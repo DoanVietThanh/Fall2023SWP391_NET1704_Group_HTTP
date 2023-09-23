@@ -35,7 +35,7 @@ namespace DriverLicenseLearningSupport.Payloads.Request
         [Required(ErrorMessage = "Vui lòng chọn loại bằng lái")]
         public int LicenseTypeId { get; set; }
     }
-
+        
     public static class RegisterRequestExtension
     {
         public static AccountModel ToAccountModel(this RegisterRequest reqObj)
