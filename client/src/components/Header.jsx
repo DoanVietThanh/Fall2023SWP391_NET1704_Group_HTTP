@@ -102,17 +102,34 @@ const Header = () => {
 
       <div className='flex justify-between items-center p-8 bg-white rounded-tl-[50px]'>
         <div>
-          <img className='h-[80px]' src={images.logo} alt='logo' />
+          <img
+            className='h-[80px] object-contain'
+            src={images.logo}
+            alt='logo'
+          />
         </div>
         <div className='flex gap-16 text-[16px] font-medium uppercase'>
           <Link to='/'>
             <div>Home</div>
           </Link>
-          <div>Course</div>
-          <div>Teachers</div>
-          <div>Pages</div>
-          <div>Blogs</div>
-          <div>Contact</div>
+          <Link to='/course'>
+            <div>Course</div>
+          </Link>
+          <Link to='/intructor'>
+            <div>Intructors</div>
+          </Link>
+          <Link to='/document'>
+            <div>Documents</div>
+          </Link>
+          <Link to='/test'>
+            <div>Test</div>
+          </Link>
+          <Link to='/blogs'>
+            <div>Blog</div>
+          </Link>
+          <Link to='/contact'>
+            <div>Contact</div>
+          </Link>
         </div>
         <div>
           <button className='btn flex gap-2 items-center'>

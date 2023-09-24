@@ -16,7 +16,7 @@ export const login = createAsyncThunk(
     try {
       return await authService.login(dataForm);
     } catch (error) {
-      toastError('Login thất bạiiiii');
+      toastError('Sai tài khoản hoặc mật khẩu');
       return thunkAPI.rejectWithValue(error);
     }
   }

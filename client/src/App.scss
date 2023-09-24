@@ -6,6 +6,17 @@
   justify-content: center;
   align-items: center;
 }
+
+.flex-x {
+  display: flex;
+  align-items: center;
+}
+
+.flex-y {
+  display: flex;
+  justify-content: center;
+}
+
 .btn {
   font-size: 14px;
   color: #fff;
@@ -102,4 +113,11 @@
   border-radius: 20px;
   backdrop-filter: blur(100px);
   padding: 40px;
+}
+
+.css-heg063-MuiTabs-flexContainer {
+  display: flex;
+}
+.MuiButtonBase-root.MuiTab-root {
+  flex: 1;
 }

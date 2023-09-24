@@ -9,6 +9,10 @@ import RegisterPage from '../pages/LoginPage/RegisterPage';
 import ProfilePage from '../pages/ProfilePage/ProfilePage';
 import ForgotPassword from '../pages/LoginPage/ForgotPassword';
 import ShowForgetPass from '../pages/LoginPage/ShowForgetPass';
+import CoursePage from '../pages/CoursePage/CoursePage';
+import IntructorPage from '../pages/IntructorPage/IntructorPage';
+import DetailCourse from '../pages/CoursePage/DetailCourse';
+import ContactPage from '../pages/ContactPage/ContactPage';
 
 const RouterApp = () => {
   const router = createBrowserRouter([
@@ -19,7 +23,12 @@ const RouterApp = () => {
     { path: '/forgot-password', element: <ForgotPassword /> },
     { path: '/profile', element: <ProfilePage /> },
     { path: '/authentication/reset-password', element: <ShowForgetPass /> },
+    { path: '/intructor', element: <IntructorPage /> },
 
+    { path: '/course', element: <CoursePage /> },
+    { path: '/course/detail', element: <DetailCourse /> },
+
+    { path: '/contact', element: <ContactPage /> },
     { path: '*', element: <ErrorPage /> },
   ]);
   return <RouterProvider router={router} fallbackElement={<Loading />} />;
