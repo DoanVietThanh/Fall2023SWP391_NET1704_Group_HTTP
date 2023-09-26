@@ -48,6 +48,14 @@
               "target": "Package",
               "version": "[6.1.1, )"
             },
+            "DocX": {
+              "target": "Package",
+              "version": "[2.5.0, )"
+            },
+            "DocumentFormat.OpenXml": {
+              "target": "Package",
+              "version": "[2.20.0, )"
+            },
             "EPPlus": {
               "target": "Package",
               "version": "[6.2.9, )"

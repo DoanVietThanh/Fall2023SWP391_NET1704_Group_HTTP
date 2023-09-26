@@ -65,6 +65,37 @@
           }
         }
       },
+      "DocumentFormat.OpenXml/2.20.0": {
+        "type": "package",
+        "dependencies": {
+          "System.IO.Packaging": "4.7.0"
+        },
+        "compile": {
+          "lib/net6.0/DocumentFormat.OpenXml.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/DocumentFormat.OpenXml.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "DocX/2.5.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Drawing.Common": "5.0.2",
+          "System.IO.Packaging": "4.5.0"
+        },
+        "compile": {
+          "lib/net5.0/Xceed.Document.NET5.dll": {},
+          "lib/net5.0/Xceed.Words.NET5.dll": {}
+        },
+        "runtime": {
+          "lib/net5.0/Xceed.Document.NET5.dll": {},
+          "lib/net5.0/Xceed.Words.NET5.dll": {}
+        }
+      },
       "EPPlus/6.2.9": {
         "type": "package",
         "dependencies": {
@@ -1168,6 +1199,19 @@
           }
         }
       },
+      "System.IO.Packaging/4.7.0": {
+        "type": "package",
+        "compile": {
+          "ref/netstandard2.0/System.IO.Packaging.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.IO.Packaging.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "System.Linq/4.1.0": {
         "type": "package",
         "dependencies": {
@@ -1782,6 +1826,50 @@
         "lib/netstandard2.0/AWSSDK.S3.xml",
         "tools/install.ps1",
         "tools/uninstall.ps1"
+      ]
+    },
+    "DocumentFormat.OpenXml/2.20.0": {
+      "sha512": "+oFMsEppo/W6KpGTRXaJl2jTFYn9zeon4FaZuDoCijQ1/0JaPENaCef7d4Y3f8v116eKhVBwd4Ya+/NDglxkjw==",
+      "type": "package",
+      "path": "documentformat.openxml/2.20.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "documentformat.openxml.2.20.0.nupkg.sha512",
+        "documentformat.openxml.nuspec",
+        "icon.png",
+        "lib/net35/DocumentFormat.OpenXml.dll",
+        "lib/net35/DocumentFormat.OpenXml.xml",
+        "lib/net40/DocumentFormat.OpenXml.dll",
+        "lib/net40/DocumentFormat.OpenXml.xml",
+        "lib/net46/DocumentFormat.OpenXml.dll",
+        "lib/net46/DocumentFormat.OpenXml.xml",
+        "lib/net6.0/DocumentFormat.OpenXml.dll",
+        "lib/net6.0/DocumentFormat.OpenXml.xml",
+        "lib/netstandard1.3/DocumentFormat.OpenXml.dll",
+        "lib/netstandard1.3/DocumentFormat.OpenXml.xml",
+        "lib/netstandard2.0/DocumentFormat.OpenXml.dll",
+        "lib/netstandard2.0/DocumentFormat.OpenXml.xml"
+      ]
+    },
+    "DocX/2.5.0": {
+      "sha512": "GljwrWBLelooPoeGJ7BPnp5yt/VsZt6lDjxiop74BCp8+a/LQ3f4czY3e9DpcT2C2t/BgYFPMsbM6IVQTk/Y2A==",
+      "type": "package",
+      "path": "docx/2.5.0",
+      "hasTools": true,
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.txt",
+        "Xceed_Logo_Retina-400x400.png",
+        "docs/readme.md",
+        "docx.2.5.0.nupkg.sha512",
+        "docx.nuspec",
+        "lib/net40/Xceed.Document.NET.dll",
+        "lib/net40/Xceed.Words.NET.dll",
+        "lib/net5.0/Xceed.Document.NET5.dll",
+        "lib/net5.0/Xceed.Words.NET5.dll",
+        "tools/install.ps1"
       ]
     },
     "EPPlus/6.2.9": {
@@ -3813,6 +3901,33 @@
         "system.io.nuspec"
       ]
     },
+    "System.IO.Packaging/4.7.0": {
+      "sha512": "9VV4KAbgRQZ79iEoG40KIeZy38O30oWwewScAST879+oki8g/Wa2HXZQgrhDDxQM4GkP1PnRJll05NMiVPbYAw==",
+      "type": "package",
+      "path": "system.io.packaging/4.7.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net46/System.IO.Packaging.dll",
+        "lib/net46/System.IO.Packaging.xml",
+        "lib/netstandard1.3/System.IO.Packaging.dll",
+        "lib/netstandard1.3/System.IO.Packaging.xml",
+        "lib/netstandard2.0/System.IO.Packaging.dll",
+        "lib/netstandard2.0/System.IO.Packaging.xml",
+        "ref/net46/System.IO.Packaging.dll",
+        "ref/net46/System.IO.Packaging.xml",
+        "ref/netstandard1.3/System.IO.Packaging.dll",
+        "ref/netstandard1.3/System.IO.Packaging.xml",
+        "ref/netstandard2.0/System.IO.Packaging.dll",
+        "ref/netstandard2.0/System.IO.Packaging.xml",
+        "system.io.packaging.4.7.0.nupkg.sha512",
+        "system.io.packaging.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
+      ]
+    },
     "System.Linq/4.1.0": {
       "sha512": "bQ0iYFOQI0nuTnt+NQADns6ucV4DUvMdwN6CbkB1yj8i7arTGiTN5eok1kQwdnnNWSDZfIUySQY+J3d5KjWn0g==",
       "type": "package",
@@ -5401,6 +5516,8 @@
     "net6.0": [
       "AWSSDK.S3 >= 3.7.203.16",
       "AutoMapper.Extensions.Microsoft.DependencyInjection >= 6.1.1",
+      "DocX >= 2.5.0",
+      "DocumentFormat.OpenXml >= 2.20.0",
       "EPPlus >= 6.2.9",
       "FluentValidation >= 6.4.1",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 6.0.22",
@@ -5457,6 +5574,14 @@
           "AutoMapper.Extensions.Microsoft.DependencyInjection": {
             "target": "Package",
             "version": "[6.1.1, )"
+          },
+          "DocX": {
+            "target": "Package",
+            "version": "[2.5.0, )"
+          },
+          "DocumentFormat.OpenXml": {
+            "target": "Package",
+            "version": "[2.20.0, )"
           },
           "EPPlus": {
             "target": "Package",

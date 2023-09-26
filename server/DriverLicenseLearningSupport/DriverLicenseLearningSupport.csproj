@@ -21,6 +21,8 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.1" />
     <PackageReference Include="AWSSDK.S3" Version="3.7.203.16" />
+    <PackageReference Include="DocumentFormat.OpenXml" Version="2.20.0" />
+    <PackageReference Include="DocX" Version="2.5.0" />
     <PackageReference Include="EPPlus" Version="6.2.9" />
     <PackageReference Include="FluentValidation" Version="6.4.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.22" />

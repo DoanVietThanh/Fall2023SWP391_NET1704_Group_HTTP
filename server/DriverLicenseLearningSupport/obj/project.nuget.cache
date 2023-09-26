@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "/HXtGePY/8SqppBYHAiGW7IlzoYxfCTDgGwnANT6D/Gyq+a3Wya+eNNh1Lp5gbIUz9GAiVrIPb4ws8p0hzuUrQ==",
+  "dgSpecHash": "tu6T4xP8yPo4akdh0rOQfxkBRNiwIsNsDO6O7O33XwiL5HQFWv9FSAjl4zCfx3g6vb42f7m5TS6o3zK7kKN2fg==",
   "success": true,
   "projectFilePath": "D:\\Fall2023SWP391_NET1704_Group_HTTP\\server\\DriverLicenseLearningSupport\\DriverLicenseLearningSupport.csproj",
   "expectedPackageFiles": [
@@ -8,6 +8,8 @@
     "C:\\Users\\USER\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\6.1.1\\automapper.extensions.microsoft.dependencyinjection.6.1.1.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\awssdk.core\\3.7.202.10\\awssdk.core.3.7.202.10.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\awssdk.s3\\3.7.203.16\\awssdk.s3.3.7.203.16.nupkg.sha512",
+    "C:\\Users\\USER\\.nuget\\packages\\documentformat.openxml\\2.20.0\\documentformat.openxml.2.20.0.nupkg.sha512",
+    "C:\\Users\\USER\\.nuget\\packages\\docx\\2.5.0\\docx.2.5.0.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\epplus\\6.2.9\\epplus.6.2.9.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\epplus.interfaces\\6.1.1\\epplus.interfaces.6.1.1.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\epplus.system.drawing\\6.1.1\\epplus.system.drawing.6.1.1.nupkg.sha512",
@@ -71,6 +73,7 @@
     "C:\\Users\\USER\\.nuget\\packages\\system.globalization\\4.0.11\\system.globalization.4.0.11.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\system.identitymodel.tokens.jwt\\6.10.0\\system.identitymodel.tokens.jwt.6.10.0.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\system.io\\4.3.0\\system.io.4.3.0.nupkg.sha512",
+    "C:\\Users\\USER\\.nuget\\packages\\system.io.packaging\\4.7.0\\system.io.packaging.4.7.0.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\system.linq\\4.1.0\\system.linq.4.1.0.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\system.linq.expressions\\4.1.0\\system.linq.expressions.4.1.0.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\system.objectmodel\\4.0.12\\system.objectmodel.4.0.12.nupkg.sha512",

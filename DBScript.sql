@@ -37,7 +37,8 @@ CREATE TABLE [dbo].Member(
 	avatar_image NVARCHAR(100),
 	address_id NVARCHAR(255),
 	email nvarchar(255),
-	license_type_id INT
+	license_type_id INT,
+	license_form_id INT
 )
 GO
 CREATE TABLE [dbo].License_Type(
@@ -168,12 +169,11 @@ CREATE TABLE [dbo].License_Register_Form(
 	identity_card_image NVARCHAR(100),
 	health_certification_image NVARCHAR(100),
 	create_date DATETIME,
-	member_id NVARCHAR(255),
 	register_form_status_id INT,
 	license_type_id INT
 )
 GO
-CREATE TABLE [dbo].Question_Bank(
+CREATE TABLE [dbo].Question(
 	question_id INT PRIMARY KEY identity(1,1),
 	question_answer_desc NVARCHAR(MAX),
 	is_Paralysis BIT,
@@ -188,8 +188,8 @@ CREATE TABLE [dbo].Question_Answer(
 	question_id INT
 )
 GO
-CREATE TABLE [dbo].Practice_Exam(
-	practice_exam_id INT PRIMARY KEY identity(1,1),
+CREATE TABLE [dbo].Theory_Exam(
+	theory_exam_id INT PRIMARY KEY identity(1,1),
 	total_question INT,
 	total_time INT,
 	total_answer_required INT,
@@ -198,25 +198,25 @@ CREATE TABLE [dbo].Practice_Exam(
 GO
 CREATE TABLE [dbo].Exam_Question(
 	question_id INT,
-	practice_exam_id INT,
+	theory_exam_id INT,
 
-	PRIMARY KEY (question_id, practice_exam_id)
+	PRIMARY KEY (question_id, theory_exam_id)
 )
 GO
 CREATE TABLE [dbo].Exam_Grade(
 	member_id NVARCHAR(255),
-	practice_exam_id INT,
+	theory_exam_id INT,
 	point FLOAT,
 	question_id INT NOT NULL,
 	selected_answer_id INT NOT NULL,
 	email NVARCHAR(255)
 
-	PRIMARY KEY (member_id, practice_exam_id)
+	PRIMARY KEY (member_id, theory_exam_id)
 )
 GO
 CREATE TABLE [dbo].Exam_History(
 	member_id NVARCHAR(255),
-	practice_exam_id INT,
+	theory_exam_id INT,
 	total_grade INT,
 	total_right_answer INT,
 	total_question INT,
@@ -224,7 +224,7 @@ CREATE TABLE [dbo].Exam_History(
 	wrong_paralysis_question BIT,
 	is_passed BIT,
 
-	PRIMARY KEY (member_id, practice_exam_id)
+	PRIMARY KEY (member_id, theory_exam_id)
 )
 GO
 CREATE TABLE [dbo].Blog(
@@ -255,19 +255,6 @@ CREATE TABLE [dbo].Comment(
 	full_name NVARCHAR(255),
 	avatar_image NVARCHAR(100)
 )
-GO
-CREATE TABLE [dbo].Statistical_Report(
-	report_id INT PRIMARY KEY identity(1,1),
-	total_member INT,
-	total_mentor INT,
-	total_course INT,
-	total_course_schedule INT,
-	total_blog INT,
-	total_revenue INT,
-	total_active_member INT
-)
-
-
 
 -- CONSTRAINTS 
 -- dbo.Account - dbo.Role
@@ -282,6 +269,9 @@ ADD CONSTRAINT FK_Member_AddressId FOREIGN KEY (address_id) REFERENCES Address (
 -- dbo.Member - dbo.License_Type
 ALTER TABLE Member
 ADD CONSTRAINT FK_Member_LicenseTypeId FOREIGN KEY (license_type_id) REFERENCES License_Type (license_type_id)
+-- dbo.Member - dbo.License_Register_Form
+ALTER TABLE	Member
+ADD CONSTRAINT FK_Member_LicenseRegisterFormId FOREIGN KEY (license_form_id) REFERENCES License_Register_Form(license_form_id)
 -- dbo.Staff - dbo.Job_Title
 ALTER TABLE Staff
 ADD CONSTRAINT FK_Staff_JobTitleId FOREIGN KEY (job_title_id) REFERENCES Job_Title (job_title_id)
@@ -351,39 +341,36 @@ ADD CONSTRAINT FK_LicenseRegisterFormId FOREIGN KEY (register_form_status_id) RE
 -- dbo.License_Register_Form - dbo.License_Type
 ALTER TABLE	License_Register_Form
 ADD CONSTRAINT FK_LicenseTypeId FOREIGN KEY (license_type_id) REFERENCES License_Type(license_type_id)
--- dbo.License_Register_Form - dbo.License_Type
-ALTER TABLE	License_Register_Form
-ADD CONSTRAINT FK_MemberId FOREIGN KEY (member_id) REFERENCES Member(member_id)
--- dbo.Question_Bank - dbo.License_Type
-ALTER TABLE Question_Bank
-ADD CONSTRAINT FK_QuestionBank_LicenseTypeId FOREIGN KEY (license_type_id) REFERENCES License_Type (license_type_id)
--- dbo.Question_Answer - dbo.Question_Bank
+-- dbo.Question - dbo.License_Type
+ALTER TABLE Question
+ADD CONSTRAINT FK_Question_LicenseTypeId FOREIGN KEY (license_type_id) REFERENCES License_Type (license_type_id)
+-- dbo.Question_Answer - dbo.Question
 ALTER TABLE Question_Answer 
-ADD CONSTRAINT FK_QuestionAnswer_QuestionId FOREIGN KEY (question_id) REFERENCES Question_Bank (question_id)
--- dbo.Exam_Question - dbo.Question_Bank
+ADD CONSTRAINT FK_QuestionAnswer_QuestionId FOREIGN KEY (question_id) REFERENCES Question (question_id)
+-- dbo.Exam_Question - dbo.Question
 ALTER TABLE Exam_Question 
-ADD CONSTRAINT FK_ExamQuestion_QuestionId FOREIGN KEY (question_id) REFERENCES Question_Bank (question_id)
--- dbo.Exam_Question - dbo.Practice_Exam
+ADD CONSTRAINT FK_ExamQuestion_QuestionId FOREIGN KEY (question_id) REFERENCES Question (question_id)
+-- dbo.Exam_Question - dbo.Theory_Exam
 ALTER TABLE Exam_Question 
-ADD CONSTRAINT FK_ExamQuestion_PracticeExamId FOREIGN KEY (practice_exam_id) REFERENCES Practice_Exam (practice_exam_id)
--- dbo.Practice_Exam - dbo.License_Type
-ALTER TABLE Practice_Exam
+ADD CONSTRAINT FK_ExamQuestion_TheoryExamId FOREIGN KEY (theory_exam_id) REFERENCES Theory_Exam (theory_exam_id)
+-- dbo.Theory_Exam - dbo.License_Type
+ALTER TABLE Theory_Exam
 ADD CONSTRAINT FK_PracticeExam_LicenseTypeId FOREIGN KEY (license_type_id) REFERENCES License_Type (license_type_id)
 -- dbo.Exam_Grade - dbo.Member
 ALTER TABLE Exam_Grade 
 ADD CONSTRAINT FK_ExamGrade_MemberId FOREIGN KEY (member_id) REFERENCES Member (member_id)
--- dbo.Exam_Grade - dbo.Practice_Exam
+-- dbo.Exam_Grade - dbo.Theory_Exam
 ALTER TABLE Exam_Grade
-ADD CONSTRAINT FK_ExamGrade_PracticeExamId FOREIGN KEY (practice_exam_id) REFERENCES Practice_Exam (practice_exam_id)
--- dbo.Exam_Grade - dbo.Question_Bank
+ADD CONSTRAINT FK_ExamGrade_TheoryExamId FOREIGN KEY (theory_exam_id) REFERENCES Theory_Exam (theory_exam_id)
+-- dbo.Exam_Grade - dbo.Question
 ALTER TABLE Exam_Grade
-ADD CONSTRAINT FK_ExamGrade_QuestionId FOREIGN KEY (question_id) REFERENCES Question_Bank (question_id)
+ADD CONSTRAINT FK_ExamGrade_QuestionId FOREIGN KEY (question_id) REFERENCES Question (question_id)
 -- dbo.Exam_History - dbo.Member
 ALTER TABLE Exam_History
 ADD CONSTRAINT FK_ExamHistory_MemberId FOREIGN KEY (member_id) REFERENCES Member (member_id)
--- dbo.Exam_History - dbo.Practice_Exam
+-- dbo.Exam_History - dbo.Theory_Exam
 ALTER TABLE Exam_History
-ADD CONSTRAINT FK_History_PracticeExamId FOREIGN KEY (practice_exam_id) REFERENCES Practice_Exam (practice_exam_id)
+ADD CONSTRAINT FK_History_TheoryExamId FOREIGN KEY (theory_exam_id) REFERENCES Theory_Exam (theory_exam_id)
 -- dbo.Blog - dbo.Staff
 ALTER TABLE Blog
 ADD CONSTRAINT FK_Blog_StaffId FOREIGN KEY (staff_id) REFERENCES Staff (staff_id)

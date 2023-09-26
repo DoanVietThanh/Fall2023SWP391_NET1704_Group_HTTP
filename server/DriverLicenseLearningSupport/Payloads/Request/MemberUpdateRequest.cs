@@ -18,8 +18,6 @@ namespace DriverLicenseLearningSupport.Payloads.Request
         [Required(ErrorMessage = "Birth date number is required")]
         public string DateBirth { get; set; }
 
-        // Address
-        public Guid AddressId { get; set; }
         [Required(ErrorMessage = "Street number is required")]
         public string Street { get; set; }
         [Required(ErrorMessage = "District number is required")]
@@ -42,7 +40,6 @@ namespace DriverLicenseLearningSupport.Payloads.Request
                 FirstName = reqObj.FirstName,
                 LastName = reqObj.LastName,
                 Phone = reqObj.Phone,
-                AddressId = reqObj.AddressId.ToString(),
                 DateBirth = DateTime.ParseExact(reqObj.DateBirth, dateFormat,
                 CultureInfo.InvariantCulture),
                 // license type
@@ -50,7 +47,6 @@ namespace DriverLicenseLearningSupport.Payloads.Request
                 // address info
                 Address = new AddressModel 
                 {
-                    AddressId = reqObj.AddressId.ToString(),
                     Street = reqObj.Street,
                     City = reqObj.City,
                     District = reqObj.District

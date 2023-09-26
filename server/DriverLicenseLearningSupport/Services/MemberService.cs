@@ -13,6 +13,7 @@ namespace DriverLicenseLearningSupport.Services
         private readonly ILicenseTypeService _licenseTypeService;
         private readonly IAccountService _accountService;
         private readonly IImageService _imageService;
+        private readonly ILicenseRegisterFormService _licenseRegisterFormService;
         private readonly IMemberRepository _memberRepository;
         private readonly IMapper _mapper;
 
@@ -21,6 +22,7 @@ namespace DriverLicenseLearningSupport.Services
             ILicenseTypeService licenseTypeService,
             IAccountService accountService,
             IImageService imageService,
+            ILicenseRegisterFormService licenseRegisterFormService,
             IMapper mapper)
         {
             _memberRepository = memberRepository;
@@ -28,6 +30,7 @@ namespace DriverLicenseLearningSupport.Services
             _licenseTypeService = licenseTypeService;
             _accountService = accountService;
             _imageService = imageService;
+            _licenseRegisterFormService = licenseRegisterFormService;
             _mapper = mapper;
         }
 
@@ -41,16 +44,17 @@ namespace DriverLicenseLearningSupport.Services
             var memberEntities = _mapper.Map<IEnumerable<Member>>(members);
             return await _memberRepository.CreateRangeAsync(memberEntities);
         }
+        public async Task<LicenseRegisterFormModel> CreateLicenseRegisterFormAsync(LicenseRegisterFormModel licenseRegisterFormModel, Guid memberId)
+        {
+            return await _licenseRegisterFormService.CreateAsync(licenseRegisterFormModel, memberId);
+        }
         public async Task<MemberModel> GetByEmailAsync(string email)
         {
             var member = await _memberRepository.GetByEmailAsync(email);
             if (member is not null)
             {
-                member.LicenseType = await _licenseTypeService.GetAsync(Convert.ToInt32(member.LicenseTypeId));
-                member.Address = await _addressService.GetAsync(Guid.Parse(member.AddressId));
-                member.EmailNavigation.Password = null!;
                 member.AvatarImage = await _imageService.GetPreSignedURL(Guid.Parse(member.AvatarImage));
-                
+                member.LicenseForm = await _licenseRegisterFormService.GetAsync(Convert.ToInt32(member.LicenseFormId));
                 if (member.LicenseForm is not null)
                 {
                     member.LicenseForm.Image 
@@ -92,6 +96,13 @@ namespace DriverLicenseLearningSupport.Services
         {
             return await _memberRepository.DeleteAsync(id);
         }
-
+        public async Task<bool> HideMemberAsync(Guid id)
+        {
+            return await _memberRepository.HideMemberAsync(id);
+        }
+        public async Task<MemberModel> GetByLicenseRegisterFormIdAsync(int licenseRegisterFormId)
+        {
+            return await _memberRepository.GetByLicenseRegisterFormIdAsync(licenseRegisterFormId);
+        }
     }
 }

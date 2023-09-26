@@ -20,6 +20,7 @@ using Amazon.Runtime.Internal.Endpoints.StandardLibrary;
 using System;
 using static System.Collections.Specialized.BitVector32;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace DriverLicenseLearningSupport.Controllers
 {
@@ -27,42 +28,39 @@ namespace DriverLicenseLearningSupport.Controllers
     public class AuthenticationController : ControllerBase
     {
         // DateTime format
-        public static string dateFormat = "yyyy-MM-dd";
+        //public static string dateFormat = "yyyy-MM-dd";
         // Default avatar
-        public static string defaultAvatar = "a42e811d-d22b-4ede-b955-1437ebaeeb9d";
+        //public static string defaultAvatar = "a42e811d-d22b-4ede-b955-1437ebaeeb9d";
+        // cache key
+        //private readonly static string _memberCacheKey = "MembersCacheKey";
         // Dependency Injection Obj
         private readonly IAccountService _accountService;
-        private readonly IAddressService _addressService;
         private readonly IMemberService _memberService;
         private readonly IStaffService _staffService;
         private readonly IEmailService _emailService;
-        private readonly ILicenseTypeService _licenseTypeService;
-        private readonly ILicenseRegisterFormService _licenseRegisterFormService;
         private readonly IJobTitleService _jobTitleService;
         private readonly IRoleService _roleService;
+        private readonly IMemoryCache _cache;
         private readonly AppSettings _appSettings;
 
         public AuthenticationController(IAccountService accountService,
-            IAddressService addressService,
             IMemberService memberService,
             IEmailService emailService,
             IStaffService staffService,
             ILicenseTypeService licenseTypeService,
-            ILicenseRegisterFormService licenseRegisterFormService,
             IJobTitleService jobTitleService,
             IRoleService roleService,
-            IImageService imageService,
+            IMemoryCache cache,
             IOptionsMonitor<AppSettings> monitor)
         {
             _accountService = accountService;
-            _addressService = addressService;
             _memberService = memberService;
             _staffService = staffService;
             _emailService = emailService;
             _licenseTypeService = licenseTypeService;
-            _licenseRegisterFormService = licenseRegisterFormService;
             _jobTitleService = jobTitleService;
             _roleService = roleService;
+            _cache = cache;
             _appSettings = monitor.CurrentValue;
         }
 
@@ -95,7 +93,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     Message = "Wrong username or password!",
                 });
 
-            // get account info by role
+            //get account info by role
             Object accountInfo;
             if (account.Role.Name.Equals("Member"))
             {
@@ -168,19 +166,26 @@ namespace DriverLicenseLearningSupport.Controllers
             address.AddressId = addressId;
 
             // generate member
-            var member = reqObj.ToMemberModel(dateFormat);
+            var member = reqObj.ToMemberModel(_appSettings.DateFormat);
             var memberId = Guid.NewGuid().ToString();
             member.MemberId = memberId;
             member.EmailNavigation = account;
             member.Address = address;
             member.IsActive = true;
-            member.AvatarImage = defaultAvatar;
+            member.AvatarImage = _appSettings.DefaultAvatar;
 
             // create member
             await _memberService.CreateAsync(member);
 
             // find created member
             member = await _memberService.GetAsync(Guid.Parse(memberId));
+
+            // clear get all members cache
+            if (_cache.Get(_appSettings.MembersCacheKey) is not null) 
+            {
+                // remove memory cache
+                _cache.Remove(_appSettings.MembersCacheKey);
+            }
 
             return Ok(new BaseResponse
             {
@@ -197,7 +202,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpGet]
         [Route("authentication/staff")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> StaffRegister()
         {
             // get all license type
@@ -221,7 +226,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpPost]
         [Route("authentication/staff")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> StaffRegister([FromBody] StaffRegisterRequest reqObj)
         {
             // check account exist
@@ -253,13 +258,13 @@ namespace DriverLicenseLearningSupport.Controllers
             address.AddressId = addressId;
 
             // generate staff
-            var staff = reqObj.ToStaffModel(dateFormat);
+            var staff = reqObj.ToStaffModel(_appSettings.DateFormat);
             var staffId = Guid.NewGuid().ToString();
             staff.StaffId = staffId;
             staff.EmailNavigation = account;
             staff.Address = address;
             staff.IsActive = true;
-            staff.AvatarImage = defaultAvatar;
+            staff.AvatarImage = _appSettings.DefaultAvatar;
 
             // create staff
             await _staffService.CreateAsync(staff);

@@ -20,10 +20,21 @@ namespace DriverLicenseLearningSupport.Services
             _imageService = imageService;
             _licenseRegisterFormRepo = licenseRegisterFormRepo;
         }
+
+        public async Task<bool> ApproveAsync(int licenseRegisterId)
+        {
+            return await _licenseRegisterFormRepo.ApproveAsync(licenseRegisterId);
+        }
+
         public async Task<LicenseRegisterFormModel> CreateAsync(LicenseRegisterFormModel model, Guid memberId)
         {
             var entity = _mapper.Map<LicenseRegisterForm>(model);
             return await _licenseRegisterFormRepo.CreateAsync(entity, memberId);
+        }
+
+        public async Task<LicenseRegisterFormModel> GetAsync(int licenseRegisterId)
+        {
+            return await _licenseRegisterFormRepo.GetAsync(licenseRegisterId);
         }
     }
 }

@@ -54,22 +54,26 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<IStaffService, StaffService>();
+builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<ILicenseTypeService, LicenseTypeService>();
 builder.Services.AddScoped<IJobTitleService, JobTitleService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<ILicenseRegisterFormService, LicenseRegisterFormService>();
+builder.Services.AddScoped<ICurriculumService, CurriculumService>();
 
 // Add Repositories
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IMemberRepository, MemberRepository>();
 builder.Services.AddScoped<IStaffRepository, StaffRepository>();
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<ILicenseTypeRepository, LicenseTypeRepository>();
 builder.Services.AddScoped<IJobTitleRepository, JobTitleRepository>();
 builder.Services.AddScoped<ILicenseRegisterFormRepository, LicenseRegisterFormRepository>();
+builder.Services.AddScoped<ICurriculumRepository, CurriculumRepository>();
 
 
 // Add Email Configs

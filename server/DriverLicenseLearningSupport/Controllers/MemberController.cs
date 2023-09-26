@@ -1,6 +1,6 @@
-﻿using Amazon.Runtime.Internal.Util;
-using Amazon.S3.Model;
-using DriverLicenseLearningSupport.Entities;
+﻿using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Models.Config;
 using DriverLicenseLearningSupport.Payloads.Filters;
@@ -11,17 +11,11 @@ using DriverLicenseLearningSupport.Services.Impl;
 using DriverLicenseLearningSupport.Utils;
 using DriverLicenseLearningSupport.Validation;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using OfficeOpenXml;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Globalization;
-using System.Security.Principal;
-using System.Threading.Tasks;
 
 namespace DriverLicenseLearningSupport.Controllers
 {
@@ -29,13 +23,13 @@ namespace DriverLicenseLearningSupport.Controllers
     public class MemberController : ControllerBase
     {
         // DateTime format
-        public static string dateFormat = "yyyy-MM-dd";
+        //public static string dateFormat = "yyyy-MM-dd";
         // Default Avatar
-        public static string defaultAvatar = "a42e811d-d22b-4ede-b955-1437ebaeeb9d";
+        //public static string defaultAvatar = "a42e811d-d22b-4ede-b955-1437ebaeeb9d";
         // Dependency Injection
         private readonly IMemberService _memberService;
         private readonly ILicenseTypeService _licenseTypes;
-        private readonly ILicenseRegisterFormService _licenseFormRegisterService;
+        private readonly ILicenseRegisterFormService _licenseRegisterFormService;
         private readonly ILicenseTypeService _licenseTypeService;
         private readonly IAddressService _addressService;
         private readonly IAccountService _accountService;
@@ -44,7 +38,7 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly IMemoryCache _memoryCache;
         private readonly AppSettings _appSettings;
         // cache key
-        private readonly static string _cacheKey = "MembersCacheKey";
+        //private readonly static string _cacheKey = "MembersCacheKey";
         public MemberController(IMemberService memberService,
             ILicenseTypeService licenseType,
             IMemoryCache memoryCache,
@@ -52,7 +46,7 @@ namespace DriverLicenseLearningSupport.Controllers
             IAddressService addressService,
             IAccountService accountService,
             IRoleService roleService,
-            ILicenseRegisterFormService licenseFormRegisterService,
+            ILicenseRegisterFormService licenseRegisterFormService,
             IImageService imageService,
             IOptionsMonitor<AppSettings> monitor)
         {
@@ -63,7 +57,7 @@ namespace DriverLicenseLearningSupport.Controllers
             _addressService = addressService;
             _accountService = accountService;
             _roleService = roleService;
-            _licenseFormRegisterService = licenseFormRegisterService;
+            _licenseRegisterFormService = licenseRegisterFormService;
             _imageService = imageService;
             _appSettings = monitor.CurrentValue;
         }
@@ -128,7 +122,7 @@ namespace DriverLicenseLearningSupport.Controllers
             // generate member id 
             var memberId = Guid.NewGuid().ToString();
             // convert to member model
-            var member = reqObj.ToMemberModel(defaultAvatar, dateFormat);
+            var member = reqObj.ToMemberModel(_appSettings.DefaultAvatar, _appSettings.DateFormat);
             // validate member model
             var memberValidateResult = await member.ValidateAsync();
             if (memberValidateResult is not null) return BadRequest(new ErrorResponse
@@ -180,7 +174,7 @@ namespace DriverLicenseLearningSupport.Controllers
         public async Task<IActionResult> GetAllMember([FromRoute] int page = 1)
         {
             // memory caching
-            if (!_memoryCache.TryGetValue(_cacheKey, out IEnumerable<MemberModel> members))
+            if (!_memoryCache.TryGetValue(_appSettings.MembersCacheKey, out IEnumerable<MemberModel> members))
             {
                 // get all members
                 members = await _memberService.GetAllAsync();
@@ -193,11 +187,11 @@ namespace DriverLicenseLearningSupport.Controllers
                     // cache priority
                     .SetPriority(CacheItemPriority.Normal);
                 // set cache
-                _memoryCache.Set(_cacheKey, members, cacheEntryOptions);
+                _memoryCache.Set(_appSettings.MembersCacheKey, members, cacheEntryOptions);
             }
             else
             {
-                members = (IEnumerable<MemberModel>)_memoryCache.Get(_cacheKey);
+                members = (IEnumerable<MemberModel>)_memoryCache.Get(_appSettings.MembersCacheKey);
             }
 
             // page size 
@@ -317,7 +311,7 @@ namespace DriverLicenseLearningSupport.Controllers
         public async Task<IActionResult> UpdateMember([FromRoute] Guid id, [FromBody] MemberUpdateRequest reqObj)
         {
             // convert to member model <- extension method
-            var member = reqObj.ToMemberModel(dateFormat);
+            var member = reqObj.ToMemberModel(_appSettings.DateFormat);
             // validator
             var errors = await member.ValidateAsync();
             if (errors is not null) return BadRequest(new ErrorResponse
@@ -344,6 +338,32 @@ namespace DriverLicenseLearningSupport.Controllers
             });
         }
 
+        [HttpPut]
+        [Route("members/{id:Guid}/hide")]
+        public async Task<IActionResult> HideMember([FromRoute] Guid id) 
+        {
+            // get member by id
+            var member = await _memberService.GetAsync(id);
+            // not found
+            if(member is null)
+            {
+                return NotFound(new BaseResponse { 
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = $"Not found any members match id {id}"
+                });
+            }
+
+            // hide member <- change active status
+            var isSucess = await _memberService.HideMemberAsync(id);
+
+            if (!isSucess) return StatusCode(StatusCodes.Status500InternalServerError);
+
+            return Ok(new BaseResponse { 
+                StatusCode = StatusCodes.Status200OK,
+                Message = $"Hide member id {id} succesfully"
+            });
+        }
+        
         [HttpGet]
         [Route("members/export-excel")]
         [Authorize(Roles = "Admin,Staff")]
@@ -536,8 +556,8 @@ namespace DriverLicenseLearningSupport.Controllers
                         var totalMembers = createdMembers.Count();
 
                         // clear cache
-                        if (_memoryCache.Get(_cacheKey) is not null)
-                            _memoryCache.Remove(_cacheKey);
+                        if (_memoryCache.Get(_appSettings.MembersCacheKey) is not null)
+                            _memoryCache.Remove(_appSettings.MembersCacheKey);
 
                         // Import Sucessfully
                         if (totalMembers > 0) return Ok(new BaseResponse
@@ -556,18 +576,6 @@ namespace DriverLicenseLearningSupport.Controllers
                 Message = "Import excel file failed."
             });
         }
-
-        //[HttpGet]
-        //[Route("members/clear-cache")]
-        //[Authorize(Roles = "Admin,Staff")]
-        //public async Task<IActionResult> ClearCache()
-        //{
-        //    // clear cache
-        //    if (_memoryCache.Get(_cacheKey) is not null)
-        //        _memoryCache.Remove(_cacheKey);
-        //    return Ok();
-        //}
-
 
         // License Register Form
         [HttpGet]
@@ -615,25 +623,60 @@ namespace DriverLicenseLearningSupport.Controllers
             await _imageService.UploadImageAsync(imageId, reqObj.Image);
 
             // generate identity image id
-            var identityImage = Guid.NewGuid();
+            var identityImageId = Guid.NewGuid();
             // upload image
-            await _imageService.UploadImageAsync(identityImage, reqObj.IdentityImage);
+            await _imageService.UploadImageAsync(identityImageId, reqObj.IdentityImage);
 
             // generate health certification image id
             // upload image
-            var healthCerImage = Guid.NewGuid();
-            await _imageService.UploadImageAsync(healthCerImage, reqObj.HealthCertificationImage);
+            var healthCerImageId = Guid.NewGuid();
+            await _imageService.UploadImageAsync(healthCerImageId, reqObj.HealthCertificationImage);
 
             // generate license form register
             var licenseRegisterFormModel = reqObj.ToLicenseFormRegisterModel();
+            // set images id
+            licenseRegisterFormModel.Image = imageId.ToString();
+            licenseRegisterFormModel.IdentityCardImage = identityImageId.ToString();
+            licenseRegisterFormModel.HealthCertificationImage = healthCerImageId.ToString();
+
 
             // create license form register
-            var lfRegister = await _licenseFormRegisterService.CreateAsync(licenseRegisterFormModel, reqObj.MemberId);
+            var lfRegister = await _memberService.CreateLicenseRegisterFormAsync(licenseRegisterFormModel, reqObj.MemberId);
 
             if (lfRegister is null) return StatusCode(
                 StatusCodes.Status500InternalServerError, "Something went wrong");
 
             return new ObjectResult(new { LicenseRegisterForm = lfRegister }) { StatusCode = StatusCodes.Status201Created };
+        }
+
+        [HttpPut]
+        [Route("members/license-form/{id:int}/approve")]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> LicenseFormRegisterApproval([FromRoute] int id) 
+        {
+            // get license form by member id
+            var lfRegister = await _memberService.GetByLicenseRegisterFormIdAsync(id);
+            // not found
+            if (lfRegister is null) 
+            {
+                return NotFound(new BaseResponse { 
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = $"Not found any license form of member id {id}"
+                });
+            }
+
+            // approve member license form register
+            var isSucess = await _licenseRegisterFormService.ApproveAsync(id);
+
+            if (isSucess) 
+            {
+                return Ok(new BaseResponse { 
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = $"License form register approved successfully"
+                });
+            }
+
+            return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
 }
