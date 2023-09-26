@@ -6,6 +6,9 @@ namespace DriverLicenseLearningSupport.Repositories.Impl
     public interface ILicenseRegisterFormRepository
     {
         Task<LicenseRegisterFormModel> CreateAsync(LicenseRegisterForm licenseRegister, Guid memberId); 
-        
+        Task<LicenseRegisterFormModel> GetAsync(int licenseRegisterId);
+        Task<bool> ApproveAsync(int licenseRegisterId);
+
+
     }
 }

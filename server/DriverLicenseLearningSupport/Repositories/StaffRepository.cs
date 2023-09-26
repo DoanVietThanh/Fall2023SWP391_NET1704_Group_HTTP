@@ -27,7 +27,34 @@ namespace DriverLicenseLearningSupport.Repositories
         public async Task<StaffModel> GetByEmailAsync(string email)
         {
             var staffEntity = await _context.Staffs.Where(x => x.Email == email)
-                                                   .FirstOrDefaultAsync();
+                                                   .Select(x => new Staff
+                                                   {
+                                                       StaffId = x.StaffId,
+                                                       FirstName = x.FirstName,
+                                                       LastName = x.LastName,
+                                                       DateBirth = x.DateBirth,
+                                                       Email = x.Email,
+                                                       AvatarImage = x.AvatarImage,
+                                                       Phone = x.Phone,
+                                                       Address = new Address
+                                                       {
+                                                           AddressId = x.AddressId,
+                                                           Street = x.Address.Street,
+                                                           District = x.Address.District,
+                                                           City = x.Address.City,
+                                                           Zipcode = x.Address.Zipcode,
+                                                       },
+                                                       LicenseType = new LicenseType
+                                                       {
+                                                           LicenseTypeId = x.LicenseType.LicenseTypeId,
+                                                           LicenseTypeDesc = x.LicenseType.LicenseTypeDesc
+                                                       },
+                                                       JobTitle = new JobTitle
+                                                       {
+                                                           JobTitleId = x.JobTitle.JobTitleId,
+                                                           JobTitleDesc = x.JobTitle.JobTitleDesc
+                                                       }
+                                                   }).FirstOrDefaultAsync();
             return _mapper.Map<StaffModel>(staffEntity);
         }
 

@@ -25,13 +25,7 @@ namespace DriverLicenseLearningSupport.Services
 
         public async Task<AccountModel> CheckLoginAsync(string username, string password)
         {
-            var account = await _accountRepository.GetByUsernameAndPasswordAsync(username, password);
-            if (account != null)
-            {
-                var roleModel = await _roleRepository.GetAsync(account.RoleId);
-                account.Role = roleModel;
-            }
-            return account;
+            return await _accountRepository.GetByUsernameAndPasswordAsync(username, password);
         }
 
         public async Task<bool> CreateAsync(AccountModel account)

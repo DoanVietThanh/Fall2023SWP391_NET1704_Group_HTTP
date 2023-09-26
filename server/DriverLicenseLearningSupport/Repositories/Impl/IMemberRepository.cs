@@ -13,6 +13,8 @@ namespace DriverLicenseLearningSupport.Repositories.Impl
         Task<IEnumerable<MemberModel>> GetAllAsync();
         Task<IEnumerable<MemberModel>> GetAllAsyncByFilter(MemberFilter filters);
         Task<MemberModel> GetByEmailAsync(string email);
+        Task<MemberModel> GetByLicenseRegisterFormIdAsync(int licenseRegisterFormId);
         Task<bool> DeleteAsync(Guid id);
+        Task<bool> HideMemberAsync(Guid id);
     }
 }

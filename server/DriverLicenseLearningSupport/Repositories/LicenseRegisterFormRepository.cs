@@ -17,6 +17,8 @@ namespace DriverLicenseLearningSupport.Repositories
             _context = context;
             _mapper = mapper;
         }
+
+
         public async Task<LicenseRegisterFormModel> CreateAsync(LicenseRegisterForm licenseRegister, Guid memberId)
         {
             await _context.LicenseRegisterForms.AddAsync(licenseRegister);
@@ -37,6 +39,34 @@ namespace DriverLicenseLearningSupport.Repositories
                 return _mapper.Map<LicenseRegisterFormModel>(licenseRegister);
             }
             return null;
+        }
+
+        public async Task<LicenseRegisterFormModel> GetAsync(int licenseRegisterId)
+        {
+            var lfEntity = await _context.LicenseRegisterForms.Where(x => x.LicenseFormId == licenseRegisterId)
+                                    .FirstOrDefaultAsync();  
+            // get form status
+            if(lfEntity is not null)
+            {
+                LicenseRegisterFormStatus? licenseRegisterFormStatus = await _context.LicenseRegisterFormStatuses
+                                                                            .Where(x => x.RegisterFormStatusId == lfEntity.RegisterFormStatusId)
+                                                                            .FirstOrDefaultAsync();
+                lfEntity.RegisterFormStatus = licenseRegisterFormStatus;
+            }
+            return _mapper.Map<LicenseRegisterFormModel>(lfEntity);
+        }
+        public async Task<bool> ApproveAsync(int licenseRegisterId)
+        {
+            // get by id
+            var lfRegisterEntity = await _context.LicenseRegisterForms.Where(x => x.LicenseFormId == licenseRegisterId)
+                                                                .FirstOrDefaultAsync();
+            // not found
+            if (lfRegisterEntity is null) return false;
+
+            // approve <- change status
+            lfRegisterEntity.RegisterFormStatusId = 2;
+            // save changes
+            return await _context.SaveChangesAsync() > 0 ? true : false;
         }
     }
 }

@@ -11,6 +11,8 @@ namespace DriverLicenseLearningSupport.Mapping
             CreateMap<Account, AccountModel>().ReverseMap();
             CreateMap<Member, MemberModel>().ReverseMap();
             CreateMap<Staff, StaffModel>().ReverseMap();
+            CreateMap<Course, CourseModel>().ReverseMap();
+            CreateMap<Curriculum, CurriculumModel>().ReverseMap();
             CreateMap<LicenseType, LicenseTypeModel>().ReverseMap();
             CreateMap<Address, AddressModel>().ReverseMap();
             CreateMap<Role, RoleModel>().ReverseMap();

@@ -15,9 +15,6 @@ namespace DriverLicenseLearningSupport.Payloads.Request
         [Required(ErrorMessage = "Health certification Image is required")]
         public IFormFile HealthCertificationImage { get; set; } = null!;
 
-        //public DateTime? CreateDate { get; set; } = DateTime.Now;
-        public string? LicenseFormDesc { get; set; } = null!;
-
         [Required(ErrorMessage = "Member Id is required")]
         public Guid MemberId { get; set; }
         [Required(ErrorMessage = "License Type Id is required")]
@@ -29,9 +26,6 @@ namespace DriverLicenseLearningSupport.Payloads.Request
         public static LicenseRegisterFormModel ToLicenseFormRegisterModel(this LicenseRegisterFormRequest reqObj) 
         {
             return new LicenseRegisterFormModel {
-                Image = Guid.NewGuid().ToString(),
-                IdentityCardImage = Guid.NewGuid().ToString(),
-                HealthCertificationImage = Guid.NewGuid().ToString(),
                 CreateDate = DateTime.Now,
                 LicenseFormDesc = $"Create at {DateTime.Now}",
                 LicenseTypeId = reqObj.LicenseTypeId,

@@ -23,23 +23,38 @@ namespace DriverLicenseLearningSupport.Repositories
             await _context.AddAsync(account);
             return await _context.SaveChangesAsync() > 0 ? true : false;
         }
-
-
         public async Task<AccountModel> GetByEmailAsync(string email)
         {
             var accountEntity = await _context.Accounts.Where(x => x.Email == email)
-                                                 .FirstOrDefaultAsync();
+                                                       .Select(x => new Account { 
+                                                            Email = x.Email,
+                                                            Password = x.Password,
+                                                            IsActive = x.IsActive,
+                                                            Role = new Role() 
+                                                            {
+                                                                RoleId = x.Role.RoleId,
+                                                                Name = x.Role.Name
+                                                            }
+                                                       }).FirstOrDefaultAsync();
             return _mapper.Map<AccountModel>(accountEntity);
         }
-
         public async Task<AccountModel> GetByUsernameAndPasswordAsync(string username, string password)
         {
             var accountEntity = await _context.Accounts.Where(x => x.Email == username
                                                             && x.Password == password)
+                                                       .Select(x => new Account
+                                                       {
+                                                           Email = x.Email,
+                                                           Password = x.Password,
+                                                           IsActive = x.IsActive,
+                                                           Role = new Role()
+                                                           {
+                                                               Name = x.Role.Name
+                                                           }
+                                                       })
                                                        .FirstOrDefaultAsync();
             return _mapper.Map<AccountModel>(accountEntity);
         }
-
         public async Task<bool> ResetPasswordAsync(string email, string newPassword)
         {
             var account = await _context.Accounts.Where(x => x.Email == email)
