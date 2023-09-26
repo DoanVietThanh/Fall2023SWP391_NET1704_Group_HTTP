@@ -121,8 +121,8 @@ const Header = () => {
           <Link to='/document'>
             <div>Documents</div>
           </Link>
-          <Link to='/test'>
-            <div>Test</div>
+          <Link to='/theory'>
+            <div>Theory</div>
           </Link>
           <Link to='/blogs'>
             <div>Blog</div>

@@ -13,6 +13,8 @@ import CoursePage from '../pages/CoursePage/CoursePage';
 import IntructorPage from '../pages/IntructorPage/IntructorPage';
 import DetailCourse from '../pages/CoursePage/DetailCourse';
 import ContactPage from '../pages/ContactPage/ContactPage';
+import TheoryPage from '../pages/TheoryPage/TheoryPage';
+import TestTheory from '../pages/TheoryPage/TestTheory';
 
 const RouterApp = () => {
   const router = createBrowserRouter([
@@ -27,6 +29,9 @@ const RouterApp = () => {
 
     { path: '/course', element: <CoursePage /> },
     { path: '/course/detail', element: <DetailCourse /> },
+
+    { path: '/theory', element: <TheoryPage /> },
+    { path: '/theory/test/:id', element: <TestTheory /> },
 
     { path: '/contact', element: <ContactPage /> },
     { path: '*', element: <ErrorPage /> },
