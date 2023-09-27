@@ -1,3 +1,4 @@
+using Amazon;
 using Amazon.S3;
 using AutoMapper;
 using DriverLicenseLearningSupport.Entities;
@@ -62,6 +63,7 @@ builder.Services.AddScoped<IJobTitleService, JobTitleService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<ILicenseRegisterFormService, LicenseRegisterFormService>();
 builder.Services.AddScoped<ICurriculumService, CurriculumService>();
+builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 
 // Add Repositories
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
@@ -74,6 +76,7 @@ builder.Services.AddScoped<ILicenseTypeRepository, LicenseTypeRepository>();
 builder.Services.AddScoped<IJobTitleRepository, JobTitleRepository>();
 builder.Services.AddScoped<ILicenseRegisterFormRepository, LicenseRegisterFormRepository>();
 builder.Services.AddScoped<ICurriculumRepository, CurriculumRepository>();
+builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 
 
 // Add Email Configs
@@ -111,6 +114,7 @@ builder.Services.AddCors(p => p.AddPolicy("Cors", policy =>
 // Amazon S3
 builder.Services.AddSingleton<IAmazonS3, AmazonS3Client>();
 builder.Services.AddSingleton<IImageService, ImageService>();
+AWSConfigs.AWSRegion = "ap-southeast-1";
 
 // Middleware Exception
 //builder.Services.AddTransient<ExceptionMiddleware>();

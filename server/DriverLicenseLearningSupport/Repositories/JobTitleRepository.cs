@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Repositories.Impl;
@@ -28,6 +29,13 @@ namespace DriverLicenseLearningSupport.Repositories
         {
             var jobTitleEntity = await _context.JobTitles.Where(x => x.JobTitleId == id)
                                                          .FirstOrDefaultAsync();
+            return _mapper.Map<JobTitleModel>(jobTitleEntity);
+        }
+
+        public async Task<JobTitleModel> GetByDescAsync(string desc)
+        {
+            var jobTitleEntity = await _context.JobTitles.Where(x => x.JobTitleDesc == desc)
+                                                        .FirstOrDefaultAsync();
             return _mapper.Map<JobTitleModel>(jobTitleEntity);
         }
     }

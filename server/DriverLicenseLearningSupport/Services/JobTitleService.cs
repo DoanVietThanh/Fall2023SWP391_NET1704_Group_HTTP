@@ -23,5 +23,10 @@ namespace DriverLicenseLearningSupport.Services
         {
             return await _jobTitleRepository.GetAsync(id);
         }
+
+        public async Task<JobTitleModel> GetByDescAsync(string desc)
+        {
+            return await _jobTitleRepository.GetByDescAsync(desc);
+        }
     }
 }

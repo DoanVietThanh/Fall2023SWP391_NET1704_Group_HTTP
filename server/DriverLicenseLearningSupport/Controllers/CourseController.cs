@@ -1,10 +1,13 @@
-﻿using DriverLicenseLearningSupport.Payloads.Request;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Presentation;
+using DriverLicenseLearningSupport.Payloads.Request;
 using DriverLicenseLearningSupport.Payloads.Response;
 using DriverLicenseLearningSupport.Services.Impl;
 using DriverLicenseLearningSupport.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Runtime.InteropServices;
 
 namespace DriverLicenseLearningSupport.Controllers
 {
@@ -116,13 +119,81 @@ namespace DriverLicenseLearningSupport.Controllers
                 StatusCode = StatusCodes.Status200OK,
                 Message = "Add course curriculum sucessfully"
             });
-        } 
+        }
+
+        [HttpPut]
+        [Route("courses/curriculum/{id:int}/update")]
+        public async Task<IActionResult> UpdateCourseCurriculum([FromRoute] int id, [FromBody] CourseCurriculumUpdateRequest reqObj) 
+        {
+            // update course <-> hidden
+            var course = await _courseService.GetHiddenCourseAsync(reqObj.CourseId);
+            // check curriculum id
+            var existCurriculum = course.Curricula.Select(x => x.CurriculumId == id)
+                                                  .FirstOrDefault();
+            // course not be hidden
+            if(course is not null) 
+            {
+                if (course.IsActive == true) return new ObjectResult(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status405MethodNotAllowed,
+                    Message = $"Hidden course is required before update course curriculum"
+                })
+                {
+                    StatusCode = StatusCodes.Status405MethodNotAllowed
+                };
+            }
+            // not found
+            if (course is null)
+            {
+                return NotFound(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = $"Not found any course match id {reqObj.CourseId}"
+                });
+            }
+            else if (!existCurriculum) 
+            {
+                return NotFound(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = $"Not found any curriculum match id {id} of course {reqObj.CourseId}"
+                });
+            }
+
+            // generate curriculum model
+            var curriculum = reqObj.ToCurriculumModel();
+            curriculum.CurriculumId = id;
+            // update course curriculum
+            var isSucess = await _courseService.UpdateCourseCurriculumAsync(reqObj.CourseId, curriculum);
+
+            // 404 Not Found <- not found curriculum in course 
+            if (!isSucess) return BadRequest(new BaseResponse{ 
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"Not found curriculum id {id} in course id {reqObj.CourseId}"
+            });
+            // 200 OK <- success
+            return Ok(new BaseResponse { 
+                StatusCode = StatusCodes.Status200OK,
+                Message = "Update course curriculum successfully"
+            });
+        }
 
         [HttpPut]
         [Route("courses/{id:Guid}/update")]
         [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> UpdateCourse([FromRoute] Guid id, [FromBody] CourseUpdateRequest reqObj) 
         {
+            // update course <-> hidden
+            var hiddenCourse = await _courseService.GetHiddenCourseAsync(id);
+            if (hiddenCourse is null) return new ObjectResult(new BaseResponse { 
+                StatusCode = StatusCodes.Status405MethodNotAllowed,
+                Message = $"Hidden course is required before update course"
+            }) 
+            {
+                StatusCode = StatusCodes.Status405MethodNotAllowed
+            };
+
+
             // generate course model
             var course = reqObj.ToCourseModel();
 
@@ -156,6 +227,13 @@ namespace DriverLicenseLearningSupport.Controllers
         [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> HideCourse([FromRoute] Guid id) 
         {
+            // get hidden course by id 
+            var course = await _courseService.GetHiddenCourseAsync(id);
+            if (course is not null) return BadRequest(new BaseResponse { 
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"This course is already hidden"
+            });
+
             var isSucess = await _courseService.HideCourseAsync(id);
             if (!isSucess)
             {
@@ -166,6 +244,31 @@ namespace DriverLicenseLearningSupport.Controllers
             {
                 StatusCode = StatusCodes.Status200OK,
                 Message = $"Hide course id {id} succesfully"
+            });
+        }
+
+        [HttpPut]
+        [Route("courses/{id:Guid}/unhide")]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> UnhideCourse([FromRoute] Guid id) 
+        {
+            // get hidden course by id
+            var course = await _courseService.GetHiddenCourseAsync(id);
+            // not found
+            if (course is null) return NotFound(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"Not found any hidden course match id {id}"
+            });
+
+            // unhide course <- found
+            var isSucess = await _courseService.UnhideAsync(id);
+            // 500 Internal <- cause error
+            if (!isSucess) return StatusCode(StatusCodes.Status500InternalServerError);
+            // 200 Ok <- success
+            return Ok(new BaseResponse { 
+                StatusCode = StatusCodes.Status200OK,
+                Message = $"Unhide course id {id} succesfully"
             });
         }
 

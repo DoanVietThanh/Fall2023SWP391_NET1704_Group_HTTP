@@ -2,6 +2,7 @@
 using AutoMapper.Execution;
 using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
+using DriverLicenseLearningSupport.Payloads.Filters;
 using DriverLicenseLearningSupport.Repositories.Impl;
 using DriverLicenseLearningSupport.Services.Impl;
 using Microsoft.EntityFrameworkCore;
@@ -51,6 +52,37 @@ namespace DriverLicenseLearningSupport.Services
         public async Task<StaffModel> GetAsync(Guid id)
         {
             return await _staffRepository.GetAsync(id);
+        }
+
+        public async Task<StaffModel> GetMentorAsync(Guid id)
+        {
+            return await _staffRepository.GetMentorAsync(id);
+        }
+        
+        public async Task<IEnumerable<StaffModel>> GetAllAsync()
+        {
+            return await _staffRepository.GetAllAsync();
+        }
+
+        public async Task<IEnumerable<StaffModel>> GetAllByFilterAsync(StaffFilter filters)
+        {
+            return await _staffRepository.GetAllByFilterAsync(filters);
+        }
+
+        public async Task<bool> UpdateAsync(Guid id, StaffModel staff)
+        {
+            var staffEntity = _mapper.Map<Staff>(staff);
+            return await _staffRepository.UpdateAsync(id, staffEntity);
+        }
+
+        public async Task<bool> DeleteAsync(Guid id)
+        {
+            return await _staffRepository.DeleteAsync(id);
+        }
+
+        public async Task<IEnumerable<StaffModel>> GetAllMentorAsync()
+        {
+            return await _staffRepository.GetAllMentorAsync();
         }
     }
 }

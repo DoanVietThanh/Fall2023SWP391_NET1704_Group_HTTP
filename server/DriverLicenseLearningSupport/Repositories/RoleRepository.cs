@@ -31,6 +31,13 @@ namespace DriverLicenseLearningSupport.Repositories
             return _mapper.Map<RoleModel>(roleEntity);
         }
 
+        public async Task<RoleModel> GetByNameAsync(string name)
+        {
+            var roleEntity = await _context.Roles.Where(x => x.Name == name)
+                                                 .FirstOrDefaultAsync();
+            return _mapper.Map<RoleModel>(roleEntity);
+        }
+
         public async Task<RoleModel> GetMemberRoleIdAsync()
         {
             var roleEntity = await _context.Roles.Where(x => x.Name.Equals("Member"))

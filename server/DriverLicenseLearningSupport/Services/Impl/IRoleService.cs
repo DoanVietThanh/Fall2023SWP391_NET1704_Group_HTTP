@@ -6,5 +6,6 @@ namespace DriverLicenseLearningSupport.Services.Impl
     {
         Task<IEnumerable<RoleModel>> GetAllAsync();
         Task<RoleModel> GetMemberRoleIdAsync();
+        Task<RoleModel> GetByNameAsync(string name);
     }
 }
