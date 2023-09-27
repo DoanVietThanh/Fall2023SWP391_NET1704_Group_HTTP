@@ -6,12 +6,13 @@ import React, { useState } from 'react';
 import { AiOutlineArrowLeft } from 'react-icons/ai';
 import { Link, useNavigate } from 'react-router-dom';
 import CountdownTimer from './CountdownTimer';
-
+import theme from '../../theme';
+import { AiOutlineArrowRight } from 'react-icons/ai';
 // console.log(Array.from({ length: 10 }, (_, index) => 0));
 // console.log([...Array(10)].map(() => 0));
 // console.log(new Array(10).fill(0));
 
-const TestTheory = () => {
+const ResultTheory = () => {
   const navigate = useNavigate();
   const currentDate = new Date();
   const [open, setOpen] = useState(false);
@@ -37,7 +38,7 @@ const TestTheory = () => {
             <Link to={`/theory`}>
               <div className='font-medium text-[18px] flex items-center gap-2 border p-2 rounded-lg bg-[#878f9f] text-white'>
                 <AiOutlineArrowLeft />
-                Trở về
+                Trở về trang chủ
               </div>
             </Link>
             <h1 className='font-bold text-orange-400 text-[20px]'>
@@ -48,8 +49,30 @@ const TestTheory = () => {
             </h1>
           </div>
           <div className='p-4 border-y-2 flex flex-col justify-center items-center'>
-            <h2 className='text-center font-medium text-[20px]'>Thời gian</h2>
-            <CountdownTimer minutes={60} />
+            <h2
+              className={`text-center w-full text-white font-medium text-[20px] bg-[${theme.color.mainColor}] p-4 rounded-lg`}
+            >
+              Kết Quả Bài Làm
+            </h2>
+            <div className='font-medium'>
+              <p>
+                Đề số:{' '}
+                <span className={`text-[20px] text-[${theme.color.mainColor}]`}>
+                  01 - Đề thi B1
+                </span>
+              </p>
+              <p>
+                Số câu đúng:{' '}
+                <span className='text-[20px] text-green-400'>30</span>
+              </p>
+              <p>
+                Số câu sai: <span className='text-[20px] text-red-400'>5</span>
+              </p>
+              <p>
+                Kết quả:{' '}
+                <span className='text-[20px] text-green-400'>Đậu (30/35)</span>
+              </p>
+            </div>
           </div>
           <div className=''>
             <h2 className='text-center font-medium text-[20px] my-2'>
@@ -69,15 +92,6 @@ const TestTheory = () => {
               ))}
             </div>
           </div>
-        </div>
-
-        <div>
-          <button className='btn w-full' onClick={() => setOpen(true)}>
-            Nộp bài
-          </button>
-          <h3 className='text-center my-2 font-medium italic'>
-            Vui lòng kiểm tra bài làm trước khi nộp
-          </h3>
         </div>
       </div>
 
@@ -102,7 +116,9 @@ const TestTheory = () => {
                 </div>
 
                 <div className='flex-1 h-full px-2'>
-                  <h1 className='btn text-center cursor-text'>Chọn Đáp án</h1>
+                  <h1 className='btn text-center cursor-text'>
+                    Đáp án đã chọn
+                  </h1>
                   <div className='flex flex-col gap-4 p-2 mt-2 border-l-2'>
                     {['A', 'B', 'C', 'D'].map((charOption, indexCharOption) => (
                       <div
@@ -119,6 +135,10 @@ const TestTheory = () => {
                         tempore aperiam architecto enim fugiat ea?
                       </div>
                     ))}
+                    <div className='font-medium p-2 bg-yellow-400 flex-x gap-2'>
+                      <AiOutlineArrowRight />
+                      Đáp án đúng là: A
+                    </div>
                   </div>
                 </div>
               </div>
@@ -126,28 +146,8 @@ const TestTheory = () => {
           ))}
         </div>
       </div>
-
-      <Dialog
-        open={open}
-        onClose={() => setOpen(false)}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle id='alert-dialog-title'>{'Xác nhận nộp bài'}</DialogTitle>
-        <DialogContent>
-          <h1>Chưa hết thời gian, bạn có chắc xác nhận nộp bài</h1>
-        </DialogContent>
-        <DialogActions>
-          <button className='btn-cancel' onClick={() => setOpen(false)}>
-            Hủy
-          </button>
-          <button className='btn' onClick={() => handleSubmit(1)}>
-            Đồng ý
-          </button>
-        </DialogActions>
-      </Dialog>
     </div>
   );
 };
 
-export default TestTheory;
+export default ResultTheory;
