@@ -38,6 +38,7 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly IMemberService _memberService;
         private readonly IStaffService _staffService;
         private readonly IEmailService _emailService;
+        private readonly ILicenseTypeService _licenseTypeService;
         private readonly IJobTitleService _jobTitleService;
         private readonly IRoleService _roleService;
         private readonly IMemoryCache _cache;
@@ -200,91 +201,35 @@ namespace DriverLicenseLearningSupport.Controllers
             });
         }
 
-        [HttpGet]
-        [Route("authentication/staff")]
-        [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> StaffRegister()
+        [HttpPost("authentication/staff")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> StaffRegister([FromBody] StaffRegisterRequest reqObj) 
         {
-            // get all license type
-            var licenseTypes = await _licenseTypeService.GetAllAsync();
-            // get all job title
-            var jobTitles = await _jobTitleService.GetAllAsync();
-            // get all account roles
-            var roles = await _roleService.GetAllAsync();
-
-            return Ok(new BaseResponse
+            // generate account model
+            var account = reqObj.ToAccountModel();
+            // validation
+            var result = account.ValidateAsync();
+            if(result is not null) 
             {
-                StatusCode = StatusCodes.Status200OK,
-                Data = new
-                {
-                    LicenseTypes = licenseTypes,
-                    JobTitles = jobTitles,
-                    Roles = roles
-                }
-            });
-        }
-
-        [HttpPost]
-        [Route("authentication/staff")]
-        [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> StaffRegister([FromBody] StaffRegisterRequest reqObj)
-        {
-            // check account exist
-            var accountExist = await _accountService.GetByEmailAsync(reqObj.Username);
-            if (accountExist != null)
-            {
-                return StatusCode(StatusCodes.Status403Forbidden,
-                    new BaseResponse()
-                    {
-                        StatusCode = StatusCodes.Status403Forbidden,
-                        Message = "Email already exist!"
-                    });
+                return BadRequest(new ErrorResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Errors = result
+                });
             }
 
-            //generate account
-            var account = reqObj.ToAccountModel();
-            // validate account model
-            var accountValidateResult = await account.ValidateAsync();
-            if (accountValidateResult is not null) return BadRequest(new ErrorResponse
-            {
-                StatusCode = StatusCodes.Status400BadRequest,
-                // ValidationProblemDetails <- errors[]
-                Errors = accountValidateResult
-            });
+            // create staff account
+            var isSucess = await _accountService.CreateAsync(account);
 
-            // generate address
-            var address = reqObj.ToAddressModel();
-            var addressId = Guid.NewGuid().ToString();
-            address.AddressId = addressId;
+            if (!isSucess) // cause error
+                return StatusCode(StatusCodes.Status500InternalServerError);
 
-            // generate staff
-            var staff = reqObj.ToStaffModel(_appSettings.DateFormat);
-            var staffId = Guid.NewGuid().ToString();
-            staff.StaffId = staffId;
-            staff.EmailNavigation = account;
-            staff.Address = address;
-            staff.IsActive = true;
-            staff.AvatarImage = _appSettings.DefaultAvatar;
-
-            // create staff
-            await _staffService.CreateAsync(staff);
-
-            // find created staff by id
-            staff = await _staffService.GetAsync(Guid.Parse(staffId));
-
-            return Ok(new BaseResponse
-            {
+            return Ok(new BaseResponse { 
                 StatusCode = StatusCodes.Status200OK,
-                Message = "Register Sucess",
-                Data = new
-                {
-                    Staff = staff
-                }
+                Message = "Create staff account succesfully",
             });
         }
 
-        [HttpPost]
-        [Route("authentication/forgot-password")]
+        [HttpPost("authentication/forgot-password")]
         [AllowAnonymous]
         public async Task<IActionResult> ForgotPassword([Required][EmailAddress] string email)
         {
@@ -312,15 +257,13 @@ namespace DriverLicenseLearningSupport.Controllers
             });
         }
 
-        [HttpGet]
-        [Route("authentication/reset-password")]
+        [HttpGet("authentication/reset-password")]
         public async Task<IActionResult> ResetPassword(string passwordResetToken, string email)
         {
             return Ok(new { passwordResetToken, email });
         }
 
-        [HttpPost]
-        [Route("authentication/reset-password")]
+        [HttpPost("authentication/reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPassword resetPassword)
         {
             var account = await _accountService.GetByEmailAsync(resetPassword.Email);

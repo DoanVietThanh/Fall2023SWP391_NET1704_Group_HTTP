@@ -1,11 +1,10 @@
-﻿using DriverLicenseLearningSupport.Entities;
-using DriverLicenseLearningSupport.Models;
+﻿using DriverLicenseLearningSupport.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 
 namespace DriverLicenseLearningSupport.Payloads.Request
 {
-    public class CourseCurriculumAddRequest
+    public class CourseCurriculumUpdateRequest
     {
         // CourseId
         [Required(ErrorMessage = "Course Id is required")]
@@ -18,9 +17,9 @@ namespace DriverLicenseLearningSupport.Payloads.Request
         public string CurriculumDetail { get; set; }
     }
 
-    public static class CourseCurriculumAddRequestExtension
+    public static class CourseCurriculumUpdateRequestExtension
     {
-        public static CurriculumModel ToCurriculumModel(this CourseCurriculumAddRequest reqObj)
+        public static CurriculumModel ToCurriculumModel(this CourseCurriculumUpdateRequest reqObj)
         {
             return new CurriculumModel
             {

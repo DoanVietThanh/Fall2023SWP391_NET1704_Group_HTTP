@@ -17,6 +17,11 @@ namespace DriverLicenseLearningSupport.Services
             return await _roleRepository.GetAllAsync();
         }
 
+        public async Task<RoleModel> GetByNameAsync(string name)
+        {
+            return await _roleRepository.GetByNameAsync(name);
+        }
+
         public async Task<RoleModel> GetMemberRoleIdAsync()
         {
             return await _roleRepository.GetMemberRoleIdAsync();

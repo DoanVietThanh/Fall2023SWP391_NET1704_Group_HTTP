@@ -6,5 +6,6 @@ namespace DriverLicenseLearningSupport.Repositories.Impl
     {
         Task<IEnumerable<JobTitleModel>> GetAllAsync();
         Task<JobTitleModel> GetAsync(int id);
+        Task<JobTitleModel> GetByDescAsync(string desc);
     }
  }

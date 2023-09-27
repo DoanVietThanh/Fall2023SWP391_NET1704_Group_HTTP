@@ -30,6 +30,10 @@ namespace DriverLicenseLearningSupport.Services
         {
             return await _courseRepo.GetAsync(id);
         }
+        public async Task<CourseModel> GetHiddenCourseAsync(Guid id) 
+        {
+            return await _courseRepo.GetHiddenCourseAsync(id);
+        }
         public async Task<IEnumerable<CourseModel>> GetAllAsync()
         {
             return await _courseRepo.GetAllAsync();
@@ -40,7 +44,13 @@ namespace DriverLicenseLearningSupport.Services
         }
         public async Task<bool> UpdateAsync(Guid id, CourseModel course)
         {
-            return await _courseRepo.UpdateAsync(id, course);
+            var courseEntity = _mapper.Map<Course>(course);
+            return await _courseRepo.UpdateAsync(id, courseEntity);
+        }
+        public async Task<bool> UpdateCourseCurriculumAsync(Guid courseId, CurriculumModel curriculum)
+        {
+            var curriculumEntity = _mapper.Map<Curriculum>(curriculum);
+            return await _courseRepo.UpdateCourseCurriculumAsync(courseId, curriculumEntity);
         }
         public async Task<bool> DeleteAsync(Guid id)
         {
@@ -62,5 +72,10 @@ namespace DriverLicenseLearningSupport.Services
             // cause error
             return false;
         }
+        public async Task<bool> UnhideAsync(Guid id)
+        {
+            return await _courseRepo.UnhideAsync(id);
+        }
+
     }
 }

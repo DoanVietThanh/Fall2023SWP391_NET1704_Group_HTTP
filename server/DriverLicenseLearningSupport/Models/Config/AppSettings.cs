@@ -8,5 +8,6 @@
         public string DateFormat { get; set; }
         public string DefaultAvatar { get; set; }
         public string MembersCacheKey { get; set; }
+        public string StaffsCacheKey { get; set; }
     }
 }
