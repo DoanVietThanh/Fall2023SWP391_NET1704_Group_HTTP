@@ -15,6 +15,7 @@ import DetailCourse from '../pages/CoursePage/DetailCourse';
 import ContactPage from '../pages/ContactPage/ContactPage';
 import TheoryPage from '../pages/TheoryPage/TheoryPage';
 import TestTheory from '../pages/TheoryPage/TestTheory';
+import ResultTheory from '../pages/TheoryPage/ResultTheory';
 
 const RouterApp = () => {
   const router = createBrowserRouter([
@@ -32,6 +33,7 @@ const RouterApp = () => {
 
     { path: '/theory', element: <TheoryPage /> },
     { path: '/theory/test/:id', element: <TestTheory /> },
+    { path: '/theory/result/:id', element: <ResultTheory /> },
 
     { path: '/contact', element: <ContactPage /> },
     { path: '*', element: <ErrorPage /> },
