@@ -10,6 +10,8 @@
         "dependencies": {
           "AWSSDK.S3": "3.7.203.16",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "6.1.1",
+          "DocX": "2.5.0",
+          "DocumentFormat.OpenXml": "2.20.0",
           "EPPlus": "6.2.9",
           "FluentValidation": "6.4.1",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.22",
@@ -63,6 +65,33 @@
           "lib/netcoreapp3.1/AWSSDK.S3.dll": {
             "assemblyVersion": "3.3.0.0",
             "fileVersion": "3.7.203.16"
+          }
+        }
+      },
+      "DocumentFormat.OpenXml/2.20.0": {
+        "dependencies": {
+          "System.IO.Packaging": "4.7.0"
+        },
+        "runtime": {
+          "lib/net6.0/DocumentFormat.OpenXml.dll": {
+            "assemblyVersion": "2.20.0.0",
+            "fileVersion": "2.20.0.0"
+          }
+        }
+      },
+      "DocX/2.5.0": {
+        "dependencies": {
+          "System.Drawing.Common": "6.0.0",
+          "System.IO.Packaging": "4.7.0"
+        },
+        "runtime": {
+          "lib/net5.0/Xceed.Document.NET5.dll": {
+            "assemblyVersion": "2.5.0.0",
+            "fileVersion": "2.5.0.0"
+          },
+          "lib/net5.0/Xceed.Words.NET5.dll": {
+            "assemblyVersion": "2.5.0.0",
+            "fileVersion": "2.5.0.0"
           }
         }
       },
@@ -700,6 +729,14 @@
           "System.Threading.Tasks": "4.3.0"
         }
       },
+      "System.IO.Packaging/4.7.0": {
+        "runtime": {
+          "lib/netstandard2.0/System.IO.Packaging.dll": {
+            "assemblyVersion": "4.0.5.0",
+            "fileVersion": "4.700.19.56404"
+          }
+        }
+      },
       "System.Linq/4.1.0": {
         "dependencies": {
           "System.Collections": "4.0.11",
@@ -990,6 +1027,20 @@
       "sha512": "sha512-hiBEqlBIgQ8TGMeBR07qMrrBiR5UIG8l5fphO2f+FQ3SD5ExXkPCiPDvrCgXzsgHIajJwf7mPPNsNDjPU7ev8g==",
       "path": "awssdk.s3/3.7.203.16",
       "hashPath": "awssdk.s3.3.7.203.16.nupkg.sha512"
+    },
+    "DocumentFormat.OpenXml/2.20.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+oFMsEppo/W6KpGTRXaJl2jTFYn9zeon4FaZuDoCijQ1/0JaPENaCef7d4Y3f8v116eKhVBwd4Ya+/NDglxkjw==",
+      "path": "documentformat.openxml/2.20.0",
+      "hashPath": "documentformat.openxml.2.20.0.nupkg.sha512"
+    },
+    "DocX/2.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-GljwrWBLelooPoeGJ7BPnp5yt/VsZt6lDjxiop74BCp8+a/LQ3f4czY3e9DpcT2C2t/BgYFPMsbM6IVQTk/Y2A==",
+      "path": "docx/2.5.0",
+      "hashPath": "docx.2.5.0.nupkg.sha512"
     },
     "EPPlus/6.2.9": {
       "type": "package",
@@ -1431,6 +1482,13 @@
       "sha512": "sha512-3qjaHvxQPDpSOYICjUoTsmoq5u6QJAFRUITgeT/4gqkF1bajbSmb1kwSxEA8AHlofqgcKJcM8udgieRNhaJ5Cg==",
       "path": "system.io/4.3.0",
       "hashPath": "system.io.4.3.0.nupkg.sha512"
+    },
+    "System.IO.Packaging/4.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-9VV4KAbgRQZ79iEoG40KIeZy38O30oWwewScAST879+oki8g/Wa2HXZQgrhDDxQM4GkP1PnRJll05NMiVPbYAw==",
+      "path": "system.io.packaging/4.7.0",
+      "hashPath": "system.io.packaging.4.7.0.nupkg.sha512"
     },
     "System.Linq/4.1.0": {
       "type": "package",

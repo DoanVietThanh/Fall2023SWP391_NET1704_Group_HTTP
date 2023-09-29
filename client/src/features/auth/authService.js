@@ -18,8 +18,19 @@ const login = async (dataForm) => {
   return response.data;
 };
 
+const logout = async () => {
+  const response = await axios.get(`${url_server}/authentication/logout`);
+  console.log('🚀 ~ file: authService.js:24 ~ logout ~ response:', response);
+  if (response.data.statusCode === 200) {
+    localStorage.clear();
+    toastSuccess(`Đăng xuất thành công`);
+  }
+  return response.message;
+};
+
 const authService = {
   login,
+  logout,
 };
 
 export default authService;
