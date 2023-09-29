@@ -34,6 +34,8 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly IAddressService _addressService;
         private readonly IAccountService _accountService;
         private readonly IRoleService _roleService;
+        private readonly IStaffService _staffService;
+        private readonly IFeedbackService _feedbackService;
         private readonly IImageService _imageService;
         private readonly IMemoryCache _memoryCache;
         private readonly AppSettings _appSettings;
@@ -48,6 +50,8 @@ namespace DriverLicenseLearningSupport.Controllers
             IRoleService roleService,
             ILicenseRegisterFormService licenseRegisterFormService,
             IImageService imageService,
+            IStaffService staffService,
+            IFeedbackService feedbackService,
             IOptionsMonitor<AppSettings> monitor)
         {
             _memberService = memberService;
@@ -57,6 +61,8 @@ namespace DriverLicenseLearningSupport.Controllers
             _addressService = addressService;
             _accountService = accountService;
             _roleService = roleService;
+            _staffService = staffService;
+            _feedbackService = feedbackService;
             _licenseRegisterFormService = licenseRegisterFormService;
             _imageService = imageService;
             _appSettings = monitor.CurrentValue;
@@ -371,7 +377,16 @@ namespace DriverLicenseLearningSupport.Controllers
         {
             // Get courses by filters
             var members = await _memberService.GetAllByFilterAsync(filters);
+            if (members is null)
+            {
+                return NotFound(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = "Not found any members to export excel"
+                });
 
+            }
+            
             // Start to exporting excel
             // Create stream contain file
             var stream = new MemoryStream();
@@ -414,7 +429,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     worksheet.Cells[row, 1].Value = m.MemberId.ToString();
                     worksheet.Cells[row, 2].Value = m.FirstName;
                     worksheet.Cells[row, 3].Value = m.LastName;
-                    worksheet.Cells[row, 4].Value = m.DateBirth.ToString();
+                    worksheet.Cells[row, 4].Value = m.DateBirth.ToString("dd/MM/yyyy");
                     worksheet.Cells[row, 5].Value = m.Phone;
                     worksheet.Cells[row, 6].Value = m.Email;
                     worksheet.Cells[row, 7].Value = m.Address.Street;
@@ -521,7 +536,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
                             // Add to members list
                             // Get license type id
-                            var licenseType = await _licenseTypeService.GetByDescAsync(licenseTypeDesc);
+                            var licenseType = await _licenseTypeService.GetByDescAsync(licenseTypeDesc.ToUpper());
                             var memberId = Guid.NewGuid().ToString();
                             // Generate member model 
                             var member = new MemberModel
@@ -678,5 +693,46 @@ namespace DriverLicenseLearningSupport.Controllers
 
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
+
+        [HttpPost]
+        [Route("members/feedback/mentor")]
+        public async Task<IActionResult> FeedbackMentor([FromForm] FeedbackMentorRequest reqObj) 
+        {
+            // generate feedback model
+            var feedback = reqObj.ToFeedbackModel();
+
+            // check exist member, mentor
+            var member = await _memberService.GetAsync(Guid.Parse(feedback.MemberId));
+            var mentor = await _staffService.GetMentorAsync(Guid.Parse(feedback.StaffId));
+            if(member is null)
+            {
+                return NotFound(new BaseResponse { 
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = $"Not found any member id {reqObj.MemberId}"
+                });
+            }
+            if(mentor is null)
+            {
+                return NotFound(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = $"Not found any mentor id {reqObj.MentorId}"
+                });
+            }
+
+            // create feedback
+            var isSucess = await _feedbackService.CreateAsync(feedback);
+
+            if (isSucess) {
+                return Ok(new BaseResponse { 
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = "Feedback mentor successfully"
+                });
+            }
+
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+        //[HttpPost]
+        //[Route("members/feedback/course")]
     }
 }

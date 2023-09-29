@@ -65,9 +65,36 @@ namespace DriverLicenseLearningSupport.Repositories
             }
             return null;
         }
+        public async Task<CourseModel> GetHiddenCourseAsync(Guid id) 
+        {
+            var courseEntity = await _context.Courses.Where(x => x.CourseId == id.ToString()
+                                                            && x.IsActive == false)
+                                                        // foreach -> new course -> get list curriculum
+                                                        .Select(x => new Course
+                                                        {
+                                                            CourseId = x.CourseId,
+                                                            CourseDesc = x.CourseDesc,
+                                                            CourseTitle = x.CourseTitle,
+                                                            Cost = x.Cost,
+                                                            IsActive = x.IsActive,
+                                                            TotalSession = x.TotalSession,
+                                                            Curricula = x.Curricula.Select(c => new Curriculum
+                                                            {
+                                                                CurriculumId = c.CurriculumId,
+                                                                CurriculumDesc = c.CurriculumDesc,
+                                                                CurriculumDetail = c.CurriculumDetail
+                                                            }).ToList()
+                                                        }).FirstOrDefaultAsync();
+            return _mapper.Map<CourseModel>(courseEntity);
+        }
         public async Task<IEnumerable<CourseModel>> GetAllAsync()
         {
             var courses = await _context.Courses.Where(x => x.IsActive == true).ToListAsync();
+            return _mapper.Map<IEnumerable<CourseModel>>(courses);
+        }
+        public async Task<IEnumerable<CourseModel>> GetAllHiddenCourseAsync()
+        {
+            var courses = await _context.Courses.Where(x => x.IsActive == false).ToListAsync();
             return _mapper.Map<IEnumerable<CourseModel>>(courses);
         }
         public async Task<bool> AddCurriculumAsync(Guid courseId, int curriculumId) 
@@ -83,7 +110,7 @@ namespace DriverLicenseLearningSupport.Repositories
             }
             return false;
         }
-        public async Task<bool> UpdateAsync(Guid id, CourseModel course)
+        public async Task<bool> UpdateAsync(Guid id, Course course)
         {
             var courseEntity = await _context.Courses.Where(x => x.CourseId == id.ToString())
                                                      .FirstOrDefaultAsync();
@@ -92,7 +119,7 @@ namespace DriverLicenseLearningSupport.Repositories
                 // update fields
                 courseEntity.CourseTitle = course.CourseTitle;
                 courseEntity.CourseDesc = course.CourseDesc;
-                courseEntity.CourseDesc = course.CourseDesc;
+                courseEntity.Cost = course.Cost;
                 courseEntity.TotalSession = course.TotalSession;
 
                 // save changes
@@ -100,6 +127,40 @@ namespace DriverLicenseLearningSupport.Repositories
             }
 
             return false;
+        }
+        public async Task<bool> UpdateCourseCurriculumAsync(Guid courseId, Curriculum curriculum)
+        {
+            // get course by id
+            var course = await _context.Courses.Where(x => x.CourseId == courseId.ToString() && x.IsActive == false)
+                                                // foreach -> new course -> get list curriculum
+                                                .Select(x => new Course
+                                                {
+                                                    CourseId = x.CourseId,
+                                                    CourseDesc = x.CourseDesc,
+                                                    CourseTitle = x.CourseTitle,
+                                                    Cost = x.Cost,
+                                                    IsActive = x.IsActive,
+                                                    TotalSession = x.TotalSession,
+                                                    Curricula = x.Curricula.Select(c => new Curriculum
+                                                    {
+                                                        CurriculumId = c.CurriculumId,
+                                                        CurriculumDesc = c.CurriculumDesc,
+                                                        CurriculumDetail = c.CurriculumDetail
+                                                    }).ToList()
+                                                }).FirstOrDefaultAsync();
+            var curriculumEntity = course.Curricula.Where(x => x.CurriculumId == curriculum.CurriculumId)
+                                              .FirstOrDefault();
+            var courseCurri = await _context.Curricula.Where(x => x.CurriculumId == curriculumEntity.CurriculumId)
+                                                      .FirstOrDefaultAsync();     
+            // not found curriculum in course
+            if (courseCurri is null) return false;
+
+            // update curriculum
+            courseCurri.CurriculumDesc = curriculum.CurriculumDesc;
+            courseCurri.CurriculumDetail = curriculum.CurriculumDetail;
+
+            // save changes
+            return await _context.SaveChangesAsync() > 0 ? true : false;
         }
         public async Task<bool> DeleteAsync(Guid id)
         {
@@ -125,6 +186,7 @@ namespace DriverLicenseLearningSupport.Repositories
 
             if (courseEntity is not null)
             {
+                if (courseEntity.IsActive is false) return true;
                 // hide <- change status
                 courseEntity.IsActive = false;
                 // save changes
@@ -132,10 +194,19 @@ namespace DriverLicenseLearningSupport.Repositories
             }
             return false;
         }
-        public async Task<IEnumerable<CourseModel>> GetAllHiddenCourseAsync()
+        public async Task<bool> UnhideAsync(Guid id)
         {
-            var courses = await _context.Courses.Where(x => x.IsActive == false).ToListAsync();
-            return _mapper.Map<IEnumerable<CourseModel>>(courses);
+            var courseEntity = await _context.Courses.Where(x => x.CourseId == id.ToString())
+                                                     .FirstOrDefaultAsync();
+            if(courseEntity is not null) 
+            {
+                // unhide <- change status
+                courseEntity.IsActive = true;
+                // save changes and return
+                return await _context.SaveChangesAsync() > 0 ? true : false;
+            }
+            // save change failed
+            return false;
         }
 
     }

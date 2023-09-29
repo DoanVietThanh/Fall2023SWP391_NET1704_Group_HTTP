@@ -20,7 +20,7 @@ namespace DriverLicenseLearningSupport.Payloads.Request
 
     public static class CourseCurriculumAddRequestExtension
     {
-        public static CurriculumModel ToCurriculumModel(this CourseCurriculumAddRequest reqObj) 
+        public static CurriculumModel ToCurriculumModel(this CourseCurriculumAddRequest reqObj)
         {
             return new CurriculumModel
             {

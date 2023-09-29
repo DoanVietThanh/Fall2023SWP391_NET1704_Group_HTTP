@@ -7,7 +7,7 @@ namespace DriverLicenseLearningSupport.Models
         public string MemberId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public DateTime? DateBirth { get; set; }
+        public DateTime DateBirth { get; set; }
         public string Phone { get; set; }
         public bool? IsActive { get; set; }
         public string AvatarImage { get; set; }

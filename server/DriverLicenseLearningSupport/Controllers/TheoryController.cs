@@ -148,7 +148,8 @@ namespace DriverLicenseLearningSupport.Controllers
 
 
         [HttpDelete]
-        [Route("theory/{answerId:int/delete-answer}")]
+        [Route("theory/{answerId:int}/delete-answer")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> DeleteSingleAnswer([FromRoute]int answerId)
         {
             bool isSucess = await _answerService.DeleteAnswerAsync(answerId);
@@ -165,9 +166,10 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpDelete]
         [Route("theory/{questionId:int}/delete-question")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> DeleteQuestion([FromRoute] int questionId) 
         {
-            
+               
         }
         
     }

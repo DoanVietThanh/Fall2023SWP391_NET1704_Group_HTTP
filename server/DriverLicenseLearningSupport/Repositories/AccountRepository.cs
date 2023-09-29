@@ -49,6 +49,7 @@ namespace DriverLicenseLearningSupport.Repositories
                                                            IsActive = x.IsActive,
                                                            Role = new Role()
                                                            {
+                                                               RoleId = x.Role.RoleId,
                                                                Name = x.Role.Name
                                                            }
                                                        })
