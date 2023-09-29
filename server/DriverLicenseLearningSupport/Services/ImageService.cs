@@ -23,21 +23,34 @@ namespace DriverLicenseLearningSupport.Services
         }
         public async Task<PutObjectResponse> UploadImageAsync(Guid id, IFormFile file)
         {
-            // request
-            var putObjectRequest = new PutObjectRequest
+            var awsAccessKeyId = "AKIAREKH23Z6WA54BHXA";
+            var awsSecretAccessKey = "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";
+            var awsCredentials = new Amazon.Runtime.BasicAWSCredentials(awsAccessKeyId, awsSecretAccessKey);
+            var s3Config = new AmazonS3Config
             {
-                BucketName = BucketName,
-                Key = $"profile_images/{id}",
-                ContentType = file.ContentType,
-                InputStream = file.OpenReadStream(),
-                Metadata = 
+                RegionEndpoint = Amazon.RegionEndpoint.APSoutheast1
+            };
+            using (var s3Client = new AmazonS3Client(awsCredentials, s3Config))
+            {
+                // request
+                var putObjectRequest = new PutObjectRequest
+                {
+                    BucketName = BucketName,
+                    Key = $"profile_images/{id}",
+                    ContentType = file.ContentType,
+                    InputStream = file.OpenReadStream(),
+                    Metadata =
                 {
                     ["x-amz-meta-originalname"] = file.FileName,
                     ["x-amz-meta-extension"] = Path.GetExtension(file.FileName)
                 }
-            };
-            // response        
-            return await _s3.PutObjectAsync(putObjectRequest);
+                };
+                // response        
+                return await s3Client.PutObjectAsync(putObjectRequest);
+            //return await _s3.PutObjectAsync(putObjectRequest);
+        }
+
+            return null;
         }
 
         public async Task<GetObjectResponse?> GetImageAsync(Guid id)

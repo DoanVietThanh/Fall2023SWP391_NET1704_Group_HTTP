@@ -38,6 +38,7 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly IMemberService _memberService;
         private readonly IStaffService _staffService;
         private readonly IEmailService _emailService;
+        private readonly ILicenseTypeService _licenseTypeService;
         private readonly IJobTitleService _jobTitleService;
         private readonly IRoleService _roleService;
         private readonly IMemoryCache _cache;

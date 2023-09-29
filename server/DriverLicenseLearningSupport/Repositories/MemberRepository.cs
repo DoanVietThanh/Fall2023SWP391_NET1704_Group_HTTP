@@ -46,46 +46,50 @@ namespace DriverLicenseLearningSupport.Repositories
         {
             // get by email
             var memberEntity = await _context.Members.Where(x => x.Email.Equals(email) && x.IsActive == true)
-                                                .Select(x => new Member { 
-                                                MemberId = x.MemberId,
-                                                FirstName = x.FirstName,
-                                                LastName = x.LastName,
-                                                AvatarImage = x.AvatarImage,
-                                                Phone = x.Phone,
-                                                DateBirth = x.DateBirth,
-                                                Email = x.Email,
-                                                LicenseType = new LicenseType { 
-                                                    LicenseTypeId = x.LicenseType.LicenseTypeId,
-                                                    LicenseTypeDesc = x.LicenseType.LicenseTypeDesc
-                                                },
-                                                Address = new Address {
-                                                    AddressId = x.AddressId,
-                                                    Street = x.Address.Street,
-                                                    District = x.Address.District,
-                                                    City = x.Address.City,
-                                                    Zipcode = x.Address.Zipcode,
-                                                },
-                                                EmailNavigation = new Account { 
-                                                    Role = new Role
+                                                .Select(x => new Member
+                                                {
+                                                    MemberId = x.MemberId,
+                                                    FirstName = x.FirstName,
+                                                    LastName = x.LastName,
+                                                    AvatarImage = x.AvatarImage,
+                                                    Phone = x.Phone,
+                                                    DateBirth = x.DateBirth,
+                                                    Email = x.Email,
+                                                    LicenseType = new LicenseType
                                                     {
-                                                        RoleId = x.EmailNavigation.Role.RoleId,
-                                                        Name = x.EmailNavigation.Role.Name
-                                                    }
-                                                },
-                                                LicenseFormId = x.LicenseFormId
-                                                //LicenseForm = new LicenseRegisterForm { 
-                                                //    LicenseFormId = x.LicenseForm.LicenseFormId,
-                                                //    LicenseFormDesc = x.LicenseForm.LicenseFormDesc,
-                                                //    CreateDate = x.LicenseForm.CreateDate,
-                                                //    Image = x.LicenseForm.Image,
-                                                //    IdentityCardImage = x.LicenseForm.IdentityCardImage,
-                                                //    HealthCertificationImage = x.LicenseForm.HealthCertificationImage,
-                                                //    RegisterFormStatus = new LicenseRegisterFormStatus 
-                                                //    {
-                                                //        RegisterFormStatusId = x.LicenseForm.RegisterFormStatus.RegisterFormStatusId, 
-                                                //        RegisterFormStatusDesc = x.LicenseForm.RegisterFormStatus.RegisterFormStatusDesc 
-                                                //    }
-                                                //}
+                                                        LicenseTypeId = x.LicenseType.LicenseTypeId,
+                                                        LicenseTypeDesc = x.LicenseType.LicenseTypeDesc
+                                                    },
+                                                    Address = new Address
+                                                    {
+                                                        AddressId = x.AddressId,
+                                                        Street = x.Address.Street,
+                                                        District = x.Address.District,
+                                                        City = x.Address.City,
+                                                        Zipcode = x.Address.Zipcode,
+                                                    },
+                                                    EmailNavigation = new Account
+                                                    {
+                                                        Role = new Role
+                                                        {
+                                                            RoleId = x.EmailNavigation.Role.RoleId,
+                                                            Name = x.EmailNavigation.Role.Name
+                                                        }
+                                                    },
+                                                    LicenseFormId = x.LicenseFormId
+                                                    //LicenseForm = new LicenseRegisterForm { 
+                                                    //    LicenseFormId = x.LicenseForm.LicenseFormId,
+                                                    //    LicenseFormDesc = x.LicenseForm.LicenseFormDesc,
+                                                    //    CreateDate = x.LicenseForm.CreateDate,
+                                                    //    Image = x.LicenseForm.Image,
+                                                    //    IdentityCardImage = x.LicenseForm.IdentityCardImage,
+                                                    //    HealthCertificationImage = x.LicenseForm.HealthCertificationImage,
+                                                    //    RegisterFormStatus = new LicenseRegisterFormStatus 
+                                                    //    {
+                                                    //        RegisterFormStatusId = x.LicenseForm.RegisterFormStatus.RegisterFormStatusId, 
+                                                    //        RegisterFormStatusDesc = x.LicenseForm.RegisterFormStatus.RegisterFormStatusDesc 
+                                                    //    }
+                                                    //}
                                                 }).FirstOrDefaultAsync();
             // map to model and return
             return _mapper.Map<MemberModel>(memberEntity);
@@ -111,7 +115,7 @@ namespace DriverLicenseLearningSupport.Repositories
                                                         .FirstOrDefaultAsync();
             // check exist
             if (memberEntity is null) return false;
-            
+
             // update address
             var addressEntity = await _context.Addresses.Where(x => x.AddressId == memberEntity.AddressId)
                                                         .FirstOrDefaultAsync();
@@ -149,7 +153,7 @@ namespace DriverLicenseLearningSupport.Repositories
             }
 
             // filter by phone number
-            if (!String.IsNullOrEmpty(filters.Phone)) 
+            if (!String.IsNullOrEmpty(filters.Phone))
             {
                 members = members.Where(x => x.Phone.Equals(filters.Phone));
             }
@@ -174,7 +178,7 @@ namespace DriverLicenseLearningSupport.Repositories
             var member = await _context.Members.Where(x => x.MemberId.Equals(id.ToString()))
                                                .FirstOrDefaultAsync();
             // not found
-            if(member is null) return false;
+            if (member is null) return false;
             //remove member
             _context.Members.Remove(member);
             // save changes and return 
@@ -184,7 +188,7 @@ namespace DriverLicenseLearningSupport.Repositories
         {
             var member = await _context.Members.Where(x => x.MemberId == id.ToString())
                                          .FirstOrDefaultAsync();
-            if (member is not null) 
+            if (member is not null)
             {
                 // hide <- change status
                 member.IsActive = false;
@@ -194,5 +198,5 @@ namespace DriverLicenseLearningSupport.Repositories
             return false;
         }
 
-    }   
+    }
 }
