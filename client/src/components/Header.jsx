@@ -14,23 +14,26 @@ import {
   BsTwitter,
   BsYoutube,
 } from 'react-icons/bs';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Menu, MenuItem } from '@mui/material';
+import { logout } from '../features/auth/authSlice';
 
 const Header = () => {
   const navigate = useNavigate();
-  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  let { user } = useSelector((state) => state.auth);
   const handleClose = () => {
     setAnchorEl(null);
   };
 
   const handleLogout = () => {
-    localStorage.clear();
+    dispatch(logout());
     navigate('/login');
   };
 
