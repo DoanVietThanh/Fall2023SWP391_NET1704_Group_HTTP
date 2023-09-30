@@ -124,7 +124,7 @@ builder.Services.AddSingleton<IImageService, ImageService>();
 //builder.Services.AddTransient<ExceptionMiddleware>();
 
 var app = builder.Build();
-
+AWSConfigs.AWSRegion = "ap-southeast-1";
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

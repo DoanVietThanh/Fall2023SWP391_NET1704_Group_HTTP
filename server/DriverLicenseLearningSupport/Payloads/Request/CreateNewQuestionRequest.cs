@@ -26,6 +26,7 @@ namespace DriverLicenseLearningSupport.Payloads.Request
         public bool? isParalysis { get; set; } = null;
 
         //License Type for the question
+        [Required(ErrorMessage ="Please input LisenceTypeID")]
         public int LicenseTypeId { get; set; }
 
         //create question, contxt.Questio.OrderByDesc.FirstOrD

@@ -28,9 +28,9 @@ namespace DriverLicenseLearningSupport.Services
             return _answerRepository.CreateRangeAsync(answerEntities);
         }
 
-        public async Task<bool> DeleteAnswerAsync(int id)
+        public async Task<bool> DeleteAnswerAsync(int answerId)
         {
-            return await _answerRepository.DeleteAnswerAsync(id);
+            return await _answerRepository.DeleteAnswerAsync(answerId);
         }
 
         public async Task<bool> DeleteAnswersByQuestionIdAsync(int quesitonId)

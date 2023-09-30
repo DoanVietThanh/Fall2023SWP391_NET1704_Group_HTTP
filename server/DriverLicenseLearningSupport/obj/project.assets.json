@@ -5529,16 +5529,11 @@
     ]
   },
   "packageFolders": {
-<<<<<<< HEAD
     "C:\\Users\\HP\\.nuget\\packages\\": {}
-=======
-    "C:\\Users\\doanv\\.nuget\\packages\\": {}
->>>>>>> 1ff0ba7a4a504a3baba60c37ce667db5c8c640ea
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-<<<<<<< HEAD
       "projectUniqueName": "C:\\Users\\HP\\Desktop\\fixbug\\Fall2023SWP391_NET1704_Group_HTTP\\server\\DriverLicenseLearningSupport\\DriverLicenseLearningSupport.csproj",
       "projectName": "DriverLicenseLearningSupport",
       "projectPath": "C:\\Users\\HP\\Desktop\\fixbug\\Fall2023SWP391_NET1704_Group_HTTP\\server\\DriverLicenseLearningSupport\\DriverLicenseLearningSupport.csproj",
@@ -5547,16 +5542,6 @@
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
-=======
-      "projectUniqueName": "D:\\FPT\\Kì 5\\SWP\\server\\DriverLicenseLearningSupport\\DriverLicenseLearningSupport.csproj",
-      "projectName": "DriverLicenseLearningSupport",
-      "projectPath": "D:\\FPT\\Kì 5\\SWP\\server\\DriverLicenseLearningSupport\\DriverLicenseLearningSupport.csproj",
-      "packagesPath": "C:\\Users\\doanv\\.nuget\\packages\\",
-      "outputPath": "D:\\FPT\\Kì 5\\SWP\\server\\DriverLicenseLearningSupport\\obj\\",
-      "projectStyle": "PackageReference",
-      "configFilePaths": [
-        "C:\\Users\\doanv\\AppData\\Roaming\\NuGet\\NuGet.Config",
->>>>>>> 1ff0ba7a4a504a3baba60c37ce667db5c8c640ea
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [

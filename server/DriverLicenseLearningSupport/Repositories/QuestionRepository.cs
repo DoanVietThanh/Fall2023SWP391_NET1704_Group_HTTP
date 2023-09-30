@@ -35,7 +35,7 @@ namespace DriverLicenseLearningSupport.Repositories
         public async Task<bool> DeleteQuestionAsync(int questionId)
         {
             //find question to remove
-            var question = await _context.Questions.FirstOrDefaultAsync(x => x.QuestionId == questionId);
+            var question = await _context.Questions.Where(x => x.QuestionId == questionId).FirstOrDefaultAsync();
             //question does not exist
             if (question is null) return false;
             // question exists
@@ -49,6 +49,18 @@ namespace DriverLicenseLearningSupport.Repositories
             var questions = await _context.Questions.ToListAsync();
 
             return _mapper.Map<IEnumerable<QuestionModel>>(questions);
+        }
+
+        public async Task<QuestionModel> GetByIdAsync(int questionId)
+        {
+            // get question by id
+            var questionEntity = await _context.Questions.Where(x => x.QuestionId.Equals(questionId))
+                .FirstOrDefaultAsync();
+            if (questionEntity == null) 
+            {
+                return null;
+            }
+            return _mapper.Map<QuestionModel>(questionEntity);
         }
     }
 }

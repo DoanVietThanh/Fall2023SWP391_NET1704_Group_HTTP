@@ -8,7 +8,7 @@ namespace DriverLicenseLearningSupport.Models
         public string QuestionAnswerDesc { get; set; }
         public bool? IsParalysis { get; set; }
         public string? Image { get; set; }
-        public int? LicenseTypeId { get; set; }
+        public int LicenseTypeId { get; set; }
 
         public virtual LicenseTypeModel LicenseType { get; set; }
 
