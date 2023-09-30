@@ -16,6 +16,7 @@ import ContactPage from '../pages/ContactPage/ContactPage';
 import TheoryPage from '../pages/TheoryPage/TheoryPage';
 import TestTheory from '../pages/TheoryPage/TestTheory';
 import ResultTheory from '../pages/TheoryPage/ResultTheory';
+import DashboardPage from '../pages/Manager/pages/DashboardPage/DashboardPage';
 
 const RouterApp = () => {
   const router = createBrowserRouter([
@@ -36,6 +37,9 @@ const RouterApp = () => {
     { path: '/theory/result/:id', element: <ResultTheory /> },
 
     { path: '/contact', element: <ContactPage /> },
+
+    { path: '/manager/dashboard', element: <DashboardPage /> },
+
     { path: '*', element: <ErrorPage /> },
   ]);
   return <RouterProvider router={router} fallbackElement={<Loading />} />;

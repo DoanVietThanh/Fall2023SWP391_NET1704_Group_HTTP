@@ -53,7 +53,10 @@ const LoginPage = () => {
   });
 
   useEffect(() => {
-    if (isSuccess) {
+    if (
+      isSuccess
+      //  && user?.accountInfo.emailNavigation.role.roleId === 4
+    ) {
       navigate('/home');
     } else {
       navigate('');
