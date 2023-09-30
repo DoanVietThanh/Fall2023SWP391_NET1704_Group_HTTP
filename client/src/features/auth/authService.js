@@ -12,6 +12,10 @@ const login = async (dataForm) => {
   if (response?.data.statusCode === 200) {
     toastSuccess(response.data.message);
     localStorage.setItem('user', JSON.stringify(response.data.data));
+    localStorage.setItem(
+      'accessToken',
+      JSON.stringify(response.data.data.token)
+    );
   } else {
     toastError('Login thất bại');
   }
