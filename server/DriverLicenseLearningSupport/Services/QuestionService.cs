@@ -24,5 +24,18 @@ namespace DriverLicenseLearningSupport.Services
             return await _questionRepository.CreateAsync(questionEntity);
         }
 
+        public async Task<bool> DeleteQuestionAsync(int questionId)
+        {
+            return await _questionRepository.DeleteQuestionAsync(questionId);
+        }
+
+        public async Task<IEnumerable<QuestionModel>> GetAllAsync()
+        {
+            return await _questionRepository.GetAllAsync();
+        }
+        public async Task<QuestionModel> GetByIdAsync(int questionId) 
+        {
+            return await _questionRepository.GetByIdAsync(questionId);
+        }
     }
 }

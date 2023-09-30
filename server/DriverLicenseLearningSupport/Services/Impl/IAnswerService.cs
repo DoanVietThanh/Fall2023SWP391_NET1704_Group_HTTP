@@ -8,7 +8,7 @@ namespace DriverLicenseLearningSupport.Services.Impl
         Task<IEnumerable<AnswerModel>> CreateRangeAsync(IEnumerable<AnswerModel> answers);
 
         Task<IEnumerable<AnswerModel>> GetAllByQuestionId(int questionId);
-        Task<bool> DeleteAnswerAsync(int id);
+        Task<bool> DeleteAnswerAsync(int answerId);
 
         Task<bool> DeleteAnswersByQuestionIdAsync(int quesitonId);
     }
