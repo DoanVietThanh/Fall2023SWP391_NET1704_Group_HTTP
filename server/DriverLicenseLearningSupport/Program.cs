@@ -64,8 +64,11 @@ builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<ILicenseRegisterFormService, LicenseRegisterFormService>();
 builder.Services.AddScoped<ICurriculumService, CurriculumService>();
 builder.Services.AddScoped<IFeedbackService, FeedbackService>();
-builder.Services.AddScoped<IQuestionService, QuestionService>();
-builder.Services.AddScoped<IAnswerService, AnswerService>();
+builder.Services.AddScoped<IPaymentTypeService, PaymentTypeService>();
+builder.Services.AddScoped<IWeekDayScheduleService, WeekDayScheduleService>();
+builder.Services.AddScoped<ISlotService, SlotService>();
+builder.Services.AddScoped<ICourseServationService, CourseReservationService>();
+//builder.Services.AddScoped<IVehicleService, Vehi>();
 
 
 // Add Repositories
@@ -80,8 +83,10 @@ builder.Services.AddScoped<IJobTitleRepository, JobTitleRepository>();
 builder.Services.AddScoped<ILicenseRegisterFormRepository, LicenseRegisterFormRepository>();
 builder.Services.AddScoped<ICurriculumRepository, CurriculumRepository>();
 builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
-builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
-builder.Services.AddScoped<IAnswerRepository, AnswerRepository>();
+builder.Services.AddScoped<IPaymentTypeRepository, PaymentTypeRepository>();
+builder.Services.AddScoped<IWeekDayScheduleRepository, WeekDayScheduleRepository>();
+builder.Services.AddScoped<ISlotRepository, SlotRepository>();
+builder.Services.AddScoped<ICourseReservationRepository, CourseReservationRepository>();
 
 
 // Add Email Configs

@@ -26,7 +26,7 @@ namespace DriverLicenseLearningSupport.Validation
         {
             var validator = new StaffValidator();
             var result = await validator.ValidateAsync(staff);
-            if(result is not null)
+            if(!result.IsValid)
             {
                 return result.ToProblemDetails();
             }

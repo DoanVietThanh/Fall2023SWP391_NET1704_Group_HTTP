@@ -30,6 +30,10 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly IImageService _imageService;
         private readonly IAddressService _addressService;
         private readonly IFeedbackService _feedBackService;
+        private readonly IWeekDayScheduleService _weekDayScheduleService;
+        private readonly ICourseService _courseService;
+        private readonly ISlotService _slotService;
+        //private readonly IVehicleService _vehicleService;
         private readonly IMemoryCache _cache;
         private readonly AppSettings _appSettings;
 
@@ -41,6 +45,10 @@ namespace DriverLicenseLearningSupport.Controllers
             IImageService imageService,
             IAddressService addressService,
             IFeedbackService feedBackService,
+            IWeekDayScheduleService weekDayScheduleService,
+            ICourseService courseService,
+            ISlotService slotService,
+            //IVehicleService vehicleService,
             IMemoryCache cache,
             IOptionsMonitor<AppSettings> monitor)
         {
@@ -52,6 +60,10 @@ namespace DriverLicenseLearningSupport.Controllers
             _imageService = imageService;
             _addressService = addressService;
             _feedBackService = feedBackService;
+            _weekDayScheduleService = weekDayScheduleService;
+            _courseService = courseService;
+            _slotService = slotService;
+            //_vehicleService = vehicleService;
             _cache = cache;
             _appSettings = monitor.CurrentValue;
         }
@@ -301,6 +313,52 @@ namespace DriverLicenseLearningSupport.Controllers
 
         }
 
+        [HttpGet]
+        [Route("staffs/mentors/{id:Guid}/schedule-register")]
+        public async Task<IActionResult> TeachingScheduleRegister([FromRoute] Guid id) 
+        {
+            // get course by mentor id
+            var course = await _courseService.GetByMentorIdAsync(id);
+            // not found
+            if(course is null)
+            {
+                return NotFound(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = $"Mentor {id} have not taught any course yet"
+                });
+            }
+
+            // get slots
+            var slots = await _slotService.GetAllAsync();
+
+            // get vehicle id from course reservation
+
+            // get vehicles by course's license type 
+            //var vehicles = await _vehicleService.GetAsync(licenseType.LicenseTypeId);
+
+            //var weekDaySchedules = await _weekDayScheduleService.GetAllWeekDaySchedulesAsync(); \
+            return Ok(course);
+        }
+
+        [HttpGet]
+        [Route("staffs/update")]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> UpdateStaff() 
+        {
+            // get all job title
+            var jobTitles = await _jobTitleService.GetAllAsync();
+            // get all license types 
+            var licenseTypes = await _licenseTypeService.GetAllAsync();
+            // response
+            return Ok(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Data = new { LicenseTypes = licenseTypes, JobTitles = jobTitles }
+            });
+
+        }
+
         [HttpPut]
         [Route("staffs/{id:Guid}/update")]
         [Authorize(Roles = "Admin,Staff")]
@@ -386,14 +444,14 @@ namespace DriverLicenseLearningSupport.Controllers
         // import excel
         [HttpPost]
         [Route("staffs/import-excel")]
-        public async Task<IActionResult> ImportToExcel([FromForm] IFormFile file, [Required] string licenseType,
-            [Required] int jobTitleId, [Required] int roleId)
+        public async Task<IActionResult> ImportToExcel(IFormFile file,
+            int jobTitleId, int roleId)
         {
             
             // validate excel file
             var validator = new ExcelFileValidator();
             var result = await validator.ValidateAsync(file);
-            if (result is not null) // cause error
+            if (!result.IsValid) // cause error
             {
                 // return ValidationProblemDetails <- error[]
                 return BadRequest(new ErrorResponse
@@ -425,15 +483,22 @@ namespace DriverLicenseLearningSupport.Controllers
                         var firstName = worksheet.Cells[row, 3].Value.ToString();
                         var lastName = worksheet.Cells[row, 4].Value.ToString();
                         var dateBirth = DateTime.ParseExact(worksheet.Cells[row, 5].Value.ToString(),
-                            _appSettings.DateFormat, CultureInfo.InvariantCulture);
-                        var phone = worksheet.Cells[row, 6].Value.ToString();
+                            "dd/MM/yyyy hh:mm:ss", CultureInfo.InvariantCulture);
+                        var phone = "0" + worksheet.Cells[row, 6].Value.ToString();
                         var street = worksheet.Cells[row, 7].Value.ToString();
                         var district = worksheet.Cells[row, 8].Value.ToString();
                         var city = worksheet.Cells[row, 9].Value.ToString();
                         var linceseType = worksheet.Cells[row, 10].Value.ToString();
 
+                        // check exist email
+                        var existEmail = await _accountService.GetByEmailAsync(email);
+                        if (existEmail is not null) return BadRequest(new BaseResponse { 
+                            StatusCode = StatusCodes.Status400BadRequest,
+                            Message = $"Email of {firstName} {lastName}, row {row} already exist",
+                        });
+
                         // get license type by description
-                        var licenseTypeId = await _licenseTypeService.GetByDescAsync(linceseType.ToUpper());
+                        var licenseTypeModel = await _licenseTypeService.GetByDescAsync(linceseType.ToUpper());
 
                         // generate account model
                         var account = new AccountModel
@@ -486,7 +551,7 @@ namespace DriverLicenseLearningSupport.Controllers
                             AvatarImage = _appSettings.DefaultAvatar,
                             EmailNavigation = account,
                             Address = address,
-                            LicenseTypeId = Convert.ToInt32(licenseTypeId),
+                            LicenseTypeId = Convert.ToInt32(licenseTypeModel.LicenseTypeId),
                             JobTitleId = jobTitleId
                         };
                         // staff validation
@@ -506,17 +571,17 @@ namespace DriverLicenseLearningSupport.Controllers
                     }
 
                     // Get total staffs
-                    var totalMembers = rowCount - 1;
+                    var totalStaffs = rowCount - 1;
 
                     // clear cache
                     if (_cache.Get(_appSettings.StaffsCacheKey) is not null)
                         _cache.Remove(_appSettings.StaffsCacheKey);
 
                     // Import Sucessfully
-                    if (totalMembers > 0) return Ok(new BaseResponse
+                    if (totalStaffs > 0) return Ok(new BaseResponse
                     {
                         StatusCode = StatusCodes.Status200OK,
-                        Message = $"Import excel file successfully, total {totalMembers} members created"
+                        Message = $"Import excel file successfully, total {totalStaffs} staff created"
                     });
                 }
             }

@@ -7,6 +7,7 @@ namespace DriverLicenseLearningSupport.Models
         public int FeedbackId { get; set; }
         public string Content { get; set; }
         public int? RatingStar { get; set; }
+        public DateTime? CreateDate { get; set; }
         public string? MemberId { get; set; }
         public string? StaffId { get; set; }
         public string? CourseId { get; set; }

@@ -45,7 +45,15 @@ namespace DriverLicenseLearningSupport.Repositories
                                                        Phone = x.Phone,
                                                        Address = x.Address,
                                                        LicenseType = x.LicenseType,
-                                                       JobTitle = x.JobTitle
+                                                       JobTitle = x.JobTitle,
+                                                       EmailNavigation = new Account
+                                                       {
+                                                           Role = new Role
+                                                           {
+                                                               RoleId = x.EmailNavigation.Role.RoleId,
+                                                               Name = x.EmailNavigation.Role.Name
+                                                           }
+                                                       }
                                                    }).FirstOrDefaultAsync();
             return _mapper.Map<StaffModel>(staffEntity);
         }
@@ -135,25 +143,25 @@ namespace DriverLicenseLearningSupport.Repositories
         public async Task<IEnumerable<StaffModel>> GetAllAsync()
         {
             var staffEntities = await _context.Staffs.Select(x => new Staff
-                                                   {
-                                                       StaffId = x.StaffId,
-                                                       FirstName = x.FirstName,
-                                                       LastName = x.LastName,
-                                                       Phone = x.Phone,
-                                                       DateBirth = x.DateBirth,
-                                                       AvatarImage = x.AvatarImage,
-                                                       Email = x.Email,
-                                                       AddressId = x.AddressId,
-                                                       JobTitleId = x.JobTitleId,
-                                                       LicenseTypeId = x.LicenseTypeId,
-                                                       Address = x.Address,
-                                                       JobTitle = x.JobTitle,
-                                                       LicenseType = x.LicenseType,
-                                                       EmailNavigation = new Account
-                                                       {
-                                                           Role = x.EmailNavigation.Role
-                                                       }
-                                                   }).ToListAsync();
+            {
+                StaffId = x.StaffId,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
+                Phone = x.Phone,
+                DateBirth = x.DateBirth,
+                AvatarImage = x.AvatarImage,
+                Email = x.Email,
+                AddressId = x.AddressId,
+                JobTitleId = x.JobTitleId,
+                LicenseTypeId = x.LicenseTypeId,
+                Address = x.Address,
+                JobTitle = x.JobTitle,
+                LicenseType = x.LicenseType,
+                EmailNavigation = new Account
+                {
+                    Role = x.EmailNavigation.Role
+                }
+            }).ToListAsync();
             return _mapper.Map<IEnumerable<StaffModel>>(staffEntities);
         }
 

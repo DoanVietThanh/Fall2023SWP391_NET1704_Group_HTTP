@@ -6,5 +6,6 @@ namespace DriverLicenseLearningSupport.Services.Impl
     {
         Task<bool> CreateAsync(FeedBackModel feedback);
         Task<IEnumerable<FeedBackModel>> GetAllMentorFeedback(Guid mentorId);
+        Task<IEnumerable<FeedBackModel>> GetAllCourseFeedback(Guid courseId);
     }
 }

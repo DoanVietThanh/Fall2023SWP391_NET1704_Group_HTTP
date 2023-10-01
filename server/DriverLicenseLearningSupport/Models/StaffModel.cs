@@ -20,6 +20,7 @@ namespace DriverLicenseLearningSupport.Models
         public virtual AccountModel EmailNavigation { get; set; }
         public virtual JobTitleModel JobTitle { get; set; }
         public virtual LicenseTypeModel LicenseType { get; set; }
-        public virtual ICollection<FeedBackModel> FeedBacks { get; set; }
+        public virtual ICollection<FeedBackModel> FeedBacks { get; set; } = new List<FeedBackModel>();
+        public virtual ICollection<CourseModel> Courses { get; set; } = new List<CourseModel>();
     }
 }
