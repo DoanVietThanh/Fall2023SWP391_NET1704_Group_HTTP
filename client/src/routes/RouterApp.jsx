@@ -9,6 +9,14 @@ import RegisterPage from '../pages/LoginPage/RegisterPage';
 import ProfilePage from '../pages/ProfilePage/ProfilePage';
 import ForgotPassword from '../pages/LoginPage/ForgotPassword';
 import ShowForgetPass from '../pages/LoginPage/ShowForgetPass';
+import CoursePage from '../pages/CoursePage/CoursePage';
+import IntructorPage from '../pages/IntructorPage/IntructorPage';
+import DetailCourse from '../pages/CoursePage/DetailCourse';
+import ContactPage from '../pages/ContactPage/ContactPage';
+import TheoryPage from '../pages/TheoryPage/TheoryPage';
+import TestTheory from '../pages/TheoryPage/TestTheory';
+import ResultTheory from '../pages/TheoryPage/ResultTheory';
+import DashboardPage from '../pages/Manager/pages/DashboardPage/DashboardPage';
 
 const RouterApp = () => {
   const router = createBrowserRouter([
@@ -19,6 +27,18 @@ const RouterApp = () => {
     { path: '/forgot-password', element: <ForgotPassword /> },
     { path: '/profile', element: <ProfilePage /> },
     { path: '/authentication/reset-password', element: <ShowForgetPass /> },
+    { path: '/intructor', element: <IntructorPage /> },
+
+    { path: '/course', element: <CoursePage /> },
+    { path: '/course/detail', element: <DetailCourse /> },
+
+    { path: '/theory', element: <TheoryPage /> },
+    { path: '/theory/test/:id', element: <TestTheory /> },
+    { path: '/theory/result/:id', element: <ResultTheory /> },
+
+    { path: '/contact', element: <ContactPage /> },
+
+    { path: '/manager/dashboard', element: <DashboardPage /> },
 
     { path: '*', element: <ErrorPage /> },
   ]);

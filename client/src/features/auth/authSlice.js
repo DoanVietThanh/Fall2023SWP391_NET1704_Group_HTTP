@@ -16,11 +16,20 @@ export const login = createAsyncThunk(
     try {
       return await authService.login(dataForm);
     } catch (error) {
-      toastError('Login thất bạiiiii');
+      toastError('Sai tài khoản hoặc mật khẩu');
       return thunkAPI.rejectWithValue(error);
     }
   }
 );
+
+export const logout = createAsyncThunk('auth/logout', async (_, thunkAPI) => {
+  try {
+    return await authService.logout();
+  } catch (error) {
+    toastError('Đăng xuất thất bại');
+    return thunkAPI.rejectWithValue(error);
+  }
+});
 
 export const authSlice = createSlice({
   name: 'auth',
@@ -43,6 +52,22 @@ export const authSlice = createSlice({
         state.isSuccess = true;
         state.message = 'success';
         state.user = action.payload?.data;
+      })
+      .addCase(logout.pending, (state, action) => {
+        state.isLoading = true;
+      })
+      .addCase(logout.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = 'fail';
+      })
+      .addCase(logout.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = false;
+        state.user = null;
+        state.message = 'logout thành công';
       });
   },
 });

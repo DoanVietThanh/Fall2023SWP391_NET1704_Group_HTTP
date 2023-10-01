@@ -1,13 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "tu6T4xP8yPo4akdh0rOQfxkBRNiwIsNsDO6O7O33XwiL5HQFWv9FSAjl4zCfx3g6vb42f7m5TS6o3zK7kKN2fg==",
+  "dgSpecHash": "5viFeFAGxcD6y1PK9XxbNk/P1DmPAHYpAEV7paj9T9DOnVe7CPRTWRPSY9q13+hEIH2D8PFs+Sj4fXu+hyXP/A==",
   "success": true,
   "projectFilePath": "D:\\Fall2023SWP391_NET1704_Group_HTTP\\server\\DriverLicenseLearningSupport\\DriverLicenseLearningSupport.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\USER\\.nuget\\packages\\automapper\\8.1.1\\automapper.8.1.1.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\6.1.1\\automapper.extensions.microsoft.dependencyinjection.6.1.1.nupkg.sha512",
-    "C:\\Users\\USER\\.nuget\\packages\\awssdk.core\\3.7.202.10\\awssdk.core.3.7.202.10.nupkg.sha512",
-    "C:\\Users\\USER\\.nuget\\packages\\awssdk.s3\\3.7.203.16\\awssdk.s3.3.7.203.16.nupkg.sha512",
+    "C:\\Users\\USER\\.nuget\\packages\\awssdk.core\\3.7.202.14\\awssdk.core.3.7.202.14.nupkg.sha512",
+    "C:\\Users\\USER\\.nuget\\packages\\awssdk.s3\\3.7.205\\awssdk.s3.3.7.205.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\documentformat.openxml\\2.20.0\\documentformat.openxml.2.20.0.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\docx\\2.5.0\\docx.2.5.0.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\epplus\\6.2.9\\epplus.6.2.9.nupkg.sha512",

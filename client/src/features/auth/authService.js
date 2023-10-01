@@ -12,14 +12,29 @@ const login = async (dataForm) => {
   if (response?.data.statusCode === 200) {
     toastSuccess(response.data.message);
     localStorage.setItem('user', JSON.stringify(response.data.data));
+    localStorage.setItem(
+      'accessToken',
+      JSON.stringify(response.data.data.token)
+    );
   } else {
     toastError('Login thất bại');
   }
   return response.data;
 };
 
+const logout = async () => {
+  const response = await axios.get(`${url_server}/authentication/logout`);
+  console.log('🚀 ~ file: authService.js:24 ~ logout ~ response:', response);
+  if (response.data.statusCode === 200) {
+    localStorage.clear();
+    toastSuccess(`Đăng xuất thành công`);
+  }
+  return response.message;
+};
+
 const authService = {
   login,
+  logout,
 };
 
 export default authService;

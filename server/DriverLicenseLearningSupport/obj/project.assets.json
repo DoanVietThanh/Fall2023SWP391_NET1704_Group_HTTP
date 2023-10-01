@@ -36,7 +36,7 @@
           }
         }
       },
-      "AWSSDK.Core/3.7.202.10": {
+      "AWSSDK.Core/3.7.202.14": {
         "type": "package",
         "compile": {
           "lib/netcoreapp3.1/AWSSDK.Core.dll": {
@@ -49,10 +49,10 @@
           }
         }
       },
-      "AWSSDK.S3/3.7.203.16": {
+      "AWSSDK.S3/3.7.205": {
         "type": "package",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.202.10, 4.0.0)"
+          "AWSSDK.Core": "[3.7.202.14, 4.0.0)"
         },
         "compile": {
           "lib/netcoreapp3.1/AWSSDK.S3.dll": {
@@ -1773,15 +1773,15 @@
         "lib/netstandard2.0/AutoMapper.Extensions.Microsoft.DependencyInjection.pdb"
       ]
     },
-    "AWSSDK.Core/3.7.202.10": {
-      "sha512": "aDM8vUjGygXR1RqrqsXRncbsJdrEqV4Rhe3Ps+TJ/eGnVFHXmW+zISOUp+hbXpwKymQ976UA0sXOncrvsjgfBA==",
+    "AWSSDK.Core/3.7.202.14": {
+      "sha512": "bo5vFW7rB8ABeY6RMK/kOjCOJOHpGO0sHpRILx3HTpvh3fvuWYnI/aHJMpnU/SCvAidyTgrHJcvAHOVGWwPbCA==",
       "type": "package",
-      "path": "awssdk.core/3.7.202.10",
+      "path": "awssdk.core/3.7.202.14",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "awssdk.core.3.7.202.10.nupkg.sha512",
+        "awssdk.core.3.7.202.14.nupkg.sha512",
         "awssdk.core.nuspec",
         "images/AWSLogo.png",
         "lib/net35/AWSSDK.Core.dll",
@@ -1799,17 +1799,17 @@
         "tools/account-management.ps1"
       ]
     },
-    "AWSSDK.S3/3.7.203.16": {
-      "sha512": "hiBEqlBIgQ8TGMeBR07qMrrBiR5UIG8l5fphO2f+FQ3SD5ExXkPCiPDvrCgXzsgHIajJwf7mPPNsNDjPU7ev8g==",
+    "AWSSDK.S3/3.7.205": {
+      "sha512": "05g/7/h+S+xpvfzh9kYB6vsYZpuotfNC5piCLN2tMwh3s9orYrlR8+ZBwGwupHb/zb3hArnj9xF9otGfRwTohA==",
       "type": "package",
-      "path": "awssdk.s3/3.7.203.16",
+      "path": "awssdk.s3/3.7.205",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "analyzers/dotnet/cs/AWSSDK.S3.CodeAnalysis.dll",
         "analyzers/dotnet/cs/SharedAnalysisCode.dll",
-        "awssdk.s3.3.7.203.16.nupkg.sha512",
+        "awssdk.s3.3.7.205.nupkg.sha512",
         "awssdk.s3.nuspec",
         "images/AWSLogo.png",
         "lib/net35/AWSSDK.S3.dll",
@@ -5514,7 +5514,7 @@
   },
   "projectFileDependencyGroups": {
     "net6.0": [
-      "AWSSDK.S3 >= 3.7.203.16",
+      "AWSSDK.S3 >= 3.7.205",
       "AutoMapper.Extensions.Microsoft.DependencyInjection >= 6.1.1",
       "DocX >= 2.5.0",
       "DocumentFormat.OpenXml >= 2.20.0",
@@ -5569,7 +5569,7 @@
         "dependencies": {
           "AWSSDK.S3": {
             "target": "Package",
-            "version": "[3.7.203.16, )"
+            "version": "[3.7.205, )"
           },
           "AutoMapper.Extensions.Microsoft.DependencyInjection": {
             "target": "Package",

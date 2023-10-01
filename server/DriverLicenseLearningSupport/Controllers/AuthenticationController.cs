@@ -292,5 +292,15 @@ namespace DriverLicenseLearningSupport.Controllers
             return StatusCode(StatusCodes.Status400BadRequest,
                 new BaseResponse { Message = "Password change failed." });
         }
+
+        [HttpGet]
+        [Route("authentication/logout")]
+        public async Task<IActionResult> Logout()
+        {
+            return Ok(new BaseResponse { 
+                StatusCode=StatusCodes.Status200OK,
+                Message = "Logout succesfully"
+            });
+        }
     }
 }

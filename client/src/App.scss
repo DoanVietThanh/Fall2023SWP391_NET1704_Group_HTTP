@@ -1,11 +1,19 @@
-.App {
-}
-
 .center {
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
+.flex-x {
+  display: flex;
+  align-items: center;
+}
+
+.flex-y {
+  display: flex;
+  justify-content: center;
+}
+
 .btn {
   font-size: 14px;
   color: #fff;
@@ -16,8 +24,28 @@
   background-color: #0d5ef4;
 }
 
+.btn-cancel {
+  font-size: 14px;
+  color: #000;
+  font-weight: 700;
+  border-radius: 4px;
+  text-transform: uppercase;
+  padding: 12px 20px;
+  background-color: #ced7e7;
+}
+
 .btn:hover {
   opacity: 0.9;
+}
+
+.active {
+  background-color: #0d5ef4;
+  color: #fff;
+}
+
+.selected-color {
+  background-color: #29db38;
+  color: #000;
 }
 
 .btn-login {
@@ -102,4 +130,11 @@
   border-radius: 20px;
   backdrop-filter: blur(100px);
   padding: 40px;
+}
+
+.css-heg063-MuiTabs-flexContainer {
+  display: flex;
+}
+.MuiButtonBase-root.MuiTab-root {
+  flex: 1;
 }

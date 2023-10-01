@@ -42,7 +42,7 @@
           "dependencies": {
             "AWSSDK.S3": {
               "target": "Package",
-              "version": "[3.7.203.16, )"
+              "version": "[3.7.205, )"
             },
             "AutoMapper.Extensions.Microsoft.DependencyInjection": {
               "target": "Package",

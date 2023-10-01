@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 export const toastSuccess = (messages) => {
   toast.success(`${messages}`, {
     position: 'top-right',
-    autoClose: 3000,
+    autoClose: 1500,
     hideProgressBar: false,
     closeOnClick: true,
     pauseOnHover: true,
@@ -20,7 +20,7 @@ export const toastSuccess = (messages) => {
 export const toastWarning = (messages) => {
   toast.warn(`${messages}`, {
     position: 'top-right',
-    autoClose: 3000,
+    autoClose: 1500,
     hideProgressBar: false,
     closeOnClick: true,
     pauseOnHover: true,
@@ -33,7 +33,7 @@ export const toastWarning = (messages) => {
 export const toastError = (messages) => {
   toast.error(`${messages}`, {
     position: 'top-right',
-    autoClose: 3000,
+    autoClose: 1500,
     hideProgressBar: false,
     closeOnClick: true,
     pauseOnHover: true,
@@ -47,7 +47,7 @@ function Toast() {
   return (
     <ToastContainer
       position='top-right'
-      autoClose={3000}
+      autoClose={1500}
       hideProgressBar={false}
       newestOnTop={false}
       closeOnClick

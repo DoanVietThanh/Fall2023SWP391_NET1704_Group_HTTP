@@ -70,6 +70,7 @@ builder.Services.AddScoped<ISlotService, SlotService>();
 builder.Services.AddScoped<ICourseServationService, CourseReservationService>();
 //builder.Services.AddScoped<IVehicleService, Vehi>();
 
+
 // Add Repositories
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IMemberRepository, MemberRepository>();
@@ -123,13 +124,12 @@ builder.Services.AddCors(p => p.AddPolicy("Cors", policy =>
 // Amazon S3
 builder.Services.AddSingleton<IAmazonS3, AmazonS3Client>();
 builder.Services.AddSingleton<IImageService, ImageService>();
-AWSConfigs.AWSRegion = "ap-southeast-1";
 
 // Middleware Exception
 //builder.Services.AddTransient<ExceptionMiddleware>();
 
 var app = builder.Build();
-
+AWSConfigs.AWSRegion = "ap-southeast-1";
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

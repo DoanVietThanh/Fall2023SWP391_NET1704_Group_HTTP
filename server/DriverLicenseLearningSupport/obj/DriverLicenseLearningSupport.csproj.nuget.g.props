@@ -22,7 +22,7 @@
     <PkgMicrosoft_Extensions_ApiDescription_Server Condition=" '$(PkgMicrosoft_Extensions_ApiDescription_Server)' == '' ">C:\Users\USER\.nuget\packages\microsoft.extensions.apidescription.server\6.0.5</PkgMicrosoft_Extensions_ApiDescription_Server>
     <PkgMicrosoft_EntityFrameworkCore_Tools Condition=" '$(PkgMicrosoft_EntityFrameworkCore_Tools)' == '' ">C:\Users\USER\.nuget\packages\microsoft.entityframeworkcore.tools\6.0.21</PkgMicrosoft_EntityFrameworkCore_Tools>
     <PkgDocX Condition=" '$(PkgDocX)' == '' ">C:\Users\USER\.nuget\packages\docx\2.5.0</PkgDocX>
-    <PkgAWSSDK_Core Condition=" '$(PkgAWSSDK_Core)' == '' ">C:\Users\USER\.nuget\packages\awssdk.core\3.7.202.10</PkgAWSSDK_Core>
-    <PkgAWSSDK_S3 Condition=" '$(PkgAWSSDK_S3)' == '' ">C:\Users\USER\.nuget\packages\awssdk.s3\3.7.203.16</PkgAWSSDK_S3>
+    <PkgAWSSDK_Core Condition=" '$(PkgAWSSDK_Core)' == '' ">C:\Users\USER\.nuget\packages\awssdk.core\3.7.202.14</PkgAWSSDK_Core>
+    <PkgAWSSDK_S3 Condition=" '$(PkgAWSSDK_S3)' == '' ">C:\Users\USER\.nuget\packages\awssdk.s3\3.7.205</PkgAWSSDK_S3>
   </PropertyGroup>
 </Project>
