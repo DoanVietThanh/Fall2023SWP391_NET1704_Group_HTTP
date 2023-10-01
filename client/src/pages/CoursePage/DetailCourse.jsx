@@ -271,7 +271,7 @@ const DetailCourse = () => {
                       <img
                         alt='avt'
                         className='w-[160px] h-[160px] object-cover rounded-full'
-                        src='https://scontent.fsgn5-10.fna.fbcdn.net/v/t39.30808-6/326718942_3475973552726762_6277150844361274430_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=a2f6c7&_nc_ohc=F9AAbXAwDU8AX-6HyPn&_nc_ht=scontent.fsgn5-10.fna&oh=00_AfA5o3lKSL4jdT7prHoH6xLbUkhlpdXxlassURqgMA6viw&oe=6514AD6C'
+                        src='/img/avtThanh.jpg'
                       />
                     </div>
                     <div className='flex-1 flex flex-col justify-between pl-4 border-l-2 text-[20px]'>
