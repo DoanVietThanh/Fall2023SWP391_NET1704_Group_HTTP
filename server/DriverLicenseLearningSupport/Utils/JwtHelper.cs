@@ -32,7 +32,7 @@ namespace DriverLicenseLearningSupport.Utils
                     new Claim(ClaimTypes.Role, account.Role.Name),
                     new Claim("TokenId", Guid.NewGuid().ToString())
                 }),
-                Expires = DateTime.UtcNow.AddHours(1),
+                Expires = DateTime.UtcNow.AddDays(1),
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(secetKeyBytes),
                     SecurityAlgorithms.HmacSha256)

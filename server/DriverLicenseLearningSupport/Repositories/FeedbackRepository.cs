@@ -27,8 +27,25 @@ namespace DriverLicenseLearningSupport.Repositories
         public async Task<IEnumerable<FeedBackModel>> GetAllMentorFeedback(Guid mentorId)
         {
             var feedbacks = await _context.FeedBacks.Where(x => x.StaffId == mentorId.ToString())
-                                              .ToListAsync();
+                                              .Select(x => new FeedBack { 
+                                                    FeedbackId = x.FeedbackId,
+                                                    Content = x.Content, 
+                                                    RatingStar = x.RatingStar,
+                                                    Member = x.Member
+                                              }).ToListAsync();
+            return _mapper.Map<IEnumerable<FeedBackModel>>(feedbacks);
+        }
 
+        public async Task<IEnumerable<FeedBackModel>> GetAllCourseFeedback(Guid courseId)
+        {
+            var feedbacks = await _context.FeedBacks.Where(x => x.CourseId == courseId.ToString())
+                                              .Select(x => new FeedBack
+                                              {
+                                                  FeedbackId = x.FeedbackId,
+                                                  Content = x.Content,
+                                                  RatingStar = x.RatingStar,
+                                                  Member = x.Member
+                                              }).ToListAsync();
             return _mapper.Map<IEnumerable<FeedBackModel>>(feedbacks);
         }
     }

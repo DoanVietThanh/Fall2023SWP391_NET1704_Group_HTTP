@@ -36,5 +36,10 @@ namespace DriverLicenseLearningSupport.Services
         {
             return await _licenseRegisterFormRepo.GetAsync(licenseRegisterId);
         }
+
+        public async Task<LicenseRegisterFormModel> GetByMemberId(Guid memberId)
+        {
+            return await _licenseRegisterFormRepo.GetByMemberId(memberId);
+        }
     }
 }

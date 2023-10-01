@@ -9,9 +9,9 @@ namespace DriverLicenseLearningSupport.Entities
         public bool? IsAbsence { get; set; }
         public string Comment { get; set; }
         public string MemberId { get; set; }
-        public int CourseScheduleId { get; set; }
+        public int TeachingScheduleId { get; set; }
 
-        public virtual CourseSchedule CourseSchedule { get; set; }
         public virtual Member Member { get; set; }
+        public virtual TeachingSchedule TeachingSchedule { get; set; }
     }
 }

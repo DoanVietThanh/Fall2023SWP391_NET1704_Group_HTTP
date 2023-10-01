@@ -18,8 +18,11 @@ namespace DriverLicenseLearningSupport.Mapping
             CreateMap<Role, RoleModel>().ReverseMap();
             CreateMap<JobTitle, JobTitleModel>().ReverseMap();
             CreateMap<FeedBack, FeedBackModel>().ReverseMap();
+            CreateMap<PaymentType, PaymentTypeModel>().ReverseMap();
             CreateMap<LicenseRegisterForm, LicenseRegisterFormModel>().ReverseMap();
             CreateMap<LicenseRegisterFormStatus, LicenseRegisterFormStatusModel>().ReverseMap();
+            CreateMap<WeekdaySchedule, WeekdayScheduleModel>().ReverseMap();
+            CreateMap<CourseReservation, CourseReservationModel>().ReverseMap();
         }
     }
 }

@@ -48,12 +48,15 @@ namespace DriverLicenseLearningSupport.Repositories
                                                     Cost = x.Cost,
                                                     IsActive = x.IsActive,
                                                     TotalSession = x.TotalSession,
+                                                    TotalMonth = x.TotalMonth,
+                                                    StartDate = x.StartDate,
                                                     Curricula = x.Curricula.Select(c => new Curriculum
                                                     {
                                                         CurriculumId = c.CurriculumId,
                                                         CurriculumDesc = c.CurriculumDesc,
                                                         CurriculumDetail = c.CurriculumDetail
-                                                    }).ToList()
+                                                    }).ToList(),
+                                                    Mentors = x.Mentors
                                                 }).FirstOrDefaultAsync();
 
             if (course is not null)
@@ -87,6 +90,37 @@ namespace DriverLicenseLearningSupport.Repositories
                                                         }).FirstOrDefaultAsync();
             return _mapper.Map<CourseModel>(courseEntity);
         }
+        public async Task<CourseModel> GetByMentorIdAsync(Guid mentorId)
+        {
+            var courses = await _context.Courses.Where(x => x.IsActive == true)
+                                                .Select(x => new Course
+                                                {
+                                                    CourseId = x.CourseId,
+                                                    CourseDesc = x.CourseDesc,
+                                                    CourseTitle = x.CourseTitle,
+                                                    Cost = x.Cost,
+                                                    IsActive = x.IsActive,
+                                                    TotalSession = x.TotalSession,
+                                                    TotalMonth = x.TotalMonth,
+                                                    StartDate = x.StartDate,
+                                                    Curricula = x.Curricula.Select(c => new Curriculum
+                                                    {
+                                                        CurriculumId = c.CurriculumId,
+                                                        CurriculumDesc = c.CurriculumDesc,
+                                                        CurriculumDetail = c.CurriculumDetail
+                                                    }).ToList(),
+                                                    Mentors = x.Mentors
+                                                }).ToListAsync();
+            foreach (var c in courses)
+            {
+                var mentor = c.Mentors.Where(x => x.StaffId == mentorId.ToString()).FirstOrDefault();
+                if (mentor != null)
+                {
+                    return _mapper.Map<CourseModel>(c);
+                }
+            }
+            return null;
+        }
         public async Task<IEnumerable<CourseModel>> GetAllAsync()
         {
             var courses = await _context.Courses.Where(x => x.IsActive == true).ToListAsync();
@@ -106,6 +140,19 @@ namespace DriverLicenseLearningSupport.Repositories
                 var curriculumEntity = await _context.Curricula.Where(x => x.CurriculumId == curriculumId)
                                                                .FirstOrDefaultAsync();
                 courseEntity.Curricula.Add(curriculumEntity);
+                return await _context.SaveChangesAsync() > 0 ? true : false;
+            }
+            return false;
+        }
+        public async Task<bool> AddMentorAsync(Guid courseId, Guid mentorId)
+        {
+            var courseEntity = await _context.Courses.Where(x => x.CourseId == courseId.ToString())
+                                                     .FirstOrDefaultAsync();
+            if (courseEntity is not null)
+            {
+                var mentorEntity = await _context.Staffs.Where(x => x.StaffId == mentorId.ToString())
+                                                               .FirstOrDefaultAsync();
+                courseEntity.Mentors.Add(mentorEntity);
                 return await _context.SaveChangesAsync() > 0 ? true : false;
             }
             return false;

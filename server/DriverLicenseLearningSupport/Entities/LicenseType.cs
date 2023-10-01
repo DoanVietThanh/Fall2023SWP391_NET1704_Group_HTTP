@@ -1,5 +1,4 @@
-﻿using Amazon.S3.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace DriverLicenseLearningSupport.Entities

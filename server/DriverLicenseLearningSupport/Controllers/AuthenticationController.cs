@@ -11,7 +11,6 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 using DriverLicenseLearningSupport.Models.Config;
 using DriverLicenseLearningSupport.Models;
-using DriverLicenseLearningSupport.Entities;
 using AutoMapper.Execution;
 using DriverLicenseLearningSupport.Services;
 using System.Net;
@@ -205,10 +204,22 @@ namespace DriverLicenseLearningSupport.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> StaffRegister([FromBody] StaffRegisterRequest reqObj) 
         {
+            // check exist account
+            var accountExist = await _accountService.GetByEmailAsync(reqObj.Email);
+            if (accountExist != null)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden,
+                    new BaseResponse()
+                    {
+                        StatusCode = StatusCodes.Status403Forbidden,
+                        Message = "Email already exist!"
+                    });
+            }
+
             // generate account model
             var account = reqObj.ToAccountModel();
             // validation
-            var result = account.ValidateAsync();
+            var result = await account.ValidateAsync();
             if(result is not null) 
             {
                 return BadRequest(new ErrorResponse { 

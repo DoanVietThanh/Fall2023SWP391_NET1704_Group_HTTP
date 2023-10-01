@@ -15,8 +15,14 @@ namespace DriverLicenseLearningSupport.Payloads.Request
         [Required(ErrorMessage = "Course Description is required")]
         public double Cost { get; set; }
 
+        [Required(ErrorMessage = "Start date is required")]
+        public DateTime StartDate { get; set; }
+
         [Required(ErrorMessage = "Total Session is required")]
         public int TotalSession { get; set; }
+
+        [Required(ErrorMessage = "Total Month is required")]
+        public int TotalMonth { get; set; }
     }
 
     public static class CourseAddRequestExtension 
@@ -30,6 +36,8 @@ namespace DriverLicenseLearningSupport.Payloads.Request
                 CourseDesc = WebUtility.HtmlEncode(reqObj.CourseDesc),
                 Cost = reqObj.Cost,
                 TotalSession = reqObj.TotalSession,
+                TotalMonth = reqObj.TotalMonth,
+                StartDate = reqObj.StartDate,
                 IsActive = true
             };
         }

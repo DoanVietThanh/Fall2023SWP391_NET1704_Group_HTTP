@@ -1,4 +1,6 @@
-﻿using DriverLicenseLearningSupport.Models;
+﻿using DocumentFormat.OpenXml.VariantTypes;
+using DriverLicenseLearningSupport.Models;
+using System.Globalization;
 
 namespace DriverLicenseLearningSupport.Payloads.Request
 {
@@ -18,11 +20,14 @@ namespace DriverLicenseLearningSupport.Payloads.Request
     {
         public static FeedBackModel ToFeedbackModel(this FeedbackMentorRequest reqObj)
         {
+            var currTime = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
             return new FeedBackModel { 
                 MemberId = reqObj.MemberId,
                 StaffId = reqObj.MentorId,
                 Content = reqObj.Content,
-                RatingStar = reqObj.RatingStar
+                RatingStar = reqObj.RatingStar,
+                CreateDate = DateTime.ParseExact(currTime,
+                "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture)
             };
         }
     }

@@ -7,7 +7,7 @@ namespace DriverLicenseLearningSupport.Entities
     {
         public Vehicle()
         {
-            CourseSchedules = new HashSet<CourseSchedule>();
+            CourseReservations = new HashSet<CourseReservation>();
         }
 
         public int VehicleId { get; set; }
@@ -16,6 +16,6 @@ namespace DriverLicenseLearningSupport.Entities
         public int? VehicleTypeId { get; set; }
 
         public virtual VehicleType VehicleType { get; set; }
-        public virtual ICollection<CourseSchedule> CourseSchedules { get; set; }
+        public virtual ICollection<CourseReservation> CourseReservations { get; set; }
     }
 }

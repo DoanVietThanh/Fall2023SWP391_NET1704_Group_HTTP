@@ -1,4 +1,4 @@
-USE MASTER 
+﻿USE MASTER 
 GO 
 DROP DATABASE IF EXISTS DriverLicenseLearningSupport
 GO
@@ -28,7 +28,7 @@ CREATE TABLE [dbo].Address(
 )
 GO
 CREATE TABLE [dbo].Member(
-	member_id NVARCHAR(255) PRIMARY KEY,--guid type
+	member_id NVARCHAR(200) PRIMARY KEY,--guid type
 	first_name NVARCHAR(155) NOT NULL,
 	last_name NVARCHAR(155) NOT NULL,
 	date_birth DATETIME,
@@ -53,7 +53,7 @@ CREATE TABLE [dbo].Job_Title(
 )
 GO
 CREATE TABLE [dbo].Staff(
-	staff_id NVARCHAR(255) PRIMARY KEY, 
+	staff_id NVARCHAR(200) PRIMARY KEY, 
 	first_name NVARCHAR(155) NOT NULL,
 	last_name NVARCHAR(155) NOT NULL,
 	date_birth DATETIME NOT NULL,
@@ -67,12 +67,21 @@ CREATE TABLE [dbo].Staff(
 )
 GO
 CREATE TABLE [dbo].Course(
-	course_id NVARCHAR(255) PRIMARY KEY,
+	course_id NVARCHAR(200) PRIMARY KEY,
 	course_title NVARCHAR(255) NOT NULL,
 	course_desc NVARCHAR(MAX),
 	cost FLOAT NOT NULL,
 	total_session INT,
+	total_month INT,
+	start_date DATETIME,
 	is_active BIT
+)
+GO
+CREATE TABLE [dbo].Course_Mentor(
+	course_id NVARCHAR(200),
+	mentor_id NVARCHAR(200),
+
+	PRIMARY KEY (course_id, mentor_id)
 )
 GO
 CREATE TABLE [dbo].Curriculum(
@@ -82,7 +91,7 @@ CREATE TABLE [dbo].Curriculum(
 )
 GO
 CREATE TABLE [dbo].Course_Curriculum(
-	course_id NVARCHAR(255),
+	course_id NVARCHAR(200),
 	curriculum_id INT,
 
 	PRIMARY KEY (course_id, curriculum_id)
@@ -94,11 +103,13 @@ CREATE TABLE [dbo].Course_Reservation(
 	create_date DATETIME,
 	last_modified_date DATETIME,
 	last_modified_by INT,
-	member_id NVARCHAR(255) NOT NULL,
-	course_id NVARCHAR(255) NOT NULL,
-	staff_id NVARCHAR(255) NOT NULL,
+	member_id NVARCHAR(200) NOT NULL,
+	course_id NVARCHAR(200) NOT NULL,
+	staff_id NVARCHAR(200) NOT NULL,
 	course_reservation_status_id INT,
-	invoice_id INT
+	payment_type_id INT NOT NULL,
+	payment_ammount FLOAT,
+	vehicle_id INT
 )
 GO
 CREATE TABLE [dbo].Course_Reservation_Status(
@@ -109,13 +120,6 @@ GO
 CREATE TABLE [dbo].Payment_Type(
 	payment_type_id INT PRIMARY KEY identity(1,1),
 	payment_type_desc NVARCHAR(155)
-)
-GO
-CREATE TABLE [dbo].Invoice(
-	invoice_id INT PRIMARY KEY identity(1,1),
-	ammount FLOAT,
-	create_date DATETIME,
-	payment_type_id INT
 )
 GO
 CREATE TABLE [dbo].Vehicle_Type(
@@ -132,29 +136,51 @@ CREATE TABLE [dbo].Vehicle(
 	vehicle_type_id INT
 )
 GO
-CREATE TABLE [dbo].Course_Schedule(
-	course_schedule_id INT PRIMARY KEY identity(1,1),
-	teaching_date DATETIME NOT NULL,
-	staff_id NVARCHAR(255) NOT NULL,
-	course_reservation_id NVARCHAR(255) NOT NULL,
-	vehicle_id INT
+CREATE TABLE [dbo].Slot(
+	slot_id INT PRIMARY KEY identity(1,1),
+	slot_name NVARCHAR(100),
+	duration INT,
+	time TIME(7),
+	slot_desc NVARCHAR(155)
+)
+GO
+CREATE TABLE Weekday_Schedule(
+	weekday_schedule_id INT PRIMARY KEY identity(1,1),
+	monday DATETIME,
+	tuesday DATETIME,
+	wednesday DATETIME,
+	thursday DATETIME,
+	friday DATETIME,
+	saturday DATETIME,
+	sunday DATETIME,
+	course_id NVARCHAR(200),
+	weekday_schedule_desc NVARCHAR(200)
+)
+GO
+CREATE TABLE [dbo].Teaching_Schedule(
+	teaching_schedule_id INT PRIMARY KEY identity(1,1),
+	teaching_date DATETIME,
+	staff_id NVARCHAR(200),
+	slot_id INT,
+	weekday_schedule_id INT
 )
 GO
 CREATE TABLE [dbo].Roll_Call_Book(
 	roll_call_book_id INT PRIMARY KEY identity(1,1),
 	isAbsence BIT,
 	comment NVARCHAR(255),
-	member_id NVARCHAR(255) NOT NULL,
-	course_schedule_id INT NOT NULL
+	member_id NVARCHAR(200) NOT NULL,
+	teaching_schedule_id INT NOT NULL
 )
 GO
 CREATE TABLE [dbo].FeedBack(
 	feedback_id INT PRIMARY KEY identity(1,1),
 	content NVARCHAR(255),
 	rating_star INT,
-	member_id NVARCHAR(255),
-	staff_id NVARCHAR(255),
-	course_id NVARCHAR(255)
+	create_date DATETIME,
+	member_id NVARCHAR(200),
+	staff_id NVARCHAR(200),
+	course_id NVARCHAR(200)
 )
 GO
 CREATE TABLE [dbo].License_Register_Form_Status(
@@ -204,7 +230,7 @@ CREATE TABLE [dbo].Exam_Question(
 )
 GO
 CREATE TABLE [dbo].Exam_Grade(
-	member_id NVARCHAR(255),
+	member_id NVARCHAR(200),
 	theory_exam_id INT,
 	point FLOAT,
 	question_id INT NOT NULL,
@@ -215,7 +241,7 @@ CREATE TABLE [dbo].Exam_Grade(
 )
 GO
 CREATE TABLE [dbo].Exam_History(
-	member_id NVARCHAR(255),
+	member_id NVARCHAR(200),
 	theory_exam_id INT,
 	total_grade INT,
 	total_right_answer INT,
@@ -229,7 +255,7 @@ CREATE TABLE [dbo].Exam_History(
 GO
 CREATE TABLE [dbo].Blog(
 	blog_id INT PRIMARY KEY identity(1,1),
-	staff_id NVARCHAR(255),
+	staff_id NVARCHAR(200),
 	content NVARCHAR(MAX),
 	create_date DATETIME,
 	last_modified_date DATETIME
@@ -284,6 +310,12 @@ ADD CONSTRAINT FK_Staff_AddressId FOREIGN KEY (address_id) REFERENCES Address (a
 -- dbo.Staff - dbo.License_Type
 ALTER TABLE Staff
 ADD CONSTRAINT FK_Staff_LicenseTypeId FOREIGN KEY (license_type_id) REFERENCES License_Type (license_type_id)
+-- dbo.Course_Mentor - dbo.Course
+ALTER TABLE Course_Mentor
+ADD CONSTRAINT FK_CourseMentor_CourseId FOREIGN KEY (course_id) REFERENCES Course (course_id)
+-- dbo.Course_Mentor - dbo.Staff
+ALTER TABLE Course_Mentor
+ADD CONSTRAINT FK_CourseMentor_MentorId FOREIGN KEY (mentor_id) REFERENCES Staff (staff_id)
 -- dbo.Curriculum - dbo.Course_Curriculum
 ALTER TABLE Course_Curriculum
 ADD CONSTRAINT FK_CourseCurriculum_CurriculumnId FOREIGN KEY (curriculum_id) REFERENCES Curriculum (curriculum_id)
@@ -302,27 +334,30 @@ ADD CONSTRAINT FK_CourseReservation_StaffId FOREIGN KEY (staff_id) REFERENCES St
 -- dbo.Course_Reservation - dbo.Course_Reservation_Status
 ALTER TABLE Course_Reservation
 ADD CONSTRAINT FK_CourseReservation_StatusId FOREIGN KEY (course_reservation_status_id) REFERENCES Course_Reservation_Status (course_reservation_status_id)
--- dbo.Course_Reservation - dbo.Invoice
+-- dbo.Course_Reservation - dbo.Vehicle
 ALTER TABLE Course_Reservation
-ADD CONSTRAINT FK_CourseReservation_InvoiceId FOREIGN KEY (invoice_id) REFERENCES Invoice (invoice_id)
--- dbo.Invoice - dbo.Payment_Type
-ALTER TABLE Invoice
-ADD CONSTRAINT FK_Invoice_PaymentTypeId FOREIGN KEY (payment_type_id) REFERENCES Payment_Type (payment_type_id)
+ADD CONSTRAINT FK_CourseReservation_VehicleId FOREIGN KEY (vehicle_id) REFERENCES Vehicle (vehicle_id)
+-- dbo.Course_Reservation - dbo.Payment_Type
+ALTER TABLE Course_Reservation
+ADD CONSTRAINT FK_CourseReservation_PaymentTypeId FOREIGN KEY (payment_type_id) REFERENCES Payment_Type (payment_type_id)
 -- dbo.Vehicle - dbo.Vehicle_Type
 ALTER TABLE Vehicle
 ADD CONSTRAINT FK_Vehicle_TypeId FOREIGN KEY (vehicle_type_id) REFERENCES Vehicle_Type (vehicle_type_id)
--- dbo.Course_Schedule - dbo.Vehicle
-ALTER TABLE Course_Schedule
-ADD CONSTRAINT FK_CourseSchedule_VehicleId FOREIGN KEY (vehicle_id) REFERENCES Vehicle (vehicle_id)
--- dbo.Course_Schedule - dbo.Course_Reservation
-ALTER TABLE Course_Schedule
-ADD CONSTRAINT FK_CourseSchedule_ReservationId FOREIGN KEY (course_reservation_id) REFERENCES Course_Reservation (course_reservation_id)
--- dbo.Course_Schedule - dbo.Staff
-ALTER TABLE Course_Schedule
-ADD CONSTRAINT FK_CourseSchedule_StaffId FOREIGN KEY (staff_id) REFERENCES Staff (staff_id)
--- dbo.Roll_Call_Book - dbo.Course_Schedule
+-- dbo.Teaching_Schedule - dbo.Staff
+ALTER TABLE Teaching_Schedule
+ADD CONSTRAINT FK_TeachingSchedule_StaffId FOREIGN KEY (staff_id) REFERENCES Staff (staff_id)
+-- dbo.Teaching_Schedule - dbo.Slot
+ALTER TABLE Teaching_Schedule
+ADD CONSTRAINT FK_TeachingSchedule_SlotId FOREIGN KEY (slot_id) REFERENCES Slot (slot_id)
+-- dbo.Teaching_Schedule - dbo.Weekday_Schedule
+ALTER TABLE Teaching_Schedule
+ADD CONSTRAINT FK_TeachingSchedule_WeekdayScheduleId FOREIGN KEY (weekday_schedule_id) REFERENCES Weekday_Schedule (weekday_schedule_id)
+-- dbo.Weekday_Schedule - dbo.Course
+ALTER TABLE Weekday_Schedule
+ADD CONSTRAINT FK_WeekdaySchedule_CourseId FOREIGN KEY (course_id) REFERENCES Course (course_id)
+-- dbo.Roll_Call_Book - dbo.Teaching_Schedule
 ALTER TABLE Roll_Call_Book 
-ADD CONSTRAINT FK_RollCallBook_CourseScheduleId FOREIGN KEY (course_schedule_id) REFERENCES Course_Schedule (course_schedule_id)
+ADD CONSTRAINT FK_RollCallBook_TeachingScheduleId FOREIGN KEY (teaching_schedule_id) REFERENCES Teaching_Schedule (teaching_schedule_id)
 -- dbo.Roll_Call_Book - dbo.Member
 ALTER TABLE Roll_Call_Book 
 ADD CONSTRAINT FK_RollCallBook_MemberId FOREIGN KEY (member_id) REFERENCES Member (member_id)
@@ -383,3 +418,21 @@ ADD CONSTRAINT FK_BlogTag_BlogId FOREIGN KEY (blog_id) REFERENCES Blog (blog_id)
 -- dbo.Blog_Tag - dbo.Tag
 ALTER TABLE Blog_Tag
 ADD CONSTRAINT FK_BlogTag_TagId FOREIGN KEY (tag_id) REFERENCES Tag (tag_id)
+
+
+-- default data
+INSERT INTO [dbo].Role(name)
+VALUES (N'Admin'),(N'Staff'),(N'Mentor'),(N'Member')
+INSERT INTO [dbo].Account(email, password, role_id, is_active)
+VALUES (N'admin@gmail.com', N'QEFkbWluMTIz', 1, 1)
+INSERT INTO [dbo].Job_Title(job_title_desc)
+VALUES (N'Quản trị hệ thống'), (N'Quản lí nhân sự'), (N'Giảng viên')
+INSERT INTO [dbo].License_Type(license_type_desc)
+VALUES (N'A1'),(N'A2'),(N'B1'),(N'B1.1'),(N'B2')
+INSERT INTO [dbo].License_Register_Form_Status(register_form_status_desc)
+VALUES (N'Chưa duyệt'), (N'Đã duyệt')
+INSERT INTO [dbo].Course_Reservation_Status(course_reservation_status_desc)
+VALUES (N'Chưa thanh toán'), (N'Đang diễn ra'), (N'Đã kết thúc')
+INSERT INTO [dbo].Payment_Type(payment_type_desc)
+VALUES (N'Thanh toán trực tiếp'), (N'Credit Card'), (N'VNPAY')
+

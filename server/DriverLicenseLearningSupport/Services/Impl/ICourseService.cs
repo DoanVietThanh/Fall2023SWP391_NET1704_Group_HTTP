@@ -7,9 +7,11 @@ namespace DriverLicenseLearningSupport.Services.Impl
         Task<CourseModel> CreateAsync(CourseModel course);
         Task<CourseModel> GetAsync(Guid id);
         Task<CourseModel> GetHiddenCourseAsync(Guid id);
+        Task<CourseModel> GetByMentorIdAsync(Guid mentorId);
         Task<IEnumerable<CourseModel>> GetAllAsync();
         Task<IEnumerable<CourseModel>> GetAllHiddenCourseAsync();
         Task<bool> AddCurriculumAsync(Guid courseId, CurriculumModel curriculum);
+        Task<bool> AddMentorAsync(Guid courseId, Guid mentorId);
         Task<bool> UpdateAsync(Guid id, CourseModel course);
         Task<bool> UpdateCourseCurriculumAsync(Guid courseId, CurriculumModel curriculum);
         Task<bool> DeleteAsync(Guid id);
