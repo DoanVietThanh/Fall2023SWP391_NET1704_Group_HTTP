@@ -94,7 +94,7 @@ const Header = () => {
                 }}
               >
                 <MenuItem onClick={handleClose}>
-                  <Link to={`/profile`}>Profile</Link>
+                  <Link to={`/private-information`}>Profile</Link>
                 </MenuItem>
                 <MenuItem onClick={handleClose}>My account</MenuItem>
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
@@ -137,15 +137,14 @@ const Header = () => {
           <Link to='/blogs'>
             <div>Blog</div>
           </Link>
-          <Link to='/contact'>
-            <div>Contact</div>
-          </Link>
         </div>
         <div>
-          <button className='btn flex gap-2 items-center'>
-            Contact us
-            <AiOutlineArrowRight size={20} />
-          </button>
+          <Link to='/contact'>
+            <button className='btn flex gap-2 items-center'>
+              Contact us
+              <AiOutlineArrowRight size={20} />
+            </button>
+          </Link>
         </div>
       </div>
     </div>
