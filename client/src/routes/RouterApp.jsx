@@ -17,6 +17,7 @@ import TestTheory from '../pages/TheoryPage/TestTheory';
 import ResultTheory from '../pages/TheoryPage/ResultTheory';
 import DashboardPage from '../pages/Manager/pages/DashboardPage/DashboardPage';
 import PrivatePage from '../pages/PrivatePage/PrivatePage';
+import BlogPage from '../pages/BlogPage/BlogPage';
 
 const RouterApp = () => {
   const router = createBrowserRouter([
@@ -28,7 +29,7 @@ const RouterApp = () => {
     { path: '/authentication/reset-password', element: <ShowForgetPass /> },
     { path: '/intructor', element: <IntructorPage /> },
     { path: '/private-information', element: <PrivatePage /> },
-
+    { path: '/blogs', element: <BlogPage />},
     { path: '/course', element: <CoursePage /> },
     { path: '/course/detail', element: <DetailCourse /> },
 
