@@ -6,7 +6,6 @@ import Loading from '../components/Loading';
 import 'swiper/css';
 import LoginPage from '../pages/LoginPage/LoginPage';
 import RegisterPage from '../pages/LoginPage/RegisterPage';
-import ProfilePage from '../pages/ProfilePage/ProfilePage';
 import ForgotPassword from '../pages/LoginPage/ForgotPassword';
 import ShowForgetPass from '../pages/LoginPage/ShowForgetPass';
 import CoursePage from '../pages/CoursePage/CoursePage';
@@ -17,6 +16,8 @@ import TheoryPage from '../pages/TheoryPage/TheoryPage';
 import TestTheory from '../pages/TheoryPage/TestTheory';
 import ResultTheory from '../pages/TheoryPage/ResultTheory';
 import DashboardPage from '../pages/Manager/pages/DashboardPage/DashboardPage';
+import PrivatePage from '../pages/PrivatePage/PrivatePage';
+import BlogPage from '../pages/BlogPage/BlogPage';
 
 const RouterApp = () => {
   const router = createBrowserRouter([
@@ -25,10 +26,10 @@ const RouterApp = () => {
     { path: '/login', element: <LoginPage /> },
     { path: '/register', element: <RegisterPage /> },
     { path: '/forgot-password', element: <ForgotPassword /> },
-    { path: '/profile', element: <ProfilePage /> },
     { path: '/authentication/reset-password', element: <ShowForgetPass /> },
     { path: '/intructor', element: <IntructorPage /> },
-
+    { path: '/private-information', element: <PrivatePage /> },
+    { path: '/blogs', element: <BlogPage />},
     { path: '/course', element: <CoursePage /> },
     { path: '/course/detail', element: <DetailCourse /> },
 
