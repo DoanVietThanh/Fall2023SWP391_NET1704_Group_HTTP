@@ -80,5 +80,15 @@ namespace DriverLicenseLearningSupport.Repositories
             return _mapper.Map<IEnumerable<AnswerModel>>(answers);
         }
 
+        public async Task<AnswerModel> GetByAnswerIdAsync(int answerId)
+        {
+            var answerEntity = await _context.QuestionAnswers.Where(a => a.QuestionAnswerId == answerId)
+                .FirstOrDefaultAsync();
+            if (answerEntity is null) 
+            {
+                return null;
+            }
+            return _mapper.Map<AnswerModel>(answerEntity);
+        }
     }
 }

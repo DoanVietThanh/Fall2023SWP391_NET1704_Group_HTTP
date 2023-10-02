@@ -22,6 +22,7 @@ namespace DriverLicenseLearningSupport.Mapping
             CreateMap<LicenseRegisterFormStatus, LicenseRegisterFormStatusModel>().ReverseMap();
             CreateMap<Question, QuestionModel>().ReverseMap();
             CreateMap<QuestionAnswer,AnswerModel>().ReverseMap();
+            CreateMap<TheoryExam,TheoryExamModel>().ReverseMap();
             
         }
     }

@@ -64,7 +64,7 @@ namespace DriverLicenseLearningSupport.Controllers
         [HttpPost]
         [Route("theory/add-question")]
         //[Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> AddQuestion([FromForm] CreateNewQuestionRequest reqObj)
+        public async Task<IActionResult> AddQuestion([FromForm] NewQuestionAddRequest reqObj)
         {
 
 
@@ -113,7 +113,8 @@ namespace DriverLicenseLearningSupport.Controllers
             //Set license type to quesiton model
             createdQuestionModel.LicenseType = await _licenseTypeService.GetAsync(Convert.ToInt32(createdQuestionModel.LicenseTypeId));
 
-
+            //set status to question model
+            createdQuestionModel = await _questionService.UpdateStatusQuestionAsync(createdQuestionModel.QuestionId, true);
 
             List<AnswerModel> list = reqObj.ToListAnswerModel();
             AnswerValidator answerValidator = new AnswerValidator();
@@ -161,7 +162,29 @@ namespace DriverLicenseLearningSupport.Controllers
         [Route("theory/{answerId:int}/delete-answer")]
         //[Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> DeleteSingleAnswer([FromRoute] int answerId)
-        {
+        { 
+            // get answer
+            AnswerModel answer = await _answerService.GetByAnswerIdAsync(answerId);
+            //check the existance of the answer
+            if (answer is null)
+            {
+                return NotFound(new ErrorResponse() { 
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message ="không tìm thấy câu trả lời tương ứng"
+                });
+            }
+            //get the question from the answer
+            QuestionModel question = await _questionService.GetByIdAsync(answer.QuestionId);
+
+            //check if the question is able to edit
+            if (question.isActive == false) 
+            {
+                return BadRequest(new ErrorResponse() { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Câu hỏi đã nằm trong đề thi và không được chỉnh sửa"
+                });
+            }
+
             bool isSucess = await _answerService.DeleteAnswerAsync(answerId);
             if (!isSucess)
             {
@@ -180,6 +203,7 @@ namespace DriverLicenseLearningSupport.Controllers
         //[Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> DeleteQuestion([FromRoute] int questionId)
         {
+            
             //get Question to delete
             var question = await _questionService.GetByIdAsync(questionId);
 
@@ -190,6 +214,15 @@ namespace DriverLicenseLearningSupport.Controllers
                 {
                     StatusCode = StatusCodes.Status404NotFound,
                     Message = "Can not found the matched question"
+                });
+            }
+
+            if (question.isActive == false)
+            {
+                return BadRequest(new ErrorResponse()
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Câu hỏi đã nằm trong đề thi và không được chỉnh sửa"
                 });
             }
             //delete all answers of the question
@@ -279,8 +312,10 @@ namespace DriverLicenseLearningSupport.Controllers
                 Data = new
                 {
                     QuestionWithAnswer = questionWithAnswersModel,
+                    TotalQuestion = questionWithAnswersModel.Count(),
                     TotalPage = list.TotalPage,
                     PageIndex = list.PageIndex
+
                 }
             });
 

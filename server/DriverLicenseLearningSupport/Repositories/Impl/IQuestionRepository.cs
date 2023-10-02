@@ -8,8 +8,9 @@ namespace DriverLicenseLearningSupport.Repositories.Impl
     {
         Task<QuestionModel> CreateAsync(Question question);
         Task<IEnumerable<QuestionModel>> GetAllAsync();
+        Task<IEnumerable<QuestionModel>> GetAllByLicenseId(int lisenceId);
         Task<bool> DeleteQuestionAsync(int questionId);
         Task<QuestionModel> GetByIdAsync(int questionId);
-
+        Task<QuestionModel> UpdateStatusQuestionAsync(int questionId, bool status);
     }
 }

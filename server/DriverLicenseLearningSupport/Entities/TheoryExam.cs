@@ -22,6 +22,6 @@ namespace DriverLicenseLearningSupport.Entities
         public virtual ICollection<ExamGrade> ExamGrades { get; set; }
         public virtual ICollection<ExamHistory> ExamHistories { get; set; }
 
-        public virtual ICollection<Question> Questions { get; set; }
+        public virtual ICollection<Question> Questions { get; set; } = new List<Question>();
     }
 }

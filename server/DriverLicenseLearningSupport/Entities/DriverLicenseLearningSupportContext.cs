@@ -675,6 +675,7 @@ namespace DriverLicenseLearningSupport.Entities
 
                 entity.Property(e => e.QuestionAnswerDesc).HasColumnName("question_answer_desc");
 
+                entity.Property(e => e.isActive).HasColumnName("isActive");
                 entity.HasOne(d => d.LicenseType)
                     .WithMany(p => p.Questions)
                     .HasForeignKey(d => d.LicenseTypeId)
