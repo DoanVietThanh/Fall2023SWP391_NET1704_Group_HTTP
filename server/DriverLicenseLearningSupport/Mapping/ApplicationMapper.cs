@@ -21,14 +21,14 @@ namespace DriverLicenseLearningSupport.Mapping
             CreateMap<PaymentType, PaymentTypeModel>().ReverseMap();
             CreateMap<LicenseRegisterForm, LicenseRegisterFormModel>().ReverseMap();
             CreateMap<LicenseRegisterFormStatus, LicenseRegisterFormStatusModel>().ReverseMap();
-<<<<<<< HEAD
             CreateMap<WeekdaySchedule, WeekdayScheduleModel>().ReverseMap();
             CreateMap<CourseReservation, CourseReservationModel>().ReverseMap();
-=======
             CreateMap<Question, QuestionModel>().ReverseMap();
             CreateMap<QuestionAnswer,AnswerModel>().ReverseMap();
-            
->>>>>>> 91115334339cc01689a10b20ccdd7da5acbb0896
+            CreateMap<Vehicle, VehicleModel>().ReverseMap();
+            CreateMap<VehicleType, VehicleTypeModel>().ReverseMap();
+            CreateMap<Slot, SlotModel>().ReverseMap();
+            CreateMap<TeachingSchedule, TeachingScheduleModel>().ReverseMap();
         }
     }
 }

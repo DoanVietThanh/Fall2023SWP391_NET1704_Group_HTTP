@@ -131,6 +131,7 @@ CREATE TABLE [dbo].Vehicle_Type(
 GO
 CREATE TABLE [dbo].Vehicle(
 	vehicle_id INT PRIMARY KEY identity(1,1),
+	vehicle_name NVARCHAR(155) NOT NULL,
 	vehicle_license_plate NVARCHAR(155) NOT NULL,
 	register_date DATETIME,
 	vehicle_type_id INT
@@ -162,6 +163,7 @@ CREATE TABLE [dbo].Teaching_Schedule(
 	teaching_date DATETIME,
 	staff_id NVARCHAR(200),
 	slot_id INT,
+	vehicle_id INT,
 	weekday_schedule_id INT
 )
 GO
@@ -352,6 +354,9 @@ ADD CONSTRAINT FK_TeachingSchedule_SlotId FOREIGN KEY (slot_id) REFERENCES Slot 
 -- dbo.Teaching_Schedule - dbo.Weekday_Schedule
 ALTER TABLE Teaching_Schedule
 ADD CONSTRAINT FK_TeachingSchedule_WeekdayScheduleId FOREIGN KEY (weekday_schedule_id) REFERENCES Weekday_Schedule (weekday_schedule_id)
+-- dbo.Teaching_Schedule - dbi.Vehicle
+ALTER TABLE Teaching_Schedule
+ADD CONSTRAINT FK_TeachingSchedule_VehicleId FOREIGN KEY (vehicle_id) REFERENCES Vehicle (vehicle_id)
 -- dbo.Weekday_Schedule - dbo.Course
 ALTER TABLE Weekday_Schedule
 ADD CONSTRAINT FK_WeekdaySchedule_CourseId FOREIGN KEY (course_id) REFERENCES Course (course_id)
@@ -435,4 +440,6 @@ INSERT INTO [dbo].Course_Reservation_Status(course_reservation_status_desc)
 VALUES (N'Chưa thanh toán'), (N'Đang diễn ra'), (N'Đã kết thúc')
 INSERT INTO [dbo].Payment_Type(payment_type_desc)
 VALUES (N'Thanh toán trực tiếp'), (N'Credit Card'), (N'VNPAY')
+INSERT INTO [dbo].Vehicle_Type(vehicle_type_desc, license_type_id)
+VALUES (N'Xe số sàn', 3), (N'Xe số tự động', 3), (N'Xe số sàn', 4), (N'Xe số tự động', 4)
 

@@ -18,6 +18,15 @@ namespace DriverLicenseLearningSupport.Repositories
             _mapper = mapper;
         }
 
+        public async Task<SlotModel> CreateAsync(Slot slot)
+        {
+            await _context.Slots.AddAsync(slot);
+            bool isSucess = await _context.SaveChangesAsync() > 0 ? true : false;
+            if (!isSucess) return null;
+
+            return _mapper.Map<SlotModel>(slot);
+        }
+
         public async Task<IEnumerable<SlotModel>> GetAllAsync()
         {
             return _mapper.Map<IEnumerable<SlotModel>>(await _context.Slots.ToListAsync());
