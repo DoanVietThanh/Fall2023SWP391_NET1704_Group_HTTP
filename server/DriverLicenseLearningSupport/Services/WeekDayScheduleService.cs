@@ -23,5 +23,15 @@ namespace DriverLicenseLearningSupport.Services
             var weekdayEntities = _mapper.Map<IEnumerable<WeekdaySchedule>>(weekdays);
             return await _weekDayScheduleRepo.CreateRangeAsync(weekdayEntities);
         }
+
+        public async Task<IEnumerable<WeekdayScheduleModel>> GetAllAsync()
+        {
+            return await _weekDayScheduleRepo.GetAllAsync();
+        }
+
+        public async Task<WeekdayScheduleModel> GetByDateAsync(DateTime date)
+        {
+            return await _weekDayScheduleRepo.GetByDateAsync(date);
+        }
     }
 }
