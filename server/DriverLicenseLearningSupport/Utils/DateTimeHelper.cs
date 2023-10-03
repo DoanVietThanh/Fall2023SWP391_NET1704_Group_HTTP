@@ -174,5 +174,13 @@ namespace DriverLicenseLearningSupport.Utils
                 };
             }
         }
+
+        public static IEnumerable<DateTime> GenerateDateTimesFromWeekDay(WeekdayScheduleModel weekday)
+        {
+            var dates = new List<DateTime>()
+            { weekday.Monday, weekday.Tuesday, weekday.Wednesday,
+                weekday.Thursday, weekday.Friday, weekday.Saturday, weekday.Sunday};
+            return dates;
+        }
     }
 }
