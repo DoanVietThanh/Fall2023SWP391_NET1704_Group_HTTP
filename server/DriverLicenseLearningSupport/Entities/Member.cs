@@ -1,9 +1,8 @@
-﻿using DriverLicenseLearningSupport.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace DriverLicenseLearningSupport.Entities
-{
+{ 
     public partial class Member
     {
         public Member()

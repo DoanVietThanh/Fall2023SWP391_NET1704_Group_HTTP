@@ -1,0 +1,167 @@
+{
+  "course": {
+    "courseId": "d442eff6-e3fa-44cc-9cc5-a3ab0027de02",
+    "courseTitle": "Bai lai B1",
+    "courseDesc": "Bai lai B1",
+    "cost": 0,
+    "totalSession": null,
+    "totalMonth": null,
+    "startDate": null,
+    "isActive": null,
+    "feedBacks": [],
+    "curricula": [],
+    "mentors": []
+  },
+  "filterWeekDay": [
+    "02/10 To 08/10",
+    "09/10 To 15/10",
+    "16/10 To 22/10",
+    "23/10 To 29/10",
+    "30/10 To 05/11",
+    "06/11 To 12/11",
+    "13/11 To 19/11",
+    "20/11 To 26/11",
+    "27/11 To 02/12"
+  ],
+  "weekdays": {
+    "weekdayScheduleId": 0,
+    "monday": "2023-10-02T00:00:00",
+    "tuesday": "2023-10-03T00:00:00",
+    "wednesday": "2023-10-04T00:00:00",
+    "thursday": "2023-10-05T00:00:00",
+    "friday": "2023-10-06T00:00:00",
+    "saturday": "2023-10-07T00:00:00",
+    "sunday": "2023-10-08T00:00:00",
+    "courseId": "580451bd-0bc8-40a3-b5ee-5c2475d989c5",
+    "weekdayScheduleDesc": "02/10 To 08/10",
+    "course": null,
+    "teachingSchedules": null
+  },
+  "slot1": {
+    "slotId": 1,
+    "slotName": "Slot 1",
+    "duration": 2,
+    "time": "07:30:00",
+    "slotDesc": "07:30 - 09:30",
+    "teachingSchedules": [
+      null,
+      {
+        "teachingScheduleId": 0,
+        "teachingDate": "2023-10-03T15:58:25.6212033+07:00",
+        "staffId": null,
+        "weekdayScheduleId": 0,
+        "slotId": 1,
+        "weekdaySchedule": null,
+        "staff": {
+          "staffId": "4e220c7a-4429-4dcc-8d18-0103efd0496d",
+          "firstName": "Le Xuan",
+          "lastName": "Phuoc",
+          "dateBirth": "0001-01-01T00:00:00",
+          "phone": null,
+          "isActive": null,
+          "avatarImage": null,
+          "email": null,
+          "addressId": null,
+          "jobTitleId": null,
+          "licenseTypeId": null,
+          "address": {
+            "addressId": null,
+            "street": "59",
+            "district": "GV",
+            "city": "HCM",
+            "zipcode": null
+          },
+          "emailNavigation": null,
+          "jobTitle": {
+            "jobTitleId": 1,
+            "jobTitleDesc": "Mentor"
+          },
+          "licenseType": null,
+          "feedBacks": [],
+          "courses": []
+        },
+        "slot": null,
+        "rollCallBooks": null
+      },
+      null,
+      null,
+      {
+        "teachingScheduleId": 0,
+        "teachingDate": "2023-10-06T15:58:25.6217707+07:00",
+        "staffId": null,
+        "weekdayScheduleId": 0,
+        "slotId": 1,
+        "weekdaySchedule": null,
+        "staff": {
+          "staffId": "9895014d-c4b0-4f16-9d10-943d1f3f4d73",
+          "firstName": "Le Xuan",
+          "lastName": "Phuoc",
+          "dateBirth": "0001-01-01T00:00:00",
+          "phone": null,
+          "isActive": null,
+          "avatarImage": null,
+          "email": null,
+          "addressId": null,
+          "jobTitleId": null,
+          "licenseTypeId": null,
+          "address": {
+            "addressId": null,
+            "street": "59",
+            "district": "GV",
+            "city": "HCM",
+            "zipcode": null
+          },
+          "emailNavigation": null,
+          "jobTitle": {
+            "jobTitleId": 1,
+            "jobTitleDesc": "Mentor"
+          },
+          "licenseType": null,
+          "feedBacks": [],
+          "courses": []
+        },
+        "slot": null,
+        "rollCallBooks": null
+      },
+      {
+        "teachingScheduleId": 0,
+        "teachingDate": "2023-10-07T15:58:25.6217743+07:00",
+        "staffId": null,
+        "weekdayScheduleId": 0,
+        "slotId": 1,
+        "weekdaySchedule": null,
+        "staff": {
+          "staffId": "2bde0e59-6868-4075-bf1d-03677396b247",
+          "firstName": "Le Xuan",
+          "lastName": "Phuoc",
+          "dateBirth": "0001-01-01T00:00:00",
+          "phone": null,
+          "isActive": null,
+          "avatarImage": null,
+          "email": null,
+          "addressId": null,
+          "jobTitleId": null,
+          "licenseTypeId": null,
+          "address": {
+            "addressId": null,
+            "street": "59",
+            "district": "GV",
+            "city": "HCM",
+            "zipcode": null
+          },
+          "emailNavigation": null,
+          "jobTitle": {
+            "jobTitleId": 1,
+            "jobTitleDesc": "Mentor"
+          },
+          "licenseType": null,
+          "feedBacks": [],
+          "courses": []
+        },
+        "slot": null,
+        "rollCallBooks": null
+      },
+      null
+    ]
+  }
+}

@@ -239,7 +239,7 @@ const DetailCourse = () => {
                     </h1>
 
                     {[...Array(3)].map((item, index) => (
-                      <Accordion className='my-4 border'>
+                      <Accordion className='my-4 border' key={index}>
                         <AccordionSummary
                           expandIcon={<ExpandMoreIcon />}
                           aria-controls='panel1a-content'
@@ -271,7 +271,7 @@ const DetailCourse = () => {
                       <img
                         alt='avt'
                         className='w-[160px] h-[160px] object-cover rounded-full'
-                        src='https://scontent.fsgn5-10.fna.fbcdn.net/v/t39.30808-6/326718942_3475973552726762_6277150844361274430_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=a2f6c7&_nc_ohc=F9AAbXAwDU8AX-6HyPn&_nc_ht=scontent.fsgn5-10.fna&oh=00_AfA5o3lKSL4jdT7prHoH6xLbUkhlpdXxlassURqgMA6viw&oe=6514AD6C'
+                        src='/img/avtThanh.jpg'
                       />
                     </div>
                     <div className='flex-1 flex flex-col justify-between pl-4 border-l-2 text-[20px]'>
@@ -330,7 +330,7 @@ const DetailCourse = () => {
                     </div>
                     <div className='flex-1 flex flex-col gap-2'>
                       {[...Array(5)].map((item, index) => (
-                        <div className='flex-x gap-4 '>
+                        <div className='flex-x gap-4 ' key={index}>
                           <div className='flex-x gap-2'>
                             <AiOutlineStar className='text-blue-500' />{' '}
                             {index + 1}
@@ -345,7 +345,7 @@ const DetailCourse = () => {
                   </div>
 
                   {[...Array(3)].map((item, index) => (
-                    <div className='flex-x gap-4 p-4'>
+                    <div className='flex-x gap-4 p-4' key={index}>
                       <div>
                         <img
                           src='/img/avtThanh.jpg'

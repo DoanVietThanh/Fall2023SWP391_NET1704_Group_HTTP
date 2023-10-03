@@ -2,6 +2,9 @@ import axios from 'axios';
 
 const axiosClient = axios.create({
   baseURL: process.env.REACT_APP_SERVER_API,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
 // Add a request interceptor
@@ -9,6 +12,10 @@ axiosClient.interceptors.request.use(
   function (config) {
     console.log('🚀 ~ file: axiosClient.js:10 ~ config:', config);
     // Do something before request is sent
+    const accessToken = localStorage.getItem('accessToken');
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
     return config;
   },
   function (error) {

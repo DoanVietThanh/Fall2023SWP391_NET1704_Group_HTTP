@@ -34,6 +34,10 @@ namespace DriverLicenseLearningSupport.Services
         {
             return await _courseRepo.GetHiddenCourseAsync(id);
         }
+        public async Task<CourseModel> GetByMentorIdAsync(Guid mentorId)
+        {
+            return await _courseRepo.GetByMentorIdAsync(mentorId);
+        }
         public async Task<IEnumerable<CourseModel>> GetAllAsync()
         {
             return await _courseRepo.GetAllAsync();
@@ -71,6 +75,10 @@ namespace DriverLicenseLearningSupport.Services
             
             // cause error
             return false;
+        }
+        public async Task<bool> AddMentorAsync(Guid courseId, Guid mentorId)
+        {
+            return await _courseRepo.AddMentorAsync(courseId, mentorId);
         }
         public async Task<bool> UnhideAsync(Guid id)
         {

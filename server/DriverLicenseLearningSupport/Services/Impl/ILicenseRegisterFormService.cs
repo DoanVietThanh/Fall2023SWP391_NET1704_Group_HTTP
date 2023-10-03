@@ -6,6 +6,7 @@ namespace DriverLicenseLearningSupport.Services.Impl
     {
         Task<LicenseRegisterFormModel> CreateAsync(LicenseRegisterFormModel model, Guid memberId);
         Task<LicenseRegisterFormModel> GetAsync(int licenseRegisterId);
+        Task<LicenseRegisterFormModel> GetByMemberId(Guid memberId);
         Task<bool> ApproveAsync(int licenseRegisterId);
     }
 }

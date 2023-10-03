@@ -55,6 +55,25 @@ namespace DriverLicenseLearningSupport.Repositories
             }
             return _mapper.Map<LicenseRegisterFormModel>(lfEntity);
         }
+        public async Task<LicenseRegisterFormModel> GetByMemberId(Guid memberId)
+        {
+            var lfEntities = await _context.LicenseRegisterForms
+                                         .Select(x => new LicenseRegisterForm { 
+                                            Members = x.Members.Select(x => new Member { 
+                                                MemberId = x.MemberId
+                                            }).ToList()
+                                         }).ToListAsync();
+            var memberEntity = lfEntities.Select(x => x.Members.Where(x => x.MemberId == memberId.ToString())
+                                                               .FirstOrDefault())
+                                         .SingleOrDefault();
+            if(memberEntity is not null)
+            {
+                var lfEntity = await _context.LicenseRegisterForms.Where(x => x.LicenseFormId == memberEntity.LicenseFormId)
+                                    .FirstOrDefaultAsync();         
+                return _mapper.Map<LicenseRegisterFormModel>(lfEntity);
+            }
+            return null;
+        }
         public async Task<bool> ApproveAsync(int licenseRegisterId)
         {
             // get by id
@@ -68,5 +87,6 @@ namespace DriverLicenseLearningSupport.Repositories
             // save changes
             return await _context.SaveChangesAsync() > 0 ? true : false;
         }
+
     }
 }

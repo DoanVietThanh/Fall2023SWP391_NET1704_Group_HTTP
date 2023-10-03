@@ -1,18 +1,10 @@
 import React from 'react';
 import { AiOutlineArrowRight } from 'react-icons/ai';
-import { BsPerson } from 'react-icons/bs';
-import { MdDateRange } from 'react-icons/md';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
-import {
-  Autoplay,
-  Navigation,
-  Pagination,
-  Scrollbar,
-  A11y,
-} from 'swiper/modules';
+import { Autoplay, Pagination } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 const listMentor = [

@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using OfficeOpenXml;
+using Org.BouncyCastle.Security;
 using System.Globalization;
 
 namespace DriverLicenseLearningSupport.Controllers
@@ -35,6 +36,7 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly IAccountService _accountService;
         private readonly IRoleService _roleService;
         private readonly IStaffService _staffService;
+        private readonly ICourseService _courseService;
         private readonly IFeedbackService _feedbackService;
         private readonly IImageService _imageService;
         private readonly IMemoryCache _memoryCache;
@@ -52,6 +54,7 @@ namespace DriverLicenseLearningSupport.Controllers
             IImageService imageService,
             IStaffService staffService,
             IFeedbackService feedbackService,
+            ICourseService courseService,
             IOptionsMonitor<AppSettings> monitor)
         {
             _memberService = memberService;
@@ -62,6 +65,7 @@ namespace DriverLicenseLearningSupport.Controllers
             _accountService = accountService;
             _roleService = roleService;
             _staffService = staffService;
+            _courseService = courseService;
             _feedbackService = feedbackService;
             _licenseRegisterFormService = licenseRegisterFormService;
             _imageService = imageService;
@@ -631,6 +635,14 @@ namespace DriverLicenseLearningSupport.Controllers
             }
 
             // check already exist
+            var existLicenseForm = _licenseRegisterFormService.GetByMemberId(reqObj.MemberId);
+            if(existLicenseForm is not null)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"License register form are already exist. Please delete to create new or update"
+                });
+            }
 
             // generate image id
             var imageId = Guid.NewGuid();
@@ -662,6 +674,63 @@ namespace DriverLicenseLearningSupport.Controllers
                 StatusCodes.Status500InternalServerError, "Something went wrong");
 
             return new ObjectResult(new { LicenseRegisterForm = lfRegister }) { StatusCode = StatusCodes.Status201Created };
+        }
+
+        [HttpPut]
+        [Route("members/license-form/{id:int}/update")]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> UpdateLicenseFormRegister([FromRoute] int id,
+            [FromForm] LicenseRegisterFormUpdate reqObj) 
+        {
+            // get license register form by id
+            var lfRegister = await _licenseRegisterFormService.GetAsync(id);
+            // 404 Not Found <- not found any id match
+            if (lfRegister is null) return NotFound(new BaseResponse { 
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"Not found any license register form match id {id}"
+            });
+            else if(lfRegister.RegisterFormStatusId == 2)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "License form status are already approve, not able to update." +
+                    " Please remove and create again"
+                });
+            }
+
+            // update license register form
+            // update privacy image
+            if(reqObj.Image is not null)
+            {
+                // remove prev image
+                await _imageService.DeleteImageAsync(Guid.Parse(lfRegister.Image));
+                // upload new image to clound
+                await _imageService.UploadImageAsync(Guid.Parse(lfRegister.Image),
+                    reqObj.Image);
+            }
+            // update identity image
+            if (reqObj.IdentityImage is not null)
+            {
+                // remove prev image
+                await _imageService.DeleteImageAsync(Guid.Parse(lfRegister.IdentityCardImage));
+                // upload new image to clound
+                await _imageService.UploadImageAsync(Guid.Parse(lfRegister.IdentityCardImage),
+                    reqObj.IdentityImage);
+            }
+            // update health certification image
+            if (reqObj.HealthCertificationImage is not null)
+            {
+                // remove prev image
+                await _imageService.DeleteImageAsync(Guid.Parse(lfRegister.HealthCertificationImage));
+                // upload new image to clound
+                await _imageService.UploadImageAsync(Guid.Parse(lfRegister.HealthCertificationImage),
+                    reqObj.HealthCertificationImage);
+            }
+
+            return Ok(new BaseResponse { 
+                StatusCode = StatusCodes.Status200OK,
+                Message = $"Update license register form id {id} succesfully"
+            });
         }
 
         [HttpPut]
@@ -732,7 +801,47 @@ namespace DriverLicenseLearningSupport.Controllers
 
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
-        //[HttpPost]
-        //[Route("members/feedback/course")]
+
+        [HttpPost]
+        [Route("members/feedback/course")]
+        public async Task<IActionResult> FeedbackCourse([FromForm] FeedbackCourseRequest reqObj) 
+        {
+            // generate feedback model
+            var feedback = reqObj.ToFeedbackModel();
+
+            // check exist member, mentor
+            var member = await _memberService.GetAsync(Guid.Parse(feedback.MemberId));
+            var course = await _courseService.GetAsync(Guid.Parse(feedback.CourseId));
+            if (member is null)
+            {
+                return NotFound(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = $"Not found any member match id {reqObj.MemberId}"
+                });
+            }
+            if (course is null)
+            {
+                return NotFound(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = $"Not found any course match id {reqObj.CourseId}"
+                });
+            }
+
+            // create feedback
+            var isSucess = await _feedbackService.CreateAsync(feedback);
+
+            if (isSucess)
+            {
+                return Ok(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = "Feedback course successfully"
+                });
+            }
+
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
     }
 }

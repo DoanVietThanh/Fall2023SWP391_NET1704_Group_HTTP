@@ -9,8 +9,9 @@ namespace DriverLicenseLearningSupport.Entities
         {
             Blogs = new HashSet<Blog>();
             CourseReservations = new HashSet<CourseReservation>();
-            CourseSchedules = new HashSet<CourseSchedule>();
             FeedBacks = new HashSet<FeedBack>();
+            TeachingSchedules = new HashSet<TeachingSchedule>();
+            Courses = new HashSet<Course>();
         }
 
         public string StaffId { get; set; }
@@ -31,7 +32,8 @@ namespace DriverLicenseLearningSupport.Entities
         public virtual LicenseType LicenseType { get; set; }
         public virtual ICollection<Blog> Blogs { get; set; }
         public virtual ICollection<CourseReservation> CourseReservations { get; set; }
-        public virtual ICollection<CourseSchedule> CourseSchedules { get; set; }
         public virtual ICollection<FeedBack> FeedBacks { get; set; }
+        public virtual ICollection<TeachingSchedule> TeachingSchedules { get; set; }
+        public virtual ICollection<Course> Courses { get; set; }
     }
 }
