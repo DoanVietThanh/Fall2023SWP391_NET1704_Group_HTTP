@@ -22,11 +22,12 @@ import {
   BsPerson,
 } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
-import { logout } from '../../features/auth/authSlice';
 import HistoryTest from './HistoryTest';
-import ManageBankTest from './ManageBankTest';
-import ManageQuestion from './ManageQuestion';
 import WeekSchedule from './WeekSchedule';
+import ManageQuestion from './ManageQuestion';
+import ManageBankTest from './ManageBankTest';
+import { logout } from '../../features/auth/authSlice';
+import Loading from '../../components/Loading';
 
 const drawerWidth = 240;
 
@@ -222,6 +223,7 @@ export default function PrivatePage() {
           {toggleIndex === 3 && <HistoryTest />}
           {toggleIndex === 4 && <ManageQuestion />}
           {toggleIndex === 5 && <ManageBankTest />}
+          
         </div>
       </Box>
     </Box>
