@@ -29,6 +29,9 @@ namespace DriverLicenseLearningSupport.Mapping
             CreateMap<VehicleType, VehicleTypeModel>().ReverseMap();
             CreateMap<Slot, SlotModel>().ReverseMap();
             CreateMap<TeachingSchedule, TeachingScheduleModel>().ReverseMap();
+            CreateMap<TheoryExam,TheoryExamModel>().ReverseMap();
+            CreateMap<ExamGrade, ExamGradeModel>().ReverseMap();
+            
         }
     }
 }

@@ -37,5 +37,15 @@ namespace DriverLicenseLearningSupport.Services
         {
             return await _questionRepository.GetByIdAsync(questionId);
         }
+
+        public async Task<IEnumerable<QuestionModel>> GetAllByLicenseId(int licenseId)
+        {
+            return await _questionRepository.GetAllByLicenseId(licenseId);
+        }
+
+        public async Task<QuestionModel> UpdateStatusQuestionAsync(int questionId, bool status)
+        {
+             return await _questionRepository.UpdateStatusQuestionAsync(questionId, status);
+        }
     }
 }

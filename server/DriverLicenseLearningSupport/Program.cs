@@ -71,6 +71,10 @@ builder.Services.AddScoped<ISlotService, SlotService>();
 builder.Services.AddScoped<ICourseServationService, CourseReservationService>();
 builder.Services.AddScoped<IVehicleService, VehicleService>();
 builder.Services.AddScoped<ITeachingScheduleService, TeachingScheduleService>();
+builder.Services.AddScoped<IQuestionService, QuestionService>();
+builder.Services.AddScoped<IAnswerService, AnswerService>();
+builder.Services.AddScoped<ITheoryExamService, TheoryExamService>();
+builder.Services.AddScoped<IExamGradeService, ExamGradeService>();
 
 
 // Add Repositories
@@ -91,6 +95,10 @@ builder.Services.AddScoped<ISlotRepository, SlotRepository>();
 builder.Services.AddScoped<ICourseReservationRepository, CourseReservationRepository>();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<ITeachingScheduleRepository, TeachingScheduleRepository>();
+builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
+builder.Services.AddScoped<IAnswerRepository, AnswerRepository>();
+builder.Services.AddScoped<ITheoryExamRepository, TheoryExamRepository>();
+builder.Services.AddScoped<IExamGradeRepository, ExamGradeRepository>();
 
 
 // Add Email Configs
