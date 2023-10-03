@@ -9,7 +9,7 @@ const Profile = ({ accountInfo }) => {
         <img
           src='/img/bg-profile2.jpg'
           alt=''
-          className='h-[200px] object-cover w-full rounded-lg'
+          className='h-[40vh] object-cover w-full rounded-lg'
         />
         <img
           src={`/img/avtThanh.jpg`}

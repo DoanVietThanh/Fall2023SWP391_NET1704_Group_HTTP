@@ -239,7 +239,7 @@ const DetailCourse = () => {
                     </h1>
 
                     {[...Array(3)].map((item, index) => (
-                      <Accordion className='my-4 border'>
+                      <Accordion className='my-4 border' key={index}>
                         <AccordionSummary
                           expandIcon={<ExpandMoreIcon />}
                           aria-controls='panel1a-content'
@@ -330,7 +330,7 @@ const DetailCourse = () => {
                     </div>
                     <div className='flex-1 flex flex-col gap-2'>
                       {[...Array(5)].map((item, index) => (
-                        <div className='flex-x gap-4 '>
+                        <div className='flex-x gap-4 ' key={index}>
                           <div className='flex-x gap-2'>
                             <AiOutlineStar className='text-blue-500' />{' '}
                             {index + 1}
@@ -345,7 +345,7 @@ const DetailCourse = () => {
                   </div>
 
                   {[...Array(3)].map((item, index) => (
-                    <div className='flex-x gap-4 p-4'>
+                    <div className='flex-x gap-4 p-4' key={index}>
                       <div>
                         <img
                           src='/img/avtThanh.jpg'
