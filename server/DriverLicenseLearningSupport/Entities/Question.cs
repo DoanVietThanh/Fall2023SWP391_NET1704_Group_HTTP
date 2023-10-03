@@ -23,7 +23,6 @@ namespace DriverLicenseLearningSupport.Entities
         public virtual LicenseType LicenseType { get; set; }
         public virtual ICollection<ExamGrade> ExamGrades { get; set; }
         public virtual ICollection<QuestionAnswer> QuestionAnswers { get; set; }
-
         public virtual ICollection<TheoryExam> TheoryExams { get; set; }
     }
 }

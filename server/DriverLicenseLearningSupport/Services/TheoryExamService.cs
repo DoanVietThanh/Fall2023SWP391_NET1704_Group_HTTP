@@ -29,5 +29,9 @@ namespace DriverLicenseLearningSupport.Services
             return await _theoryExamRepository.CreateAsync(theoryExamEntity);
         }
 
+        public async Task<bool> IsExamQuestion(int questionId)
+        {
+            return await _theoryExamRepository.IsExamQuestion(questionId);
+        }
     }
 }

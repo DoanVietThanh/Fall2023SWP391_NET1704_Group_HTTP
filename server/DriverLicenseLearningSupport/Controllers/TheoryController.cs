@@ -26,10 +26,12 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly ILicenseTypeService _licenseTypeService;
         private readonly IMemoryCache _memoryCache;
         private readonly AppSettings _appSettings;
+        private readonly ITheoryExamService _theoryExamService;
 
         public TheoryController(IImageService imageService, IQuestionService questionService
             , IAnswerService answerService, ILicenseTypeService licenseTypeService
-            , IMemoryCache memoryCache, IOptionsMonitor<AppSettings> monitor)
+            , IMemoryCache memoryCache, IOptionsMonitor<AppSettings> monitor,
+            ITheoryExamService theoryExamService)
         {
             _imageService = imageService;
             _questionService = questionService;
@@ -37,11 +39,12 @@ namespace DriverLicenseLearningSupport.Controllers
             _licenseTypeService = licenseTypeService;
             _memoryCache = memoryCache;
             _appSettings = monitor.CurrentValue;
+            _theoryExamService = theoryExamService;
         }
 
 
         [HttpGet]
-        [Route("theory/license-form")]
+        [Route("theory/add-question")]
         public async Task<IActionResult> LicenseFormRegister()
         {
             var licenseTypes = await _licenseTypeService.GetAllAsync();
@@ -117,6 +120,13 @@ namespace DriverLicenseLearningSupport.Controllers
             createdQuestionModel = await _questionService.UpdateStatusQuestionAsync(createdQuestionModel.QuestionId, true);
 
             List<AnswerModel> list = reqObj.ToListAnswerModel();
+            if (list.Count() >= 5) 
+            {
+                return BadRequest(new ErrorResponse() {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message="Số lượng câu hỏi dưới 5"
+                });
+            }
             AnswerValidator answerValidator = new AnswerValidator();
             foreach (AnswerModel model in list)
             {
@@ -200,7 +210,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpDelete]
         [Route("theory/{questionId:int}/delete-question")]
-        //[Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> DeleteQuestion([FromRoute] int questionId)
         {
             
@@ -216,8 +226,9 @@ namespace DriverLicenseLearningSupport.Controllers
                     Message = "Can not found the matched question"
                 });
             }
-
-            if (question.isActive == false)
+            // duyet isActive con tai trong de nao khac k
+            bool isExisted = await _theoryExamService.IsExamQuestion(question.QuestionId);
+            if (isExisted)
             {
                 return BadRequest(new ErrorResponse()
                 {
@@ -240,7 +251,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpGet]
         [Route("theory/{page:int}")]
-        //[Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> GetAllQuestion([FromRoute] int page = 1)
         {
             //memory caching
@@ -324,6 +335,44 @@ namespace DriverLicenseLearningSupport.Controllers
         //[HttpGet]
         //[Route("theory/")]
 
+        [HttpGet]
+        [Route("theory")]
+        //[Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> GetAllQuestion() 
+        {
+            List<QuestionWithAnswersModel> result = new List<QuestionWithAnswersModel>();
+            //get all questions
+            var questions = await _questionService.GetAllAsync();
+
+            foreach (QuestionModel qm in questions)
+            {
+                qm.LicenseType = await _licenseTypeService.GetAsync(qm.LicenseTypeId);
+            }
+
+            //get answers for each question
+            foreach (QuestionModel question in questions)
+            {
+                var answers = await _answerService.GetAllByQuestionId(question.QuestionId);
+                if (answers is null)
+                {
+                    return BadRequest(new ErrorResponse()
+                    {
+                        StatusCode = StatusCodes.Status400BadRequest,
+                        Message = "Something was wrong"
+                    });
+                }
+                result.Add(new QuestionWithAnswersModel
+                {
+                    question = question,
+                    answers = answers
+                });
+                
+            }
+            return Ok(new BaseResponse() { 
+                StatusCode = StatusCodes.Status200OK,
+                Data = result
+            });
+        }
 
     }
 }

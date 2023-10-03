@@ -7,5 +7,9 @@ namespace DriverLicenseLearningSupport.Services.Impl
         Task<TheoryExamModel> CreateAsync(TheoryExamModel theoryExam);
 
         Task<bool> AddQuestionAsync(int theoryExamId, int quesitonId);
+
+        Task<bool> IsExamQuestion(int questionId);
+
+        
     }
 }

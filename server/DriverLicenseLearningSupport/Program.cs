@@ -67,6 +67,7 @@ builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<IQuestionService, QuestionService>();
 builder.Services.AddScoped<IAnswerService, AnswerService>();
 builder.Services.AddScoped<ITheoryExamService, TheoryExamService>();
+builder.Services.AddScoped<IExamGradeService, ExamGradeService>();
 
 
 // Add Repositories
@@ -84,6 +85,7 @@ builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddScoped<IAnswerRepository, AnswerRepository>();
 builder.Services.AddScoped<ITheoryExamRepository, TheoryExamRepository>();
+builder.Services.AddScoped<IExamGradeRepository, ExamGradeRepository>();
 
 
 // Add Email Configs

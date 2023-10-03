@@ -34,7 +34,7 @@ namespace DriverLicenseLearningSupport.Controllers
         }
 
         [HttpGet]
-        [Route("theory-exam/license-form")]
+        [Route("theory-exam/add-question")]
         public async Task<IActionResult> LicenseFormRegister()
         {
             var licenseTypes = await _licenseTypeService.GetAllAsync();
@@ -51,6 +51,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 Data = licenseTypes
             });
         }
+        
         [HttpGet]
         [Route("theory-exam/question-bank/{licenseId:int}/{page:int}")]
         public async Task<IActionResult> GetQuestionBankWithLicenseId([FromRoute] int licenseId

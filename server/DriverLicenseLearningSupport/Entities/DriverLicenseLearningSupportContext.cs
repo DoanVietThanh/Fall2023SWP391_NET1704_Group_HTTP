@@ -62,7 +62,7 @@ namespace DriverLicenseLearningSupport.Entities
             {
                 entity.HasKey(e => e.Email)
                     .HasName("PK__Account__AB6E61654B826F2E");
-
+                
                 entity.ToTable("Account");
 
                 entity.Property(e => e.Email)
@@ -440,6 +440,7 @@ namespace DriverLicenseLearningSupport.Entities
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ExamHistory_TheoryExamId");
             });
+           
 
             modelBuilder.Entity<FeedBack>(entity =>
             {
