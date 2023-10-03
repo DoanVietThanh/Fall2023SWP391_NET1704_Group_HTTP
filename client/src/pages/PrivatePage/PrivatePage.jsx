@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Profile from './Profile';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -26,6 +26,8 @@ import HistoryTest from './HistoryTest';
 import WeekSchedule from './WeekSchedule';
 import ManageQuestion from './ManageQuestion';
 import ManageBankTest from './ManageBankTest';
+import { logout } from '../../features/auth/authSlice';
+import Loading from '../../components/Loading';
 
 const drawerWidth = 240;
 
@@ -115,19 +117,20 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function PrivatePage() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
 
-  const { user } = useSelector((state) => state.auth);
+  const { user, isLoading } = useSelector((state) => state.auth);
 
   const [toggleIndex, setToggleIndex] = useState(1);
   const [titleAppbar, setTitleAppbar] = useState(listNavbar[0].title);
 
-  console.log(titleAppbar, toggleIndex);
+  // console.log(titleAppbar, toggleIndex);
 
   const handleLogout = () => {
-    localStorage.clear();
+    dispatch(logout());
     navigate('/login');
   };
 
@@ -214,12 +217,13 @@ export default function PrivatePage() {
       </Drawer>
       <Box component='main' sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-        <div className='h-[80vh] w-full p-4 border rounded overflow-y-auto'>
+        <div className='h-[80vh] w-full rounded overflow-y-auto'>
           {toggleIndex === 1 && <Profile accountInfo={user.accountInfo} />}
           {toggleIndex === 2 && <WeekSchedule />}
           {toggleIndex === 3 && <HistoryTest />}
           {toggleIndex === 4 && <ManageQuestion />}
           {toggleIndex === 5 && <ManageBankTest />}
+          
         </div>
       </Box>
     </Box>
