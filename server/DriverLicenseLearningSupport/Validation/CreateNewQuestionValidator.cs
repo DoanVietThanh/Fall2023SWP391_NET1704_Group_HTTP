@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace DriverLicenseLearningSupport.Validation
 {
-    public class CreateNewQuestionValidator : AbstractValidator<CreateNewQuestionRequest>
+    public class CreateNewQuestionValidator : AbstractValidator<NewQuestionAddRequest>
     {
         public CreateNewQuestionValidator() 
         {

@@ -43,5 +43,10 @@ namespace DriverLicenseLearningSupport.Services
             var answers = await _answerRepository.GetAllByQuestionId(questionId);
             return answers;
         }
+
+        public async Task<AnswerModel> GetByAnswerIdAsync(int answerId)
+        {
+            return await _answerRepository.GetByAnswerIdAsync(answerId);
+        }
     }
 }

@@ -5529,11 +5529,16 @@
     ]
   },
   "packageFolders": {
+<<<<<<< HEAD
     "C:\\Users\\Thanh Thu\\.nuget\\packages\\": {}
+=======
+    "C:\\Users\\HP\\.nuget\\packages\\": {}
+>>>>>>> 97c85d836e8f01c92103690d5b58482fb5aa8700
   },
   "project": {
     "version": "1.0.0",
     "restore": {
+<<<<<<< HEAD
       "projectUniqueName": "E:\\SWP391\\Fall2023SWP391_NET1704_Group_HTTP\\server\\DriverLicenseLearningSupport\\DriverLicenseLearningSupport.csproj",
       "projectName": "DriverLicenseLearningSupport",
       "projectPath": "E:\\SWP391\\Fall2023SWP391_NET1704_Group_HTTP\\server\\DriverLicenseLearningSupport\\DriverLicenseLearningSupport.csproj",
@@ -5542,6 +5547,16 @@
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Thanh Thu\\AppData\\Roaming\\NuGet\\NuGet.Config",
+=======
+      "projectUniqueName": "C:\\Users\\HP\\Desktop\\fixbug\\Fall2023SWP391_NET1704_Group_HTTP\\server\\DriverLicenseLearningSupport\\DriverLicenseLearningSupport.csproj",
+      "projectName": "DriverLicenseLearningSupport",
+      "projectPath": "C:\\Users\\HP\\Desktop\\fixbug\\Fall2023SWP391_NET1704_Group_HTTP\\server\\DriverLicenseLearningSupport\\DriverLicenseLearningSupport.csproj",
+      "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\HP\\Desktop\\fixbug\\Fall2023SWP391_NET1704_Group_HTTP\\server\\DriverLicenseLearningSupport\\obj\\",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
+>>>>>>> 97c85d836e8f01c92103690d5b58482fb5aa8700
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -5549,6 +5564,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\sdk\\7.0.306\\Sdks\\Microsoft.NET.Sdk.Web\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -5639,7 +5655,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.401\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
       }
     }
   },

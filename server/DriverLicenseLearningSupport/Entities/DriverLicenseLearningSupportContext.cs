@@ -60,8 +60,13 @@ namespace DriverLicenseLearningSupport.Entities
             modelBuilder.Entity<Account>(entity =>
             {
                 entity.HasKey(e => e.Email)
+<<<<<<< HEAD
+                    .HasName("PK__Account__AB6E61654B826F2E");
+                
+=======
                     .HasName("PK__Account__AB6E61657554C358");
 
+>>>>>>> addc31bcfbd8ba57b4669e9774de673d049c5efc
                 entity.ToTable("Account");
 
                 entity.Property(e => e.Email)
@@ -431,6 +436,7 @@ namespace DriverLicenseLearningSupport.Entities
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_History_TheoryExamId");
             });
+           
 
             modelBuilder.Entity<FeedBack>(entity =>
             {
@@ -650,6 +656,7 @@ namespace DriverLicenseLearningSupport.Entities
 
                 entity.Property(e => e.QuestionAnswerDesc).HasColumnName("question_answer_desc");
 
+                entity.Property(e => e.isActive).HasColumnName("isActive");
                 entity.HasOne(d => d.LicenseType)
                     .WithMany(p => p.Questions)
                     .HasForeignKey(d => d.LicenseTypeId)
@@ -772,6 +779,8 @@ namespace DriverLicenseLearningSupport.Entities
 
                 entity.Property(e => e.SlotId).HasColumnName("slot_id");
 
+                entity.Property(e => e.VehicleId).HasColumnName("vehicle_id");
+
                 entity.Property(e => e.StaffId)
                     .HasMaxLength(200)
                     .HasColumnName("staff_id");
@@ -781,6 +790,11 @@ namespace DriverLicenseLearningSupport.Entities
                     .HasColumnName("teaching_date");
 
                 entity.Property(e => e.WeekdayScheduleId).HasColumnName("weekday_schedule_id");
+
+                entity.HasOne(d => d.Vehicle)
+                    .WithMany(p => p.TeachingSchedules)
+                    .HasForeignKey(d => d.VehicleId)
+                    .HasConstraintName("FK_TeachingSchedule_VehicleId");
 
                 entity.HasOne(d => d.Slot)
                     .WithMany(p => p.TeachingSchedules)
@@ -834,6 +848,11 @@ namespace DriverLicenseLearningSupport.Entities
                     .HasColumnName("vehicle_license_plate");
 
                 entity.Property(e => e.VehicleTypeId).HasColumnName("vehicle_type_id");
+
+                entity.Property(e => e.VehicleName)
+                    .IsRequired()
+                    .HasMaxLength(155)
+                    .HasColumnName("vehicle_name");
 
                 entity.HasOne(d => d.VehicleType)
                     .WithMany(p => p.Vehicles)

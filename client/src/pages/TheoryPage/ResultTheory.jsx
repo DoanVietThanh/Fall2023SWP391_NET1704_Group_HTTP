@@ -1,13 +1,7 @@
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
 import React, { useState } from 'react';
-import { AiOutlineArrowLeft } from 'react-icons/ai';
+import { AiOutlineArrowLeft, AiOutlineArrowRight } from 'react-icons/ai';
 import { Link, useNavigate } from 'react-router-dom';
-import CountdownTimer from './CountdownTimer';
 import theme from '../../theme';
-import { AiOutlineArrowRight } from 'react-icons/ai';
 // console.log(Array.from({ length: 10 }, (_, index) => 0));
 // console.log([...Array(10)].map(() => 0));
 // console.log(new Array(10).fill(0));

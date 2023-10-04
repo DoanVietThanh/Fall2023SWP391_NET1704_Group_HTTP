@@ -8,7 +8,7 @@ using System.Diagnostics.Eventing.Reader;
 
 namespace DriverLicenseLearningSupport.Payloads.Request
 {
-    public class CreateNewQuestionRequest
+    public class NewQuestionAddRequest
     {
         // Question
         [Required(ErrorMessage = "Please input Question's detail")]
@@ -35,7 +35,7 @@ namespace DriverLicenseLearningSupport.Payloads.Request
     public static class CreateNewQuestionRequestExtend
     {
 
-        public static QuestionModel ToQuestionModel(this CreateNewQuestionRequest obj)
+        public static QuestionModel ToQuestionModel(this NewQuestionAddRequest obj)
         {
             return new QuestionModel
             {
@@ -44,7 +44,7 @@ namespace DriverLicenseLearningSupport.Payloads.Request
                 LicenseTypeId = obj.LicenseTypeId
             };
         }
-        public static List<AnswerModel> ToListAnswerModel(this CreateNewQuestionRequest obj)
+        public static List<AnswerModel> ToListAnswerModel(this NewQuestionAddRequest obj)
         {
             List<AnswerModel> result = new List<AnswerModel>();
             foreach (var str in obj.answers)

@@ -1,8 +1,14 @@
 {
   "ExpandedNodes": [
+<<<<<<< HEAD
     "",
     "\\client",
     "\\server"
   ],
+=======
+    ""
+  ],
+  "SelectedNode": "\\DriverLicenseLearningSupport.sln",
+>>>>>>> 97c85d836e8f01c92103690d5b58482fb5aa8700
   "PreviewInSolutionExplorer": false
 }

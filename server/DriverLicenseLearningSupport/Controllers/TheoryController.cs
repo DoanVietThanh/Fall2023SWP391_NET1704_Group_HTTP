@@ -26,10 +26,12 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly ILicenseTypeService _licenseTypeService;
         private readonly IMemoryCache _memoryCache;
         private readonly AppSettings _appSettings;
+        private readonly ITheoryExamService _theoryExamService;
 
         public TheoryController(IImageService imageService, IQuestionService questionService
             , IAnswerService answerService, ILicenseTypeService licenseTypeService
-            , IMemoryCache memoryCache, IOptionsMonitor<AppSettings> monitor)
+            , IMemoryCache memoryCache, IOptionsMonitor<AppSettings> monitor,
+            ITheoryExamService theoryExamService)
         {
             _imageService = imageService;
             _questionService = questionService;
@@ -37,11 +39,12 @@ namespace DriverLicenseLearningSupport.Controllers
             _licenseTypeService = licenseTypeService;
             _memoryCache = memoryCache;
             _appSettings = monitor.CurrentValue;
+            _theoryExamService = theoryExamService;
         }
 
 
         [HttpGet]
-        [Route("theory/license-form")]
+        [Route("theory/add-question")]
         public async Task<IActionResult> LicenseFormRegister()
         {
             var licenseTypes = await _licenseTypeService.GetAllAsync();
@@ -64,7 +67,7 @@ namespace DriverLicenseLearningSupport.Controllers
         [HttpPost]
         [Route("theory/add-question")]
         //[Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> AddQuestion([FromForm] CreateNewQuestionRequest reqObj)
+        public async Task<IActionResult> AddQuestion([FromForm] NewQuestionAddRequest reqObj)
         {
 
 
@@ -113,9 +116,17 @@ namespace DriverLicenseLearningSupport.Controllers
             //Set license type to quesiton model
             createdQuestionModel.LicenseType = await _licenseTypeService.GetAsync(Convert.ToInt32(createdQuestionModel.LicenseTypeId));
 
-
+            //set status to question model
+            createdQuestionModel = await _questionService.UpdateStatusQuestionAsync(createdQuestionModel.QuestionId, true);
 
             List<AnswerModel> list = reqObj.ToListAnswerModel();
+            if (list.Count() >= 5) 
+            {
+                return BadRequest(new ErrorResponse() {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message="Số lượng câu hỏi dưới 5"
+                });
+            }
             AnswerValidator answerValidator = new AnswerValidator();
             foreach (AnswerModel model in list)
             {
@@ -161,7 +172,29 @@ namespace DriverLicenseLearningSupport.Controllers
         [Route("theory/{answerId:int}/delete-answer")]
         //[Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> DeleteSingleAnswer([FromRoute] int answerId)
-        {
+        { 
+            // get answer
+            AnswerModel answer = await _answerService.GetByAnswerIdAsync(answerId);
+            //check the existance of the answer
+            if (answer is null)
+            {
+                return NotFound(new ErrorResponse() { 
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message ="không tìm thấy câu trả lời tương ứng"
+                });
+            }
+            //get the question from the answer
+            QuestionModel question = await _questionService.GetByIdAsync(answer.QuestionId);
+
+            //check if the question is able to edit
+            if (question.isActive == false) 
+            {
+                return BadRequest(new ErrorResponse() { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Câu hỏi đã nằm trong đề thi và không được chỉnh sửa"
+                });
+            }
+
             bool isSucess = await _answerService.DeleteAnswerAsync(answerId);
             if (!isSucess)
             {
@@ -177,9 +210,10 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpDelete]
         [Route("theory/{questionId:int}/delete-question")]
-        //[Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> DeleteQuestion([FromRoute] int questionId)
         {
+            
             //get Question to delete
             var question = await _questionService.GetByIdAsync(questionId);
 
@@ -190,6 +224,16 @@ namespace DriverLicenseLearningSupport.Controllers
                 {
                     StatusCode = StatusCodes.Status404NotFound,
                     Message = "Can not found the matched question"
+                });
+            }
+            // duyet isActive con tai trong de nao khac k
+            bool isExisted = await _theoryExamService.IsExamQuestion(question.QuestionId);
+            if (isExisted)
+            {
+                return BadRequest(new ErrorResponse()
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Câu hỏi đã nằm trong đề thi và không được chỉnh sửa"
                 });
             }
             //delete all answers of the question
@@ -207,7 +251,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpGet]
         [Route("theory/{page:int}")]
-        //[Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> GetAllQuestion([FromRoute] int page = 1)
         {
             //memory caching
@@ -279,8 +323,10 @@ namespace DriverLicenseLearningSupport.Controllers
                 Data = new
                 {
                     QuestionWithAnswer = questionWithAnswersModel,
+                    TotalQuestion = questionWithAnswersModel.Count(),
                     TotalPage = list.TotalPage,
                     PageIndex = list.PageIndex
+
                 }
             });
 
@@ -289,6 +335,44 @@ namespace DriverLicenseLearningSupport.Controllers
         //[HttpGet]
         //[Route("theory/")]
 
+        [HttpGet]
+        [Route("theory")]
+        //[Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> GetAllQuestion() 
+        {
+            List<QuestionWithAnswersModel> result = new List<QuestionWithAnswersModel>();
+            //get all questions
+            var questions = await _questionService.GetAllAsync();
+
+            foreach (QuestionModel qm in questions)
+            {
+                qm.LicenseType = await _licenseTypeService.GetAsync(qm.LicenseTypeId);
+            }
+
+            //get answers for each question
+            foreach (QuestionModel question in questions)
+            {
+                var answers = await _answerService.GetAllByQuestionId(question.QuestionId);
+                if (answers is null)
+                {
+                    return BadRequest(new ErrorResponse()
+                    {
+                        StatusCode = StatusCodes.Status400BadRequest,
+                        Message = "Something was wrong"
+                    });
+                }
+                result.Add(new QuestionWithAnswersModel
+                {
+                    question = question,
+                    answers = answers
+                });
+                
+            }
+            return Ok(new BaseResponse() { 
+                StatusCode = StatusCodes.Status200OK,
+                Data = result
+            });
+        }
 
     }
 }

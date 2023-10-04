@@ -30,6 +30,7 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly ICourseServationService _courseReservationService;
         private readonly IVehicleService _vehicleService;
         private readonly ILicenseTypeService _licenseTypeService;
+        private readonly ISlotService _slotService;
         private readonly AppSettings _appSettings;
         private readonly IWeekDayScheduleService _weekDayScheduleService;
 
@@ -42,6 +43,7 @@ namespace DriverLicenseLearningSupport.Controllers
             ICourseServationService courseReservationService,
             IVehicleService vehicleService,
             ILicenseTypeService licenseTypeService,
+            ISlotService slotService,
             IOptionsMonitor<AppSettings> monitor)
         {
             _courseService = courseService;
@@ -52,6 +54,7 @@ namespace DriverLicenseLearningSupport.Controllers
             _courseReservationService = courseReservationService;
             _vehicleService = vehicleService;
             _licenseTypeService = licenseTypeService;
+            _slotService = slotService;
             _appSettings = monitor.CurrentValue;
             _weekDayScheduleService = weekDayScheduleService;
         }
@@ -400,7 +403,10 @@ namespace DriverLicenseLearningSupport.Controllers
             return Ok(new
             {
                 Course = course,
-                FilterWeekDay = weekSchedules.Select(x => x.WeekdayScheduleDesc),
+                Filter = weekSchedules.Select(x => new { 
+                    Id = x.WeekdayScheduleId,
+                    Desc = x.WeekdayScheduleDesc
+                }),
                 Weekdays = weekday,
                 Slot1 = slot1
             });
@@ -689,5 +695,29 @@ namespace DriverLicenseLearningSupport.Controllers
             });
         }
 
+        [HttpPost]
+        [Route("courses/slot")]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> AddSlot([FromBody] SlotAddRequest reqObj)
+        {
+            // generate slot model
+            var slot = reqObj.ToSlotModel();
+            var time = TimeSpan.Parse(slot.Time.ToString());
+            // generate slot desc
+            var startTime = time.ToString(@"hh\:mm");
+            var endTime = time.Add(TimeSpan.FromHours(2)).ToString(@"hh\:mm");
+            // set slot desc
+            slot.SlotDesc = $"{startTime} - {endTime}";
+
+            // create slot 
+            var createdSlot = await _slotService.CreateAsync(slot);
+
+            if(createdSlot is not null)
+            {
+                return new ObjectResult(createdSlot) { StatusCode = StatusCodes.Status201Created };
+            }
+
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
     }
 }
