@@ -60,13 +60,9 @@ namespace DriverLicenseLearningSupport.Entities
             modelBuilder.Entity<Account>(entity =>
             {
                 entity.HasKey(e => e.Email)
-<<<<<<< HEAD
                     .HasName("PK__Account__AB6E61654B826F2E");
-                
-=======
-                    .HasName("PK__Account__AB6E61657554C358");
 
->>>>>>> addc31bcfbd8ba57b4669e9774de673d049c5efc
+                    // .HasName("PK__Account__AB6E61657554C358");
                 entity.ToTable("Account");
 
                 entity.Property(e => e.Email)
@@ -656,7 +652,8 @@ namespace DriverLicenseLearningSupport.Entities
 
                 entity.Property(e => e.QuestionAnswerDesc).HasColumnName("question_answer_desc");
 
-                entity.Property(e => e.isActive).HasColumnName("isActive");
+                entity.Property(e => e.isActive).HasColumnName("is_active");
+
                 entity.HasOne(d => d.LicenseType)
                     .WithMany(p => p.Questions)
                     .HasForeignKey(d => d.LicenseTypeId)

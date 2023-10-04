@@ -9,9 +9,9 @@ namespace DriverLicenseLearningSupport.Validation
     {
         public AnswerValidator()
         {
-            RuleFor(x => x.Answer)
-                .Matches("^[a-zA-Z0-9 ]+$")
-                .WithMessage("Nội dung câu trả lời không được có ký tự đặc biệt");
+            //RuleFor(x => x.Answer)
+              //  .Matches("^[a-zA-Z0-9 ]+$")
+                //.WithMessage("Nội dung câu trả lời không được có ký tự đặc biệt");
         }
 
     }

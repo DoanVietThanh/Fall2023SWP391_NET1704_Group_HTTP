@@ -10,12 +10,12 @@ const axiosClient = axios.create({
 // Add a request interceptor
 axiosClient.interceptors.request.use(
   function (config) {
-    console.log('🚀 ~ file: axiosClient.js:10 ~ config:', config);
     // Do something before request is sent
     const accessToken = localStorage.getItem('accessToken');
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
+    console.log('🚀 ~ file: axiosClient.js:18 ~ config:', config);
     return config;
   },
   function (error) {

@@ -207,6 +207,7 @@ CREATE TABLE [dbo].Question(
 	is_Paralysis BIT,
 	image NVARCHAR(100),
 	license_type_id INT,
+	is_active BIT
 )
 GO
 CREATE TABLE [dbo].Question_Answer(
