@@ -75,6 +75,7 @@ builder.Services.AddScoped<IQuestionService, QuestionService>();
 builder.Services.AddScoped<IAnswerService, AnswerService>();
 builder.Services.AddScoped<ITheoryExamService, TheoryExamService>();
 builder.Services.AddScoped<IExamGradeService, ExamGradeService>();
+builder.Services.AddScoped<IExamHistoryService, ExamHistoryService>();
 
 
 // Add Repositories
@@ -99,6 +100,7 @@ builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddScoped<IAnswerRepository, AnswerRepository>();
 builder.Services.AddScoped<ITheoryExamRepository, TheoryExamRepository>();
 builder.Services.AddScoped<IExamGradeRepository, ExamGradeRepository>();
+builder.Services.AddScoped<IExamHistoryRepository, ExamHistoryRepostory>();
 
 
 // Add Email Configs
@@ -138,7 +140,7 @@ builder.Services.AddSingleton<IAmazonS3, AmazonS3Client>();
 builder.Services.AddSingleton<IImageService, ImageService>();
 
 // Middleware Exception
-//builder.Services.AddTransient<ExceptionMiddleware>();
+//builder.Services.AddTransient<ExceptionMiddleware>();`
 
 var app = builder.Build();
 AWSConfigs.AWSRegion = "ap-southeast-1";

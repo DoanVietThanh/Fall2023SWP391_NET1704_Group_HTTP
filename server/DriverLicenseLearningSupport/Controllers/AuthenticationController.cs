@@ -201,7 +201,7 @@ namespace DriverLicenseLearningSupport.Controllers
         }
 
         [HttpPost("authentication/staff")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> StaffRegister([FromBody] StaffRegisterRequest reqObj) 
         {
             // check exist account

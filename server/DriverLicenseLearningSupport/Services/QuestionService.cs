@@ -11,11 +11,18 @@ namespace DriverLicenseLearningSupport.Services
     {
         private readonly IMapper _mapper;
         private readonly IQuestionRepository _questionRepository;
+        private readonly ILicenseTypeService _licenseTypeService;
+        private readonly IImageService _imageService;
+        private readonly IAnswerService _answerService;
 
-        public QuestionService(IMapper mapper, IQuestionRepository questionRepository)
+        public QuestionService(IMapper mapper, IQuestionRepository questionRepository
+            ,ILicenseTypeService licenseTypeService , IImageService imageService, IAnswerService answerSerive)
         {
             _mapper = mapper;
             _questionRepository = questionRepository;
+            _licenseTypeService = licenseTypeService;
+            _imageService = imageService;
+            _answerService = answerSerive;
         }
 
         public async Task<QuestionModel> CreateAsync(QuestionModel question)
@@ -35,7 +42,15 @@ namespace DriverLicenseLearningSupport.Services
         }
         public async Task<QuestionModel> GetByIdAsync(int questionId) 
         {
-            return await _questionRepository.GetByIdAsync(questionId);
+            var question = await _questionRepository.GetByIdAsync(questionId);
+            var answers = await _answerService.GetAllByQuestionId(questionId);
+            if (question is not null && answers is not null)
+            {
+                question.LicenseType = await _licenseTypeService.GetAsync(question.LicenseTypeId);
+                //question.Image = await _imageService.GetPreSignedURL(Guid.Parse(question.Image));
+                question.QuestionAnswers = answers.ToList();
+            }
+            return question;
         }
 
         public async Task<IEnumerable<QuestionModel>> GetAllByLicenseId(int licenseId)

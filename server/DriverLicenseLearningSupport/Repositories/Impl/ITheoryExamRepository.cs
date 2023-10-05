@@ -9,5 +9,13 @@ namespace DriverLicenseLearningSupport.Repositories.Impl
         Task<bool> AddQuesitonAsync(int theoryExamId, int questionId);
 
         Task<bool> IsExamQuestion(int questionId);
-    }       
+
+        Task<IEnumerable<TheoryExamModel>> GetAllAsync();
+
+        Task<TheoryExamModel> GetByIdAsync(int id);
+
+        Task<IEnumerable<TheoryExamModel>>GetByLicenseTypeIdAsync(int  licenseTypeId);
+
+        
+    }
 }
