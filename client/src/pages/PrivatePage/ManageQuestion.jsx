@@ -8,6 +8,12 @@ import Dialog from '@mui/material/Dialog';
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from 'react-icons/ai';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { TbEdit } from 'react-icons/tb';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  createQuestion,
+  getLisenceType,
+  getQuestions,
+} from '../../features/question/questionSlice';
 
 const columns = [
   { field: 'id', headerName: 'ID', width: 50 },
@@ -63,99 +69,57 @@ const columns = [
   },
 ];
 
-const rows = [
-  {
-    id: 1,
-    title:
-      'Ở phần đường dành cho người đi bộ qua đường, trên cầu, đầu cầu, đường cao tốc, đường hẹp, đường dốc, tại nơi đường bộ giao nhau cùng mức với đường sắt có được quay đầu xe hay không?',
-    type: 'B1',
-    listAnswer: ['Được phép', 'Không được phép', 'Tùy từng trường hợp'],
-    control: [
-      <TbEdit size={20} className='text-blue-600' />,
-      <RiDeleteBin6Line size={20} className='text-red-400' />,
-    ],
-  },
-  {
-    id: 2,
-    title:
-      'Người đủ bao nhiêu tuổi trở lên thì được điều khiển xe mô tô hai bánh, xe mô tô ba bánh có dung tích xi lanh từ 50 cm3 trở lên và các loại xe có kết cấu tương tự; xe ô tô tải, máy kéo có trọng tải dưới 3,5 tấn; xe ô tô chở người đến 9 chỗ ngồi?',
-    type: 'A2',
-
-    listAnswer: ['1-16 tuổi', '2-18 tuổi', '3-17 tuổi'],
-    control: [
-      <TbEdit size={20} className='text-blue-600' />,
-      <RiDeleteBin6Line size={20} className='text-red-400' />,
-    ],
-  },
-  {
-    id: 3,
-    title:
-      'Biển báo hiệu có dạng tam giác đều, viền đỏ, viền màu vàng, trên có hình vẽ màu đen là loại biển gì dưới đây?',
-    type: 'A1',
-
-    listAnswer: [
-      'Biển báo nguy hiểm',
-      'Biển báo cấm',
-      'Biển báo hiệu lệnh',
-      'Biển báo chỉ dẫn',
-    ],
-    control: [
-      <TbEdit size={20} className='text-blue-600' />,
-      <RiDeleteBin6Line size={20} className='text-red-400' />,
-    ],
-  },
-  {
-    id: 4,
-    title:
-      'Người lái xe phải làm gì khi quay đầu xe trên cầu, đường ngầm hay khu vực đường bộ giao nhau cùng mức với đường sắt?',
-    type: 'B1',
-
-    listAnswer: [
-      'Không được quay đầu xe',
-      'Lợi dụng chỗ rộng và phải có người làm tín hiệu sau xe để bảo đảm an toàn.',
-      'Lợi dụng chỗ rộng có thể quay đầu được để quay đầu xe cho an toàn.',
-    ],
-    control: [
-      <TbEdit size={20} className='text-blue-600' />,
-      <RiDeleteBin6Line size={20} className='text-red-400' />,
-    ],
-  },
-  {
-    id: 5,
-    title:
-      'Người đủ bao nhiêu tuổi trở lên thì được điều khiển xe mô tô hai bánh, xe mô tô ba bánh có dung tích xi lanh từ 50 cm3 trở lên và các loại xe có kết cấu tương tự; xe ô tô tải, máy kéo có trọng tải dưới 3,5 tấn; xe ô tô chở người đến 9 chỗ ngồi?',
-    type: 'B1',
-    listAnswer: ['1-16 tuổi', '2-18 tuổi', '3-17 tuổi'],
-    control: [
-      <TbEdit size={20} className='text-blue-600' />,
-      <RiDeleteBin6Line size={20} className='text-red-400' />,
-    ],
-  },
-  {
-    id: 6,
-    title:
-      'Người đủ bao nhiêu tuổi trở lên thì được điều khiển xe mô tô hai bánh, xe mô tô ba bánh có dung tích xi lanh từ 50 cm3 trở lên và các loại xe có kết cấu tương tự; xe ô tô tải, máy kéo có trọng tải dưới 3,5 tấn; xe ô tô chở người đến 9 chỗ ngồi?',
-    type: 'B2',
-    listAnswer: ['1-16 tuổi', '2-18 tuổi', '3-17 tuổi'],
-    control: [
-      <TbEdit size={20} className='text-blue-600' />,
-      <RiDeleteBin6Line size={20} className='text-red-400' />,
-    ],
-  },
-];
-
 const ManageQuestion = () => {
+  const dispatch = useDispatch();
+  const { listQuestions, listLisenceType, isError, isLoading, message } =
+    useSelector((state) => state.question);
   const [selection, setSelection] = useState([]);
   const [openFormQuestion, setOpenFormQuestion] = useState(false);
   const [listAnswer, setListAnswer] = useState(1);
   const [previewImg, setPreviewImg] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [rows, setRows] = useState([]);
+  const [str, setStr] = useState('');
+
+  const initialFormData = {
+    imageLink: '',
+    questionAnswerDesc: '',
+    isParalysis: false,
+    answers: [],
+    LicenseTypeId: 1,
+    rightAnswer: '',
+  };
+  const [formData, setFormData] = useState(initialFormData);
+
+  const [answer, setAnswer] = useState(formData.answers);
 
   useEffect(() => {
     return () => {
       previewImg && URL.revokeObjectURL(previewImg.preview);
     };
   }, [previewImg]);
+
+  useEffect(() => {
+    dispatch(getQuestions());
+    dispatch(getLisenceType());
+    const newListQuestion = [...listQuestions];
+    setRows(
+      newListQuestion.map((item, index) => {
+        return {
+          id: item.question.questionId,
+          title: item.question.questionAnswerDesc,
+          type: item.question.licenseType.licenseTypeDesc,
+          listAnswer: item.answers.map(
+            (itemAnswer, indexAnswer) => itemAnswer.answer
+          ),
+          control: [
+            <TbEdit size={20} className='text-blue-600' />,
+            <RiDeleteBin6Line size={20} className='text-red-400' />,
+          ],
+        };
+      })
+    );
+  }, []);
 
   const handleSelectId = (params) => {
     const newArray = [...selection];
@@ -174,22 +138,18 @@ const ManageQuestion = () => {
     setPreviewImg(file);
   };
 
-  const handleSubmit = () => {
-    toastSuccess('Tạo câu hỏi thành công');
-  };
-
-  const handleCreateQuestion = () => {
+  const handleCreateQuestion = (e) => {
+    e.preventDefault();
+    dispatch(createQuestion(formData));
+    dispatch(getQuestions());
     setOpenFormQuestion(false);
-    toastSuccess('Tạo câu hỏi thành công');
   };
 
-  const handleCreateTest = useCallback(() => {
-    setLoading((loading) => !loading);
-    // console.log(selection);
-    toastSuccess('Tạo đề thành công');
-  }, [selection]);
-
-  console.log('loading: ', loading);
+  // const handleCreateTest = useCallback(() => {
+  //   setLoading((loading) => !loading);
+  //   console.log(selection);
+  //   toastSuccess('Tạo đề thành công');
+  // }, [selection]);
 
   return (
     <div>
@@ -199,11 +159,13 @@ const ManageQuestion = () => {
           onClick={() => {
             setOpenFormQuestion(true);
             setPreviewImg(null);
+            setFormData(initialFormData);
+            setListAnswer(1);
           }}
         >
           Tạo câu hỏi
         </button>
-        <button className='btn' onClick={handleCreateTest}>
+        <button className='btn' onClick={() => {}}>
           Tạo đề thi
         </button>
       </div>
@@ -234,23 +196,41 @@ const ManageQuestion = () => {
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
       >
-        <form className='mx-8 py-4' onSubmit={handleSubmit}>
+        <form className='mx-8 py-4' onSubmit={(e) => handleCreateQuestion(e)}>
           <div>
-            <h1 className='font-bold capitalize py-4 text-blue-400'>
-              Câu hỏi{' '}
-            </h1>
+            <h1 className='font-bold capitalize py-4 text-blue-400'>Câu hỏi</h1>
             <TextField
               id='outlined-basic'
               label='Nhập câu hỏi'
               variant='outlined'
               fullWidth
+              value={formData.questionAnswerDesc}
+              onChange={(e) =>
+                setFormData({ ...formData, questionAnswerDesc: e.target.value })
+              }
             />
+            <select
+              className='my-4'
+              value={formData.LicenseTypeId}
+              onChange={(e) =>
+                setFormData({ ...formData, LicenseTypeId: e.target.value })
+              }
+            >
+              {listLisenceType.map((item, index) => (
+                <option value={item?.licenseTypeId} className='px-4 py-4'>
+                  {item?.licenseTypeDesc}
+                </option>
+              ))}
+            </select>
             <input
               type='file'
-              name=''
-              id=''
+              name='imageLink'
               className='my-4 w-full'
-              onChange={handlePreviewImg}
+              onChange={(e) => {
+                console.log(e);
+                handlePreviewImg(e);
+                setFormData({ ...formData, imageLink: e.target.files[0] });
+              }}
             />
             {previewImg && (
               <div className='flex justify-center'>
@@ -273,6 +253,15 @@ const ManageQuestion = () => {
                     variant='outlined'
                     fullWidth
                     className='flex-1'
+                    value={formData.answers[index]}
+                    onBlur={(e) => {
+                      const { answers, ...obj } = formData;
+                      answers.push(str);
+                      setFormData({ ...formData, answers });
+                    }}
+                    onChange={(e) => {
+                      setStr(e.target.value);
+                    }}
                   />
                   <div className='flex-y p-2 gap-2'>
                     <label
@@ -287,6 +276,14 @@ const ManageQuestion = () => {
                       id={`rightAnswer-${index}`}
                       className='w-[20px] h-[20px]'
                       required
+                      value={formData.answers[index]}
+                      onChange={(e) => {
+                        const { answers, ...obj } = formData;
+                        setFormData({
+                          ...formData,
+                          rightAnswer: e.target.value,
+                        });
+                      }}
                     />
                   </div>
                 </div>
@@ -304,6 +301,9 @@ const ManageQuestion = () => {
                 name='cursor-pointer'
                 id='isParalyzed'
                 className='w-[20px] h-[20px]'
+                onChange={(e) =>
+                  setFormData({ ...formData, isParalysis: e.target.checked })
+                }
               />
             </div>
             <div className='flex gap-8 justify-end items-center h-full'>
@@ -321,18 +321,18 @@ const ManageQuestion = () => {
               </div>
             </div>
           </div>
+          <div className='mr-8 mb-4 flex justify-end'>
+            <Button
+              onClick={() => setOpenFormQuestion(false)}
+              className='font-bold'
+            >
+              Hủy
+            </Button>
+            <button className='btn' type='submit'>
+              Tạo câu hỏi
+            </button>
+          </div>
         </form>
-        <div className='mr-8 mb-4 flex justify-end'>
-          <Button
-            onClick={() => setOpenFormQuestion(false)}
-            className='font-bold'
-          >
-            Hủy
-          </Button>
-          <button className='btn' onClick={handleCreateQuestion}>
-            Tạo câu hỏi
-          </button>
-        </div>
       </Dialog>
     </div>
   );

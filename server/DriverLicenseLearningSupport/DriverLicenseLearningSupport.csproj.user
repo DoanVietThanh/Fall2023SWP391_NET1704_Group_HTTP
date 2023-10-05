@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <NameOfLastUsedPublishProfile>D:\FPT\Kì 5\SWP\server\DriverLicenseLearningSupport\Properties\PublishProfiles\FolderProfile2.pubxml</NameOfLastUsedPublishProfile>
+    <NameOfLastUsedPublishProfile>D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\Properties\PublishProfiles\FolderProfile4.pubxml</NameOfLastUsedPublishProfile>
     <ActiveDebugProfile>DriverLicenseLearningSupport</ActiveDebugProfile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
