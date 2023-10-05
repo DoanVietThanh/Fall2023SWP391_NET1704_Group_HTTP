@@ -10,6 +10,9 @@ namespace DriverLicenseLearningSupport.Services.Impl
 
         Task<bool> IsExamQuestion(int questionId);
 
-        
+        Task<IEnumerable<TheoryExamModel>> GetAllAsync();
+
+        Task<TheoryExamModel> GetByIdAsync(int id);
+        Task<IEnumerable<TheoryExamModel>> GetByLicenseTypeIdAsync(int licenseTypeId);
     }
 }

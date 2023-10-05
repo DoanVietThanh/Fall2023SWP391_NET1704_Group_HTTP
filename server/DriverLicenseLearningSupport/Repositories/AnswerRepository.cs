@@ -90,5 +90,19 @@ namespace DriverLicenseLearningSupport.Repositories
             }
             return _mapper.Map<AnswerModel>(answerEntity);
         }
+
+        public async Task<int> GetRightAnswerIdByQuestionId(int questionId)
+        {
+            List<QuestionAnswer> answerEntities = await _context.QuestionAnswers.Where(a => a.QuestionId == questionId)
+                .ToListAsync();
+            foreach(QuestionAnswer answer in answerEntities) 
+            {
+                if (answer.IsTrue == true) 
+                {
+                    return answer.QuestionAnswerId;
+                }
+            }
+            return -1;
+        }
     }
 }

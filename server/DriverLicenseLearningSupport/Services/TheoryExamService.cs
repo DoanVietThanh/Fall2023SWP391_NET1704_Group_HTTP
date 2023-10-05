@@ -29,6 +29,21 @@ namespace DriverLicenseLearningSupport.Services
             return await _theoryExamRepository.CreateAsync(theoryExamEntity);
         }
 
+        public async Task<IEnumerable<TheoryExamModel>> GetAllAsync()
+        {
+            return await _theoryExamRepository.GetAllAsync();
+        }
+
+        public async Task<TheoryExamModel> GetByIdAsync(int id)
+        {
+            return await _theoryExamRepository.GetByIdAsync(id);
+        }
+
+        public async Task<IEnumerable<TheoryExamModel>> GetByLicenseTypeIdAsync(int licenseTypeId)
+        {
+            return await _theoryExamRepository.GetByLicenseTypeIdAsync(licenseTypeId);
+        }
+
         public async Task<bool> IsExamQuestion(int questionId)
         {
             return await _theoryExamRepository.IsExamQuestion(questionId);

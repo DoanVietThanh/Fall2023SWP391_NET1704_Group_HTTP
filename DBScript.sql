@@ -233,17 +233,18 @@ CREATE TABLE [dbo].Exam_Question(
 )
 GO
 CREATE TABLE [dbo].Exam_Grade(
+	exam_grade_id INT PRIMARY KEY identity(1,1),
 	member_id NVARCHAR(200),
 	theory_exam_id INT,
 	point FLOAT,
 	question_id INT NOT NULL,
 	selected_answer_id INT NOT NULL,
-	email NVARCHAR(255)
-
-	PRIMARY KEY (member_id, theory_exam_id)
+	email NVARCHAR(255),
+	start_date DATETIME
 )
 GO
 CREATE TABLE [dbo].Exam_History(
+	exam_history_id INT PRIMARY KEY identity(1,1),
 	member_id NVARCHAR(200),
 	theory_exam_id INT,
 	total_grade INT,
@@ -252,8 +253,7 @@ CREATE TABLE [dbo].Exam_History(
 	total_time INT,
 	wrong_paralysis_question BIT,
 	is_passed BIT,
-
-	PRIMARY KEY (member_id, theory_exam_id)
+	date DATETIME
 )
 GO
 CREATE TABLE [dbo].Blog(
