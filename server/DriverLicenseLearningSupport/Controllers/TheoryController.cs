@@ -45,6 +45,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpGet]
         [Route("theory/add-question")]
+        
         public async Task<IActionResult> LicenseFormRegister()
         {
             var licenseTypes = await _licenseTypeService.GetAllAsync();
@@ -66,7 +67,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpPost]
         [Route("theory/add-question")]
-        //[Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> AddQuestion([FromForm] NewQuestionAddRequest reqObj)
         {
 
@@ -100,7 +101,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 //   generate guid id
                 var imageId = Guid.NewGuid();
                 //upload image to cloud
-                await _imageService.UploadImageAsync(imageId, reqObj.imageLink);
+                //await _imageService.UploadImageAsync(imageId, reqObj.imageLink);
 
                 //Set image Id to question model 
                 questionModel.Image = imageId.ToString();
@@ -170,7 +171,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpDelete]
         [Route("theory/{answerId:int}/delete-answer")]
-        //[Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> DeleteSingleAnswer([FromRoute] int answerId)
         { 
             // get answer
@@ -311,11 +312,11 @@ namespace DriverLicenseLearningSupport.Controllers
             //not found suitable question with answer
             if (questionWithAnswersModel is null)
             {
-                return BadRequest(new ErrorResponse()
-                {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = "Not found any suitable question-answers pair"
-                });
+                    return BadRequest(new ErrorResponse()
+                    {
+                        StatusCode = StatusCodes.Status400BadRequest,
+                        Message = "Not found any suitable question-answers pair"
+                    });
             }
             return Ok(new BaseResponse()
             {
@@ -335,9 +336,11 @@ namespace DriverLicenseLearningSupport.Controllers
         //[HttpGet]
         //[Route("theory/")]
 
+
+        //cho ngan hang cau hoi
         [HttpGet]
         [Route("theory")]
-        //[Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> GetAllQuestion() 
         {
             List<QuestionWithAnswersModel> result = new List<QuestionWithAnswersModel>();
@@ -371,6 +374,25 @@ namespace DriverLicenseLearningSupport.Controllers
             return Ok(new BaseResponse() { 
                 StatusCode = StatusCodes.Status200OK,
                 Data = result
+            });
+        }
+
+        [HttpGet]
+        [Route("theory/license-type/{licenseTypeId:int}")]
+        //[Authorize(Roles = "Member,Staff,Admin")]
+        public async Task<IActionResult> GetAllTheoryByLicenseTypeId([FromRoute] int licenseTypeId) 
+        {
+            var theoryExams = await _theoryExamService.GetByLicenseTypeIdAsync(licenseTypeId);
+            if (theoryExams is null) 
+            {
+                return NotFound(new ErrorResponse() { 
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message ="không có đề cho loại bằng lái này"
+                });
+            }
+            return Ok(new BaseResponse() { 
+                StatusCode = StatusCodes.Status200OK,
+                Data = theoryExams
             });
         }
 

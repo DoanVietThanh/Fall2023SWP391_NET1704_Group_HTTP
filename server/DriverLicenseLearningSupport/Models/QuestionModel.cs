@@ -14,5 +14,7 @@ namespace DriverLicenseLearningSupport.Models
 
 
         public virtual LicenseTypeModel LicenseType { get; set; }
+
+        public virtual ICollection<AnswerModel> QuestionAnswers { get; set; } = new List<AnswerModel>();  
     }
 }

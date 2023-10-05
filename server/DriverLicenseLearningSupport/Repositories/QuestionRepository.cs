@@ -3,12 +3,15 @@ using AutoMapper;
 using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Repositories.Impl;
+using DriverLicenseLearningSupport.Services;
+using DriverLicenseLearningSupport.Services.Impl;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.InteropServices;
 
 namespace DriverLicenseLearningSupport.Repositories
 {
     public class QuestionRepository : IQuestionRepository
+
     {
         private readonly DriverLicenseLearningSupportContext _context;
         private readonly IMapper _mapper;
@@ -17,6 +20,7 @@ namespace DriverLicenseLearningSupport.Repositories
         {
             _context = context;
             _mapper = mapper;
+
         }
 
         public async Task<QuestionModel> CreateAsync(Question question)
@@ -63,17 +67,22 @@ namespace DriverLicenseLearningSupport.Repositories
             return _mapper.Map<IEnumerable<QuestionModel>>(questionEntities);
         }
 
+   
+
         public async Task<QuestionModel> GetByIdAsync(int questionId)
         {
             // get question by id
             var questionEntity = await _context.Questions.Where(x => x.QuestionId.Equals(questionId))
                 .FirstOrDefaultAsync();
-            if (questionEntity == null) 
+            if (questionEntity == null)
             {
                 return null;
             }
             return _mapper.Map<QuestionModel>(questionEntity);
+
         }
+
+        
 
         public async Task<QuestionModel> UpdateStatusQuestionAsync(int questionId, bool status)
         {

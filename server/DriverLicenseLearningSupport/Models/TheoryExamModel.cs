@@ -10,6 +10,6 @@ namespace DriverLicenseLearningSupport.Models
         public int? TotalTime { get; set; }
         public int? TotalAnswerRequired { get; set; }
         public int? LicenseTypeId { get; set; }
-        public virtual ICollection<QuestionModel> Questions { get; set; } 
+        public virtual ICollection<QuestionModel> Questions { get; set; } = new List<QuestionModel>();
     }
 }
