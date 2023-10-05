@@ -91,6 +91,29 @@ namespace DriverLicenseLearningSupport.Repositories
             return _mapper.Map<AnswerModel>(answerEntity);
         }
 
+        public async Task<AnswerModel> GetByQuestionIdAndAnswerDesc(int questionId, string answerDesc)
+        {
+            var question = await _context.Questions.Where(x => x.QuestionId == questionId)
+                .Select(x => new Question {
+                QuestionId = questionId,
+                QuestionAnswers = x.QuestionAnswers.Select(x => new QuestionAnswer { 
+                    QuestionAnswerId = x.QuestionAnswerId,
+                    Answer = x.Answer,
+                    IsTrue = x.IsTrue,
+                    QuestionId = x.QuestionId
+                }).ToList()
+            }).FirstOrDefaultAsync();
+
+
+            var answerEntity = question.QuestionAnswers.Where(x => x.Answer.Equals(answerDesc)).FirstOrDefault();
+
+            if (answerEntity is null)
+            {
+                return null;
+            }
+            return _mapper.Map<AnswerModel>(answerEntity);
+        }
+
         public async Task<int> GetRightAnswerIdByQuestionId(int questionId)
         {
             List<QuestionAnswer> answerEntities = await _context.QuestionAnswers.Where(a => a.QuestionId == questionId)

@@ -26,7 +26,6 @@ const columns = [
       <p className='whitespace-normal overflow-y-auto my-4'>{title}</p>
     ),
   },
-
   {
     field: 'type',
     headerName: 'Loại',
@@ -81,6 +80,8 @@ const ManageQuestion = () => {
   const [rows, setRows] = useState([]);
   const [str, setStr] = useState('');
 
+  const [listFormAnswer, setListFormAnswer] = useState([]);
+
   const initialFormData = {
     imageLink: '',
     questionAnswerDesc: '',
@@ -90,8 +91,6 @@ const ManageQuestion = () => {
     rightAnswer: '',
   };
   const [formData, setFormData] = useState(initialFormData);
-
-  const [answer, setAnswer] = useState(formData.answers);
 
   useEffect(() => {
     return () => {
@@ -138,9 +137,10 @@ const ManageQuestion = () => {
     setPreviewImg(file);
   };
 
-  const handleCreateQuestion = (e) => {
+  const handleCreateQuestion = async (e) => {
     e.preventDefault();
-    dispatch(createQuestion(formData));
+    console.log({ ...formData, answers: listFormAnswer });
+    await dispatch(createQuestion({ ...formData, answers: listFormAnswer }));
     dispatch(getQuestions());
     setOpenFormQuestion(false);
   };
@@ -150,7 +150,7 @@ const ManageQuestion = () => {
   //   console.log(selection);
   //   toastSuccess('Tạo đề thành công');
   // }, [selection]);
-
+  console.log('listFormAnswer: ', listFormAnswer);
   return (
     <div>
       <div className='flex justify-end gap-8 mb-2'>
@@ -254,13 +254,11 @@ const ManageQuestion = () => {
                     fullWidth
                     className='flex-1'
                     value={formData.answers[index]}
+                    required={true}
                     onBlur={(e) => {
-                      const { answers, ...obj } = formData;
-                      answers.push(str);
-                      setFormData({ ...formData, answers });
-                    }}
-                    onChange={(e) => {
-                      setStr(e.target.value);
+                      const temp = [...listFormAnswer];
+                      temp[index] = e.target.value;
+                      setListFormAnswer(temp);
                     }}
                   />
                   <div className='flex-y p-2 gap-2'>
@@ -276,7 +274,7 @@ const ManageQuestion = () => {
                       id={`rightAnswer-${index}`}
                       className='w-[20px] h-[20px]'
                       required
-                      value={formData.answers[index]}
+                      value={listFormAnswer[index]}
                       onChange={(e) => {
                         const { answers, ...obj } = formData;
                         setFormData({
@@ -321,7 +319,7 @@ const ManageQuestion = () => {
               </div>
             </div>
           </div>
-          <div className='mr-8 mb-4 flex justify-end'>
+          <div className='mr-8 my-4 flex justify-end'>
             <Button
               onClick={() => setOpenFormQuestion(false)}
               className='font-bold'

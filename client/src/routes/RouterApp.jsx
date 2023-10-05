@@ -36,13 +36,13 @@ const RouterApp = () => {
     { path: '/course/detail', element: <DetailCourse /> },
 
     { path: '/document', element: <DocumentPage /> },
-    
+
     { path: '/theory', element: <TheoryPage /> },
-    { path: '/theory/test/:id', element: <TestTheory /> },
+    { path: '/theory/test/:theoryExamId', element: <TestTheory /> },
     { path: '/theory/result/:id', element: <ResultTheory /> },
-    
-    { path: '/blogs', element: <BlogPage />},
-    { path: '/blog/detail', element: <BlogDetail/>},
+
+    { path: '/blogs', element: <BlogPage /> },
+    { path: '/blog/detail', element: <BlogDetail /> },
     { path: '/contact', element: <ContactPage /> },
 
     { path: '/manager/dashboard', element: <DashboardPage /> },
