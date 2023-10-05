@@ -15,11 +15,19 @@ const TestTheory = () => {
   const navigate = useNavigate();
   const currentDate = new Date();
   const [open, setOpen] = useState(false);
-  const [answerList, setAnswerList] = useState(new Array(35).fill(0));
+  const [answerList, setAnswerList] = useState(
+    new Array(35).fill({ questionId: '', selectedAnswerId: '' })
+  );
 
   const selectAnswer = (indexQuestion, char) => {
+    // answerList: [{ questionId: '', selectedAnswerId: '' }]
+    // indexQuestion: 1, char: "A"
     const newAnswerList = [...answerList];
-    newAnswerList[indexQuestion] = char;
+    // newAnswerList[indexQuestion] = char;
+    newAnswerList[indexQuestion] = {
+      questionId: indexQuestion,
+      selectedAnswerId: char,
+    };
     setAnswerList(newAnswerList);
   };
 
@@ -59,7 +67,7 @@ const TestTheory = () => {
               {Array.from({ length: 35 }, (_, index) => (
                 <div
                   className={`${
-                    answerList[index] ? 'selected-color ' : ''
+                    answerList[index]?.questionId === '' ? '' : 'selected-color'
                   } text-center cursor-pointer hover:text-white hover:bg-[#0D5EF4] border p-2`}
                 >
                   <a href={`#${index + 1}`} className='font-medium'>
@@ -107,9 +115,12 @@ const TestTheory = () => {
                     {['A', 'B', 'C', 'D'].map((charOption, indexCharOption) => (
                       <div
                         key={indexCharOption}
-                        onClick={() => selectAnswer(indexQuestion, charOption)}
+                        onClick={() =>
+                          selectAnswer(indexQuestion, indexCharOption)
+                        }
                         className={`${
-                          answerList[indexQuestion] === charOption
+                          answerList[indexQuestion].selectedAnswerId ===
+                          indexCharOption
                             ? 'selected-color'
                             : ''
                         } border p-2 cursor-pointer hover:opacity-80 rounded`}

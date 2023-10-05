@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import * as dayjs from 'dayjs';
 
 const CountdownTimer = ({ minutes = 0, seconds = 0 }) => {
   const [timeRemaining, setTimeRemaining] = useState({
@@ -39,6 +40,10 @@ const CountdownTimer = ({ minutes = 0, seconds = 0 }) => {
     <div>
       <div className='border p-4 rounded-full'>
         <span className='text-[20px] font-medium'>{`${formattedMinutes} : ${formattedSeconds}`}</span>
+        <br />
+        {dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss')}
+        <br />
+        <span>Thời gian đã làm: {minutes - timeRemaining.minutes}</span>
       </div>
     </div>
   );
