@@ -3,8 +3,9 @@ using DriverLicenseLearningSupport.Models;
 
 namespace DriverLicenseLearningSupport.Services.Impl
 {
-    public interface ICourseServationService
+    public interface ICourseReservationService
     {
         Task<CourseReservationModel> CreateAsync(CourseReservationModel courseReservation);
+        Task<CourseReservationModel> GetByMemberAsync(Guid memberId);
     }
 }

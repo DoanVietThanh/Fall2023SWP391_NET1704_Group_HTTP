@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Org.BouncyCastle.Asn1.Mozilla;
+using System;
 using System.Collections.Generic;
 
 namespace DriverLicenseLearningSupport.Entities
@@ -14,7 +15,8 @@ namespace DriverLicenseLearningSupport.Entities
         public int? TotalTime { get; set; }
         public bool? WrongParalysisQuestion { get; set; }
         public bool? IsPassed { get; set; }
-        public DateTime? Date { get; set; }
+        public DateTime Date { get; set; }
+
         public virtual Member Member { get; set; }
         public virtual TheoryExam TheoryExam { get; set; }
     }

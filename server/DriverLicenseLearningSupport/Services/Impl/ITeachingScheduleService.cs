@@ -1,12 +1,11 @@
-﻿using DriverLicenseLearningSupport.Entities;
-using DriverLicenseLearningSupport.Models;
+﻿using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Payloads.Filters;
 
-namespace DriverLicenseLearningSupport.Repositories.Impl
+namespace DriverLicenseLearningSupport.Services.Impl
 {
-    public interface ITeachingScheduleRepository
+    public interface ITeachingScheduleService
     {
-        Task<TeachingScheduleModel> CreateAsync(TeachingSchedule teachingSchedule);
+        Task<TeachingScheduleModel> CreateAsync(TeachingScheduleModel teachingSchedule);
         Task<TeachingScheduleModel> GetAsync(int teachingScheduleId);
         Task<IEnumerable<TeachingScheduleModel>> GetAllByMentorIdAndMemberIdAsync(Guid mentorId, Guid memberId);
         Task<IEnumerable<TeachingScheduleModel>> GetAllByMentorIdAsync(Guid mentorId);
@@ -15,7 +14,7 @@ namespace DriverLicenseLearningSupport.Repositories.Impl
         Task<TeachingScheduleModel> GetByMentorIdAndTeachingDateAsync(Guid mentorId, DateTime date, int slotId);
         Task<TeachingScheduleModel> GetByFilterAsync(TeachingScheduleFilter filters);
         Task<TeachingScheduleModel> GetMemberScheduleByFilterAsync(LearningScheduleFilter filters, Guid memberId);
-        Task<bool> AddRollCallBookAsync(int teachingScheduleId, RollCallBook rcbModel);
+        Task<bool> AddRollCallBookAsync(int teachingScheduleId, RollCallBookModel rcbModel);
         Task<bool> AddVehicleAsync(int teachingScheduleId, int vehicleId);
     }
 }

@@ -44,7 +44,7 @@ namespace DriverLicenseLearningSupport.Services
             var staff =  await _staffRepository.GetByEmailAsync(email);
             if(staff is not null)
             {
-                staff.AvatarImage = await _imageService.GetPreSignedURL(Guid.Parse(staff.AvatarImage));
+                //staff.AvatarImage = await _imageService.GetPreSignedURL(Guid.Parse(staff.AvatarImage));
             }
             return staff;
         }
