@@ -1,16 +1,52 @@
-import React, { useState } from 'react';
+import dayjs from 'dayjs';
+import React, { useEffect, useState } from 'react';
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from 'react-icons/ai';
-import { Link, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import theme from '../../theme';
+import axiosClient from '../../utils/axiosClient';
+import { toastError } from './../../components/Toastify';
+import RightAnswer from './components/RightAnswer';
 // console.log(Array.from({ length: 10 }, (_, index) => 0));
 // console.log([...Array(10)].map(() => 0));
 // console.log(new Array(10).fill(0));
 
 const ResultTheory = () => {
   const navigate = useNavigate();
+  const url_Service = process.env.REACT_APP_SERVER_API;
+  const { memberId, email } = useSelector(
+    (state) => state.auth.user.accountInfo
+  );
+  const { mockTestId } = useParams();
   const currentDate = new Date();
   const [open, setOpen] = useState(false);
-  const [answerList, setAnswerList] = useState(new Array(35).fill(0));
+  const [examResult, setExamResult] = useState([]);
+  const [answerList, setAnswerList] = useState(
+    new Array(examResult?.history?.totalQuestion).fill(0)
+  );
+  const charOption = ['A', 'B', 'C', 'D', 'E'];
+
+  useEffect(() => {
+    async function getReview() {
+      try {
+        const response = await axiosClient.post(
+          `${url_Service}/theory/review`,
+          {
+            email,
+            mockTestId,
+            joinDate: localStorage.getItem('startedDate'),
+          }
+        );
+        if (response.data.statusCode === 200) {
+          setExamResult(response.data.data);
+        }
+        console.log('getReview: ', response);
+      } catch (error) {
+        toastError('Review thất bại');
+      }
+    }
+    getReview();
+  }, []);
 
   const selectAnswer = (indexQuestion, char) => {
     const newAnswerList = [...answerList];
@@ -18,11 +54,11 @@ const ResultTheory = () => {
     setAnswerList(newAnswerList);
   };
 
-  console.log(answerList);
-
   const handleSubmit = (id) => {
     navigate(`/theory/result/${id}`);
   };
+
+  console.log('examResult?.examResult: ', examResult?.examResult);
 
   return (
     <div className='flex gap-1 bg-gray-200 h-[100vh] w-[100vw]'>
@@ -36,10 +72,7 @@ const ResultTheory = () => {
               </div>
             </Link>
             <h1 className='font-bold text-orange-400 text-[20px]'>
-              Date:
-              {` ${currentDate.getDate()}/${
-                currentDate.getMonth() + 1
-              }/${currentDate.getFullYear()}`}
+              {`Date: ${dayjs(new Date()).format('DD/MM/YYYY')}`}
             </h1>
           </div>
           <div className='p-4 border-y-2 flex flex-col justify-center items-center'>
@@ -48,23 +81,46 @@ const ResultTheory = () => {
             >
               Kết Quả Bài Làm
             </h2>
-            <div className='font-medium'>
+            <div className='font-medium text-center'>
               <p>
-                Đề số:{' '}
+                Mã Đề:{' '}
                 <span className={`text-[20px] text-[${theme.color.mainColor}]`}>
-                  01 - Đề thi B1
+                  {examResult?.history?.theoryExamId}
                 </span>
               </p>
               <p>
                 Số câu đúng:{' '}
-                <span className='text-[20px] text-green-400'>30</span>
+                <span className='text-[20px] text-green-400'>
+                  {examResult?.history?.totalRightAnswer}
+                </span>
               </p>
               <p>
-                Số câu sai: <span className='text-[20px] text-red-400'>5</span>
+                Số câu sai:{' '}
+                <span className='text-[20px] text-red-400'>
+                  {examResult?.history?.totalQuestion -
+                    examResult?.history?.totalRightAnswer}
+                </span>
               </p>
               <p>
                 Kết quả:{' '}
-                <span className='text-[20px] text-green-400'>Đậu (30/35)</span>
+                <span className='text-[20px] text-green-400'>
+                  {examResult?.history?.isPassed ? (
+                    <span className='text-[20px] text-green-400'>
+                      Đậu{' '}
+                      {`${examResult?.history?.totalRightAnswer} / ${examResult?.history?.totalQuestion}`}
+                    </span>
+                  ) : (
+                    <span className='text-[20px] text-red-400'>Rớt</span>
+                  )}
+                </span>
+              </p>
+              <p>
+                Thời gian bắt đầu:{' '}
+                <span className='font-bold'>
+                  {dayjs(examResult?.history?.date).format(
+                    'HH:mm:ss (DD/MM/YYYY) '
+                  )}
+                </span>
               </p>
             </div>
           </div>
@@ -73,11 +129,11 @@ const ResultTheory = () => {
               Câu hỏi
             </h2>
             <div className='grid grid-cols-5 gap-2'>
-              {Array.from({ length: 35 }, (_, index) => (
+              {examResult?.examResult?.map((numQuestion, index) => (
                 <div
                   className={`${
-                    answerList[index] ? 'selected-color ' : ''
-                  } text-center cursor-pointer hover:text-white hover:bg-[#0D5EF4] border p-2`}
+                    numQuestion.point === 0 ? 'bg-[red]' : 'bg-[green]'
+                  } text-center text-white border p-2`}
                 >
                   <a href={`#${index + 1}`} className='font-medium'>
                     {index + 1}
@@ -91,7 +147,7 @@ const ResultTheory = () => {
 
       <div className='flex-1 p-2 pr-4 border-2 overflow-y-auto py-8'>
         <div className='flex flex-col gap-8 scroll-smooth'>
-          {Array.from({ length: 35 }, (_, indexQuestion) => (
+          {examResult?.examResult?.map((itemQuestion, indexQuestion) => (
             <div
               id={indexQuestion + 1}
               className='min-h-[360px] bg-white p-4 rounded-lg'
@@ -102,11 +158,11 @@ const ResultTheory = () => {
               {/* Content Question  */}
               <div className='flex gap-2 h-full mt-2 flex-1'>
                 <div className='flex-1 h-full'>
-                  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                  Architecto quis aspernatur iusto quam qui, rerum ab sapiente
-                  inventore dolores nobis deserunt modi nemo! Cumque labore
-                  temporibus perspiciatis odio doloremque, voluptatum repellat
-                  illo in perferendis dolores sit maiores eos ab laudantium.
+                  {itemQuestion?.question?.questionAnswerDesc}
+                  <img
+                    alt='img'
+                    src='https://hocthilaixeoto.com/upload/images/cau-hoi-ly-thuyet-lai-xe-b1.png'
+                  />
                 </div>
 
                 <div className='flex-1 h-full px-2'>
@@ -114,24 +170,28 @@ const ResultTheory = () => {
                     Đáp án đã chọn
                   </h1>
                   <div className='flex flex-col gap-4 p-2 mt-2 border-l-2'>
-                    {['A', 'B', 'C', 'D'].map((charOption, indexCharOption) => (
-                      <div
-                        key={indexCharOption}
-                        onClick={() => selectAnswer(indexQuestion, charOption)}
-                        className={`${
-                          answerList[indexQuestion] === charOption
-                            ? 'selected-color'
-                            : ''
-                        } border p-2 cursor-pointer hover:opacity-80 rounded`}
-                      >
-                        <span className='font-bold'>{charOption}</span>. Lorem
-                        ipsum dolor sit amet consectetur adipisicing elit. Cum
-                        tempore aperiam architecto enim fugiat ea?
-                      </div>
-                    ))}
+                    {itemQuestion?.question?.questionAnswers.map(
+                      (itemChoice, index) => (
+                        <div
+                          key={itemChoice?.questionAnswerId}
+                          className={`${
+                            itemQuestion?.selectedAnswerId ===
+                            itemChoice.questionAnswerId
+                              ? 'bg-[#dadada] opacity-80'
+                              : ''
+                          } border p-2 hover:opacity-80 rounded`}
+                        >
+                          <span className='font-bold'>{charOption[index]}</span>
+                          . {itemChoice?.answer}
+                        </div>
+                      )
+                    )}
                     <div className='font-medium p-2 bg-yellow-400 flex-x gap-2'>
                       <AiOutlineArrowRight />
-                      Đáp án đúng là: A
+                      Đáp án đúng là:{' '}
+                      <RightAnswer
+                        listAnswer={itemQuestion?.question.questionAnswers}
+                      />
                     </div>
                   </div>
                 </div>
