@@ -1,204 +1,102 @@
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.csproj.AssemblyReference.cache
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.AssemblyInfoInputs.cache
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.AssemblyInfo.cs
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.csproj.CoreCompileInputs.cache
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.MvcApplicationPartsAssemblyInfo.cs
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\appsettings.Development.json
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\appsettings.json
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\DriverLicenseLearningSupport.exe
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\DriverLicenseLearningSupport.deps.json
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\DriverLicenseLearningSupport.runtimeconfig.json
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\DriverLicenseLearningSupport.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\DriverLicenseLearningSupport.pdb
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\AutoMapper.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\AWSSDK.Core.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\AWSSDK.S3.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\DocumentFormat.OpenXml.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Xceed.Document.NET5.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Xceed.Words.NET5.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\EPPlus.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\EPPlus.Interfaces.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\EPPlus.System.Drawing.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\FluentValidation.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Humanizer.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\MailKit.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.Data.SqlClient.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Abstractions.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Design.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Relational.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.SqlServer.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.Extensions.Caching.Memory.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.Extensions.DependencyInjection.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.Identity.Client.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.IdentityModel.JsonWebTokens.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.IdentityModel.Logging.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.IdentityModel.Tokens.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.IO.RecyclableMemoryStream.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.OpenApi.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.Win32.SystemEvents.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\MimeKit.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\NETCore.MailKit.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\BouncyCastle.Crypto.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Swashbuckle.AspNetCore.Swagger.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerGen.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerUI.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Configuration.ConfigurationManager.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Diagnostics.DiagnosticSource.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Drawing.Common.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.IdentityModel.Tokens.Jwt.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.IO.Packaging.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Runtime.Caching.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Security.Cryptography.Pkcs.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Security.Cryptography.ProtectedData.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Security.Permissions.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Windows.Extensions.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\cs\FluentValidation.resources.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\da\FluentValidation.resources.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\de\FluentValidation.resources.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\es\FluentValidation.resources.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\fa\FluentValidation.resources.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\fi\FluentValidation.resources.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\fr\FluentValidation.resources.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\it\FluentValidation.resources.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\nl\FluentValidation.resources.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\pl\FluentValidation.resources.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\pt\FluentValidation.resources.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\ru\FluentValidation.resources.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\sv\FluentValidation.resources.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\zh-CN\FluentValidation.resources.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\unix\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win\lib\netstandard2.0\System.Runtime.Caching.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Security.Cryptography.Pkcs.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\staticwebassets\msbuild.DriverLicenseLearningSupport.Microsoft.AspNetCore.StaticWebAssets.props
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\staticwebassets\msbuild.build.DriverLicenseLearningSupport.props
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\staticwebassets\msbuild.buildMultiTargeting.DriverLicenseLearningSupport.props
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\staticwebassets\msbuild.buildTransitive.DriverLicenseLearningSupport.props
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\staticwebassets.pack.json
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\staticwebassets.build.json
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\staticwebassets.development.json
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\scopedcss\bundle\DriverLicenseLearningSupport.styles.css
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.csproj.CopyComplete
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\refint\DriverLicenseLearningSupport.dll
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.pdb
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.genruntimeconfig.cache
-C:\Users\HP\Desktop\fixbug\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\ref\DriverLicenseLearningSupport.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\appsettings.Development.json
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\appsettings.json
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\DriverLicenseLearningSupport.exe
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\DriverLicenseLearningSupport.deps.json
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\DriverLicenseLearningSupport.runtimeconfig.json
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\DriverLicenseLearningSupport.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\DriverLicenseLearningSupport.pdb
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\AutoMapper.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\AWSSDK.Core.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\AWSSDK.S3.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\DocumentFormat.OpenXml.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Xceed.Document.NET5.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Xceed.Words.NET5.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\EPPlus.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\EPPlus.Interfaces.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\EPPlus.System.Drawing.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\FluentValidation.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Humanizer.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\MailKit.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.Data.SqlClient.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Abstractions.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Design.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Relational.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.SqlServer.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.Extensions.Caching.Memory.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.Extensions.DependencyInjection.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.Identity.Client.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.IdentityModel.JsonWebTokens.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.IdentityModel.Logging.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.IdentityModel.Tokens.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.IO.RecyclableMemoryStream.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.OpenApi.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.Win32.SystemEvents.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\MimeKit.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\NETCore.MailKit.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\BouncyCastle.Crypto.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Swashbuckle.AspNetCore.Swagger.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerGen.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerUI.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Configuration.ConfigurationManager.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Diagnostics.DiagnosticSource.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Drawing.Common.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.IdentityModel.Tokens.Jwt.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.IO.Packaging.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Runtime.Caching.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Security.Cryptography.Pkcs.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Security.Cryptography.ProtectedData.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Security.Permissions.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Windows.Extensions.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\cs\FluentValidation.resources.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\da\FluentValidation.resources.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\de\FluentValidation.resources.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\es\FluentValidation.resources.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\fa\FluentValidation.resources.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\fi\FluentValidation.resources.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\fr\FluentValidation.resources.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\it\FluentValidation.resources.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\nl\FluentValidation.resources.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\pl\FluentValidation.resources.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\pt\FluentValidation.resources.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\ru\FluentValidation.resources.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\sv\FluentValidation.resources.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\zh-CN\FluentValidation.resources.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\unix\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win\lib\netstandard2.0\System.Runtime.Caching.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Security.Cryptography.Pkcs.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.csproj.AssemblyReference.cache
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.GeneratedMSBuildEditorConfig.editorconfig
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.AssemblyInfoInputs.cache
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.AssemblyInfo.cs
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.csproj.CoreCompileInputs.cache
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.MvcApplicationPartsAssemblyInfo.cs
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.MvcApplicationPartsAssemblyInfo.cache
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\staticwebassets\msbuild.DriverLicenseLearningSupport.Microsoft.AspNetCore.StaticWebAssets.props
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\staticwebassets\msbuild.build.DriverLicenseLearningSupport.props
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\staticwebassets\msbuild.buildMultiTargeting.DriverLicenseLearningSupport.props
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\staticwebassets\msbuild.buildTransitive.DriverLicenseLearningSupport.props
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\staticwebassets.pack.json
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\staticwebassets.build.json
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\staticwebassets.development.json
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\scopedcss\bundle\DriverLicenseLearningSupport.styles.css
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.csproj.CopyComplete
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\refint\DriverLicenseLearningSupport.dll
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.pdb
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.genruntimeconfig.cache
-D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\ref\DriverLicenseLearningSupport.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\appsettings.Development.json
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\appsettings.json
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\DriverLicenseLearningSupport.exe
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\DriverLicenseLearningSupport.deps.json
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\DriverLicenseLearningSupport.runtimeconfig.json
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\DriverLicenseLearningSupport.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\DriverLicenseLearningSupport.pdb
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\AutoMapper.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\AWSSDK.Core.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\AWSSDK.S3.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\DocumentFormat.OpenXml.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Xceed.Document.NET5.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Xceed.Words.NET5.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\EPPlus.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\EPPlus.Interfaces.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\EPPlus.System.Drawing.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\FluentValidation.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Humanizer.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\MailKit.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.Data.SqlClient.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Design.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Relational.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.Extensions.Caching.Memory.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.Extensions.DependencyInjection.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.Identity.Client.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.IdentityModel.Logging.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.IdentityModel.Tokens.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.IO.RecyclableMemoryStream.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.OpenApi.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Microsoft.Win32.SystemEvents.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\MimeKit.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\NETCore.MailKit.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\BouncyCastle.Crypto.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Swashbuckle.AspNetCore.Swagger.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Configuration.ConfigurationManager.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Diagnostics.DiagnosticSource.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Drawing.Common.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.IdentityModel.Tokens.Jwt.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.IO.Packaging.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Runtime.Caching.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Security.Cryptography.Pkcs.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Security.Cryptography.ProtectedData.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Security.Permissions.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Windows.Extensions.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\cs\FluentValidation.resources.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\da\FluentValidation.resources.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\de\FluentValidation.resources.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\es\FluentValidation.resources.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\fa\FluentValidation.resources.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\fi\FluentValidation.resources.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\fr\FluentValidation.resources.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\it\FluentValidation.resources.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\nl\FluentValidation.resources.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\pl\FluentValidation.resources.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\pt\FluentValidation.resources.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\ru\FluentValidation.resources.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\sv\FluentValidation.resources.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\zh-CN\FluentValidation.resources.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\unix\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win\lib\netstandard2.0\System.Runtime.Caching.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Security.Cryptography.Pkcs.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.csproj.AssemblyReference.cache
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.GeneratedMSBuildEditorConfig.editorconfig
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.AssemblyInfoInputs.cache
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.AssemblyInfo.cs
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.csproj.CoreCompileInputs.cache
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.MvcApplicationPartsAssemblyInfo.cs
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.MvcApplicationPartsAssemblyInfo.cache
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\staticwebassets\msbuild.DriverLicenseLearningSupport.Microsoft.AspNetCore.StaticWebAssets.props
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\staticwebassets\msbuild.build.DriverLicenseLearningSupport.props
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\staticwebassets\msbuild.buildMultiTargeting.DriverLicenseLearningSupport.props
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\staticwebassets\msbuild.buildTransitive.DriverLicenseLearningSupport.props
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\staticwebassets.pack.json
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\staticwebassets.build.json
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\staticwebassets.development.json
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\scopedcss\bundle\DriverLicenseLearningSupport.styles.css
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.csproj.CopyComplete
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\refint\DriverLicenseLearningSupport.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.pdb
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.genruntimeconfig.cache
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\ref\DriverLicenseLearningSupport.dll

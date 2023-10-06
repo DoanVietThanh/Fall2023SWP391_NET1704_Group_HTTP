@@ -1,0 +1,11 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\client",
+    "\\server",
+    "\\server\\DriverLicenseLearningSupport",
+    "\\server\\DriverLicenseLearningSupport\\Entities"
+  ],
+  "SelectedNode": "\\server\\DriverLicenseLearningSupport\\Entities\\VehicleType.cs",
+  "PreviewInSolutionExplorer": false
+}

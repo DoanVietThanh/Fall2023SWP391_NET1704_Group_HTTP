@@ -38,3 +38,12 @@ const authService = {
 };
 
 export default authService;
+
+// const [formData, setFormData] = useState({
+//   imageLink: '',
+//   questionAnswerDesc: '',
+//   isParalysis: false,
+//   answers: [],
+//   LicenseTypeId: 1,
+//   rightAnswer: '',
+// });

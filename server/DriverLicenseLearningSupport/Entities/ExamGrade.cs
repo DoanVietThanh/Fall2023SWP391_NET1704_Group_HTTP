@@ -14,6 +14,7 @@ namespace DriverLicenseLearningSupport.Entities
         public string Email { get; set; }
         public DateTime StartDate { get; set; }
 
+        public DateTime StartedDate { get; set; }
         public virtual Member Member { get; set; }
         public virtual Question Question { get; set; }
         public virtual TheoryExam TheoryExam { get; set; }

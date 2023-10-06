@@ -18,6 +18,8 @@ import ResultTheory from '../pages/TheoryPage/ResultTheory';
 import DashboardPage from '../pages/Manager/pages/DashboardPage/DashboardPage';
 import PrivatePage from '../pages/PrivatePage/PrivatePage';
 import BlogPage from '../pages/BlogPage/BlogPage';
+import BlogDetail from '../pages/BlogPage/BlogDetail';
+import DocumentPage from '../pages/DocumentPage/DocumentPage';
 
 const RouterApp = () => {
   const router = createBrowserRouter([
@@ -29,14 +31,18 @@ const RouterApp = () => {
     { path: '/authentication/reset-password', element: <ShowForgetPass /> },
     { path: '/intructor', element: <IntructorPage /> },
     { path: '/private-information', element: <PrivatePage /> },
-    { path: '/blogs', element: <BlogPage />},
+
     { path: '/course', element: <CoursePage /> },
     { path: '/course/detail', element: <DetailCourse /> },
 
+    { path: '/document', element: <DocumentPage /> },
+
     { path: '/theory', element: <TheoryPage /> },
-    { path: '/theory/test/:id', element: <TestTheory /> },
+    { path: '/theory/test/:theoryExamId', element: <TestTheory /> },
     { path: '/theory/result/:id', element: <ResultTheory /> },
 
+    { path: '/blogs', element: <BlogPage /> },
+    { path: '/blog/detail', element: <BlogDetail /> },
     { path: '/contact', element: <ContactPage /> },
 
     { path: '/manager/dashboard', element: <DashboardPage /> },

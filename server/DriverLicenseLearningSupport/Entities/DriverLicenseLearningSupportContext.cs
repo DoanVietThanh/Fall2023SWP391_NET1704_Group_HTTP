@@ -60,6 +60,8 @@ namespace DriverLicenseLearningSupport.Entities
             modelBuilder.Entity<Account>(entity =>
             {
                 entity.HasKey(e => e.Email)
+
+                    //.HasName("PK__Account__AB6E61654B826F2E");
                     .HasName("PK__Account__AB6E61657554C358");
 
                 entity.ToTable("Account");
@@ -361,14 +363,14 @@ namespace DriverLicenseLearningSupport.Entities
 
             modelBuilder.Entity<ExamGrade>(entity =>
             {
-                //entity.HasKey(e => new { e.MemberId, e.TheoryExamId })
-                //    .HasName("PK__Exam_Gra__708CEAE768504AD3");
                 entity.HasKey(e => e.ExamGradeId)
-                    .HasName("PK__Exam_Gra__708CEAE768504AD3");
+                    .HasName("PK__Exam_Gra__D98866AC9D0D6F41");
 
                 entity.Property(e => e.ExamGradeId).HasColumnName("exam_grade_id");
 
                 entity.ToTable("Exam_Grade");
+                entity.Property(e => e.ExamGradeId)
+                        .HasColumnName("exam_grade_id");
 
                 entity.Property(e => e.MemberId)
                     .HasMaxLength(200)
@@ -385,6 +387,8 @@ namespace DriverLicenseLearningSupport.Entities
                 entity.Property(e => e.QuestionId).HasColumnName("question_id");
 
                 entity.Property(e => e.SelectedAnswerId).HasColumnName("selected_answer_id");
+
+                entity.Property(e => e.StartedDate).HasColumnName("start_date");
 
                 entity.HasOne(d => d.Member)
                     .WithMany(p => p.ExamGrades)
@@ -407,15 +411,14 @@ namespace DriverLicenseLearningSupport.Entities
 
             modelBuilder.Entity<ExamHistory>(entity =>
             {
-                //entity.HasKey(e => new { e.MemberId, e.TheoryExamId })
-                //    .HasName("PK__Exam_His__708CEAE78EC99946");
                 entity.HasKey(e => e.ExamHistoryId)
-                    .HasName("PK__Exam_His__708CEAE78EC99946");
+                    .HasName("PK__Exam_His__DAC610E7292D3310");
 
                 entity.Property(e => e.ExamHistoryId).HasColumnName("exam_history_id");
 
                 entity.ToTable("Exam_History");
-
+                entity.Property(e => e.ExamHistoryId)
+                        .HasColumnName("exam_history_id");
                 entity.Property(e => e.MemberId)
                     .HasMaxLength(200)
                     .HasColumnName("member_id");
@@ -434,6 +437,8 @@ namespace DriverLicenseLearningSupport.Entities
 
                 entity.Property(e => e.WrongParalysisQuestion).HasColumnName("wrong_paralysis_question");
 
+                entity.Property(e => e.Date).HasColumnName("date");
+
                 entity.HasOne(d => d.Member)
                     .WithMany(p => p.ExamHistories)
                     .HasForeignKey(d => d.MemberId)
@@ -446,6 +451,7 @@ namespace DriverLicenseLearningSupport.Entities
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_History_TheoryExamId");
             });
+           
 
             modelBuilder.Entity<FeedBack>(entity =>
             {
@@ -665,6 +671,7 @@ namespace DriverLicenseLearningSupport.Entities
 
                 entity.Property(e => e.QuestionAnswerDesc).HasColumnName("question_answer_desc");
 
+                entity.Property(e => e.isActive).HasColumnName("is_active");
                 entity.HasOne(d => d.LicenseType)
                     .WithMany(p => p.Questions)
                     .HasForeignKey(d => d.LicenseTypeId)

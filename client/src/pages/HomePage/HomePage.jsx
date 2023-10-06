@@ -1,11 +1,10 @@
 import React from 'react';
 import Header from '../../components/Header';
-import { toastError } from '../../components/Toastify';
 import Footer from './../../components/Footer';
 import LastestBlog from './LastestBlog';
+import RatedMentor from './RatedMentor';
 import Slider from './Slider';
 import Welcome from './Welcome';
-import RatedMentor from './RatedMentor';
 
 const HomePage = () => {
   return (

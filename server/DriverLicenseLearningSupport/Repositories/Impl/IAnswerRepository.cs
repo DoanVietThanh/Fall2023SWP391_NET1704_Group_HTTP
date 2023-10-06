@@ -13,7 +13,10 @@ namespace DriverLicenseLearningSupport.Repositories.Impl
 
         public Task<bool> DeleteAnswersByQuestionIdAsync(int quesitonId);
 
+        public Task<AnswerModel> GetByAnswerIdAsync(int answerId);
 
+        public Task<int> GetRightAnswerIdByQuestionId(int questionId);
+        Task<AnswerModel> GetByQuestionIdAndAnswerDesc(int questionId, string answerDesc);
     }
 
 }
