@@ -54,6 +54,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
             //lay memberid neu co
             var member = await _memberService.GetByEmailAsync(reqObj.Email);
+            
 
             //lay de thi
             var theoryExam = await _theoryExamService.GetByIdAsync(models[0].TheoryExamId);
