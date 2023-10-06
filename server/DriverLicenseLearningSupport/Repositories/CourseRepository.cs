@@ -56,7 +56,8 @@ namespace DriverLicenseLearningSupport.Repositories
                                                         CurriculumDesc = c.CurriculumDesc,
                                                         CurriculumDetail = c.CurriculumDetail
                                                     }).ToList(),
-                                                    Mentors = x.Mentors
+                                                    Mentors = x.Mentors,
+                                                    LicenseTypeId = x.LicenseTypeId
                                                 }).FirstOrDefaultAsync();
 
             if (course is not null)

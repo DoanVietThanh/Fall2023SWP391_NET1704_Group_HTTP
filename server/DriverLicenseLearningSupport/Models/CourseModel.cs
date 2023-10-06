@@ -12,6 +12,9 @@ namespace DriverLicenseLearningSupport.Models
         public int? TotalMonth { get; set; } = null!;
         public DateTime? StartDate { get; set; } = null!;
         public bool? IsActive { get; set; } = null!;
+        public int LicenseTypeId { get; set; }
+
+        public virtual LicenseTypeModel LicenseType { get; set; }
         public virtual ICollection<FeedBackModel> FeedBacks { get; set; } = new List<FeedBackModel>();
         public virtual ICollection<CurriculumModel> Curricula { get; set; } = new List<CurriculumModel>();
         public virtual ICollection<StaffModel> Mentors { get; set; } = new List<StaffModel>();

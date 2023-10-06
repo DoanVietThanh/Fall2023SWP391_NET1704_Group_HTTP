@@ -22,7 +22,9 @@ namespace DriverLicenseLearningSupport.Entities
         public int? TotalMonth { get; set; }
         public DateTime? StartDate { get; set; }
         public bool? IsActive { get; set; }
+        public int LicenseTypeId { get; set; }
 
+        public virtual LicenseType LicenseType { get; set; }
         public virtual ICollection<CourseReservation> CourseReservations { get; set; }
         public virtual ICollection<FeedBack> FeedBacks { get; set; }
         public virtual ICollection<WeekdaySchedule> WeekdaySchedules { get; set; }
