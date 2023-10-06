@@ -8,7 +8,7 @@ const url_server = process.env.REACT_APP_SERVER_API;
 const getQuestions = async () => {
   const response = await axiosClient.get(`${url_server}/theory`);
   if (response?.data.statusCode === 200) {
-    console.log('Lấy danh sách câu hỏi thành công');
+    toastSuccess('Lấy danh sách câu hỏi thành công');
   } else {
     toastError('Lấy danh sách câu hỏi thất bại');
   }

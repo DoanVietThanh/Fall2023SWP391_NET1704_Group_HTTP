@@ -65,8 +65,23 @@ namespace DriverLicenseLearningSupport.Controllers
             List<ExamGradeModel> listResult = new List<ExamGradeModel>();
             foreach (ExamGradeModel examGradeModel in models)
             {
+                // get selected answer model
+                var reqModel = reqObj.SelectedAnswers.Where(x => x.QuestionId == examGradeModel.QuestionId).FirstOrDefault();
+                var selectAnswerModel = await _answerService.GetByQuestionIdAndAnswerDesc(reqModel.QuestionId, reqModel.SelectAnswer);
+
+                // set select answer id 
+                examGradeModel.SelectedAnswerId = selectAnswerModel.QuestionAnswerId;
+
+                // get question by id
                 QuestionModel question = await _questionService.GetByIdAsync(examGradeModel.QuestionId);
+
+                // get right answer of question
                 theRightAnswerId = await _answerService.GetRightAnswerIdByQuestionId(examGradeModel.QuestionId);
+
+                //var theRightAnswerId = await _answerService.GetRightAnswerByDesc(reqObj);
+
+                // set member id
+                examGradeModel.MemberId = member.MemberId;
                 if (theRightAnswerId == examGradeModel.SelectedAnswerId)
                 {
                     examGradeModel.Point = 1;
@@ -92,7 +107,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
                 createdExamGradeModel.StartedDate = startedDate;
 
-                createdExamGradeModel.MemberId = member.MemberId;
+                //createdExamGradeModel.MemberId = member.MemberId;
 
                 listResult.Add(createdExamGradeModel);
             }
@@ -155,11 +170,11 @@ namespace DriverLicenseLearningSupport.Controllers
 
         //api get all history của member đó -> có nút review -> theory/review (review Detail)
         [HttpGet]
-        [Route("theory/history")]
+        [Route("theory/history/{id:Guid}")]
         [Authorize(Roles = "Member")]
-        public async Task<IActionResult> GetAllHistoryOfMember([FromBody] string email)
+        public async Task<IActionResult> GetAllHistoryOfMember([FromRoute] Guid id)
         {
-            MemberModel memberModel = await _memberService.GetByEmailAsync(email);
+            MemberModel memberModel = await _memberService.GetAsync(id);
             if (memberModel is null)
             {
                 return BadRequest(new ErrorResponse()
@@ -188,7 +203,7 @@ namespace DriverLicenseLearningSupport.Controllers
         //api cho việc đã ấn review
         [HttpPost]
         [Route("theory/review")]
-        [Authorize(Roles = "Member")]
+        //[Authorize(Roles = "Member")]
         public async Task<IActionResult> ReviewDetailedMockTest([FromBody] ReviewExamRequest reqObj)
         {
             MemberModel memberModel = await _memberService.GetByEmailAsync(reqObj.Email);

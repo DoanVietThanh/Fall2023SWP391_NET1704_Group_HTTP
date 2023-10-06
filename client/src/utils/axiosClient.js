@@ -15,7 +15,7 @@ axiosClient.interceptors.request.use(
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
-    console.log('🚀 ~ file: axiosClient.js:18 ~ config:', config);
+    // console.log('🚀 ~ file: axiosClient.js:18 ~ config:', config);
     return config;
   },
   function (error) {

@@ -130,7 +130,6 @@ namespace DriverLicenseLearningSupport.Repositories
                         IsParalysis = q.IsParalysis,
                         QuestionAnswers = q.QuestionAnswers.Select(a => new QuestionAnswer()
                         {
-
                             Answer = a.Answer,
                             QuestionAnswerId = a.QuestionAnswerId,
                             IsTrue = a.IsTrue

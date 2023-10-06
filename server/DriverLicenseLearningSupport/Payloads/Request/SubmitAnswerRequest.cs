@@ -28,8 +28,7 @@ namespace DriverLicenseLearningSupport.Payloads.Request
                     //MemberId = obj.MemberId,
                     TheoryExamId = obj.TheoryExamId,
                     Email = obj.Email,
-                    QuestionId = sa.QuestionId,
-                    SelectedAnswerId = sa.SelectedAnswerId
+                    QuestionId = sa.QuestionId
                 };
                 result.Add(examGrademodel);
             }
