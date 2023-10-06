@@ -2,6 +2,7 @@
 using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Repositories.Impl;
+using Microsoft.EntityFrameworkCore;
 
 namespace DriverLicenseLearningSupport.Repositories
 {
@@ -25,6 +26,13 @@ namespace DriverLicenseLearningSupport.Repositories
             if (!isSucess) return null;
 
             return _mapper.Map<CourseReservationModel>(courseReservation);
+        }
+
+        public async Task<CourseReservationModel> GetByMemberAsync(Guid memberId)
+        {
+            var courseReservationEntity = await _context.CourseReservations.Where(x => x.MemberId == memberId.ToString())
+                                                                           .FirstOrDefaultAsync();
+            return _mapper.Map<CourseReservationModel>(courseReservationEntity);
         }
     }
 }

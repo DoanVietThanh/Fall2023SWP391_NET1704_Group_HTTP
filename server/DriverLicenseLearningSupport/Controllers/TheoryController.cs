@@ -97,7 +97,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 //   generate guid id
                 var imageId = Guid.NewGuid();
                 //upload image to cloud
-                await _imageService.UploadImageAsync(imageId, reqObj.imageLink);
+                //await _imageService.UploadImageAsync(imageId, reqObj.imageLink);
 
                 //Set image Id to question model 
                 questionModel.Image = imageId.ToString();

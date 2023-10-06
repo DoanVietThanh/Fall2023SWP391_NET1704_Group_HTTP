@@ -1,7 +1,4 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
-using DocumentFormat.OpenXml.Spreadsheet;
-using DriverLicenseLearningSupport.Entities;
-using DriverLicenseLearningSupport.Models;
+﻿using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Models.Config;
 using DriverLicenseLearningSupport.Payloads.Filters;
 using DriverLicenseLearningSupport.Payloads.Request;
@@ -15,7 +12,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using OfficeOpenXml;
-using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 
 namespace DriverLicenseLearningSupport.Controllers
@@ -332,6 +328,8 @@ namespace DriverLicenseLearningSupport.Controllers
             var slots = await _slotService.GetAllAsync();
             // convert to list of course
             var listOfSlotSchedule = slots.ToList();
+            // get all teaching schedule of mentor
+
             // get teaching schedule for each slot
             foreach(var s in slots)
             {
@@ -345,6 +343,62 @@ namespace DriverLicenseLearningSupport.Controllers
             
             // response
             return Ok(new BaseResponse {
+                StatusCode = StatusCodes.Status200OK,
+                Data = new
+                {
+                    Course = course,
+                    Filter = weekdays.Select(x => new {
+                        Id = x.WeekdayScheduleId,
+                        Desc = x.WeekdayScheduleDesc
+                    }),
+                    Weekdays = weekday,
+                    SlotSchedules = listOfSlotSchedule
+                }
+            });
+        }
+
+        [HttpGet]
+        [Route("staffs/{id:Guid}/schedule/filter")]
+        public async Task<IActionResult> GetMentorScheduleByFilter([FromRoute] Guid id,
+            [FromQuery] TeachingScheduleFilter filters)  
+        {
+            // get teaching date by filters
+            var teachingDate = await _teachingScheduleService.GetByFilterAsync(filters);
+
+            if (teachingDate is null)
+            {
+                return NotFound(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Not found any teaching schedule match required"
+                });
+            }
+
+
+            // get calendar by id
+            var weekday = await _weekDayScheduleService.GetAsync(
+                Convert.ToInt32(teachingDate.WeekdayScheduleId));
+            // get all weekday of calendar
+            var weekdays = await _weekDayScheduleService.GetAllAsync();
+            // get all slots 
+            var slots = await _slotService.GetAllAsync();
+            // convert to list of course
+            var listOfSlotSchedule = slots.ToList();
+            // get teaching schedule for each slot
+            foreach (var s in slots)
+            {
+                var teachingSchedules
+                    = await _teachingScheduleService.GetBySlotAndWeekDayScheduleAsync(s.SlotId,
+                        weekday.WeekdayScheduleId, id);
+                s.TeachingSchedules = teachingSchedules.ToList();
+            }
+            // get course by id 
+            var course = await _courseService.GetAsync(Guid.Parse(weekday.CourseId));
+            course.Mentors = null;
+
+            // response
+            return Ok(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status200OK,
                 Data = new
                 {
@@ -402,17 +456,25 @@ namespace DriverLicenseLearningSupport.Controllers
         {
             // get course by mentor id
             var course = await _courseService.GetByMentorIdAsync(Guid.Parse(reqObj.MentorId));
+            // check teaching exist
+            if(course is null)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Not found any course of mentor id {reqObj.MentorId}"
+                });
+            }
 
             // get weekday schedule id by teaching date request
             var weekday = await _weekDayScheduleService.GetByDateAsync(reqObj.TeachingDate);
-
+            // check teaching date exist
             if (weekday is null)
             {
                 return BadRequest(new BaseResponse
                 {
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = $"Not found any date match {reqObj.TeachingDate} " +
-                    $"in schedule of course {course.CourseDesc}"
+                    Message = $"Not found any date match {reqObj.TeachingDate.ToString("dd/MM/yyyy")} " +
+                    $"in schedule of course {course.CourseTitle}"
                 });
             }
 
@@ -420,9 +482,9 @@ namespace DriverLicenseLearningSupport.Controllers
             var teachingSchedule = reqObj.ToScheduleModel();
             teachingSchedule.WeekdayScheduleId = weekday.WeekdayScheduleId;
 
-            // check already exist teaching date
+            // check already exist teaching date with particular slot
             var existSchedule = await _teachingScheduleService.GetByMentorIdAndTeachingDateAsync(
-                    Guid.Parse(reqObj.MentorId), reqObj.TeachingDate);
+                    Guid.Parse(reqObj.MentorId), reqObj.TeachingDate, reqObj.SlotId);
 
             if (existSchedule is null)
             {
@@ -436,7 +498,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
             return BadRequest(new BaseResponse { 
                 StatusCode = StatusCodes.Status400BadRequest,
-                Message = $"Ngày đăng ký đã có trong lịch dạy, vui lòng chọn lại"
+                Message = $"Ngày đăng ký và slot đăng ký đã có trong lịch dạy, vui lòng chọn lại"
             });
         }
 
@@ -489,9 +551,9 @@ namespace DriverLicenseLearningSupport.Controllers
             // 1. generate image id
             var imageId = Guid.NewGuid();
             // 2. remove prev image
-            await _imageService.DeleteImageAsync(Guid.Parse(staff.AvatarImage));
+            //await _imageService.DeleteImageAsync(Guid.Parse(staff.AvatarImage));
             // 3. upload new image
-            await _imageService.UploadImageAsync(imageId, reqObj.AvatarImage);
+            //await _imageService.UploadImageAsync(imageId, reqObj.AvatarImage);
             // 4. save db
             staffModel.AvatarImage = imageId.ToString();
 

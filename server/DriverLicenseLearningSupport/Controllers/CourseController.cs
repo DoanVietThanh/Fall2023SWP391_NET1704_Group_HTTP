@@ -27,7 +27,7 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly IStaffService _staffService;
         private readonly IMemberService _memberService;
         private readonly IPaymentTypeService _paymentTypeService;
-        private readonly ICourseServationService _courseReservationService;
+        private readonly ICourseReservationService _courseReservationService;
         private readonly IVehicleService _vehicleService;
         private readonly ILicenseTypeService _licenseTypeService;
         private readonly ISlotService _slotService;
@@ -40,7 +40,7 @@ namespace DriverLicenseLearningSupport.Controllers
             IMemberService memberService,
             IPaymentTypeService paymentTypeService,
             IWeekDayScheduleService weekDayScheduleService,
-            ICourseServationService courseReservationService,
+            ICourseReservationService courseReservationService,
             IVehicleService vehicleService,
             ILicenseTypeService licenseTypeService,
             ISlotService slotService,
@@ -170,16 +170,39 @@ namespace DriverLicenseLearningSupport.Controllers
                     Message = $"Not found any member match id {reqObj.CourseId}"
                 });
             }
+            // check member already reservation
+            var courseReservation = await _courseReservationService.GetByMemberAsync(reqObj.MemberId);
+            if(courseReservation is not null)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Member '{member.FirstName} {member.LastName}' already " +
+                    $"reservation in Course '{course.CourseTitle}'," +
+                    $" Member just learn one course only"
+                });
+            }
 
             // generate course reservation model
             var courseReservationModel = reqObj.ToCourseReservationModel();
 
             // get vehicle for reservation
-            var licenseType = await _licenseTypeService.GetByDescAsync("B1");
-            //var vehicle = _vehicleService.GetByLicenseTypeAsync(licenseType.LicenseTypeId);
+            var licenseType = await _licenseTypeService.GetAsync(course.LicenseTypeId);
+            var vehicle = await _vehicleService.GetByLicenseTypeIdAsync(licenseType.LicenseTypeId);
+
+            // check vehicle exist
+            if(vehicle is null)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Not found any vehicles in garage with license type {licenseType.LicenseTypeDesc}"
+                });
+            }
+
+            // set vehicle for course reservation
+            courseReservationModel.VehicleId = vehicle.VehicleId;
 
             // gererate current date
-            var createDate = DateTime.ParseExact(DateTime.Now.ToString("yyyy-MM-dd"), 
+            var createDate = DateTime.ParseExact(DateTime.Now.ToString(_appSettings.DateFormat), 
                 _appSettings.DateFormat, CultureInfo.InvariantCulture);
 
             // current date
@@ -189,6 +212,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
             // create course reservation
             var createdReservation = await _courseReservationService.CreateAsync(courseReservationModel);
+            createdReservation.Vehicle = vehicle;
 
             // create success
             if(createdReservation is not null)
@@ -695,6 +719,8 @@ namespace DriverLicenseLearningSupport.Controllers
             });
         }
 
+
+        // Slot management
         [HttpPost]
         [Route("courses/slot")]
         [Authorize(Roles = "Admin,Staff")]
@@ -719,5 +745,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
+
+        
     }
 }

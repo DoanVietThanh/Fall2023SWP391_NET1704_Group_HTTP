@@ -212,6 +212,13 @@ namespace DriverLicenseLearningSupport.Entities
 
                 entity.Property(e => e.TotalSession).HasColumnName("total_session");
 
+                entity.Property(e => e.LicenseTypeId).HasColumnName("license_type_id");
+
+                entity.HasOne(c => c.LicenseType)
+                   .WithMany(p => p.Courses)
+                   .HasForeignKey(d => d.LicenseTypeId)
+                   .HasConstraintName("FK_Course_LicenseTypeId");
+
                 entity.HasMany(d => d.Curricula)
                     .WithMany(p => p.Courses)
                     .UsingEntity<Dictionary<string, object>>(
@@ -354,8 +361,12 @@ namespace DriverLicenseLearningSupport.Entities
 
             modelBuilder.Entity<ExamGrade>(entity =>
             {
-                entity.HasKey(e => new { e.MemberId, e.TheoryExamId })
+                //entity.HasKey(e => new { e.MemberId, e.TheoryExamId })
+                //    .HasName("PK__Exam_Gra__708CEAE768504AD3");
+                entity.HasKey(e => e.ExamGradeId)
                     .HasName("PK__Exam_Gra__708CEAE768504AD3");
+
+                entity.Property(e => e.ExamGradeId).HasColumnName("exam_grade_id");
 
                 entity.ToTable("Exam_Grade");
 
@@ -396,8 +407,12 @@ namespace DriverLicenseLearningSupport.Entities
 
             modelBuilder.Entity<ExamHistory>(entity =>
             {
-                entity.HasKey(e => new { e.MemberId, e.TheoryExamId })
+                //entity.HasKey(e => new { e.MemberId, e.TheoryExamId })
+                //    .HasName("PK__Exam_His__708CEAE78EC99946");
+                entity.HasKey(e => e.ExamHistoryId)
                     .HasName("PK__Exam_His__708CEAE78EC99946");
+
+                entity.Property(e => e.ExamHistoryId).HasColumnName("exam_history_id");
 
                 entity.ToTable("Exam_History");
 

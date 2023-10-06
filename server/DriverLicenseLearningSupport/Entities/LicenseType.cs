@@ -12,6 +12,7 @@ namespace DriverLicenseLearningSupport.Entities
             Questions = new HashSet<Question>();
             TheoryExams = new HashSet<TheoryExam>();
             Staffs = new HashSet<Staff>();
+            Courses = new HashSet<Course>();
         }
 
         public int LicenseTypeId { get; set; }
@@ -22,5 +23,6 @@ namespace DriverLicenseLearningSupport.Entities
         public virtual ICollection<Question> Questions { get; set; }
         public virtual ICollection<TheoryExam> TheoryExams { get; set; }
         public virtual ICollection<Staff> Staffs { get; set; }
+        public virtual ICollection<Course> Courses { get; set; }
     }
 }
