@@ -39,7 +39,7 @@ namespace DriverLicenseLearningSupport.Controllers
         }
 
         [HttpPost]
-        [Route("theory/grade")]
+        [Route("theory/submit")]
         //[Authorize(Roles = ("Member"))]
         public async Task<IActionResult> CreateGradeForTest([FromBody] SubmitAnswerRequest reqObj)
         {
@@ -140,7 +140,7 @@ namespace DriverLicenseLearningSupport.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-
+            /*
             return new ObjectResult(new
             {
                 ListGrade = listResult,
@@ -150,7 +150,12 @@ namespace DriverLicenseLearningSupport.Controllers
                 HistoryModel = createdHistoryModel
 
             })
-            { StatusCode = StatusCodes.Status201Created };
+            { StatusCode = StatusCodes.Status201Created };*/
+
+            return Ok(new BaseResponse { 
+                StatusCode = StatusCodes.Status200OK,
+                Message = "Submit theory test successfully!"
+            });
 
             //return Ok(new BaseResponse() { 
             //    StatusCode = StatusCodes.Status200OK,
@@ -218,10 +223,21 @@ namespace DriverLicenseLearningSupport.Controllers
             List<ExamGradeModel> examGrades = await _examGradeService.GetAllByTheoryExamIdandEmailAsync(reqObj.Email
                 , reqObj.MockTestId, reqObj.JoinDate);
             //lay toan bo cau hoi va dap an trong de thi
+
+
             foreach (ExamGradeModel eg in examGrades)
             {
+                var selectedAnswer = await _answerService.GetByAnswerIdAsync(eg.SelectedAnswerId);
                 QuestionModel question = await _questionService.GetByIdAsync(eg.QuestionId);
                 IEnumerable<AnswerModel> answers = await _answerService.GetAllByQuestionId(eg.QuestionId);
+                foreach (AnswerModel answer in answers) 
+                {
+                    if (answer.Answer.Equals(selectedAnswer.Answer)) 
+                    {
+                        eg.SelectedAnswerId = answer.QuestionAnswerId; 
+                        break;
+                    }
+                }
                 question.QuestionAnswers = answers.ToList();
                 eg.Question = question;
             }

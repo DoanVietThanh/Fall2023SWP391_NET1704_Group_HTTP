@@ -7,6 +7,8 @@ import { AiOutlineArrowLeft } from 'react-icons/ai';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import CountdownTimer from './CountdownTimer';
 import axiosClient from '../../utils/axiosClient';
+import { useSelector } from 'react-redux';
+import * as dayjs from 'dayjs';
 
 // console.log(Array.from({ length: 10 }, (_, index) => 0));
 // console.log([...Array(10)].map(() => 0));
@@ -15,41 +17,58 @@ import axiosClient from '../../utils/axiosClient';
 const TestTheory = () => {
   const navigate = useNavigate();
   const { theoryExamId } = useParams();
-  const currentDate = new Date();
-  const [open, setOpen] = useState(false);
-  const [answerList, setAnswerList] = useState(
-    new Array(35).fill({ questionId: '', selectedAnswerId: '' })
+  const { memberId, email } = useSelector(
+    (state) => state.auth.user.accountInfo
   );
+  const url_Service = process.env.REACT_APP_SERVER_API;
+  const currentDate = new Date();
+  const [startedDate, setStartedDate] = useState('');
+  const [open, setOpen] = useState(false);
+  const [answerList, setAnswerList] = useState([]);
   const [questionList, setQuestionList] = useState([]);
   const charOption = ['A', 'B', 'C', 'D', 'E'];
 
   useEffect(() => {
     async function fetchData() {
       const response = await axiosClient.get(`/theory-exam/${theoryExamId}`);
-      console.log('response: ', response);
       setQuestionList(response?.data.data);
       setAnswerList(
         new Array(response?.data.data.totalQuestion).fill({
           questionId: '',
-          selectedAnswerId: '',
+          selectAnswer: '',
         })
       );
+      localStorage.setItem(
+        'startedDate',
+        dayjs(new Date())
+          .format('YYYY-MM-DD')
+          .concat('T'.concat(dayjs(new Date()).format('HH:mm:ss')))
+      );
+      setStartedDate(dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss'));
     }
     fetchData();
   }, []);
 
   const selectAnswer = (indexQuestion, indexOption) => {
-    // answerList: [{ questionId: '', selectedAnswerId: '' }]
+    // answerList: [{ questionId: '', selectAnswer: '' }]
     // indexQuestion: 1, indexOption: "2 - Câu C"
     const newAnswerList = [...answerList];
     newAnswerList[indexQuestion - 1] = {
       questionId: indexQuestion,
-      selectedAnswerId: indexOption,
+      selectAnswer: indexOption,
     };
     setAnswerList(newAnswerList);
   };
 
-  const handleSubmit = (id) => {
+  const handleSubmit = async (id) => {
+    const response = await axiosClient.post(`${url_Service}/theory/submit`, {
+      email,
+      memberId,
+      theoryExamId,
+      startedDate: startedDate,
+      selectedAnswers: answerList,
+    });
+    console.log('submit: ', response);
     navigate(`/theory/result/${id}`);
   };
 
@@ -87,6 +106,7 @@ const TestTheory = () => {
                 { length: questionList.totalQuestion },
                 (_, index) => (
                   <div
+                    key={index}
                     className={`${
                       answerList[index]?.questionId === ''
                         ? ''
@@ -137,13 +157,20 @@ const TestTheory = () => {
                         (item, indexOption) => (
                           <div
                             key={indexOption}
-                            onClick={() =>
-                              selectAnswer(itemQuestion.questionId, item.answer)
-                            }
+                            onClick={() => {
+                              console.log({
+                                id: itemQuestion.questionId,
+                                'dap an': item.answer,
+                              });
+                              selectAnswer(
+                                itemQuestion.questionId,
+                                item.answer
+                              );
+                            }}
                             className={`${
-                              answerList[indexQuestion].questionId ===
-                              indexOption + 1
-                                ? 'selected-color'
+                              answerList[indexQuestion].selectAnswer ===
+                              item.answer
+                                ? 'selected-color '
                                 : ''
                             } border p-2 cursor-pointer hover:opacity-80 rounded`}
                           >
@@ -176,7 +203,7 @@ const TestTheory = () => {
           <button className='btn-cancel' onClick={() => setOpen(false)}>
             Hủy
           </button>
-          <button className='btn' onClick={() => handleSubmit(1)}>
+          <button className='btn' onClick={() => handleSubmit(theoryExamId)}>
             Đồng ý
           </button>
         </DialogActions>
@@ -186,30 +213,3 @@ const TestTheory = () => {
 };
 
 export default TestTheory;
-
-// "questionAnswers": [
-//   {
-//       "questionAnswerId": 0,
-//       "answer": "Đường không ưu tiên.",
-//       "isTrue": true,
-//       "questionId": 0
-//   },
-//   {
-//       "questionAnswerId": 1,
-//       "answer": "Đường tỉnh lộ.",
-//       "isTrue": false,
-//       "questionId": 0
-//   },
-//   {
-//       "questionAnswerId": 2,
-//       "answer": "Đường quốc lộ.",
-//       "isTrue": false,
-//       "questionId": 0
-//   },
-//   {
-//       "questionAnswerId": 3,
-//       "answer": "Đường ưu tiên.",
-//       "isTrue": false,
-//       "questionId": 0
-//   }
-// ]
