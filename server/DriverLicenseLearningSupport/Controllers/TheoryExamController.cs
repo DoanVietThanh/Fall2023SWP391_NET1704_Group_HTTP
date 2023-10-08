@@ -177,6 +177,7 @@ namespace DriverLicenseLearningSupport.Controllers
         }
         [HttpPost]
         [Route("theory-exam/add-question")]
+        [Authorize (Roles = "Staff")]
         public async Task<IActionResult> AddQuestionToExam([FromForm] TheoryAddRequest reqObj)
         {
             int currentLicenceId = 0;
