@@ -18,7 +18,7 @@ export const getQuestions = createAsyncThunk(
     try {
       return await questionService.getQuestions();
     } catch (error) {
-      toastError('Không lấy được danh sách câu hỏi');
+      // toastError('Không lấy được danh sách câu hỏi');
       return thunkAPI.rejectWithValue(error);
     }
   }

@@ -126,7 +126,7 @@ const RegisterPage = () => {
             {/* User Name  */}
             <TextField
               id='outlined-basic'
-              label='Username'
+              label='Email'
               variant='outlined'
               className='w-full'
               onChange={formik.handleChange('username')}
