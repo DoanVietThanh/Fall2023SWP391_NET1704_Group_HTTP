@@ -159,10 +159,10 @@ const ResultTheory = () => {
               <div className='flex gap-2 h-full mt-2 flex-1'>
                 <div className='flex-1 h-full'>
                   {itemQuestion?.question?.questionAnswerDesc}
-                  <img
+                  {/* <img
                     alt='img'
                     src='https://hocthilaixeoto.com/upload/images/cau-hoi-ly-thuyet-lai-xe-b1.png'
-                  />
+                  /> */}
                 </div>
 
                 <div className='flex-1 h-full px-2'>
