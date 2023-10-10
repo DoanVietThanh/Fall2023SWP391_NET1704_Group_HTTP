@@ -2,125 +2,124 @@
   "statusCode": 200,
   "message": null,
   "data": {
-    "theoryExamId": 5,
-    "totalQuestion": 3,
-    "totalTime": 15,
-    "totalAnswerRequired": 21,
-    "licenseTypeId": 1,
-    "questions": [
+    "course": {
+      "courseId": "6479a6bc-1396-4147-b899-62c97009651b",
+      "courseTitle": "Khóa học bằng lái B2",
+      "courseDesc": "<div>hello</div> <big>Oops, something went wrong</big> <small>Yups, good job</small><b><i><u>Nah, too bad</u></i></b>",
+      "cost": 120000,
+      "totalSession": 12,
+      "totalMonth": 1,
+      "startDate": "2023-10-04T00:00:00",
+      "isActive": true,
+      "feedBacks": [],
+      "curricula": [],
+      "mentors": [
+        {
+          "staffId": "29ae4265-269d-4a11-8df6-b05f3c345cd4",
+          "firstName": "Thanh",
+          "lastName": "Sa",
+          "dateBirth": "2003-09-22T00:00:00",
+          "phone": "892131231",
+          "isActive": true,
+          "avatarImage": "a42e811d-d22b-4ede-b955-1437ebaeeb9d",
+          "email": "dawnk1003@gmail.com",
+          "addressId": "07a43b7a-6156-4c5a-a18d-382e574b4ba8",
+          "jobTitleId": 3,
+          "licenseTypeId": 3,
+          "address": null,
+          "emailNavigation": null,
+          "jobTitle": null,
+          "licenseType": null,
+          "feedBacks": [],
+          "courses": []
+        }
+      ]
+    },
+    "filter": [
       {
-        "questionId": 1006,
-        "questionAnswerDesc": "nhom chung minh",
-        "isParalysis": true,
-        "image": "35a2b149-4cd3-450a-bb0c-398ebf98a9fd",
-        "isActive": null,
-        "licenseTypeId": 0,
-        "licenseType": {
-          "licenseTypeId": 1,
-          "licenseTypeDesc": "A1"
-        },
-        "questionAnswers": [
+        "id": 1,
+        "desc": "02/10 To 08/10"
+      },
+      {
+        "id": 2,
+        "desc": "09/10 To 15/10"
+      },
+      {
+        "id": 3,
+        "desc": "16/10 To 22/10"
+      },
+      {
+        "id": 4,
+        "desc": "23/10 To 29/10"
+      },
+      {
+        "id": 5,
+        "desc": "30/10 To 02/11"
+      }
+    ],
+    "weekdays": {
+      "weekdayScheduleId": 2,
+      "monday": "2023-10-09T00:00:00",
+      "tuesday": "2023-10-10T00:00:00",
+      "wednesday": "2023-10-11T00:00:00",
+      "thursday": "2023-10-12T00:00:00",
+      "friday": "2023-10-13T00:00:00",
+      "saturday": "2023-10-14T00:00:00",
+      "sunday": "2023-10-15T00:00:00",
+      "courseId": "6479a6bc-1396-4147-b899-62c97009651b",
+      "weekdayScheduleDesc": "09/10 To 15/10",
+      "course": null,
+      "teachingSchedules": []
+    },
+    "slotSchedules": [
+      {
+        "slotId": 1,
+        "slotName": "Slot 1",
+        "duration": 2,
+        "time": "07:30:00",
+        "slotDesc": "07:30 - 09:30",
+        "teachingSchedules": [
+          null,
           {
-            "questionAnswerId": 1018,
-            "answer": "vietthanh",
-            "isTrue": false,
-            "questionId": 0
+            "teachingScheduleId": 3,
+            "teachingDate": "2023-10-10T00:00:00",
+            "staffId": "29ae4265-269d-4a11-8df6-b05f3c345cd4",
+            "slotId": 1,
+            "vehicleId": 1,
+            "weekdayScheduleId": 2,
+            "staff": null,
+            "vehicle": null
           },
-          {
-            "questionAnswerId": 1019,
-            "answer": "quanghuy",
-            "isTrue": true,
-            "questionId": 0
-          },
-          {
-            "questionAnswerId": 1020,
-            "answer": "thanhthu",
-            "isTrue": false,
-            "questionId": 0
-          },
-          {
-            "questionAnswerId": 1021,
-            "answer": "xuanphuoc",
-            "isTrue": false,
-            "questionId": 0
-          }
+          null,
+          null,
+          null,
+          null,
+          null
         ]
       },
       {
-        "questionId": 1007,
-        "questionAnswerDesc": "nhom chung minh",
-        "isParalysis": true,
-        "image": "30d7faa3-cf43-4a31-9b47-ef8a4d3abccc",
-        "isActive": null,
-        "licenseTypeId": 0,
-        "licenseType": {
-          "licenseTypeId": 1,
-          "licenseTypeDesc": "A1"
-        },
-        "questionAnswers": [
-          {
-            "questionAnswerId": 1022,
-            "answer": "vietthanh",
-            "isTrue": false,
-            "questionId": 0
-          },
-          {
-            "questionAnswerId": 1023,
-            "answer": "quanghuy",
-            "isTrue": true,
-            "questionId": 0
-          },
-          {
-            "questionAnswerId": 1024,
-            "answer": "thanhthu",
-            "isTrue": false,
-            "questionId": 0
-          },
-          {
-            "questionAnswerId": 1025,
-            "answer": "xuanphuoc",
-            "isTrue": false,
-            "questionId": 0
-          }
-        ]
+        "slotId": 2,
+        "slotName": "Slot 2",
+        "duration": 2,
+        "time": "09:45:00",
+        "slotDesc": "09:45 - 11:45",
+        "teachingSchedules": [null, null, null, null, null, null, null]
       },
       {
-        "questionId": 1008,
-        "questionAnswerDesc": "nhom chung minh",
-        "isParalysis": true,
-        "image": "7c0cd71f-fa8e-4dea-b2f7-abb18b999d9e",
-        "isActive": null,
-        "licenseTypeId": 0,
-        "licenseType": {
-          "licenseTypeId": 1,
-          "licenseTypeDesc": "A1"
-        },
-        "questionAnswers": [
-          {
-            "questionAnswerId": 1026,
-            "answer": "vietthanh",
-            "isTrue": false,
-            "questionId": 0
-          },
-          {
-            "questionAnswerId": 1027,
-            "answer": "quanghuy",
-            "isTrue": true,
-            "questionId": 0
-          },
-          {
-            "questionAnswerId": 1028,
-            "answer": "thanhthu",
-            "isTrue": false,
-            "questionId": 0
-          },
-          {
-            "questionAnswerId": 1029,
-            "answer": "xuanphuoc",
-            "isTrue": false,
-            "questionId": 0
-          }
-        ]
+        "slotId": 3,
+        "slotName": "Slot 3",
+        "duration": 2,
+        "time": "13:30:00",
+        "slotDesc": "13:30 - 15:30",
+        "teachingSchedules": [null, null, null, null, null, null, null]
+      },
+      {
+        "slotId": 4,
+        "slotName": "Slot 3",
+        "duration": 2,
+        "time": "15:45:00",
+        "slotDesc": "15:45 - 17:45",
+        "teachingSchedules": [null, null, null, null, null, null, null]
       }
     ]
   }

@@ -916,10 +916,16 @@ namespace DriverLicenseLearningSupport.Controllers
             // get learning schedule for each slot
             foreach (var s in slots)
             {
+                /*
                 var teachingSchedules
                     = await _teachingScheduleService.GetBySlotAndWeekDayScheduleOfMemberAsync(s.SlotId,
                         weekday.WeekdayScheduleId, 
                         Guid.Parse(courseReservation.StaffId), id);
+                s.TeachingSchedules = teachingSchedules.ToList();*/
+                var teachingSchedules
+                    = await _teachingScheduleService.GetBySlotAndWeekDayScheduleAsync(s.SlotId,
+                        weekday.WeekdayScheduleId,
+                        Guid.Parse(courseReservation.StaffId));
                 s.TeachingSchedules = teachingSchedules.ToList();
             }
 
@@ -992,10 +998,16 @@ namespace DriverLicenseLearningSupport.Controllers
             // get teaching schedule for each slot
             foreach (var s in slots)
             {
+                /*
                 var teachingSchedules
                     = await _teachingScheduleService.GetBySlotAndWeekDayScheduleOfMemberAsync(s.SlotId,
                         weekday.WeekdayScheduleId,
                         Guid.Parse(courseReservation.StaffId), id);
+                s.TeachingSchedules = teachingSchedules.ToList();*/
+                var teachingSchedules
+                    = await _teachingScheduleService.GetBySlotAndWeekDayScheduleAsync(s.SlotId,
+                        weekday.WeekdayScheduleId,
+                        Guid.Parse(courseReservation.StaffId));
                 s.TeachingSchedules = teachingSchedules.ToList();
             }
             // get course by id 

@@ -100,3 +100,7 @@ D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningS
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\DriverLicenseLearningSupport.pdb
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\DriverLicenseLearningSupport.genruntimeconfig.cache
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\ref\DriverLicenseLearningSupport.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Release\net6.0\MediatR.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Release\net6.0\MediatR.Extensions.Microsoft.DependencyInjection.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Release\net6.0\Newtonsoft.Json.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Release\net6.0\VNPayPackage.dll
