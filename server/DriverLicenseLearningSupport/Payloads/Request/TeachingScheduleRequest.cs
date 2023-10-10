@@ -8,6 +8,8 @@ namespace DriverLicenseLearningSupport.Payloads.Request
         [Required]
         public DateTime TeachingDate { get; set; }
         [Required]
+        public string CourseId { get; set; }
+        [Required]
         public string MentorId { get; set; }
         [Required]
         public int SlotId { get; set; }

@@ -96,6 +96,24 @@ namespace DriverLicenseLearningSupport.Repositories
         public async Task<TeachingScheduleModel> GetAsync(int teachingScheduleId)
         {
             var teachingSchedule = await _context.TeachingSchedules.Where(x => x.TeachingScheduleId == teachingScheduleId)
+                                                                    .Select(x => new TeachingSchedule
+                                                                    {
+                                                                        TeachingScheduleId = x.TeachingScheduleId,
+                                                                        TeachingDate = x.TeachingDate,
+                                                                        Vehicle = x.Vehicle,
+                                                                        RollCallBooks = x.RollCallBooks.Select(x => new RollCallBook
+                                                                        {
+                                                                            RollCallBookId = x.RollCallBookId,
+                                                                            TeachingScheduleId = x.TeachingScheduleId,
+                                                                            IsAbsence = x.IsAbsence,
+                                                                            Comment = x.Comment,
+                                                                            MemberId = x.MemberId,
+                                                                            Member = x.Member
+                                                                        }).ToList(),
+                                                                        WeekdayScheduleId = x.WeekdayScheduleId,
+                                                                        SlotId = x.SlotId,
+                                                                        StaffId = x.StaffId
+                                                                    })
                                                                    .FirstOrDefaultAsync();
             return _mapper.Map<TeachingScheduleModel>(teachingSchedule);
         }
@@ -105,17 +123,17 @@ namespace DriverLicenseLearningSupport.Repositories
             // building query
             var teachingSchedules = _context.TeachingSchedules.AsQueryable();
 
-            // filters
-            if (!String.IsNullOrEmpty(filters.SlotId.ToString()) && filters.SlotId > 0)
-            {
-                teachingSchedules = teachingSchedules.Where(x => x.SlotId == filters.SlotId);
-            }
+            //// filters
+            //if (!String.IsNullOrEmpty(filters.SlotId.ToString()) && filters.SlotId > 0)
+            //{
+            //    teachingSchedules = teachingSchedules.Where(x => x.SlotId == filters.SlotId);
+            //}
             // filters by weekday schedule id
-            if (!String.IsNullOrEmpty(filters.WeekDayScheduleId.ToString()) && filters.WeekDayScheduleId > 0)
-            {
-                teachingSchedules = teachingSchedules.Where(x => x.WeekdayScheduleId 
-                            == filters.WeekDayScheduleId);
-            }
+            //if (!String.IsNullOrEmpty(filters.WeekDayScheduleId.ToString()) && filters.WeekDayScheduleId > 0)
+            //{
+            //    teachingSchedules = teachingSchedules.Where(x => x.WeekdayScheduleId 
+            //                == filters.WeekDayScheduleId);
+            //}
 
             // filters by null teaching date 
             if (filters.TeachingDate.Equals(new DateTime(1, 1, 0001)))
@@ -160,17 +178,17 @@ namespace DriverLicenseLearningSupport.Repositories
                     Staff = x.Staff
                 });
 
-            // filters
-            if (!String.IsNullOrEmpty(filters.SlotId.ToString()) && filters.SlotId > 0)
-            {
-                teachingSchedules = teachingSchedules.Where(x => x.SlotId == filters.SlotId);
-            }
+            //// filters
+            //if (!String.IsNullOrEmpty(filters.SlotId.ToString()) && filters.SlotId > 0)
+            //{
+            //    teachingSchedules = teachingSchedules.Where(x => x.SlotId == filters.SlotId);
+            //}
             // filters by weekday schedule id
-            if (!String.IsNullOrEmpty(filters.WeekDayScheduleId.ToString()) && filters.WeekDayScheduleId > 0)
-            {
-                teachingSchedules = teachingSchedules.Where(x => x.WeekdayScheduleId
-                            == filters.WeekDayScheduleId);
-            }
+            //if (!String.IsNullOrEmpty(filters.WeekDayScheduleId.ToString()) && filters.WeekDayScheduleId > 0)
+            //{
+            //    teachingSchedules = teachingSchedules.Where(x => x.WeekdayScheduleId
+            //                == filters.WeekDayScheduleId);
+            //}
 
             // filters by null teaching date 
             if (filters.LearningDate.Equals(new DateTime(1, 1, 0001)))
@@ -191,17 +209,38 @@ namespace DriverLicenseLearningSupport.Repositories
 
             return _mapper.Map<TeachingScheduleModel>(resultSchedule);
         }
-        public async Task<TeachingScheduleModel> GetByMentorIdAndTeachingDateAsync(Guid mentorId, DateTime date, int slotId)
+        public async Task<TeachingScheduleModel> GetByMentorIdAndTeachingDateAsync(int weekdayScheduleId, Guid mentorId, DateTime date, int slotId)
         {
             var dateFormat = date.ToString("dd/MM/yyyy");
             //var teachingSchedules = await _context.TeachingSchedules.Where(x => x.StaffId == mentorId.ToString())
             //                                                        .ToListAsync();
-            var teachingSchedules = await _context.TeachingSchedules.ToListAsync();
+            var teachingSchedules = await _context.TeachingSchedules.Where(x => x.StaffId == mentorId.ToString())
+            .Select(x => new TeachingSchedule
+            {
+                TeachingScheduleId = x.TeachingScheduleId,
+                TeachingDate = x.TeachingDate,
+                Vehicle = x.Vehicle,
+                RollCallBooks = x.RollCallBooks.Select(x => new RollCallBook { 
+                    RollCallBookId = x.RollCallBookId,
+                    TeachingScheduleId = x.TeachingScheduleId,
+                    IsAbsence = x.IsAbsence,
+                    Comment = x.Comment,
+                    MemberId = x.MemberId,
+                    Member = x.Member
+                }).ToList(),
+                WeekdayScheduleId = x.WeekdayScheduleId,
+                SlotId = x.SlotId,
+                StaffId = x.StaffId
+            }).ToListAsync();
             var existSchedule = teachingSchedules.Where(x => x.TeachingDate.ToString("dd/MM/yyyy").Equals(dateFormat) 
-                                                          && x.SlotId == slotId)
+                                                          && x.SlotId == slotId
+                                                          && x.WeekdayScheduleId == weekdayScheduleId)
                                                  .FirstOrDefault();
             return _mapper.Map<TeachingScheduleModel>(existSchedule);
         }
+
+
+        //public async Task<TeachingScheduleModel> GetByWeekdayIdAndTeachingDate(int )
 
         public async Task<IEnumerable<TeachingScheduleModel>> GetBySlotAndWeekDayScheduleAsync(int slotId, int weekDayScheduleId,
             Guid mentorId)
@@ -216,8 +255,24 @@ namespace DriverLicenseLearningSupport.Repositories
             foreach (var d in dates)
             {
                 var dateFormat = d.ToString("dd/MM/yyyy");
-                var schedules = await _context.TeachingSchedules.Where(x => x.SlotId == slotId && x.StaffId == mentorId.ToString())
-                                                               .ToListAsync();
+                var schedules = await _context.TeachingSchedules.Where(x => x.SlotId == slotId 
+                                                                        && x.StaffId == mentorId.ToString())
+                                                               .Select(x => new TeachingSchedule
+                                                               {
+                                                                   TeachingScheduleId = x.TeachingScheduleId,
+                                                                   TeachingDate = x.TeachingDate,
+                                                                   Vehicle = x.Vehicle,
+                                                                   RollCallBooks = x.RollCallBooks
+                                                                    .Select(
+                                                                        x => new RollCallBook
+                                                                        {
+                                                                            RollCallBookId = x.RollCallBookId,
+                                                                            MemberId = x.MemberId,
+                                                                            Comment = x.Comment,
+                                                                            Member = x.Member
+                                                                    }).ToList()
+                                                               })
+                                                            .ToListAsync();
 
                 // filter date
                 var schedule = schedules.Where(x => x.TeachingDate.ToString("dd/MM/yyyy").Equals(
@@ -285,5 +340,27 @@ namespace DriverLicenseLearningSupport.Repositories
             return teachingSchedules;
         }
 
+        public async Task<TeachingScheduleModel> ExistScheduleInOtherCoursesAsync(int slotId, DateTime teachingDate, Guid mentorId, Guid courseId)
+        {
+            var weekdays = await _context.WeekdaySchedules.Where(x => x.CourseId != courseId.ToString()).ToListAsync();
+
+            foreach(var wd in weekdays) 
+            {
+                var teachingSchedules = await _context.TeachingSchedules.Where(x => x.WeekdayScheduleId == wd.WeekdayScheduleId)
+                                                                        .ToListAsync();
+
+                var dateFormat = teachingDate.ToString("dd/MM/yyyy");
+                var existSchedule = teachingSchedules.Where(x => x.TeachingDate.ToString("dd/MM/yyyy").Equals(dateFormat)
+                                                              && x.SlotId == slotId
+                                                              && x.StaffId == mentorId.ToString())
+                                                     .FirstOrDefault();
+                if(existSchedule is not null)
+                {
+                    return _mapper.Map<TeachingScheduleModel>(existSchedule);
+                }
+            }
+
+            return null!;
+        }
     }
 }
