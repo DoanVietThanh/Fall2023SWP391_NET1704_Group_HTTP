@@ -319,7 +319,7 @@ namespace DriverLicenseLearningSupport.Controllers
         public async Task<IActionResult> GetMentorSchedule([FromRoute] Guid id)
         {
             // generate current date time
-            var currDate = DateTime.Now;
+            var currDate = DateTime.ParseExact(DateTime.Now.ToString("yyyy-MM-dd"), _appSettings.DateFormat, CultureInfo.InvariantCulture);
             // get calendar by current date
             var weekday = await _weekDayScheduleService.GetByDateAsync(currDate);
             // get all weekday of calendar

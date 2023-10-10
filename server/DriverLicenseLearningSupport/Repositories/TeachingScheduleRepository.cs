@@ -264,7 +264,8 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                         RollCallBookId = x.RollCallBookId,
                                                                         MemberId = x.MemberId,
                                                                         Comment = x.Comment,
-                                                                        Member = x.Member
+                                                                        Member = x.Member,
+                                                                        IsAbsence = x.IsAbsence
                                                                     }).ToList()
                                                             })
                                                             .ToListAsync();
