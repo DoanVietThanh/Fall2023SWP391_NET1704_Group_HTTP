@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
+﻿using Amazon.Runtime.Internal.Util;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Presentation;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Models.Config;
@@ -11,11 +12,13 @@ using DriverLicenseLearningSupport.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Org.BouncyCastle.Asn1.X9;
 using System;
 using System.Data;
 using System.Globalization;
 using System.Net;
 using System.Runtime.InteropServices;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace DriverLicenseLearningSupport.Controllers
 {
@@ -185,6 +188,10 @@ namespace DriverLicenseLearningSupport.Controllers
             // generate course reservation model
             var courseReservationModel = reqObj.ToCourseReservationModel();
 
+            // payment type
+
+
+
             // get vehicle for reservation
             var licenseType = await _licenseTypeService.GetAsync(course.LicenseTypeId);
             var vehicle = await _vehicleService.GetByLicenseTypeIdAsync(licenseType.LicenseTypeId);
@@ -222,6 +229,13 @@ namespace DriverLicenseLearningSupport.Controllers
 
             // cause error
             return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpGet]
+        [Route("courses/reservation/payment")]
+        public async Task<IActionResult> CourseReservationPayment()
+        {
+            return null;
         }
 
         [HttpGet]
@@ -515,6 +529,16 @@ namespace DriverLicenseLearningSupport.Controllers
                 Message = $"Not found any course match id {courseId}"
             });
 
+            // already taught this course
+            var courseMentor = await _courseService.GetByMentorIdAndCourseIdAsync(mentorId, courseId);
+            if(courseMentor is not null)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Mentor {mentorId} already taught course {courseId}"
+                });
+            }
+            
             // Add mentor to course
             var isSucess = await _courseService.AddMentorAsync(courseId, mentorId);
             // success

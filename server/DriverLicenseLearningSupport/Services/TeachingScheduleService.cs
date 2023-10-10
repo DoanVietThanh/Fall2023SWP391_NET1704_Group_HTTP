@@ -55,9 +55,9 @@ namespace DriverLicenseLearningSupport.Services
             return await _teachingScheduleRepo.GetByFilterAsync(filters);
         }
 
-        public async Task<TeachingScheduleModel> GetByMentorIdAndTeachingDateAsync(Guid mentorId, DateTime date, int slotId)
+        public async Task<TeachingScheduleModel> GetByMentorIdAndTeachingDateAsync(int weekdayScheduleId, Guid mentorId, DateTime date, int slotId)
         {
-            return await _teachingScheduleRepo.GetByMentorIdAndTeachingDateAsync(mentorId, date, slotId);
+            return await _teachingScheduleRepo.GetByMentorIdAndTeachingDateAsync(weekdayScheduleId, mentorId, date, slotId);
         }
 
         public async Task<IEnumerable<TeachingScheduleModel>> GetBySlotAndWeekDayScheduleAsync(int slotId,

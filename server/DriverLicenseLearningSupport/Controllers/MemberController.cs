@@ -867,9 +867,17 @@ namespace DriverLicenseLearningSupport.Controllers
             var courseReservation = await _courseReservationService.GetByMemberAsync(id);
 
             // generate current date time
-            var currDate = DateTime.Now;
+            var currDate = DateTime.ParseExact(DateTime.Now.ToString("yyyy-MM-dd"), _appSettings.DateFormat, CultureInfo.InvariantCulture);
             // get calendar by current date
-            var weekday = await _weekDayScheduleService.GetByDateAsync(currDate);
+            var weekday = await _weekDayScheduleService.GetByDateAndCourseId(currDate, 
+                Guid.Parse(courseReservation.CourseId));
+            if(weekday is null)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Not found any learning schedule"
+                });
+            }
             // get all weekday of calendar
             var weekdays = await _weekDayScheduleService.GetAllAsync();
             // get all slots 
@@ -916,10 +924,13 @@ namespace DriverLicenseLearningSupport.Controllers
         [Route("members/{id:Guid}/schedule/filter")]
         public async Task<IActionResult> GetMemberCalendarByFilter([FromRoute] Guid id,[FromQuery] LearningScheduleFilter filters)
         {
-            // get teaching date by filters
-            var teachingDate = await _teachingScheduleService.GetMemberScheduleByFilterAsync(filters, id);
+            // get course reservation
+            var courseReservation = await _courseReservationService.GetByMemberAsync(id);
 
-            if (teachingDate is null)
+            // get learning date by filters
+            var learningDate = await _teachingScheduleService.GetMemberScheduleByFilterAsync(filters, id);
+
+            if (learningDate is null)
             {
                 return NotFound(new BaseResponse
                 {
@@ -930,9 +941,10 @@ namespace DriverLicenseLearningSupport.Controllers
 
             // get calendar by id
             var weekday = await _weekDayScheduleService.GetAsync(
-                Convert.ToInt32(teachingDate.WeekdayScheduleId));
+                Convert.ToInt32(learningDate.WeekdayScheduleId));
             // get all weekday of calendar
-            var weekdays = await _weekDayScheduleService.GetAllAsync();
+            var weekdays = await _weekDayScheduleService.GetAllByCourseId(
+                Guid.Parse(courseReservation.CourseId));
             // get all slots 
             var slots = await _slotService.GetAllAsync();
             // convert to list of course
@@ -975,13 +987,20 @@ namespace DriverLicenseLearningSupport.Controllers
         {
             // check exist in course reservation
             var courseReservation = await _courseReservationService.GetByMemberAsync(reqObj.MemberId);
+            if(courseReservation is null)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Not found any learning course"
+                });
+            }
 
-            // generate rollcallbook model
-            var rcbModel = reqObj.ToRollCallBookModel();
+            // get course
+            var course = await _courseService.GetAsync(Guid.Parse(courseReservation.CourseId));
 
+            // get teaching schedule
+            var teachingSchedule = await _teachingScheduleService.GetAsync(reqObj.TeachingScheduleId);
             // check exist teaching schedule
-            var teachingSchedule = await _teachingScheduleService.GetByMentorIdAndTeachingDateAsync(
-                reqObj.MentorId, reqObj.LearningDate, reqObj.SlotId);
             if (teachingSchedule is null)
             {
                 return BadRequest(new BaseResponse
@@ -989,6 +1008,46 @@ namespace DriverLicenseLearningSupport.Controllers
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = $"Not found any schedule match required"
                 });
+            }
+
+            // get weekday schedule id by teaching date request
+            var weekday = await _weekDayScheduleService.GetByDateAndCourseId(teachingSchedule.TeachingDate
+                , Guid.Parse(courseReservation.CourseId));
+            // check teaching date exist
+            if (weekday is null)
+            {
+                var date = Convert.ToDateTime(course.StartDate);
+                var totalMonth = Convert.ToInt32(course.TotalMonth);
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Not found any course date match {teachingSchedule.TeachingDate.ToString("dd/MM/yyyy")} " +
+                    $"course date from {date} " +
+                    $"- {date.AddMonths(totalMonth)}"
+                });
+            }
+
+            // generate rollcallbook model
+            var rcbModel = reqObj.ToRollCallBookModel();
+
+
+            var registeredSchedule = await _teachingScheduleService.GetByMentorIdAndTeachingDateAsync(
+                weekday.WeekdayScheduleId, Guid.Parse(courseReservation.StaffId),
+                teachingSchedule.TeachingDate,
+                Convert.ToInt32(teachingSchedule.SlotId));
+            // check teaching schedule already register
+            if (registeredSchedule.RollCallBooks is not null)
+            {
+                // convert to list obj
+                var schedules = registeredSchedule.RollCallBooks.ToList();
+                if(registeredSchedule.RollCallBooks.Count > 0)
+                {
+                    return BadRequest(new BaseResponse { 
+                        StatusCode = StatusCodes.Status400BadRequest,
+                        Message = $"Date {registeredSchedule.TeachingDate.ToString("dd/MM/yyyy")} is already register " +
+                        $"by {schedules[0].Member.FirstName} {schedules[0].Member.LastName}"
+                    });
+                }
             }
 
             // check member in course

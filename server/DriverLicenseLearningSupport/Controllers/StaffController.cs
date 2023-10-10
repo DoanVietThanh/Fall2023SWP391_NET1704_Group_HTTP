@@ -313,15 +313,56 @@ namespace DriverLicenseLearningSupport.Controllers
 
         }
 
+        //[HttpGet]
+        //[Route("staffs/mentors")]
+        //public async Task<IActionResult> 
+
         [HttpGet]
-        [Route("staffs/{id:Guid}/schedule")]
-        [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> GetMentorSchedule([FromRoute] Guid id)
+        [Route("staffs/mentors/{id:Guid}/courses")]
+        public async Task<IActionResult> GetAllTeachingCourse([FromRoute] Guid id)
         {
+            var courseMentor = await _courseService.GetAllMentorCourseAsync(id);
+
+            if(courseMentor is null)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Not found any teaching schedule of mentor {id}"
+                });
+            }
+
+            return Ok(courseMentor);
+        } 
+
+        [HttpGet]
+        [Route("staffs/mentors/{id:Guid}/schedule")]
+        //[Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> GetMentorSchedule([FromRoute] Guid id, [FromQuery] Guid courseId)
+        {
+            // get mentor's teaching course
+            //var course = await _courseService.GetByMentorIdAsync(id);
+            var course = await _courseService.GetAsync(courseId);
+            // check teaching course exist
+            if (course is null)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,   
+                    Message = $"Not found any teaching schedule of mentor {id}"
+                });
+            }
+
             // generate current date time
-            var currDate = DateTime.Now;
+            var currDate = DateTime.ParseExact(DateTime.Now.ToString("yyyy-MM-dd"), _appSettings.DateFormat, CultureInfo.InvariantCulture);
             // get calendar by current date
-            var weekday = await _weekDayScheduleService.GetByDateAsync(currDate);
+            var weekday = await _weekDayScheduleService.GetByDateAndCourseId(currDate, Guid.Parse(course.CourseId));
+            if (weekday is null)
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Not found any teaching schedule"
+                });
+            }
             // get all weekday of calendar
             var weekdays = await _weekDayScheduleService.GetAllAsync();
             // get all slots 
@@ -334,13 +375,11 @@ namespace DriverLicenseLearningSupport.Controllers
             foreach(var s in slots)
             {
                 var teachingSchedules
-                    = await _teachingScheduleService.GetBySlotAndWeekDayScheduleAsync(s.SlotId, 
+                    = await _teachingScheduleService.GetBySlotAndWeekDayScheduleAsync(s.SlotId,
                         weekday.WeekdayScheduleId, id);
                 s.TeachingSchedules = teachingSchedules.ToList();
             }
-            // get course by id 
-            var course = await _courseService.GetAsync(Guid.Parse(weekday.CourseId));
-            
+
             // response
             return Ok(new BaseResponse {
                 StatusCode = StatusCodes.Status200OK,
@@ -358,7 +397,8 @@ namespace DriverLicenseLearningSupport.Controllers
         }
 
         [HttpGet]
-        [Route("staffs/{id:Guid}/schedule/filter")]
+        [Route("staffs/mentors/{id:Guid}/schedule/filter")]
+        //[Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> GetMentorScheduleByFilter([FromRoute] Guid id,
             [FromQuery] TeachingScheduleFilter filters)  
         {
@@ -455,7 +495,7 @@ namespace DriverLicenseLearningSupport.Controllers
         public async Task<IActionResult> TeachingScheduleRegister([FromBody] TeachingScheduleRequest reqObj)
         {
             // get course by mentor id
-            var course = await _courseService.GetByMentorIdAsync(Guid.Parse(reqObj.MentorId));
+            var course = await _courseService.GetAsync(Guid.Parse(reqObj.CourseId));
             // check teaching exist
             if(course is null)
             {
@@ -466,7 +506,8 @@ namespace DriverLicenseLearningSupport.Controllers
             }
 
             // get weekday schedule id by teaching date request
-            var weekday = await _weekDayScheduleService.GetByDateAsync(reqObj.TeachingDate);
+            var weekday = await _weekDayScheduleService.GetByDateAndCourseId(reqObj.TeachingDate
+                , Guid.Parse(reqObj.CourseId));
             // check teaching date exist
             if (weekday is null)
             {
@@ -482,9 +523,22 @@ namespace DriverLicenseLearningSupport.Controllers
             var teachingSchedule = reqObj.ToScheduleModel();
             teachingSchedule.WeekdayScheduleId = weekday.WeekdayScheduleId;
 
-            // check already exist teaching date with particular slot
+            // check schedule from different course 
+            var otherCourseSchedule = await _teachingScheduleService.GetBySlotAndWeekDayScheduleAsync(reqObj.SlotId,
+                weekday.WeekdayScheduleId, 
+                Guid.Parse(reqObj.MentorId)); ;
+            if(otherCourseSchedule.Count() > 0)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Slot and teaching date are already register by other course"
+                });
+            }
+
+            // check already exist teaching date with particular slot, weekdayscheduleId
             var existSchedule = await _teachingScheduleService.GetByMentorIdAndTeachingDateAsync(
-                    Guid.Parse(reqObj.MentorId), reqObj.TeachingDate, reqObj.SlotId);
+                    weekday.WeekdayScheduleId, Guid.Parse(reqObj.MentorId),
+                    reqObj.TeachingDate, reqObj.SlotId);
 
             if (existSchedule is null)
             {

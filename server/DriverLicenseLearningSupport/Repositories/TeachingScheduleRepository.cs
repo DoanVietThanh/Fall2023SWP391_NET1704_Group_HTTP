@@ -96,6 +96,24 @@ namespace DriverLicenseLearningSupport.Repositories
         public async Task<TeachingScheduleModel> GetAsync(int teachingScheduleId)
         {
             var teachingSchedule = await _context.TeachingSchedules.Where(x => x.TeachingScheduleId == teachingScheduleId)
+                                                                    .Select(x => new TeachingSchedule
+                                                                    {
+                                                                        TeachingScheduleId = x.TeachingScheduleId,
+                                                                        TeachingDate = x.TeachingDate,
+                                                                        Vehicle = x.Vehicle,
+                                                                        RollCallBooks = x.RollCallBooks.Select(x => new RollCallBook
+                                                                        {
+                                                                            RollCallBookId = x.RollCallBookId,
+                                                                            TeachingScheduleId = x.TeachingScheduleId,
+                                                                            IsAbsence = x.IsAbsence,
+                                                                            Comment = x.Comment,
+                                                                            MemberId = x.MemberId,
+                                                                            Member = x.Member
+                                                                        }).ToList(),
+                                                                        WeekdayScheduleId = x.WeekdayScheduleId,
+                                                                        SlotId = x.SlotId,
+                                                                        StaffId = x.StaffId
+                                                                    })
                                                                    .FirstOrDefaultAsync();
             return _mapper.Map<TeachingScheduleModel>(teachingSchedule);
         }
@@ -191,14 +209,32 @@ namespace DriverLicenseLearningSupport.Repositories
 
             return _mapper.Map<TeachingScheduleModel>(resultSchedule);
         }
-        public async Task<TeachingScheduleModel> GetByMentorIdAndTeachingDateAsync(Guid mentorId, DateTime date, int slotId)
+        public async Task<TeachingScheduleModel> GetByMentorIdAndTeachingDateAsync(int weekdayScheduleId, Guid mentorId, DateTime date, int slotId)
         {
             var dateFormat = date.ToString("dd/MM/yyyy");
             //var teachingSchedules = await _context.TeachingSchedules.Where(x => x.StaffId == mentorId.ToString())
             //                                                        .ToListAsync();
-            var teachingSchedules = await _context.TeachingSchedules.ToListAsync();
+            var teachingSchedules = await _context.TeachingSchedules.Where(x => x.StaffId == mentorId.ToString())
+            .Select(x => new TeachingSchedule
+            {
+                TeachingScheduleId = x.TeachingScheduleId,
+                TeachingDate = x.TeachingDate,
+                Vehicle = x.Vehicle,
+                RollCallBooks = x.RollCallBooks.Select(x => new RollCallBook { 
+                    RollCallBookId = x.RollCallBookId,
+                    TeachingScheduleId = x.TeachingScheduleId,
+                    IsAbsence = x.IsAbsence,
+                    Comment = x.Comment,
+                    MemberId = x.MemberId,
+                    Member = x.Member
+                }).ToList(),
+                WeekdayScheduleId = x.WeekdayScheduleId,
+                SlotId = x.SlotId,
+                StaffId = x.StaffId
+            }).ToListAsync();
             var existSchedule = teachingSchedules.Where(x => x.TeachingDate.ToString("dd/MM/yyyy").Equals(dateFormat) 
-                                                          && x.SlotId == slotId)
+                                                          && x.SlotId == slotId
+                                                          && x.WeekdayScheduleId == weekdayScheduleId)
                                                  .FirstOrDefault();
             return _mapper.Map<TeachingScheduleModel>(existSchedule);
         }
