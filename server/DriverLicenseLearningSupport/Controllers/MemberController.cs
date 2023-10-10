@@ -865,9 +865,36 @@ namespace DriverLicenseLearningSupport.Controllers
         {
             // get course reservation
             var courseReservation = await _courseReservationService.GetByMemberAsync(id);
+            if (courseReservation is null)
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Not found any learning schedule"
+                });
+            }
+            // get course by id 
+            var course = await _courseService.GetAsync(Guid.Parse(courseReservation.CourseId));
+            // set null mentors list 
+            course.Mentors = null!;
 
-            // generate current date time
-            var currDate = DateTime.ParseExact(DateTime.Now.ToString("yyyy-MM-dd"), _appSettings.DateFormat, CultureInfo.InvariantCulture);
+            // get staff by id
+            var staff = await _staffService.GetAsync(Guid.Parse(courseReservation.StaffId));
+
+            // generate current date time 
+            var currDate = DateTime.ParseExact(DateTime.Now.ToString("yyyy-MM-dd"),
+                _appSettings.DateFormat, CultureInfo.InvariantCulture);
+
+            // check current date time with course start date
+            var courseStartDate = DateTime.ParseExact(Convert.ToDateTime(course.StartDate).ToString("yyyy-MM-dd"),
+                _appSettings.DateFormat, CultureInfo.InvariantCulture);
+            var courseTotalMonth = Convert.ToInt32(course.TotalMonth);
+            if (currDate < courseStartDate &&
+               currDate > courseStartDate.AddMonths(courseTotalMonth))
+            {
+                currDate = courseStartDate;
+            }
+
             // get calendar by current date
             var weekday = await _weekDayScheduleService.GetByDateAndCourseId(currDate, 
                 Guid.Parse(courseReservation.CourseId));
@@ -879,7 +906,8 @@ namespace DriverLicenseLearningSupport.Controllers
                 });
             }
             // get all weekday of calendar
-            var weekdays = await _weekDayScheduleService.GetAllAsync();
+            var weekdays = await _weekDayScheduleService.GetAllByCourseId(
+                Guid.Parse(courseReservation.CourseId));
             // get all slots 
             var slots = await _slotService.GetAllAsync();
             // convert to list of course
@@ -894,13 +922,6 @@ namespace DriverLicenseLearningSupport.Controllers
                         Guid.Parse(courseReservation.StaffId), id);
                 s.TeachingSchedules = teachingSchedules.ToList();
             }
-
-            // get course by id 
-            var course = await _courseService.GetAsync(Guid.Parse(weekday.CourseId));
-            // set null mentors list 
-            course.Mentors = null!;
-            // get staff by id
-            var staff = await _staffService.GetAsync(Guid.Parse(courseReservation.StaffId));
 
             // response
             return Ok(new BaseResponse
@@ -926,22 +947,41 @@ namespace DriverLicenseLearningSupport.Controllers
         {
             // get course reservation
             var courseReservation = await _courseReservationService.GetByMemberAsync(id);
-
-            // get learning date by filters
-            var learningDate = await _teachingScheduleService.GetMemberScheduleByFilterAsync(filters, id);
-
-            if (learningDate is null)
+            if(courseReservation is null)
             {
-                return NotFound(new BaseResponse
-                {
+                return BadRequest(new BaseResponse { 
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = $"Not found any teaching schedule match required"
+                    Message = $"Not found any learning schedule"
                 });
             }
 
-            // get calendar by id
-            var weekday = await _weekDayScheduleService.GetAsync(
-                Convert.ToInt32(learningDate.WeekdayScheduleId));
+            WeekdayScheduleModel weekday = null!;
+            // get weekday by id
+            if (filters.WeekDayScheduleId is not null)
+            {
+                weekday = await _weekDayScheduleService.GetAsync(
+                    Convert.ToInt32(filters.WeekDayScheduleId));
+            }
+
+            if (filters.LearningDate is not null)
+            {
+                // get learning date by filters
+                var learningDate = await _teachingScheduleService.GetMemberScheduleByFilterAsync(filters, id);
+
+                if (learningDate is null)
+                {
+                    return BadRequest(new BaseResponse
+                    {
+                        StatusCode = StatusCodes.Status400BadRequest,
+                        Message = $"Not found any schedule match date {filters.LearningDate}"
+                    });
+                }
+
+                // get calendar by id
+                weekday = await _weekDayScheduleService.GetAsync(
+                    Convert.ToInt32(learningDate.WeekdayScheduleId));
+            }
+
             // get all weekday of calendar
             var weekdays = await _weekDayScheduleService.GetAllByCourseId(
                 Guid.Parse(courseReservation.CourseId));
@@ -954,14 +994,15 @@ namespace DriverLicenseLearningSupport.Controllers
             {
                 var teachingSchedules
                     = await _teachingScheduleService.GetBySlotAndWeekDayScheduleOfMemberAsync(s.SlotId,
-                        weekday.WeekdayScheduleId, filters.MentorId, id);
+                        weekday.WeekdayScheduleId,
+                        Guid.Parse(courseReservation.StaffId), id);
                 s.TeachingSchedules = teachingSchedules.ToList();
             }
             // get course by id 
             var course = await _courseService.GetAsync(Guid.Parse(weekday.CourseId));
             course.Mentors = null;
             // get staff by id
-            var staff = await _staffService.GetAsync(filters.MentorId);
+            var staff = await _staffService.GetAsync(Guid.Parse(courseReservation.StaffId));
 
             // response
             return Ok(new BaseResponse

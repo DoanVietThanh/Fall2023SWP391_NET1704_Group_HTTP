@@ -77,5 +77,10 @@ namespace DriverLicenseLearningSupport.Services
         {
             return await _teachingScheduleRepo.GetMemberScheduleByFilterAsync(filters, memberId);
         }
+
+        public async Task<TeachingScheduleModel> ExistScheduleInOtherCoursesAsync(int slotId, DateTime teachingDate, Guid mentorId, Guid courseId)
+        {
+            return await _teachingScheduleRepo.ExistScheduleInOtherCoursesAsync(slotId, teachingDate, mentorId, courseId);
+        }
     }
 }
