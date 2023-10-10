@@ -38,9 +38,17 @@ namespace DriverLicenseLearningSupport.Services
         {
             return await _courseRepo.GetByMentorIdAsync(mentorId);
         }
+        public async Task<CourseModel> GetByMentorIdAndCourseIdAsync(Guid mentorId, Guid courseId)
+        {
+            return await _courseRepo.GetByMentorIdAndCourseIdAsync(mentorId, courseId);
+        }
         public async Task<IEnumerable<CourseModel>> GetAllAsync()
         {
             return await _courseRepo.GetAllAsync();
+        }
+        public async Task<IEnumerable<CourseModel>> GetAllMentorCourseAsync(Guid mentorId)
+        {
+            return await _courseRepo.GetAllMentorCourseAsync(mentorId);
         }
         public async Task<IEnumerable<CourseModel>> GetAllHiddenCourseAsync()
         {

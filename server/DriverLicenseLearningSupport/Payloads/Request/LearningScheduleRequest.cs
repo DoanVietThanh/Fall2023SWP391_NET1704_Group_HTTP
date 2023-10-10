@@ -7,12 +7,12 @@ namespace DriverLicenseLearningSupport.Payloads.Request
     {
         [Required]
         public Guid MemberId { get; set; }
+        //[Required]
+        //public DateTime LearningDate { get; set; }
+        //[Required]
+        //public int SlotId { get; set; }
         [Required]
-        public Guid MentorId { get; set; }
-        [Required]
-        public DateTime LearningDate { get; set; }
-        [Required]
-        public int SlotId { get; set; }
+        public int TeachingScheduleId { get; set; }
     }
 
     public static class LearningScheduleRequestExtension

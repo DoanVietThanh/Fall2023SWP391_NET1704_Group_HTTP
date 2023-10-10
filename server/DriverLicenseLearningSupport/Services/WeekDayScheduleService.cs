@@ -29,9 +29,19 @@ namespace DriverLicenseLearningSupport.Services
             return await _weekDayScheduleRepo.GetAllAsync();
         }
 
+        public async Task<IEnumerable<WeekdayScheduleModel>> GetAllByCourseId(Guid courseId)
+        {
+            return await _weekDayScheduleRepo.GetAllByCourseId(courseId);
+        }
+
         public async Task<WeekdayScheduleModel> GetAsync(int id)
         {
             return await _weekDayScheduleRepo.GetAsync(id);
+        }
+
+        public async Task<WeekdayScheduleModel> GetByDateAndCourseId(DateTime date, Guid courseId)
+        {
+            return await _weekDayScheduleRepo.GetByDateAndCourseId(date, courseId);
         }
 
         public async Task<WeekdayScheduleModel> GetByDateAsync(DateTime date)
