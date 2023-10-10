@@ -20,6 +20,12 @@ import PrivatePage from '../pages/PrivatePage/PrivatePage';
 import BlogPage from '../pages/BlogPage/BlogPage';
 import BlogDetail from '../pages/BlogPage/BlogDetail';
 import DocumentPage from '../pages/DocumentPage/DocumentPage';
+import SideBar from '../components/SideBar';
+import Profile from '../pages/PrivatePage/Profile';
+import WeekSchedule from '../pages/PrivatePage/WeekSchedule';
+import HistoryTest from '../pages/PrivatePage/HistoryTest';
+import ManageQuestion from '../pages/PrivatePage/ManageQuestion';
+import ManageBankTest from '../pages/PrivatePage/ManageBankTest';
 
 const RouterApp = () => {
   const router = createBrowserRouter([
@@ -30,7 +36,13 @@ const RouterApp = () => {
     { path: '/forgot-password', element: <ForgotPassword /> },
     { path: '/authentication/reset-password', element: <ShowForgetPass /> },
     { path: '/intructor', element: <IntructorPage /> },
-    { path: '/private-information', element: <PrivatePage /> },
+    // { path: '/private-information', element: <PrivatePage /> },
+    { path: '/profile', element: <Profile /> },
+    { path: '/week-schedule', element: <WeekSchedule /> },
+    { path: '/history-test', element: <HistoryTest /> },
+    { path: '/history-test', element: <HistoryTest /> },
+    { path: '/manage-question', element: <ManageQuestion /> },
+    { path: '/manage-banktest', element: <ManageBankTest /> },
 
     { path: '/course', element: <CoursePage /> },
     { path: '/course/detail', element: <DetailCourse /> },
@@ -39,13 +51,14 @@ const RouterApp = () => {
 
     { path: '/theory', element: <TheoryPage /> },
     { path: '/theory/test/:theoryExamId', element: <TestTheory /> },
-    { path: '/theory/result/:id', element: <ResultTheory /> },
+    { path: '/theory/result/:mockTestId', element: <ResultTheory /> },
 
     { path: '/blogs', element: <BlogPage /> },
     { path: '/blog/detail', element: <BlogDetail /> },
     { path: '/contact', element: <ContactPage /> },
 
     { path: '/manager/dashboard', element: <DashboardPage /> },
+    { path: '/test', element: <SideBar /> },
 
     { path: '*', element: <ErrorPage /> },
   ]);
