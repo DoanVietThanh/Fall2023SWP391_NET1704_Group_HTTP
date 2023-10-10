@@ -3,6 +3,7 @@ using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Repositories.Impl;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace DriverLicenseLearningSupport.Repositories
 {
@@ -29,12 +30,35 @@ namespace DriverLicenseLearningSupport.Repositories
                 await _context.WeekdaySchedules.ToListAsync());
         }
 
+        public async Task<IEnumerable<WeekdayScheduleModel>> GetAllByCourseId(Guid courseId)
+        {
+            var weekdays = await _context.WeekdaySchedules.Where(x => x.CourseId == courseId.ToString())
+                                                    .ToListAsync();
+            return _mapper.Map<IEnumerable<WeekdayScheduleModel>>(weekdays);
+        }
+
         public async Task<WeekdayScheduleModel> GetAsync(int id)
         {
             // get weekday by id
             var weekdayEntity = await _context.WeekdaySchedules.Where(x => x.WeekdayScheduleId == id)
                                                                .FirstOrDefaultAsync();
             return _mapper.Map<WeekdayScheduleModel>(weekdayEntity);
+        }
+
+        public async Task<WeekdayScheduleModel> GetByDateAndCourseId(DateTime date, Guid courseId)
+        {
+            var findDate = await _context.WeekdaySchedules.Where(x => date >= x.Monday
+                                                            && date <= x.Sunday 
+                                                            && x.CourseId == courseId.ToString())
+                                                          .FirstOrDefaultAsync();
+            if (findDate is not null)
+            {
+                var weekday = await _context.WeekdaySchedules.Where(x => x.WeekdayScheduleId == findDate.WeekdayScheduleId)
+                                                         .FirstOrDefaultAsync();
+
+                if (weekday is not null) return _mapper.Map<WeekdayScheduleModel>(weekday);
+            }
+            return null;
         }
 
         public async Task<WeekdayScheduleModel> GetByDateAsync(DateTime date)

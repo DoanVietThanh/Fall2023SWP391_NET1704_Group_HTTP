@@ -3,7 +3,7 @@
     public class TeachingScheduleFilter
     {
         // filter by slot (if any come along with filter teaching-date/weekday)
-        public int? SlotId { get; set; }
+        //public int? SlotId { get; set; }
 
         // filter by particular teaching date
         public DateTime? TeachingDate { get; set; }

@@ -25,6 +25,8 @@
     <PackageReference Include="DocX" Version="2.5.0" />
     <PackageReference Include="EPPlus" Version="6.2.9" />
     <PackageReference Include="FluentValidation" Version="6.4.1" />
+    <PackageReference Include="MediatR" Version="6.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="6.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.22" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.22">
       <PrivateAssets>all</PrivateAssets>
@@ -37,6 +39,14 @@
     </PackageReference>
     <PackageReference Include="NETCore.MailKit" Version="2.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="VNPayPackage" Version="2.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\Momo\Lib\" />
+    <Folder Include="Models\Momo\Response\" />
+    <Folder Include="Models\Momo\Request\" />
+    <Folder Include="VnPay\Models\" />
   </ItemGroup>
 
 </Project>

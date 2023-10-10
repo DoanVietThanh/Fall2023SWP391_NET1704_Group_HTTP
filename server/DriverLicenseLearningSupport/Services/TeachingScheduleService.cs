@@ -55,9 +55,9 @@ namespace DriverLicenseLearningSupport.Services
             return await _teachingScheduleRepo.GetByFilterAsync(filters);
         }
 
-        public async Task<TeachingScheduleModel> GetByMentorIdAndTeachingDateAsync(Guid mentorId, DateTime date, int slotId)
+        public async Task<TeachingScheduleModel> GetByMentorIdAndTeachingDateAsync(int weekdayScheduleId, Guid mentorId, DateTime date, int slotId)
         {
-            return await _teachingScheduleRepo.GetByMentorIdAndTeachingDateAsync(mentorId, date, slotId);
+            return await _teachingScheduleRepo.GetByMentorIdAndTeachingDateAsync(weekdayScheduleId, mentorId, date, slotId);
         }
 
         public async Task<IEnumerable<TeachingScheduleModel>> GetBySlotAndWeekDayScheduleAsync(int slotId,
@@ -76,6 +76,11 @@ namespace DriverLicenseLearningSupport.Services
         public async Task<TeachingScheduleModel> GetMemberScheduleByFilterAsync(LearningScheduleFilter filters, Guid memberId)
         {
             return await _teachingScheduleRepo.GetMemberScheduleByFilterAsync(filters, memberId);
+        }
+
+        public async Task<TeachingScheduleModel> ExistScheduleInOtherCoursesAsync(int slotId, DateTime teachingDate, Guid mentorId, Guid courseId)
+        {
+            return await _teachingScheduleRepo.ExistScheduleInOtherCoursesAsync(slotId, teachingDate, mentorId, courseId);
         }
     }
 }
