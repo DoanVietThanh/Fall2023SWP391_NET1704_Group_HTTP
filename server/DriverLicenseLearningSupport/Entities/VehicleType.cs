@@ -15,6 +15,7 @@ namespace DriverLicenseLearningSupport.Entities
         public string VehicleTypeDesc { get; set; }
         public double? Cost { get; set; }
 
+        public virtual LicenseType LicenseType { get; set; }
         public virtual ICollection<Vehicle> Vehicles { get; set; }
     }
 }

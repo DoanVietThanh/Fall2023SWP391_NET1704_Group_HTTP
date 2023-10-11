@@ -9,6 +9,8 @@ import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import { useState } from 'react';
+import SideBar from '../../components/SideBar';
+import { Box } from '@mui/material';
 
 function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
@@ -129,33 +131,47 @@ export default function ManageBankTest() {
   );
 
   return (
-    <Grid container spacing={2} justifyContent='center' alignItems='center'>
-      <Grid item>{customList('Choices', left)}</Grid>
-      <Grid item>
-        <Grid container direction='column' alignItems='center'>
-          <Button
-            sx={{ my: 0.5 }}
-            variant='outlined'
-            size='small'
-            onClick={handleCheckedRight}
-            disabled={leftChecked.length === 0}
-            aria-label='move selected right'
-          >
-            &gt;
-          </Button>
-          <Button
-            sx={{ my: 0.5 }}
-            variant='outlined'
-            size='small'
-            onClick={handleCheckedLeft}
-            disabled={rightChecked.length === 0}
-            aria-label='move selected left'
-          >
-            &lt;
-          </Button>
-        </Grid>
-      </Grid>
-      <Grid item>{customList('Chosen', right)}</Grid>
-    </Grid>
+    <div className='flex'>
+      <SideBar />
+      <Box component='main' sx={{ flexGrow: 1, p: 3 }}>
+        <div className='h-[80vh] w-full rounded overflow-y-auto mt-[64px]'>
+          <div>
+            <Grid
+              container
+              spacing={2}
+              justifyContent='center'
+              alignItems='center'
+            >
+              <Grid item>{customList('Choices', left)}</Grid>
+              <Grid item>
+                <Grid container direction='column' alignItems='center'>
+                  <Button
+                    sx={{ my: 0.5 }}
+                    variant='outlined'
+                    size='small'
+                    onClick={handleCheckedRight}
+                    disabled={leftChecked.length === 0}
+                    aria-label='move selected right'
+                  >
+                    &gt;
+                  </Button>
+                  <Button
+                    sx={{ my: 0.5 }}
+                    variant='outlined'
+                    size='small'
+                    onClick={handleCheckedLeft}
+                    disabled={rightChecked.length === 0}
+                    aria-label='move selected left'
+                  >
+                    &lt;
+                  </Button>
+                </Grid>
+              </Grid>
+              <Grid item>{customList('Chosen', right)}</Grid>
+            </Grid>
+          </div>
+        </div>
+      </Box>
+    </div>
   );
 }

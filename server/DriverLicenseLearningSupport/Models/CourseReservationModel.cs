@@ -22,6 +22,6 @@ namespace DriverLicenseLearningSupport.Models
         public virtual PaymentTypeModel PaymentType { get; set; }
         public virtual MemberModel Member { get; set; }
         public virtual StaffModel Staff { get; set; }
-        //public virtual VehicleModel Vehicle { get; set; }
+        public virtual VehicleModel Vehicle { get; set; }
     }
 }

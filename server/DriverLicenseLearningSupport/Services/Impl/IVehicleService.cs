@@ -6,6 +6,6 @@ namespace DriverLicenseLearningSupport.Services.Impl
     {
         Task<VehicleModel> CreateAsync(VehicleModel model);
         Task<IEnumerable<VehicleTypeModel>> GetAllVehicleTypeAynsc();
-        //Task<VehicleModel> GetByLicenseTypeIdAsync(int licenseTypeId);
+        Task<VehicleModel> GetByLicenseTypeIdAsync(int licenseTypeId);
     }
 }

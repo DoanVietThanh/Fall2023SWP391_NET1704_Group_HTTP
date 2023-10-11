@@ -2,10 +2,13 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AiOutlineArrowLeft } from 'react-icons/ai';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import CountdownTimer from './CountdownTimer';
+import axiosClient from '../../utils/axiosClient';
+import { useSelector } from 'react-redux';
+import * as dayjs from 'dayjs';
 
 // console.log(Array.from({ length: 10 }, (_, index) => 0));
 // console.log([...Array(10)].map(() => 0));
@@ -13,21 +16,64 @@ import CountdownTimer from './CountdownTimer';
 
 const TestTheory = () => {
   const navigate = useNavigate();
+  const { theoryExamId } = useParams();
+  const { memberId, email } = useSelector(
+    (state) => state.auth.user.accountInfo
+  );
+  const url_Service = process.env.REACT_APP_SERVER_API;
   const currentDate = new Date();
+  const [startedDate, setStartedDate] = useState('');
   const [open, setOpen] = useState(false);
-  const [answerList, setAnswerList] = useState(new Array(35).fill(0));
+  const [answerList, setAnswerList] = useState([]);
+  const [questionList, setQuestionList] = useState([]);
+  const charOption = ['A', 'B', 'C', 'D', 'E'];
 
-  const selectAnswer = (indexQuestion, char) => {
+  useEffect(() => {
+    async function fetchData() {
+      const response = await axiosClient.get(`/theory-exam/${theoryExamId}`);
+      setQuestionList(response?.data.data);
+      setAnswerList(
+        new Array(response?.data.data.totalQuestion).fill({
+          questionId: '',
+          selectAnswer: '',
+        })
+      );
+      localStorage.setItem(
+        'startedDate',
+        dayjs(new Date())
+          .format('YYYY-MM-DD')
+          .concat('T'.concat(dayjs(new Date()).format('HH:mm:ss')))
+      );
+      setStartedDate(dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss'));
+    }
+    fetchData();
+  }, []);
+
+  const selectAnswer = (indexQuestion, indexOption) => {
+    // answerList: [{ questionId: '', selectAnswer: '' }]
+    // indexQuestion: 1, indexOption: "2 - Câu C"
     const newAnswerList = [...answerList];
-    newAnswerList[indexQuestion] = char;
+    newAnswerList[indexQuestion - 1] = {
+      questionId: indexQuestion,
+      selectAnswer: indexOption,
+    };
     setAnswerList(newAnswerList);
   };
 
-  console.log(answerList);
-
-  const handleSubmit = (id) => {
+  const handleSubmit = async (id) => {
+    const response = await axiosClient.post(`${url_Service}/theory/submit`, {
+      email,
+      memberId,
+      theoryExamId,
+      startedDate: startedDate,
+      selectedAnswers: answerList,
+    });
+    console.log('submit: ', response);
     navigate(`/theory/result/${id}`);
   };
+
+  console.log('answerList: ', answerList);
+  console.log('questionList: ', questionList);
 
   return (
     <div className='flex gap-1 bg-gray-200 h-[100vh] w-[100vw]'>
@@ -56,17 +102,23 @@ const TestTheory = () => {
               Câu hỏi
             </h2>
             <div className='grid grid-cols-5 gap-2'>
-              {Array.from({ length: 35 }, (_, index) => (
-                <div
-                  className={`${
-                    answerList[index] ? 'selected-color ' : ''
-                  } text-center cursor-pointer hover:text-white hover:bg-[#0D5EF4] border p-2`}
-                >
-                  <a href={`#${index + 1}`} className='font-medium'>
-                    {index + 1}
-                  </a>
-                </div>
-              ))}
+              {Array.from(
+                { length: questionList.totalQuestion },
+                (_, index) => (
+                  <div
+                    key={index}
+                    className={`${
+                      answerList[index]?.questionId === ''
+                        ? ''
+                        : 'selected-color'
+                    } text-center cursor-pointer hover:text-white hover:bg-[#0D5EF4] border p-2`}
+                  >
+                    <a href={`#${index + 1}`} className='font-medium'>
+                      {index + 1}
+                    </a>
+                  </div>
+                )
+              )}
             </div>
           </div>
         </div>
@@ -83,47 +135,57 @@ const TestTheory = () => {
 
       <div className='flex-1 p-2 pr-4 border-2 overflow-y-auto py-8'>
         <div className='flex flex-col gap-8 scroll-smooth'>
-          {Array.from({ length: 35 }, (_, indexQuestion) => (
-            <div
-              id={indexQuestion + 1}
-              className='min-h-[360px] bg-white p-4 rounded-lg'
-            >
-              <h1 className='font-medium text-[20px]'>
-                Câu hỏi {indexQuestion + 1} :
-              </h1>
-              {/* Content Question  */}
-              <div className='flex gap-2 h-full mt-2 flex-1'>
-                <div className='flex-1 h-full'>
-                  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                  Architecto quis aspernatur iusto quam qui, rerum ab sapiente
-                  inventore dolores nobis deserunt modi nemo! Cumque labore
-                  temporibus perspiciatis odio doloremque, voluptatum repellat
-                  illo in perferendis dolores sit maiores eos ab laudantium.
-                </div>
+          {questionList &&
+            questionList.questions?.map((itemQuestion, indexQuestion) => (
+              <div
+                id={indexQuestion + 1}
+                className='min-h-[360px] bg-white p-4 rounded-lg'
+              >
+                <h1 className='font-medium text-[20px]'>
+                  Câu hỏi {indexQuestion + 1} :
+                </h1>
+                {/* Content Question  */}
+                <div className='flex gap-2 h-full mt-2 flex-1'>
+                  <div className='flex-1 h-full'>
+                    {itemQuestion.questionAnswerDesc}
+                  </div>
 
-                <div className='flex-1 h-full px-2'>
-                  <h1 className='btn text-center cursor-text'>Chọn Đáp án</h1>
-                  <div className='flex flex-col gap-4 p-2 mt-2 border-l-2'>
-                    {['A', 'B', 'C', 'D'].map((charOption, indexCharOption) => (
-                      <div
-                        key={indexCharOption}
-                        onClick={() => selectAnswer(indexQuestion, charOption)}
-                        className={`${
-                          answerList[indexQuestion] === charOption
-                            ? 'selected-color'
-                            : ''
-                        } border p-2 cursor-pointer hover:opacity-80 rounded`}
-                      >
-                        <span className='font-bold'>{charOption}</span>. Lorem
-                        ipsum dolor sit amet consectetur adipisicing elit. Cum
-                        tempore aperiam architecto enim fugiat ea?
-                      </div>
-                    ))}
+                  <div className='flex-1 h-full px-2'>
+                    <h1 className='btn text-center cursor-text'>Chọn Đáp án</h1>
+                    <div className='flex flex-col gap-4 p-2 mt-2 border-l-2'>
+                      {itemQuestion.questionAnswers?.map(
+                        (item, indexOption) => (
+                          <div
+                            key={indexOption}
+                            onClick={() => {
+                              console.log({
+                                id: itemQuestion.questionId,
+                                'dap an': item.answer,
+                              });
+                              selectAnswer(
+                                itemQuestion.questionId,
+                                item.answer
+                              );
+                            }}
+                            className={`${
+                              answerList[indexQuestion].selectAnswer ===
+                              item.answer
+                                ? 'selected-color '
+                                : ''
+                            } border p-2 cursor-pointer hover:opacity-80 rounded`}
+                          >
+                            <span className='font-bold'>
+                              {charOption[indexOption]}
+                            </span>
+                            . {item.answer}
+                          </div>
+                        )
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
 
@@ -141,7 +203,7 @@ const TestTheory = () => {
           <button className='btn-cancel' onClick={() => setOpen(false)}>
             Hủy
           </button>
-          <button className='btn' onClick={() => handleSubmit(1)}>
+          <button className='btn' onClick={() => handleSubmit(theoryExamId)}>
             Đồng ý
           </button>
         </DialogActions>

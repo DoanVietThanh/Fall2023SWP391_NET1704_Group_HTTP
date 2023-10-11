@@ -5,12 +5,20 @@
     <RestoreTool Condition=" '$(RestoreTool)' == '' ">NuGet</RestoreTool>
     <ProjectAssetsFile Condition=" '$(ProjectAssetsFile)' == '' ">$(MSBuildThisFileDirectory)project.assets.json</ProjectAssetsFile>
     <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">$(UserProfile)\.nuget\packages\</NuGetPackageRoot>
+<<<<<<< HEAD
     <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">C:\Users\Thanh Thu\.nuget\packages\</NuGetPackageFolders>
+=======
+    <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">C:\Users\doanv\.nuget\packages\</NuGetPackageFolders>
+>>>>>>> d6648e7630a6b99b80e2afcd7a55d50018a438e7
     <NuGetProjectStyle Condition=" '$(NuGetProjectStyle)' == '' ">PackageReference</NuGetProjectStyle>
     <NuGetToolVersion Condition=" '$(NuGetToolVersion)' == '' ">6.7.0</NuGetToolVersion>
   </PropertyGroup>
   <ItemGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+<<<<<<< HEAD
     <SourceRoot Include="C:\Users\Thanh Thu\.nuget\packages\" />
+=======
+    <SourceRoot Include="C:\Users\doanv\.nuget\packages\" />
+>>>>>>> d6648e7630a6b99b80e2afcd7a55d50018a438e7
   </ItemGroup>
   <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <Import Project="$(NuGetPackageRoot)microsoft.extensions.apidescription.server\6.0.5\build\Microsoft.Extensions.ApiDescription.Server.props" Condition="Exists('$(NuGetPackageRoot)microsoft.extensions.apidescription.server\6.0.5\build\Microsoft.Extensions.ApiDescription.Server.props')" />
@@ -19,10 +27,18 @@
     <Import Project="$(NuGetPackageRoot)microsoft.entityframeworkcore.design\6.0.22\build\net6.0\Microsoft.EntityFrameworkCore.Design.props" Condition="Exists('$(NuGetPackageRoot)microsoft.entityframeworkcore.design\6.0.22\build\net6.0\Microsoft.EntityFrameworkCore.Design.props')" />
   </ImportGroup>
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+<<<<<<< HEAD
     <PkgMicrosoft_Extensions_ApiDescription_Server Condition=" '$(PkgMicrosoft_Extensions_ApiDescription_Server)' == '' ">C:\Users\Thanh Thu\.nuget\packages\microsoft.extensions.apidescription.server\6.0.5</PkgMicrosoft_Extensions_ApiDescription_Server>
     <PkgMicrosoft_EntityFrameworkCore_Tools Condition=" '$(PkgMicrosoft_EntityFrameworkCore_Tools)' == '' ">C:\Users\Thanh Thu\.nuget\packages\microsoft.entityframeworkcore.tools\6.0.21</PkgMicrosoft_EntityFrameworkCore_Tools>
     <PkgDocX Condition=" '$(PkgDocX)' == '' ">C:\Users\Thanh Thu\.nuget\packages\docx\2.5.0</PkgDocX>
     <PkgAWSSDK_Core Condition=" '$(PkgAWSSDK_Core)' == '' ">C:\Users\Thanh Thu\.nuget\packages\awssdk.core\3.7.202.14</PkgAWSSDK_Core>
     <PkgAWSSDK_S3 Condition=" '$(PkgAWSSDK_S3)' == '' ">C:\Users\Thanh Thu\.nuget\packages\awssdk.s3\3.7.205</PkgAWSSDK_S3>
+=======
+    <PkgMicrosoft_Extensions_ApiDescription_Server Condition=" '$(PkgMicrosoft_Extensions_ApiDescription_Server)' == '' ">C:\Users\doanv\.nuget\packages\microsoft.extensions.apidescription.server\6.0.5</PkgMicrosoft_Extensions_ApiDescription_Server>
+    <PkgMicrosoft_EntityFrameworkCore_Tools Condition=" '$(PkgMicrosoft_EntityFrameworkCore_Tools)' == '' ">C:\Users\doanv\.nuget\packages\microsoft.entityframeworkcore.tools\6.0.21</PkgMicrosoft_EntityFrameworkCore_Tools>
+    <PkgDocX Condition=" '$(PkgDocX)' == '' ">C:\Users\doanv\.nuget\packages\docx\2.5.0</PkgDocX>
+    <PkgAWSSDK_Core Condition=" '$(PkgAWSSDK_Core)' == '' ">C:\Users\doanv\.nuget\packages\awssdk.core\3.7.202.14</PkgAWSSDK_Core>
+    <PkgAWSSDK_S3 Condition=" '$(PkgAWSSDK_S3)' == '' ">C:\Users\doanv\.nuget\packages\awssdk.s3\3.7.205</PkgAWSSDK_S3>
+>>>>>>> d6648e7630a6b99b80e2afcd7a55d50018a438e7
   </PropertyGroup>
 </Project>

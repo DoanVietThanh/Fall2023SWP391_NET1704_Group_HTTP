@@ -15,6 +15,6 @@ namespace DriverLicenseLearningSupport.Models
         public virtual StaffModel? Staff { get; set; }
         public virtual VehicleModel? Vehicle { get; set; }
         //public virtual WeekdayScheduleModel WeekdaySchedule { get; set; }
-        //public virtual ICollection<RollCallBook> RollCallBooks { get; set; }
+        public virtual ICollection<RollCallBookModel> RollCallBooks { get; set; }
     }
 }

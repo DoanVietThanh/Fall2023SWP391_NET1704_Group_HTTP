@@ -1,7 +1,6 @@
 using Amazon;
 using Amazon.S3;
 using AutoMapper;
-using DriverLicenseLearningSupport.Controllers;
 using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Exceptions;
 using DriverLicenseLearningSupport.Mapping;
@@ -10,10 +9,17 @@ using DriverLicenseLearningSupport.Repositories;
 using DriverLicenseLearningSupport.Repositories.Impl;
 using DriverLicenseLearningSupport.Services;
 using DriverLicenseLearningSupport.Services.Impl;
+using DriverLicenseLearningSupport.VnPay.Base;
+using DriverLicenseLearningSupport.VnPay.Config;
+using DriverLicenseLearningSupport.VnPay.Interface;
+using DriverLicenseLearningSupport.VnPay.Request;
+using DriverLicenseLearningSupport.VnPay.Response;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,6 +40,10 @@ builder.Services.AddDbContext<DriverLicenseLearningSupportContext>(options =>
 // Add AppSettings 
 var appSettings = builder.Configuration.GetSection("AppSettings");
 builder.Services.Configure<AppSettings>(appSettings);
+
+// Add VnPay config 
+var vnpayConfig = builder.Configuration.GetSection("VNPAY");
+builder.Services.Configure<VnPayConfig>(vnpayConfig);
 
 // Add Authentication
 var secretKey = builder.Configuration.GetValue<string>("AppSettings:SecretKey");
@@ -68,14 +78,17 @@ builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<IPaymentTypeService, PaymentTypeService>();
 builder.Services.AddScoped<IWeekDayScheduleService, WeekDayScheduleService>();
 builder.Services.AddScoped<ISlotService, SlotService>();
-builder.Services.AddScoped<ICourseServationService, CourseReservationService>();
+builder.Services.AddScoped<ICourseReservationService, CourseReservationService>();
 builder.Services.AddScoped<IVehicleService, VehicleService>();
 builder.Services.AddScoped<ITeachingScheduleService, TeachingScheduleService>();
 builder.Services.AddScoped<IQuestionService, QuestionService>();
 builder.Services.AddScoped<IAnswerService, AnswerService>();
 builder.Services.AddScoped<ITheoryExamService, TheoryExamService>();
 builder.Services.AddScoped<IExamGradeService, ExamGradeService>();
+builder.Services.AddScoped<IExamHistoryService, ExamHistoryService>();
 
+
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 // Add Repositories
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
@@ -99,7 +112,14 @@ builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 builder.Services.AddScoped<IAnswerRepository, AnswerRepository>();
 builder.Services.AddScoped<ITheoryExamRepository, TheoryExamRepository>();
 builder.Services.AddScoped<IExamGradeRepository, ExamGradeRepository>();
+builder.Services.AddScoped<IExamHistoryRepository, ExamHistoryRepostory>();
 
+
+// Add Mediator
+builder.Services.AddMediatR();
+
+// Add HttpContextAccessor
+builder.Services.AddHttpContextAccessor();
 
 // Add Email Configs
 var emailConfig = builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
@@ -138,7 +158,7 @@ builder.Services.AddSingleton<IAmazonS3, AmazonS3Client>();
 builder.Services.AddSingleton<IImageService, ImageService>();
 
 // Middleware Exception
-//builder.Services.AddTransient<ExceptionMiddleware>();
+//builder.Services.AddTransient<ExceptionMiddleware>();`
 
 var app = builder.Build();
 AWSConfigs.AWSRegion = "ap-southeast-1";

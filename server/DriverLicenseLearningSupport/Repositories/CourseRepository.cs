@@ -56,7 +56,8 @@ namespace DriverLicenseLearningSupport.Repositories
                                                         CurriculumDesc = c.CurriculumDesc,
                                                         CurriculumDetail = c.CurriculumDetail
                                                     }).ToList(),
-                                                    Mentors = x.Mentors
+                                                    Mentors = x.Mentors,
+                                                    LicenseTypeId = x.LicenseTypeId
                                                 }).FirstOrDefaultAsync();
 
             if (course is not null)
@@ -121,10 +122,65 @@ namespace DriverLicenseLearningSupport.Repositories
             }
             return null;
         }
+        public async Task<CourseModel> GetByMentorIdAndCourseIdAsync(Guid mentorId, Guid courseId)
+        {
+            var courses = await _context.Courses.Where(x => x.IsActive == true && x.CourseId == courseId.ToString())
+                                                .Select(x => new Course
+                                                {
+                                                    CourseId = x.CourseId,
+                                                    CourseDesc = x.CourseDesc,
+                                                    CourseTitle = x.CourseTitle,
+                                                    Cost = x.Cost,
+                                                    IsActive = x.IsActive,
+                                                    TotalSession = x.TotalSession,
+                                                    TotalMonth = x.TotalMonth,
+                                                    StartDate = x.StartDate,
+                                                    Curricula = x.Curricula.Select(c => new Curriculum
+                                                    {
+                                                        CurriculumId = c.CurriculumId,
+                                                        CurriculumDesc = c.CurriculumDesc,
+                                                        CurriculumDetail = c.CurriculumDetail
+                                                    }).ToList(),
+                                                    Mentors = x.Mentors
+                                                }).ToListAsync();
+            foreach (var c in courses)
+            {
+                var mentor = c.Mentors.Where(x => x.StaffId == mentorId.ToString()).FirstOrDefault();
+                if (mentor != null)
+                {
+                    return _mapper.Map<CourseModel>(c);
+                }
+            }
+            return null;
+        }
         public async Task<IEnumerable<CourseModel>> GetAllAsync()
         {
             var courses = await _context.Courses.Where(x => x.IsActive == true).ToListAsync();
             return _mapper.Map<IEnumerable<CourseModel>>(courses);
+        }
+        public async Task<IEnumerable<CourseModel>> GetAllMentorCourseAsync(Guid mentorId)
+        {
+            var courses = await _context.Courses.Where(x => x.IsActive == true)
+                                                .Select(x => new Course { 
+                                                    CourseId = x.CourseId,
+                                                    CourseDesc = x.CourseDesc,
+                                                    Cost = x.Cost,
+                                                    TotalSession = x.TotalSession,
+                                                    TotalMonth = x.TotalMonth,
+                                                    StartDate = x.StartDate,
+                                                    IsActive = x.IsActive,
+                                                    LicenseTypeId = x.LicenseTypeId,
+                                                    Mentors = x.Mentors.Where(x => x.StaffId == mentorId.ToString()).ToList(),
+                                                }).ToListAsync();
+
+            var mentorCourses = courses.Where(x => x.Mentors.Count > 0).ToList();
+            
+            foreach(var c in mentorCourses)
+            {
+                c.Mentors = null!;
+            }
+
+            return _mapper.Map<IEnumerable<CourseModel>>(mentorCourses);
         }
         public async Task<IEnumerable<CourseModel>> GetAllHiddenCourseAsync()
         {

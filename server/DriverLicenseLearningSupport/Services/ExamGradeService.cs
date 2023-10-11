@@ -22,5 +22,10 @@ namespace DriverLicenseLearningSupport.Services
             var examGradeEntity = _mapper.Map<ExamGrade>(model);
             return await _examGradeRepository.CreateAsync(examGradeEntity);
         }
+
+        public async Task<List<ExamGradeModel>> GetAllByTheoryExamIdandEmailAsync(string Email, int TheoryExamId, DateTime StartedDate)
+        {
+            return await _examGradeRepository.GetAllByTheoryExamIdandEmailAsync(Email, TheoryExamId,StartedDate) ;
+        }
     }
 }

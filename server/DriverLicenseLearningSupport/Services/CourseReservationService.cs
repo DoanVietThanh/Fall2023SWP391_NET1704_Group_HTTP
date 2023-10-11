@@ -6,7 +6,7 @@ using DriverLicenseLearningSupport.Services.Impl;
 
 namespace DriverLicenseLearningSupport.Services
 {
-    public class CourseReservationService : ICourseServationService
+    public class CourseReservationService : ICourseReservationService
     {
         private readonly ICourseReservationRepository _courseReservationRepo;
         private readonly IMapper _mapper;
@@ -22,6 +22,11 @@ namespace DriverLicenseLearningSupport.Services
         {
             var courseReservationEntity = _mapper.Map<CourseReservation>(courseReservation);
             return await _courseReservationRepo.CreateAsync(courseReservationEntity);
+        }
+
+        public async Task<CourseReservationModel> GetByMemberAsync(Guid memberId)
+        {
+            return await _courseReservationRepo.GetByMemberAsync(memberId);
         }
     }
 }

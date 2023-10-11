@@ -129,7 +129,7 @@ const Header = () => {
                 }}
               >
                 <MenuItem onClick={handleClose}>
-                  <Link to={`/private-information`}>Profile</Link>
+                  <Link to={`/profile`}>Profile</Link>
                 </MenuItem>
                 <MenuItem onClick={handleClose}>My account</MenuItem>
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>

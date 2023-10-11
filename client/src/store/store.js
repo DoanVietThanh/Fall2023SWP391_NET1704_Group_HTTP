@@ -11,6 +11,7 @@ import {
   REGISTER,
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import questionReducer from '../features/question/questionSlice';
 
 const persistConfig = {
   key: 'root',
@@ -19,6 +20,7 @@ const persistConfig = {
 };
 const rootReducer = combineReducers({
   auth: authReducer,
+  question: questionReducer,
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

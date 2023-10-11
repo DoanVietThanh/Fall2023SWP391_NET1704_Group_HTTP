@@ -20,6 +20,12 @@ import PrivatePage from '../pages/PrivatePage/PrivatePage';
 import BlogPage from '../pages/BlogPage/BlogPage';
 import BlogDetail from '../pages/BlogPage/BlogDetail';
 import DocumentPage from '../pages/DocumentPage/DocumentPage';
+import SideBar from '../components/SideBar';
+import Profile from '../pages/PrivatePage/Profile';
+import WeekSchedule from '../pages/PrivatePage/WeekSchedule';
+import HistoryTest from '../pages/PrivatePage/HistoryTest';
+import ManageQuestion from '../pages/PrivatePage/ManageQuestion';
+import ManageBankTest from '../pages/PrivatePage/ManageBankTest';
 import IntructorDetail from '../pages/IntructorPage/IntructorDetail';
 import AboutUsPage from '../pages/AboutUsPage/AboutUsPage';
 
@@ -33,23 +39,30 @@ const RouterApp = () => {
     { path: '/authentication/reset-password', element: <ShowForgetPass /> },
     { path: '/instructor', element: <IntructorPage /> },
     { path: '/instructor/detail', element: <IntructorDetail />},
-    { path: '/private-information', element: <PrivatePage /> },
+    // { path: '/private-information', element: <PrivatePage /> },
+    { path: '/profile', element: <Profile /> },
+    { path: '/week-schedule', element: <WeekSchedule /> },
+    { path: '/history-test', element: <HistoryTest /> },
+    { path: '/history-test', element: <HistoryTest /> },
+    { path: '/manage-question', element: <ManageQuestion /> },
+    { path: '/manage-banktest', element: <ManageBankTest /> },
 
     { path: '/course', element: <CoursePage /> },
     { path: '/course/detail', element: <DetailCourse /> },
 
     { path: '/document', element: <DocumentPage /> },
-    
+
     { path: '/theory', element: <TheoryPage /> },
-    { path: '/theory/test/:id', element: <TestTheory /> },
-    { path: '/theory/result/:id', element: <ResultTheory /> },
-    
-    { path: '/blog', element: <BlogPage />},
-    { path: '/blog/detail', element: <BlogDetail/>},
+    { path: '/theory/test/:theoryExamId', element: <TestTheory /> },
+    { path: '/theory/result/:mockTestId', element: <ResultTheory /> },
+
+    { path: '/blog', element: <BlogPage /> },
+    { path: '/blog/detail', element: <BlogDetail /> },
     { path: '/contact', element: <ContactPage /> },
 
     { path: '/aboutus', element: <AboutUsPage />},
     { path: '/manager/dashboard', element: <DashboardPage /> },
+    { path: '/test', element: <SideBar /> },
 
     { path: '*', element: <ErrorPage /> },
   ]);

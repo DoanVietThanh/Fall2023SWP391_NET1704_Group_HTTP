@@ -41,12 +41,30 @@ namespace DriverLicenseLearningSupport.Services
         public async Task<IEnumerable<AnswerModel>> GetAllByQuestionId(int questionId)
         {
             var answers = await _answerRepository.GetAllByQuestionId(questionId);
-            return answers;
+
+            var listAnswers = answers.ToList();
+            var index = 0;
+            while(index < answers.Count())
+            {
+                listAnswers[index].QuestionAnswerId = index;
+                ++index;
+            }
+            return listAnswers;
         }
 
         public async Task<AnswerModel> GetByAnswerIdAsync(int answerId)
         {
             return await _answerRepository.GetByAnswerIdAsync(answerId);
+        }
+
+        public async Task<AnswerModel> GetByQuestionIdAndAnswerDesc(int questionId, string answerDesc)
+        {
+            return await _answerRepository.GetByQuestionIdAndAnswerDesc(questionId, answerDesc);
+        }
+
+        public async Task<int> GetRightAnswerIdByQuestionId(int questionId)
+        {
+            return await _answerRepository.GetRightAnswerIdByQuestionId(questionId);
         }
     }
 }

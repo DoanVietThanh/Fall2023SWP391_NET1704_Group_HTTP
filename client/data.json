@@ -1,167 +1,126 @@
 {
-  "course": {
-    "courseId": "d442eff6-e3fa-44cc-9cc5-a3ab0027de02",
-    "courseTitle": "Bai lai B1",
-    "courseDesc": "Bai lai B1",
-    "cost": 0,
-    "totalSession": null,
-    "totalMonth": null,
-    "startDate": null,
-    "isActive": null,
-    "feedBacks": [],
-    "curricula": [],
-    "mentors": []
-  },
-  "filterWeekDay": [
-    "02/10 To 08/10",
-    "09/10 To 15/10",
-    "16/10 To 22/10",
-    "23/10 To 29/10",
-    "30/10 To 05/11",
-    "06/11 To 12/11",
-    "13/11 To 19/11",
-    "20/11 To 26/11",
-    "27/11 To 02/12"
-  ],
-  "weekdays": {
-    "weekdayScheduleId": 0,
-    "monday": "2023-10-02T00:00:00",
-    "tuesday": "2023-10-03T00:00:00",
-    "wednesday": "2023-10-04T00:00:00",
-    "thursday": "2023-10-05T00:00:00",
-    "friday": "2023-10-06T00:00:00",
-    "saturday": "2023-10-07T00:00:00",
-    "sunday": "2023-10-08T00:00:00",
-    "courseId": "580451bd-0bc8-40a3-b5ee-5c2475d989c5",
-    "weekdayScheduleDesc": "02/10 To 08/10",
-    "course": null,
-    "teachingSchedules": null
-  },
-  "slot1": {
-    "slotId": 1,
-    "slotName": "Slot 1",
-    "duration": 2,
-    "time": "07:30:00",
-    "slotDesc": "07:30 - 09:30",
-    "teachingSchedules": [
-      null,
-      {
-        "teachingScheduleId": 0,
-        "teachingDate": "2023-10-03T15:58:25.6212033+07:00",
-        "staffId": null,
-        "weekdayScheduleId": 0,
-        "slotId": 1,
-        "weekdaySchedule": null,
-        "staff": {
-          "staffId": "4e220c7a-4429-4dcc-8d18-0103efd0496d",
-          "firstName": "Le Xuan",
-          "lastName": "Phuoc",
-          "dateBirth": "0001-01-01T00:00:00",
-          "phone": null,
-          "isActive": null,
-          "avatarImage": null,
-          "email": null,
-          "addressId": null,
-          "jobTitleId": null,
-          "licenseTypeId": null,
-          "address": {
-            "addressId": null,
-            "street": "59",
-            "district": "GV",
-            "city": "HCM",
-            "zipcode": null
-          },
+  "statusCode": 200,
+  "message": null,
+  "data": {
+    "course": {
+      "courseId": "6479a6bc-1396-4147-b899-62c97009651b",
+      "courseTitle": "Khóa học bằng lái B2",
+      "courseDesc": "<div>hello</div> <big>Oops, something went wrong</big> <small>Yups, good job</small><b><i><u>Nah, too bad</u></i></b>",
+      "cost": 120000,
+      "totalSession": 12,
+      "totalMonth": 1,
+      "startDate": "2023-10-04T00:00:00",
+      "isActive": true,
+      "feedBacks": [],
+      "curricula": [],
+      "mentors": [
+        {
+          "staffId": "29ae4265-269d-4a11-8df6-b05f3c345cd4",
+          "firstName": "Thanh",
+          "lastName": "Sa",
+          "dateBirth": "2003-09-22T00:00:00",
+          "phone": "892131231",
+          "isActive": true,
+          "avatarImage": "a42e811d-d22b-4ede-b955-1437ebaeeb9d",
+          "email": "dawnk1003@gmail.com",
+          "addressId": "07a43b7a-6156-4c5a-a18d-382e574b4ba8",
+          "jobTitleId": 3,
+          "licenseTypeId": 3,
+          "address": null,
           "emailNavigation": null,
-          "jobTitle": {
-            "jobTitleId": 1,
-            "jobTitleDesc": "Mentor"
-          },
+          "jobTitle": null,
           "licenseType": null,
           "feedBacks": [],
           "courses": []
-        },
-        "slot": null,
-        "rollCallBooks": null
-      },
-      null,
-      null,
+        }
+      ]
+    },
+    "filter": [
       {
-        "teachingScheduleId": 0,
-        "teachingDate": "2023-10-06T15:58:25.6217707+07:00",
-        "staffId": null,
-        "weekdayScheduleId": 0,
-        "slotId": 1,
-        "weekdaySchedule": null,
-        "staff": {
-          "staffId": "9895014d-c4b0-4f16-9d10-943d1f3f4d73",
-          "firstName": "Le Xuan",
-          "lastName": "Phuoc",
-          "dateBirth": "0001-01-01T00:00:00",
-          "phone": null,
-          "isActive": null,
-          "avatarImage": null,
-          "email": null,
-          "addressId": null,
-          "jobTitleId": null,
-          "licenseTypeId": null,
-          "address": {
-            "addressId": null,
-            "street": "59",
-            "district": "GV",
-            "city": "HCM",
-            "zipcode": null
-          },
-          "emailNavigation": null,
-          "jobTitle": {
-            "jobTitleId": 1,
-            "jobTitleDesc": "Mentor"
-          },
-          "licenseType": null,
-          "feedBacks": [],
-          "courses": []
-        },
-        "slot": null,
-        "rollCallBooks": null
+        "id": 1,
+        "desc": "02/10 To 08/10"
       },
       {
-        "teachingScheduleId": 0,
-        "teachingDate": "2023-10-07T15:58:25.6217743+07:00",
-        "staffId": null,
-        "weekdayScheduleId": 0,
-        "slotId": 1,
-        "weekdaySchedule": null,
-        "staff": {
-          "staffId": "2bde0e59-6868-4075-bf1d-03677396b247",
-          "firstName": "Le Xuan",
-          "lastName": "Phuoc",
-          "dateBirth": "0001-01-01T00:00:00",
-          "phone": null,
-          "isActive": null,
-          "avatarImage": null,
-          "email": null,
-          "addressId": null,
-          "jobTitleId": null,
-          "licenseTypeId": null,
-          "address": {
-            "addressId": null,
-            "street": "59",
-            "district": "GV",
-            "city": "HCM",
-            "zipcode": null
-          },
-          "emailNavigation": null,
-          "jobTitle": {
-            "jobTitleId": 1,
-            "jobTitleDesc": "Mentor"
-          },
-          "licenseType": null,
-          "feedBacks": [],
-          "courses": []
-        },
-        "slot": null,
-        "rollCallBooks": null
+        "id": 2,
+        "desc": "09/10 To 15/10"
       },
-      null
+      {
+        "id": 3,
+        "desc": "16/10 To 22/10"
+      },
+      {
+        "id": 4,
+        "desc": "23/10 To 29/10"
+      },
+      {
+        "id": 5,
+        "desc": "30/10 To 02/11"
+      }
+    ],
+    "weekdays": {
+      "weekdayScheduleId": 2,
+      "monday": "2023-10-09T00:00:00",
+      "tuesday": "2023-10-10T00:00:00",
+      "wednesday": "2023-10-11T00:00:00",
+      "thursday": "2023-10-12T00:00:00",
+      "friday": "2023-10-13T00:00:00",
+      "saturday": "2023-10-14T00:00:00",
+      "sunday": "2023-10-15T00:00:00",
+      "courseId": "6479a6bc-1396-4147-b899-62c97009651b",
+      "weekdayScheduleDesc": "09/10 To 15/10",
+      "course": null,
+      "teachingSchedules": []
+    },
+    "slotSchedules": [
+      {
+        "slotId": 1,
+        "slotName": "Slot 1",
+        "duration": 2,
+        "time": "07:30:00",
+        "slotDesc": "07:30 - 09:30",
+        "teachingSchedules": [
+          null,
+          {
+            "teachingScheduleId": 3,
+            "teachingDate": "2023-10-10T00:00:00",
+            "staffId": "29ae4265-269d-4a11-8df6-b05f3c345cd4",
+            "slotId": 1,
+            "vehicleId": 1,
+            "weekdayScheduleId": 2,
+            "staff": null,
+            "vehicle": null
+          },
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      {
+        "slotId": 2,
+        "slotName": "Slot 2",
+        "duration": 2,
+        "time": "09:45:00",
+        "slotDesc": "09:45 - 11:45",
+        "teachingSchedules": [null, null, null, null, null, null, null]
+      },
+      {
+        "slotId": 3,
+        "slotName": "Slot 3",
+        "duration": 2,
+        "time": "13:30:00",
+        "slotDesc": "13:30 - 15:30",
+        "teachingSchedules": [null, null, null, null, null, null, null]
+      },
+      {
+        "slotId": 4,
+        "slotName": "Slot 3",
+        "duration": 2,
+        "time": "15:45:00",
+        "slotDesc": "15:45 - 17:45",
+        "teachingSchedules": [null, null, null, null, null, null, null]
+      }
     ]
   }
 }

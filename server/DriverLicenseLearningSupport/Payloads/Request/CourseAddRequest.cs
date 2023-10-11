@@ -23,6 +23,9 @@ namespace DriverLicenseLearningSupport.Payloads.Request
 
         [Required(ErrorMessage = "Total Month is required")]
         public int TotalMonth { get; set; }
+
+        [Required(ErrorMessage = "License Type is required")]
+        public int LicenseTypeId { get; set; }
     }
 
     public static class CourseAddRequestExtension 
@@ -38,6 +41,7 @@ namespace DriverLicenseLearningSupport.Payloads.Request
                 TotalSession = reqObj.TotalSession,
                 TotalMonth = reqObj.TotalMonth,
                 StartDate = reqObj.StartDate,
+                LicenseTypeId = reqObj.LicenseTypeId,
                 IsActive = true
             };
         }
