@@ -241,6 +241,8 @@
           }
         }
       },
+<<<<<<< HEAD
+=======
       "MediatR/6.0.0": {
         "type": "package",
         "compile": {
@@ -263,6 +265,7 @@
           "lib/netstandard2.0/MediatR.Extensions.Microsoft.DependencyInjection.dll": {}
         }
       },
+>>>>>>> d6648e7630a6b99b80e2afcd7a55d50018a438e7
       "Microsoft.AspNetCore.Authentication.JwtBearer/6.0.22": {
         "type": "package",
         "dependencies": {
@@ -282,6 +285,8 @@
           "Microsoft.AspNetCore.App"
         ]
       },
+<<<<<<< HEAD
+=======
       "Microsoft.AspNetCore.Http.Abstractions/2.2.0": {
         "type": "package",
         "dependencies": {
@@ -315,6 +320,7 @@
           }
         }
       },
+>>>>>>> d6648e7630a6b99b80e2afcd7a55d50018a438e7
       "Microsoft.CSharp/4.5.0": {
         "type": "package",
         "compile": {
@@ -994,6 +1000,8 @@
           "lib/netstandard2.1/NETCore.MailKit.dll": {}
         }
       },
+<<<<<<< HEAD
+=======
       "Newtonsoft.Json/13.0.1": {
         "type": "package",
         "compile": {
@@ -1007,6 +1015,7 @@
           }
         }
       },
+>>>>>>> d6648e7630a6b99b80e2afcd7a55d50018a438e7
       "Portable.BouncyCastle/1.9.0": {
         "type": "package",
         "compile": {
@@ -1807,6 +1816,8 @@
             "rid": "win"
           }
         }
+<<<<<<< HEAD
+=======
       },
       "VNPayPackage/2.1.0": {
         "type": "package",
@@ -1824,6 +1835,7 @@
             "related": ".xml"
           }
         }
+>>>>>>> d6648e7630a6b99b80e2afcd7a55d50018a438e7
       }
     }
   },
@@ -2183,6 +2195,8 @@
         "mailkit.nuspec"
       ]
     },
+<<<<<<< HEAD
+=======
     "MediatR/6.0.0": {
       "sha512": "R01T5Af1kSH9lBvlxdTeJOr+ugPwfy0FsFq15XsNAIA8GSUYwHW7lfvYGwhBynwJVXWxRwieqxOxCFEV9GO+SQ==",
       "type": "package",
@@ -2208,6 +2222,7 @@
         "mediatr.extensions.microsoft.dependencyinjection.nuspec"
       ]
     },
+>>>>>>> d6648e7630a6b99b80e2afcd7a55d50018a438e7
     "Microsoft.AspNetCore.Authentication.JwtBearer/6.0.22": {
       "sha512": "+iuPmRkxfJ2vHoXifWqPJK8jppS8+iH3m1B8VMdgVWiC2U4q3JPBXx/kb7348HfClMPG+OcHpTUtmJkfUByvgg==",
       "type": "package",
@@ -2223,6 +2238,8 @@
         "microsoft.aspnetcore.authentication.jwtbearer.nuspec"
       ]
     },
+<<<<<<< HEAD
+=======
     "Microsoft.AspNetCore.Http.Abstractions/2.2.0": {
       "sha512": "Nxs7Z1q3f1STfLYKJSVXCs1iBl+Ya6E8o4Oy1bCxJ/rNI44E/0f6tbsrVqAWfB7jlnJfyaAtIalBVxPKUPQb4Q==",
       "type": "package",
@@ -2249,6 +2266,7 @@
         "microsoft.aspnetcore.http.features.nuspec"
       ]
     },
+>>>>>>> d6648e7630a6b99b80e2afcd7a55d50018a438e7
     "Microsoft.CSharp/4.5.0": {
       "sha512": "kaj6Wb4qoMuH3HySFJhxwQfe8R/sJsNJnANrvv8WdFPMoNbKY5htfNscv+LHCu5ipz+49m2e+WQXpLXr9XYemQ==",
       "type": "package",
@@ -3438,6 +3456,8 @@
         "netcore.mailkit.nuspec"
       ]
     },
+<<<<<<< HEAD
+=======
     "Newtonsoft.Json/13.0.1": {
       "sha512": "ppPFpBcvxdsfUonNcvITKqLl3bqxWbDCZIzDWHzjpdAHRFfZe0Dw9HmA0+za13IdyrgJwpkDTDA9fHaxOrt20A==",
       "type": "package",
@@ -3465,6 +3485,7 @@
         "packageIcon.png"
       ]
     },
+>>>>>>> d6648e7630a6b99b80e2afcd7a55d50018a438e7
     "Portable.BouncyCastle/1.9.0": {
       "sha512": "eZZBCABzVOek+id9Xy04HhmgykF0wZg9wpByzrWN7q8qEI0Qen9b7tfd7w8VA3dOeesumMG7C5ZPy0jk7PSRHw==",
       "type": "package",
@@ -5673,6 +5694,8 @@
         "useSharedDesignerContext.txt",
         "version.txt"
       ]
+<<<<<<< HEAD
+=======
     },
     "VNPayPackage/2.1.0": {
       "sha512": "jfUENvVapSfPzh7puB+Dx2zU18mZeqb9wnHhH7RntFoDRa1INZX0TRvAUmLuEudvJ6VF1JJ4w2hS7crAxpmfAA==",
@@ -5687,6 +5710,7 @@
         "vnpaypackage.2.1.0.nupkg.sha512",
         "vnpaypackage.nuspec"
       ]
+>>>>>>> d6648e7630a6b99b80e2afcd7a55d50018a438e7
     }
   },
   "projectFileDependencyGroups": {
@@ -5697,23 +5721,44 @@
       "DocumentFormat.OpenXml >= 2.20.0",
       "EPPlus >= 6.2.9",
       "FluentValidation >= 6.4.1",
+<<<<<<< HEAD
+=======
       "MediatR >= 6.0.0",
       "MediatR.Extensions.Microsoft.DependencyInjection >= 6.0.1",
+>>>>>>> d6648e7630a6b99b80e2afcd7a55d50018a438e7
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 6.0.22",
       "Microsoft.EntityFrameworkCore.Design >= 6.0.22",
       "Microsoft.EntityFrameworkCore.SqlServer >= 6.0.22",
       "Microsoft.EntityFrameworkCore.Tools >= 6.0.21",
       "NETCore.MailKit >= 2.1.0",
+<<<<<<< HEAD
+      "Swashbuckle.AspNetCore >= 6.5.0"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\Thanh Thu\\.nuget\\packages\\": {}
+=======
       "Swashbuckle.AspNetCore >= 6.5.0",
       "VNPayPackage >= 2.1.0"
     ]
   },
   "packageFolders": {
     "C:\\Users\\doanv\\.nuget\\packages\\": {}
+>>>>>>> d6648e7630a6b99b80e2afcd7a55d50018a438e7
   },
   "project": {
     "version": "1.0.0",
     "restore": {
+<<<<<<< HEAD
+      "projectUniqueName": "E:\\SWP391\\Fall2023SWP391_NET1704_Group_HTTP\\server\\DriverLicenseLearningSupport\\DriverLicenseLearningSupport.csproj",
+      "projectName": "DriverLicenseLearningSupport",
+      "projectPath": "E:\\SWP391\\Fall2023SWP391_NET1704_Group_HTTP\\server\\DriverLicenseLearningSupport\\DriverLicenseLearningSupport.csproj",
+      "packagesPath": "C:\\Users\\Thanh Thu\\.nuget\\packages\\",
+      "outputPath": "E:\\SWP391\\Fall2023SWP391_NET1704_Group_HTTP\\server\\DriverLicenseLearningSupport\\obj\\",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\Thanh Thu\\AppData\\Roaming\\NuGet\\NuGet.Config",
+=======
       "projectUniqueName": "D:\\FPT\\Kì 5\\SWP\\Fall2023SWP391_NET1704_Group_HTTP\\server\\DriverLicenseLearningSupport\\DriverLicenseLearningSupport.csproj",
       "projectName": "DriverLicenseLearningSupport",
       "projectPath": "D:\\FPT\\Kì 5\\SWP\\Fall2023SWP391_NET1704_Group_HTTP\\server\\DriverLicenseLearningSupport\\DriverLicenseLearningSupport.csproj",
@@ -5722,6 +5767,7 @@
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\doanv\\AppData\\Roaming\\NuGet\\NuGet.Config",
+>>>>>>> d6648e7630a6b99b80e2afcd7a55d50018a438e7
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -5771,6 +5817,8 @@
             "target": "Package",
             "version": "[6.4.1, )"
           },
+<<<<<<< HEAD
+=======
           "MediatR": {
             "target": "Package",
             "version": "[6.0.0, )"
@@ -5779,6 +5827,7 @@
             "target": "Package",
             "version": "[6.0.1, )"
           },
+>>>>>>> d6648e7630a6b99b80e2afcd7a55d50018a438e7
           "Microsoft.AspNetCore.Authentication.JwtBearer": {
             "target": "Package",
             "version": "[6.0.22, )"
@@ -5806,10 +5855,13 @@
           "Swashbuckle.AspNetCore": {
             "target": "Package",
             "version": "[6.5.0, )"
+<<<<<<< HEAD
+=======
           },
           "VNPayPackage": {
             "target": "Package",
             "version": "[2.1.0, )"
+>>>>>>> d6648e7630a6b99b80e2afcd7a55d50018a438e7
           }
         },
         "imports": [
