@@ -26,6 +26,8 @@ import WeekSchedule from '../pages/PrivatePage/WeekSchedule';
 import HistoryTest from '../pages/PrivatePage/HistoryTest';
 import ManageQuestion from '../pages/PrivatePage/ManageQuestion';
 import ManageBankTest from '../pages/PrivatePage/ManageBankTest';
+import IntructorDetail from '../pages/IntructorPage/IntructorDetail';
+import AboutUsPage from '../pages/AboutUsPage/AboutUsPage';
 
 const RouterApp = () => {
   const router = createBrowserRouter([
@@ -35,7 +37,8 @@ const RouterApp = () => {
     { path: '/register', element: <RegisterPage /> },
     { path: '/forgot-password', element: <ForgotPassword /> },
     { path: '/authentication/reset-password', element: <ShowForgetPass /> },
-    { path: '/intructor', element: <IntructorPage /> },
+    { path: '/instructor', element: <IntructorPage /> },
+    { path: '/instructor/detail', element: <IntructorDetail />},
     // { path: '/private-information', element: <PrivatePage /> },
     { path: '/profile', element: <Profile /> },
     { path: '/week-schedule', element: <WeekSchedule /> },
@@ -53,10 +56,11 @@ const RouterApp = () => {
     { path: '/theory/test/:theoryExamId', element: <TestTheory /> },
     { path: '/theory/result/:mockTestId', element: <ResultTheory /> },
 
-    { path: '/blogs', element: <BlogPage /> },
+    { path: '/blog', element: <BlogPage /> },
     { path: '/blog/detail', element: <BlogDetail /> },
     { path: '/contact', element: <ContactPage /> },
 
+    { path: '/aboutus', element: <AboutUsPage />},
     { path: '/manager/dashboard', element: <DashboardPage /> },
     { path: '/test', element: <SideBar /> },
 
