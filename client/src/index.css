@@ -131,3 +131,19 @@ span.Cancelled {
     display: block;
   }
 }
+
+.moreDetail{
+  display: none;
+ }
+
+.mentor:hover .moreDetail{
+  display: block;
+}
+.mentor:hover .imgMentor{
+  opacity: 0.2;
+}
+
+
+
+  
+

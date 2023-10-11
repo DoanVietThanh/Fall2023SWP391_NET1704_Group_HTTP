@@ -20,6 +20,8 @@ import PrivatePage from '../pages/PrivatePage/PrivatePage';
 import BlogPage from '../pages/BlogPage/BlogPage';
 import BlogDetail from '../pages/BlogPage/BlogDetail';
 import DocumentPage from '../pages/DocumentPage/DocumentPage';
+import IntructorDetail from '../pages/IntructorPage/IntructorDetail';
+import AboutUsPage from '../pages/AboutUsPage/AboutUsPage';
 
 const RouterApp = () => {
   const router = createBrowserRouter([
@@ -29,7 +31,8 @@ const RouterApp = () => {
     { path: '/register', element: <RegisterPage /> },
     { path: '/forgot-password', element: <ForgotPassword /> },
     { path: '/authentication/reset-password', element: <ShowForgetPass /> },
-    { path: '/intructor', element: <IntructorPage /> },
+    { path: '/instructor', element: <IntructorPage /> },
+    { path: '/instructor/detail', element: <IntructorDetail />},
     { path: '/private-information', element: <PrivatePage /> },
 
     { path: '/course', element: <CoursePage /> },
@@ -41,10 +44,11 @@ const RouterApp = () => {
     { path: '/theory/test/:id', element: <TestTheory /> },
     { path: '/theory/result/:id', element: <ResultTheory /> },
     
-    { path: '/blogs', element: <BlogPage />},
+    { path: '/blog', element: <BlogPage />},
     { path: '/blog/detail', element: <BlogDetail/>},
     { path: '/contact', element: <ContactPage /> },
 
+    { path: '/aboutus', element: <AboutUsPage />},
     { path: '/manager/dashboard', element: <DashboardPage /> },
 
     { path: '*', element: <ErrorPage /> },
