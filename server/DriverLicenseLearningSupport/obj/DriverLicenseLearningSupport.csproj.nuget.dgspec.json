@@ -1,22 +1,6 @@
 {
   "format": 1,
   "restore": {
-<<<<<<< HEAD
-    "E:\\SWP391\\Fall2023SWP391_NET1704_Group_HTTP\\server\\DriverLicenseLearningSupport\\DriverLicenseLearningSupport.csproj": {}
-  },
-  "projects": {
-    "E:\\SWP391\\Fall2023SWP391_NET1704_Group_HTTP\\server\\DriverLicenseLearningSupport\\DriverLicenseLearningSupport.csproj": {
-      "version": "1.0.0",
-      "restore": {
-        "projectUniqueName": "E:\\SWP391\\Fall2023SWP391_NET1704_Group_HTTP\\server\\DriverLicenseLearningSupport\\DriverLicenseLearningSupport.csproj",
-        "projectName": "DriverLicenseLearningSupport",
-        "projectPath": "E:\\SWP391\\Fall2023SWP391_NET1704_Group_HTTP\\server\\DriverLicenseLearningSupport\\DriverLicenseLearningSupport.csproj",
-        "packagesPath": "C:\\Users\\Thanh Thu\\.nuget\\packages\\",
-        "outputPath": "E:\\SWP391\\Fall2023SWP391_NET1704_Group_HTTP\\server\\DriverLicenseLearningSupport\\obj\\",
-        "projectStyle": "PackageReference",
-        "configFilePaths": [
-          "C:\\Users\\Thanh Thu\\AppData\\Roaming\\NuGet\\NuGet.Config",
-=======
     "D:\\FPT\\Kì 5\\SWP\\Fall2023SWP391_NET1704_Group_HTTP\\server\\DriverLicenseLearningSupport\\DriverLicenseLearningSupport.csproj": {}
   },
   "projects": {
@@ -31,7 +15,6 @@
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\doanv\\AppData\\Roaming\\NuGet\\NuGet.Config",
->>>>>>> d6648e7630a6b99b80e2afcd7a55d50018a438e7
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -81,8 +64,6 @@
               "target": "Package",
               "version": "[6.4.1, )"
             },
-<<<<<<< HEAD
-=======
             "MediatR": {
               "target": "Package",
               "version": "[6.0.0, )"
@@ -91,7 +72,6 @@
               "target": "Package",
               "version": "[6.0.1, )"
             },
->>>>>>> d6648e7630a6b99b80e2afcd7a55d50018a438e7
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
               "version": "[6.0.22, )"
@@ -119,13 +99,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.5.0, )"
-<<<<<<< HEAD
-=======
             },
             "VNPayPackage": {
               "target": "Package",
               "version": "[2.1.0, )"
->>>>>>> d6648e7630a6b99b80e2afcd7a55d50018a438e7
             }
           },
           "imports": [

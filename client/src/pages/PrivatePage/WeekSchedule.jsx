@@ -30,10 +30,12 @@ const WeekSchedule = () => {
   const [currentWeek, setCurrentWeek] = useState('');
   const [mentorId, setMentorId] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [openRegister, setOpenRegister] = useState(false);
 
   const handleChange = (event) => {
     setCurrentWeek(event.target.value);
-    async function selectedWeek() {
+    async function selectedWeek() { 
       const response = await axiosClient.get(
         `/members/${user.accountInfo.memberId}/schedule/filter?weekdayScheduleId=${event.target.value}`
       );
@@ -42,11 +44,9 @@ const WeekSchedule = () => {
     selectedWeek();
   };
 
-  const [open, setOpen] = useState(false);
   const handleClickOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const [openRegister, setOpenRegister] = useState(false);
   const handleClickOpenRegister = (teachingScheduleId) => {
     setIdSchedule(teachingScheduleId);
     setOpenRegister(true);

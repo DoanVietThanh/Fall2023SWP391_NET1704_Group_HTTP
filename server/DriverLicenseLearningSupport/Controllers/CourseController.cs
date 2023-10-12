@@ -461,8 +461,8 @@ namespace DriverLicenseLearningSupport.Controllers
             });
 
             // get all course feeback
-            var feedbacks = await _feedbackService.GetAllCourseFeedback(Guid.Parse(course.CourseId));
-            course.FeedBacks = feedbacks.ToList();
+            //var feedbacks = await _feedbackService.GetAllCourseFeedback(Guid.Parse(course.CourseId));
+            //course.FeedBacks = feedbacks.ToList();
 
             return Ok(new BaseResponse { 
                 StatusCode = StatusCodes.Status200OK,

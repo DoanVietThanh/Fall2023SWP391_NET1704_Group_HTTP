@@ -277,9 +277,9 @@ namespace DriverLicenseLearningSupport.Controllers
         }
 
         [HttpGet]
-        [Route("staffs/mentors/{page:int}")]
+        [Route("staffs/mentors")]
         [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> GetAllMentor([FromRoute] int page = 1)
+        public async Task<IActionResult> GetAllMentor()
         {
             // get all mentors
             var mentors = await _staffService.GetAllMentorAsync();
@@ -301,14 +301,14 @@ namespace DriverLicenseLearningSupport.Controllers
             }
 
             // paging
-            var result = PaginatedList<StaffModel>.CreateByIEnumerable(mentors, page, _appSettings.PageSize);
+            //var result = PaginatedList<StaffModel>.CreateByIEnumerable(mentors, page, _appSettings.PageSize);
 
             return Ok(new BaseResponse { 
                 StatusCode = StatusCodes.Status200OK,
                 Data = new {
-                    Mentors = result,
-                    PageIndex = result.PageIndex,
-                    TotalPage = result.TotalPage
+                    Mentors = mentors,
+                    //PageIndex = result.PageIndex,
+                    //TotalPage = result.TotalPage
                 }
             });
 

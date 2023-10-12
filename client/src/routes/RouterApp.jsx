@@ -38,7 +38,7 @@ const RouterApp = () => {
     { path: '/forgot-password', element: <ForgotPassword /> },
     { path: '/authentication/reset-password', element: <ShowForgetPass /> },
     { path: '/instructor', element: <IntructorPage /> },
-    { path: '/instructor/detail', element: <IntructorDetail />},
+    { path: '/instructor/detail', element: <IntructorDetail /> },
     // { path: '/private-information', element: <PrivatePage /> },
     { path: '/profile', element: <Profile /> },
     { path: '/week-schedule', element: <WeekSchedule /> },
@@ -48,7 +48,7 @@ const RouterApp = () => {
     { path: '/manage-banktest', element: <ManageBankTest /> },
 
     { path: '/course', element: <CoursePage /> },
-    { path: '/course/detail', element: <DetailCourse /> },
+    { path: '/course/detail/:idCourse', element: <DetailCourse /> },
 
     { path: '/document', element: <DocumentPage /> },
 
@@ -60,7 +60,7 @@ const RouterApp = () => {
     { path: '/blog/detail', element: <BlogDetail /> },
     { path: '/contact', element: <ContactPage /> },
 
-    { path: '/aboutus', element: <AboutUsPage />},
+    { path: '/aboutus', element: <AboutUsPage /> },
     { path: '/manager/dashboard', element: <DashboardPage /> },
     { path: '/test', element: <SideBar /> },
 
