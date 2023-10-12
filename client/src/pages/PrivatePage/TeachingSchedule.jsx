@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import SideBar from '../../components/SideBar';
 import { Box } from '@mui/material';
 import * as dayjs from 'dayjs';
@@ -208,7 +208,7 @@ const weekdays = [
 ];
 
 const TeachingSchedule = () => {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => setOpen(true);
 
