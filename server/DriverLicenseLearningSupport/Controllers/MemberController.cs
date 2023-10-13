@@ -1,6 +1,9 @@
 ﻿using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
+using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Models.Config;
 using DriverLicenseLearningSupport.Payloads.Filters;
@@ -39,6 +42,10 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly ICourseService _courseService;
         private readonly IFeedbackService _feedbackService;
         private readonly IImageService _imageService;
+        private readonly ICourseReservationService _courseReservationService;
+        private readonly ITeachingScheduleService _teachingScheduleService;
+        private readonly IWeekDayScheduleService _weekDayScheduleService;
+        private readonly ISlotService _slotService;
         private readonly IMemoryCache _memoryCache;
         private readonly AppSettings _appSettings;
         // cache key
@@ -55,6 +62,10 @@ namespace DriverLicenseLearningSupport.Controllers
             IStaffService staffService,
             IFeedbackService feedbackService,
             ICourseService courseService,
+            ICourseReservationService courseReservationService,
+            ITeachingScheduleService teachingScheduleService,
+            IWeekDayScheduleService weekDayScheduleService,
+            ISlotService slotService,
             IOptionsMonitor<AppSettings> monitor)
         {
             _memberService = memberService;
@@ -69,6 +80,10 @@ namespace DriverLicenseLearningSupport.Controllers
             _feedbackService = feedbackService;
             _licenseRegisterFormService = licenseRegisterFormService;
             _imageService = imageService;
+            _courseReservationService = courseReservationService;
+            _teachingScheduleService = teachingScheduleService;
+            _weekDayScheduleService = weekDayScheduleService;
+            _slotService = slotService;
             _appSettings = monitor.CurrentValue;
         }
 
@@ -647,17 +662,17 @@ namespace DriverLicenseLearningSupport.Controllers
             // generate image id
             var imageId = Guid.NewGuid();
             // upload image
-            await _imageService.UploadImageAsync(imageId, reqObj.Image);
+            //await _imageService.UploadImageAsync(imageId, reqObj.Image);
 
             // generate identity image id
             var identityImageId = Guid.NewGuid();
             // upload image
-            await _imageService.UploadImageAsync(identityImageId, reqObj.IdentityImage);
+            //await _imageService.UploadImageAsync(identityImageId, reqObj.IdentityImage);
 
             // generate health certification image id
             // upload image
             var healthCerImageId = Guid.NewGuid();
-            await _imageService.UploadImageAsync(healthCerImageId, reqObj.HealthCertificationImage);
+            //await _imageService.UploadImageAsync(healthCerImageId, reqObj.HealthCertificationImage);
 
             // generate license form register
             var licenseRegisterFormModel = reqObj.ToLicenseFormRegisterModel();
@@ -703,28 +718,28 @@ namespace DriverLicenseLearningSupport.Controllers
             if(reqObj.Image is not null)
             {
                 // remove prev image
-                await _imageService.DeleteImageAsync(Guid.Parse(lfRegister.Image));
+                //await _imageService.DeleteImageAsync(Guid.Parse(lfRegister.Image));
                 // upload new image to clound
-                await _imageService.UploadImageAsync(Guid.Parse(lfRegister.Image),
-                    reqObj.Image);
+                //await _imageService.UploadImageAsync(Guid.Parse(lfRegister.Image),
+                //    reqObj.Image);
             }
             // update identity image
             if (reqObj.IdentityImage is not null)
             {
                 // remove prev image
-                await _imageService.DeleteImageAsync(Guid.Parse(lfRegister.IdentityCardImage));
+                //await _imageService.DeleteImageAsync(Guid.Parse(lfRegister.IdentityCardImage));
                 // upload new image to clound
-                await _imageService.UploadImageAsync(Guid.Parse(lfRegister.IdentityCardImage),
-                    reqObj.IdentityImage);
+                //await _imageService.UploadImageAsync(Guid.Parse(lfRegister.IdentityCardImage),
+                    //reqObj.IdentityImage);
             }
             // update health certification image
             if (reqObj.HealthCertificationImage is not null)
             {
                 // remove prev image
-                await _imageService.DeleteImageAsync(Guid.Parse(lfRegister.HealthCertificationImage));
+                //await _imageService.DeleteImageAsync(Guid.Parse(lfRegister.HealthCertificationImage));
                 // upload new image to clound
-                await _imageService.UploadImageAsync(Guid.Parse(lfRegister.HealthCertificationImage),
-                    reqObj.HealthCertificationImage);
+                //await _imageService.UploadImageAsync(Guid.Parse(lfRegister.HealthCertificationImage),
+                    //reqObj.HealthCertificationImage);
             }
 
             return Ok(new BaseResponse { 
@@ -843,5 +858,179 @@ namespace DriverLicenseLearningSupport.Controllers
 
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
+
+        [HttpGet]
+        [Route("members/{id:Guid}/schedule")]
+        public async Task<IActionResult> GetMemberCalendar([FromRoute] Guid id)
+        {
+            // get course reservation
+            var courseReservation = await _courseReservationService.GetByMemberAsync(id);
+
+            // generate current date time
+            var currDate = DateTime.Now;
+            // get calendar by current date
+            var weekday = await _weekDayScheduleService.GetByDateAsync(currDate);
+            // get all weekday of calendar
+            var weekdays = await _weekDayScheduleService.GetAllAsync();
+            // get all slots 
+            var slots = await _slotService.GetAllAsync();
+            // convert to list of course
+            var listOfSlotSchedule = slots.ToList();
+
+            // get learning schedule for each slot
+            foreach (var s in slots)
+            {
+                var teachingSchedules
+                    = await _teachingScheduleService.GetBySlotAndWeekDayScheduleOfMemberAsync(s.SlotId,
+                        weekday.WeekdayScheduleId, 
+                        Guid.Parse(courseReservation.StaffId), id);
+                s.TeachingSchedules = teachingSchedules.ToList();
+            }
+
+            // get course by id 
+            var course = await _courseService.GetAsync(Guid.Parse(weekday.CourseId));
+            // set null mentors list 
+            course.Mentors = null!;
+            // get staff by id
+            var staff = await _staffService.GetAsync(Guid.Parse(courseReservation.StaffId));
+
+            // response
+            return Ok(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Data = new
+                {
+                    Course = course,
+                    Mentor = staff,
+                    Filter = weekdays.Select(x => new {
+                        Id = x.WeekdayScheduleId,
+                        Desc = x.WeekdayScheduleDesc
+                    }),
+                    Weekdays = weekday,
+                    SlotSchedules = listOfSlotSchedule
+                }
+            });
+        }
+
+        [HttpGet]
+        [Route("members/{id:Guid}/schedule/filter")]
+        public async Task<IActionResult> GetMemberCalendarByFilter([FromRoute] Guid id,[FromQuery] LearningScheduleFilter filters)
+        {
+            // get teaching date by filters
+            var teachingDate = await _teachingScheduleService.GetMemberScheduleByFilterAsync(filters, id);
+
+            if (teachingDate is null)
+            {
+                return NotFound(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Not found any teaching schedule match required"
+                });
+            }
+
+            // get calendar by id
+            var weekday = await _weekDayScheduleService.GetAsync(
+                Convert.ToInt32(teachingDate.WeekdayScheduleId));
+            // get all weekday of calendar
+            var weekdays = await _weekDayScheduleService.GetAllAsync();
+            // get all slots 
+            var slots = await _slotService.GetAllAsync();
+            // convert to list of course
+            var listOfSlotSchedule = slots.ToList();
+            // get teaching schedule for each slot
+            foreach (var s in slots)
+            {
+                var teachingSchedules
+                    = await _teachingScheduleService.GetBySlotAndWeekDayScheduleOfMemberAsync(s.SlotId,
+                        weekday.WeekdayScheduleId, filters.MentorId, id);
+                s.TeachingSchedules = teachingSchedules.ToList();
+            }
+            // get course by id 
+            var course = await _courseService.GetAsync(Guid.Parse(weekday.CourseId));
+            course.Mentors = null;
+            // get staff by id
+            var staff = await _staffService.GetAsync(filters.MentorId);
+
+            // response
+            return Ok(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Data = new
+                {
+                    Course = course,
+                    Mentor = staff,
+                    Filter = weekdays.Select(x => new {
+                        Id = x.WeekdayScheduleId,
+                        Desc = x.WeekdayScheduleDesc
+                    }),
+                    Weekdays = weekday,
+                    SlotSchedules = listOfSlotSchedule
+                }
+            });
+        }
+
+        [HttpPost]
+        [Route("members/schedule")]
+        public async Task<IActionResult> LearningScheduleRegister([FromBody] LearningScheduleRequest reqObj)
+        {
+            // check exist in course reservation
+            var courseReservation = await _courseReservationService.GetByMemberAsync(reqObj.MemberId);
+
+            // generate rollcallbook model
+            var rcbModel = reqObj.ToRollCallBookModel();
+
+            // check exist teaching schedule
+            var teachingSchedule = await _teachingScheduleService.GetByMentorIdAndTeachingDateAsync(
+                reqObj.MentorId, reqObj.LearningDate, reqObj.SlotId);
+            if (teachingSchedule is null)
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Not found any schedule match required"
+                });
+            }
+
+            // check member in course
+            if(courseReservation.StaffId != teachingSchedule.StaffId)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Member {reqObj.MemberId} not allow to register this " +
+                        $"schedule because he/she not in course {courseReservation.CourseId}"
+                });
+            }
+
+            // check exist member
+            var member = await _memberService.GetAsync(reqObj.MemberId);
+            if(member is null)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Not found any member match id {reqObj.MemberId}"
+                });
+            }
+
+            // add member rcb to teaching schedule
+            var isSuccess = await _teachingScheduleService.AddRollCallBookAsync(
+                teachingSchedule.TeachingScheduleId, rcbModel);
+
+            if (isSuccess)
+            {
+
+                // add teaching schedule vehicle
+                await _teachingScheduleService.AddVehicleAsync(
+                    teachingSchedule.TeachingScheduleId, 
+                    Convert.ToInt32(courseReservation.VehicleId));
+
+                return Ok(new BaseResponse { 
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = "Register schedule successfully"
+                });
+            }
+
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
     }
 }

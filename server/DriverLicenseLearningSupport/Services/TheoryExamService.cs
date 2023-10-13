@@ -37,6 +37,10 @@ namespace DriverLicenseLearningSupport.Services
         public async Task<TheoryExamModel> GetByIdAsync(int id)
         {
             var theoryExamModel =  await _theoryExamRepository.GetByIdAsync(id);
+            if(theoryExamModel is null) 
+            {
+                return null;
+            }
 
             // loop all question
             foreach(var question in theoryExamModel.Questions)

@@ -13,8 +13,9 @@ namespace DriverLicenseLearningSupport.Services.Impl
         Task<bool> DeleteAnswersByQuestionIdAsync(int quesitonId);
         Task<AnswerModel> GetByAnswerIdAsync(int answerId);
 
-        public Task<int> GetRightAnswerIdByQuestionId(int questionId);
+        Task<int> GetRightAnswerIdByQuestionId(int questionId);
 
         Task<AnswerModel> GetByQuestionIdAndAnswerDesc(int questionId, string answerDesc);
+        Task<AnswerModel> UpdateAnswerAsync(int answerId, AnswerModel answer);
     }
 }

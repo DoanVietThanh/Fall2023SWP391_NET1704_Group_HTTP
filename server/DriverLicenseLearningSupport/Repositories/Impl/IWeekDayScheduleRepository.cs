@@ -5,6 +5,7 @@ namespace DriverLicenseLearningSupport.Repositories.Impl
 {
     public interface IWeekDayScheduleRepository
     {
+        Task<WeekdayScheduleModel> GetAsync(int id);
         Task<WeekdayScheduleModel> GetByDateAsync(DateTime date);
         Task<IEnumerable<WeekdayScheduleModel>> GetAllAsync();
         Task<bool> CreateRangeAsync(IEnumerable<WeekdaySchedule> weekdays);

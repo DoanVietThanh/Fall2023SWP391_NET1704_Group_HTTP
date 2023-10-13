@@ -39,7 +39,7 @@ const RouterApp = () => {
 
     { path: '/theory', element: <TheoryPage /> },
     { path: '/theory/test/:theoryExamId', element: <TestTheory /> },
-    { path: '/theory/result/:id', element: <ResultTheory /> },
+    { path: '/theory/result/:mockTestId', element: <ResultTheory /> },
 
     { path: '/blogs', element: <BlogPage /> },
     { path: '/blog/detail', element: <BlogDetail /> },

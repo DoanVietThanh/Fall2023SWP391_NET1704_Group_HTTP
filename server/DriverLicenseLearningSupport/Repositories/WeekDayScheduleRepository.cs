@@ -29,16 +29,26 @@ namespace DriverLicenseLearningSupport.Repositories
                 await _context.WeekdaySchedules.ToListAsync());
         }
 
+        public async Task<WeekdayScheduleModel> GetAsync(int id)
+        {
+            // get weekday by id
+            var weekdayEntity = await _context.WeekdaySchedules.Where(x => x.WeekdayScheduleId == id)
+                                                               .FirstOrDefaultAsync();
+            return _mapper.Map<WeekdayScheduleModel>(weekdayEntity);
+        }
+
         public async Task<WeekdayScheduleModel> GetByDateAsync(DateTime date)
         {
-            var findDate = await _context.WeekdaySchedules.Where(x => x.Monday <= date 
-                                                            && x.Sunday >= date)
+            var findDate = await _context.WeekdaySchedules.Where(x => date >= x.Monday
+                                                            && date <= x.Sunday)
                                                           .FirstOrDefaultAsync();
-
-            var weekday = await _context.WeekdaySchedules.Where(x => x.WeekdayScheduleId == findDate.WeekdayScheduleId)
+            if(findDate is not null)
+            {
+                var weekday = await _context.WeekdaySchedules.Where(x => x.WeekdayScheduleId == findDate.WeekdayScheduleId)
                                                          .FirstOrDefaultAsync();
 
-            if(weekday is not null) return _mapper.Map<WeekdayScheduleModel>(weekday);
+                if (weekday is not null) return _mapper.Map<WeekdayScheduleModel>(weekday);
+            }
             return null;
         }
     }

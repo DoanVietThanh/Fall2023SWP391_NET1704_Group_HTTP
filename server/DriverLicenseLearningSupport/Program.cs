@@ -1,7 +1,6 @@
 using Amazon;
 using Amazon.S3;
 using AutoMapper;
-using DriverLicenseLearningSupport.Controllers;
 using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Exceptions;
 using DriverLicenseLearningSupport.Mapping;
@@ -68,7 +67,7 @@ builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<IPaymentTypeService, PaymentTypeService>();
 builder.Services.AddScoped<IWeekDayScheduleService, WeekDayScheduleService>();
 builder.Services.AddScoped<ISlotService, SlotService>();
-builder.Services.AddScoped<ICourseServationService, CourseReservationService>();
+builder.Services.AddScoped<ICourseReservationService, CourseReservationService>();
 builder.Services.AddScoped<IVehicleService, VehicleService>();
 builder.Services.AddScoped<ITeachingScheduleService, TeachingScheduleService>();
 builder.Services.AddScoped<IQuestionService, QuestionService>();

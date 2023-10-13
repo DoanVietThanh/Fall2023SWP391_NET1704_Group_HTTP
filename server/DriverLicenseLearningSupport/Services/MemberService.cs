@@ -53,16 +53,16 @@ namespace DriverLicenseLearningSupport.Services
             var member = await _memberRepository.GetByEmailAsync(email);
             if (member is not null)
             {
-                member.AvatarImage = await _imageService.GetPreSignedURL(Guid.Parse(member.AvatarImage));
+                //member.AvatarImage = await _imageService.GetPreSignedURL(Guid.Parse(member.AvatarImage));
                 member.LicenseForm = await _licenseRegisterFormService.GetAsync(Convert.ToInt32(member.LicenseFormId));
                 if (member.LicenseForm is not null)
                 {
-                    member.LicenseForm.Image 
-                        = await _imageService.GetPreSignedURL(Guid.Parse(member.LicenseForm.Image));
-                    member.LicenseForm.IdentityCardImage 
-                        = await _imageService.GetPreSignedURL(Guid.Parse(member.LicenseForm.IdentityCardImage));
-                    member.LicenseForm.HealthCertificationImage 
-                        = await _imageService.GetPreSignedURL(Guid.Parse(member.LicenseForm.HealthCertificationImage));
+                    //member.LicenseForm.Image 
+                    //    = await _imageService.GetPreSignedURL(Guid.Parse(member.LicenseForm.Image));
+                    //member.LicenseForm.IdentityCardImage 
+                    //    = await _imageService.GetPreSignedURL(Guid.Parse(member.LicenseForm.IdentityCardImage));
+                    //member.LicenseForm.HealthCertificationImage 
+                    //    = await _imageService.GetPreSignedURL(Guid.Parse(member.LicenseForm.HealthCertificationImage));
                 }
             }
             return member;

@@ -28,8 +28,26 @@ namespace DriverLicenseLearningSupport.Repositories
 
         public async Task<IEnumerable<VehicleTypeModel>> GetAllVehicleTypeAsync()
         {
-            var vehicleTypes = await _context.VehicleTypes.ToListAsync();
+            var vehicleTypes = await _context.VehicleTypes.Select(x => new VehicleType { 
+                VehicleTypeId = x.VehicleTypeId,
+                LicenseTypeId = x.LicenseTypeId,
+                LicenseType = x.LicenseType,
+                VehicleTypeDesc = x.VehicleTypeDesc
+            }).ToListAsync();
             return _mapper.Map<IEnumerable<VehicleTypeModel>>(vehicleTypes);
+        }
+
+        public async Task<VehicleModel> GetByLicenseTypeIdAsync(int licenseTypeId)
+        {
+            var vehicleEntity = await _context.Vehicles.Select(x => new Vehicle { 
+                VehicleId = x.VehicleId,
+                VehicleName = x.VehicleName,
+                RegisterDate = x.RegisterDate,
+                VehicleLicensePlate = x.VehicleLicensePlate,
+                VehicleTypeId = x.VehicleTypeId,
+                VehicleType = x.VehicleType,
+            }).FirstOrDefaultAsync();
+            return _mapper.Map<VehicleModel>(vehicleEntity);
         }
     }
 }

@@ -74,7 +74,8 @@ CREATE TABLE [dbo].Course(
 	total_session INT,
 	total_month INT,
 	start_date DATETIME,
-	is_active BIT
+	is_active BIT,
+	license_type_id INT
 )
 GO
 CREATE TABLE [dbo].Course_Mentor(
@@ -325,6 +326,9 @@ ADD CONSTRAINT FK_CourseCurriculum_CurriculumnId FOREIGN KEY (curriculum_id) REF
 -- dbo.Course - dbo.Course_Curriculum
 ALTER TABLE Course_Curriculum
 ADD CONSTRAINT FK_CourseCurriculum_CourseId FOREIGN KEY (course_id) REFERENCES Course (course_id)
+-- dbo.Course - dbo.LicenseType
+ALTER TABLE Course
+ADD CONSTRAINT FK_Course_LicenseTypeId FOREIGN KEY (license_type_id) REFERENCES License_Type (license_type_id)
 -- dbo.Course_Reservation - dbo.Course
 ALTER TABLE Course_Reservation
 ADD CONSTRAINT FK_CourseReservation_CourseId FOREIGN KEY (course_id) REFERENCES Course (course_id)
@@ -442,7 +446,7 @@ VALUES (N'Chưa thanh toán'), (N'Đang diễn ra'), (N'Đã kết thúc')
 INSERT INTO [dbo].Payment_Type(payment_type_desc)
 VALUES (N'Thanh toán trực tiếp'), (N'Credit Card'), (N'VNPAY')
 INSERT INTO [dbo].Vehicle_Type(vehicle_type_desc, license_type_id)
-VALUES (N'Xe số sàn', 3), (N'Xe số tự động', 3), (N'Xe số sàn', 4), (N'Xe số tự động', 4)
+VALUES (N'Xe số sàn', 3), (N'Xe số tự động', 4)
 
 
 

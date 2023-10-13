@@ -23,6 +23,17 @@ namespace DriverLicenseLearningSupport.Repositories
 
         }
 
+        public async Task<bool> CheckExistedQuestion(string questionDesc, int lisenceId)
+        {
+            var question = await _context.Questions.Where(x => x.QuestionAnswerDesc.Equals(questionDesc) && x.LicenseTypeId == lisenceId)
+                .FirstOrDefaultAsync();
+            if (question is not null) 
+            {
+                return true;
+            }
+            return false;
+        }
+
         public async Task<QuestionModel> CreateAsync(Question question)
         {
             await _context.Questions.AddAsync(question);
@@ -82,7 +93,16 @@ namespace DriverLicenseLearningSupport.Repositories
 
         }
 
-        
+        public async Task<QuestionModel> UpdateQuestionAsync(QuestionModel updatedModel, int questionId)
+        {
+            var question = await _context.Questions.Where(x => x.QuestionId ==  questionId).FirstOrDefaultAsync();
+            question.QuestionAnswerDesc = updatedModel.QuestionAnswerDesc;
+            question.Image = updatedModel.Image;
+            question.IsParalysis = updatedModel.IsParalysis;
+            await _context.SaveChangesAsync();
+            return _mapper.Map<QuestionModel>(question);
+
+        }
 
         public async Task<QuestionModel> UpdateStatusQuestionAsync(int questionId, bool status)
         {

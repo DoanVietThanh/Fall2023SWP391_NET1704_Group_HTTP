@@ -37,7 +37,7 @@ namespace DriverLicenseLearningSupport.Controllers
             _memoryCache = memoryCache;
             _appSettings = monitor.CurrentValue;
         }
-
+        
         [HttpGet]
         [Route("theory-exam/add-question")]
         public async Task<IActionResult> LicenseFormRegister()
@@ -175,6 +175,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 }
             });
         }
+        
         [HttpPost]
         [Route("theory-exam/add-question")]
         [Authorize (Roles = "Staff")]
