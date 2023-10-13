@@ -46,17 +46,18 @@ namespace DriverLicenseLearningSupport.Utils
                 }
             }
 
-            int remainingDays = DateTime.DaysInMonth(startDate.Year, startDate.Month) - startDate.Day;
-            if(remainingDays > 0)
-            {
-                foreach (DateTime dt in GetDates(startMonth + totalMonth , startYear))
-                {
-                    if (dt >= startDate.AddMonths(totalMonth - 1) && dt.Day <= startDate.Day)
-                    {
-                        yield return dt;
-                    }
-                }
-            }
+            //int remainingDays = DateTime.DaysInMonth(startDate.Year, startDate.Month) - startDate.Day;
+            //if(remainingDays > 0)
+            //{
+            //    foreach (DateTime dt in GetDates(startMonth + totalMonth , startYear))
+            //    {
+            //        //var endDate = startDate.AddMonths(3).Subtract(TimeSpan.FromDays(1));
+            //        if (dt >= startDate.AddMonths(totalMonth - 1) && dt.Day <= startDate.Day)
+            //        {
+            //            yield return dt;
+            //        }
+            //    }
+            //}
             
 
             int isOverValidMonth = DateTimeHelper.ToSpecificMonthValid(totalMonth);

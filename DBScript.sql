@@ -135,7 +135,8 @@ CREATE TABLE [dbo].Vehicle(
 	vehicle_name NVARCHAR(155) NOT NULL,
 	vehicle_license_plate NVARCHAR(155) NOT NULL,
 	register_date DATETIME,
-	vehicle_type_id INT
+	vehicle_type_id INT,
+	vehicle_image NVARCHAR(155)
 )
 GO
 CREATE TABLE [dbo].Slot(
@@ -173,6 +174,7 @@ CREATE TABLE [dbo].Roll_Call_Book(
 	isAbsence BIT,
 	comment NVARCHAR(255),
 	member_id NVARCHAR(200) NOT NULL,
+	member_total_session INT,
 	teaching_schedule_id INT NOT NULL
 )
 GO
@@ -442,7 +444,7 @@ VALUES (N'A1'),(N'A2'),(N'B1'),(N'B1.1'),(N'B2')
 INSERT INTO [dbo].License_Register_Form_Status(register_form_status_desc)
 VALUES (N'Chưa duyệt'), (N'Đã duyệt')
 INSERT INTO [dbo].Course_Reservation_Status(course_reservation_status_desc)
-VALUES (N'Chưa thanh toán'), (N'Đang diễn ra'), (N'Đã kết thúc')
+VALUES (N'Chưa thanh toán'), (N'Đã thanh toán'), (N'Đã kết thúc')
 INSERT INTO [dbo].Payment_Type(payment_type_desc)
 VALUES (N'Thanh toán trực tiếp'), (N'Credit Card'), (N'VNPAY')
 INSERT INTO [dbo].Vehicle_Type(vehicle_type_desc, license_type_id)

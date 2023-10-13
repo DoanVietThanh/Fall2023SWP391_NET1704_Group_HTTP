@@ -1,4 +1,6 @@
-﻿using DriverLicenseLearningSupport.Models;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using DriverLicenseLearningSupport.Entities;
+using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Models.Config;
 using DriverLicenseLearningSupport.Payloads.Filters;
 using DriverLicenseLearningSupport.Payloads.Request;
@@ -9,11 +11,20 @@ using DriverLicenseLearningSupport.Utils;
 using DriverLicenseLearningSupport.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.IIS.Core;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using OfficeOpenXml;
+using Org.BouncyCastle.Asn1.Ocsp;
+using Org.BouncyCastle.Ocsp;
 using Org.BouncyCastle.Security.Certificates;
+using RestSharp;
 using System.Globalization;
+using System.Net;
+using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography.Xml;
 
 namespace DriverLicenseLearningSupport.Controllers
 {
@@ -92,7 +103,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 }
             });
         }
-        
+
         [HttpPost]
         [Route("staffs/add")]
         [Authorize(Roles = "Admin,Staff")]
@@ -178,21 +189,21 @@ namespace DriverLicenseLearningSupport.Controllers
         [HttpGet]
         [Route("staffs/{id:Guid}")]
         [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> GetStaff([FromRoute] Guid id) 
+        public async Task<IActionResult> GetStaff([FromRoute] Guid id)
         {
             // get staff by id
             var staff = await _staffService.GetAsync(id);
             // not found
-            if (staff is null) 
+            if (staff is null)
             {
-                return NotFound(new BaseResponse { 
-                    StatusCode = StatusCodes.Status404NotFound, 
+                return NotFound(new BaseResponse {
+                    StatusCode = StatusCodes.Status404NotFound,
                     Message = $"Not found any staff match id {id}"
                 });
             }
 
             // 200 OK <- found
-            return Ok(new BaseResponse { 
+            return Ok(new BaseResponse {
                 StatusCode = StatusCodes.Status200OK,
                 Data = staff
             });
@@ -201,7 +212,7 @@ namespace DriverLicenseLearningSupport.Controllers
         [HttpGet]
         [Route("staffs/{page:int}")]
         [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> GetAllStaff([FromRoute] int page = 1) 
+        public async Task<IActionResult> GetAllStaff([FromRoute] int page = 1)
         {
             // memory cache
             if (!_cache.TryGetValue(_appSettings.StaffsCacheKey, out IEnumerable<StaffModel> staffs))
@@ -237,7 +248,7 @@ namespace DriverLicenseLearningSupport.Controllers
             var result = PaginatedList<StaffModel>.CreateByIEnumerable(staffs, page, _appSettings.PageSize);
 
             // 200 Ok <- found
-            return Ok(new BaseResponse { 
+            return Ok(new BaseResponse {
                 StatusCode = StatusCodes.Status200OK,
                 Data = new {
                     Staffs = result,
@@ -256,7 +267,7 @@ namespace DriverLicenseLearningSupport.Controllers
             var staffs = await _staffService.GetAllByFilterAsync(filters);
 
             // 404 Not Found <- not found any staff match filters
-            if (staffs is null) return NotFound(new BaseResponse { 
+            if (staffs is null) return NotFound(new BaseResponse {
                 StatusCode = StatusCodes.Status404NotFound,
                 Message = $"Not found any staffs"
             });
@@ -268,7 +279,7 @@ namespace DriverLicenseLearningSupport.Controllers
             return Ok(new BaseResponse
             {
                 StatusCode = StatusCodes.Status200OK,
-                Data = new { 
+                Data = new {
                     Staffs = result,
                     PageIndex = result.PageIndex,
                     TotalPage = result.TotalPage
@@ -277,7 +288,7 @@ namespace DriverLicenseLearningSupport.Controllers
         }
 
         [HttpGet]
-        [Route("staffs/mentors/{page:int}")]
+        [Route("staffs/mentors")]
         [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> GetAllMentor([FromRoute] int page = 1)
         {
@@ -285,38 +296,34 @@ namespace DriverLicenseLearningSupport.Controllers
             var mentors = await _staffService.GetAllMentorAsync();
 
             // get all mentors feeback
-            foreach(var mentor in mentors) 
+            foreach (var mentor in mentors)
             {
                 var feedbacks = await _feedBackService.GetAllMentorFeedback(Guid.Parse(mentor.StaffId));
                 mentor.FeedBacks = feedbacks.ToList();
             }
 
             // check exist
-            if(mentors is null)
+            if (mentors is null)
             {
-                return NotFound(new BaseResponse { 
+                return NotFound(new BaseResponse {
                     StatusCode = StatusCodes.Status404NotFound,
                     Message = "Not found any mentors"
                 });
             }
 
             // paging
-            var result = PaginatedList<StaffModel>.CreateByIEnumerable(mentors, page, _appSettings.PageSize);
+            //var result = PaginatedList<StaffModel>.CreateByIEnumerable(mentors, page, _appSettings.PageSize);
 
-            return Ok(new BaseResponse { 
+            return Ok(new BaseResponse {
                 StatusCode = StatusCodes.Status200OK,
                 Data = new {
-                    Mentors = result,
-                    PageIndex = result.PageIndex,
-                    TotalPage = result.TotalPage
+                    Mentors = mentors,
+                    //PageIndex = result.PageIndex,
+                    //TotalPage = result.TotalPage
                 }
             });
 
         }
-
-        //[HttpGet]
-        //[Route("staffs/mentors")]
-        //public async Task<IActionResult> 
 
         [HttpGet]
         [Route("staffs/mentors/{id:Guid}/courses")]
@@ -324,19 +331,19 @@ namespace DriverLicenseLearningSupport.Controllers
         {
             var courseMentor = await _courseService.GetAllMentorCourseAsync(id);
 
-            if(courseMentor is null)
+            if (courseMentor is null)
             {
-                return BadRequest(new BaseResponse { 
+                return BadRequest(new BaseResponse {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = $"Not found any teaching schedule of mentor {id}"
                 });
             }
 
-            return Ok(new BaseResponse { 
+            return Ok(new BaseResponse {
                 StatusCode = StatusCodes.Status200OK,
                 Data = courseMentor
             });
-        } 
+        }
 
         [HttpGet]
         [Route("staffs/mentors/{id:Guid}/schedule")]
@@ -348,8 +355,8 @@ namespace DriverLicenseLearningSupport.Controllers
             // check teaching course exist
             if (course is null)
             {
-                return BadRequest(new BaseResponse { 
-                    StatusCode = StatusCodes.Status400BadRequest,   
+                return BadRequest(new BaseResponse {
+                    StatusCode = StatusCodes.Status400BadRequest,
                     Message = $"Not found any teaching schedule of mentor {id}"
                 });
             }
@@ -362,7 +369,7 @@ namespace DriverLicenseLearningSupport.Controllers
             var courseStartDate = DateTime.ParseExact(Convert.ToDateTime(course.StartDate).ToString("yyyy-MM-dd"),
                 _appSettings.DateFormat, CultureInfo.InvariantCulture);
             var courseTotalMonth = Convert.ToInt32(course.TotalMonth);
-            if(currDate < courseStartDate && 
+            if (currDate < courseStartDate &&
                currDate > courseStartDate.AddMonths(courseTotalMonth))
             {
                 currDate = courseStartDate;
@@ -388,7 +395,7 @@ namespace DriverLicenseLearningSupport.Controllers
             // get all teaching schedule of mentor
 
             // get teaching schedule for each slot
-            foreach(var s in slots)
+            foreach (var s in slots)
             {
                 var teachingSchedules
                     = await _teachingScheduleService.GetBySlotAndWeekDayScheduleAsync(s.SlotId,
@@ -416,25 +423,25 @@ namespace DriverLicenseLearningSupport.Controllers
         [Route("staffs/mentors/{id:Guid}/schedule/filter")]
         //[Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> GetMentorScheduleByFilter([FromRoute] Guid id,
-            [FromQuery] TeachingScheduleFilter filters)  
+            [FromQuery] TeachingScheduleFilter filters)
         {
 
             WeekdayScheduleModel weekday = null!;
             // get weekday by id
-            if(filters.WeekDayScheduleId is not null)
+            if (filters.WeekDayScheduleId is not null)
             {
                 weekday = await _weekDayScheduleService.GetAsync(
                     Convert.ToInt32(filters.WeekDayScheduleId));
             }
-            
-            if(filters.TeachingDate is not null)
+
+            if (filters.TeachingDate is not null)
             {
                 // get teaching date by filters
                 var teachingDate = await _teachingScheduleService.GetByFilterAsync(filters);
 
-                if(teachingDate is null)
+                if (teachingDate is null)
                 {
-                    return BadRequest(new BaseResponse { 
+                    return BadRequest(new BaseResponse {
                         StatusCode = StatusCodes.Status400BadRequest,
                         Message = $"Not found any schedule match date {filters.TeachingDate}"
                     });
@@ -464,19 +471,19 @@ namespace DriverLicenseLearningSupport.Controllers
             var course = await _courseService.GetAsync(Guid.Parse(weekday.CourseId));
             course.Mentors = null;
 
-            // response
             return Ok(new BaseResponse
             {
                 StatusCode = StatusCodes.Status200OK,
                 Data = new
                 {
-                    Course = course,
-                    Filter = weekdays.Select(x => new {
-                        Id = x.WeekdayScheduleId,
-                        Desc = x.WeekdayScheduleDesc
+                    course = course,
+                    filter = weekdays.Select(x => new
+                    {
+                        id = x.WeekdayScheduleId,
+                        desc = x.WeekdayScheduleDesc
                     }),
-                    Weekdays = weekday,
-                    SlotSchedules = listOfSlotSchedule
+                    weekdays = weekday,
+                    slotschedules = listOfSlotSchedule
                 }
             });
         }
@@ -484,7 +491,7 @@ namespace DriverLicenseLearningSupport.Controllers
         [HttpGet]
         [Route("staffs/mentors/{id:Guid}/schedule-register")]
         [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> TeachingScheduleRegister([FromRoute] Guid id) 
+        public async Task<IActionResult> TeachingScheduleRegister([FromRoute] Guid id)
         {
             // get course by mentor id
             var courses = await _courseService.GetAllMentorCourseAsync(id);
@@ -502,16 +509,16 @@ namespace DriverLicenseLearningSupport.Controllers
             var slots = await _slotService.GetAllAsync();
 
             // 404 Not found 
-            if(slots is null)
+            if (slots is null)
             {
-                return NotFound(new BaseResponse { 
+                return NotFound(new BaseResponse {
                     StatusCode = StatusCodes.Status404NotFound,
                     Message = "Not found any slots"
                 });
             }
 
             // 200Ok <- found
-            return Ok(new BaseResponse { 
+            return Ok(new BaseResponse {
                 StatusCode = StatusCodes.Status200OK,
                 Data = new
                 {
@@ -529,11 +536,28 @@ namespace DriverLicenseLearningSupport.Controllers
             // get mentor course
             var course = await _courseService.GetByMentorIdAndCourseIdAsync(Guid.Parse(reqObj.MentorId),
                 Guid.Parse(reqObj.CourseId));
-            if(course is null)
+            if (course is null)
             {
-                return BadRequest(new BaseResponse { 
+                return BadRequest(new BaseResponse {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = $"Mentor are not allow to register this course"
+                });
+            }
+
+            // Limit register date range
+            var courseStartDate = Convert.ToDateTime(course.StartDate);
+            var courseEndDate = courseStartDate.AddMonths(Convert.ToInt32(course.TotalMonth));
+            if (reqObj.TeachingDate < courseStartDate ||
+               reqObj.TeachingDate > courseEndDate)
+            {
+                return BadRequest(new BaseResponse {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Cannot create teaching schedule, course start-date from {courseStartDate.ToString("dd/MM/yyyy")}" +
+                    $" to {courseEndDate.ToString("dd/MM/yyyy")}",
+                    Data = new {
+                        StartDate = courseStartDate,
+                        EndDate = courseEndDate
+                    }
                 });
             }
 
@@ -561,9 +585,9 @@ namespace DriverLicenseLearningSupport.Controllers
                 reqObj.TeachingDate,
                 Guid.Parse(reqObj.MentorId),
                 Guid.Parse(reqObj.CourseId));
-            if(otherCourseSchedule is not null)
+            if (otherCourseSchedule is not null)
             {
-                return BadRequest(new BaseResponse { 
+                return BadRequest(new BaseResponse {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = $"Slot and teaching date are already register"
                 });
@@ -579,21 +603,132 @@ namespace DriverLicenseLearningSupport.Controllers
                 var createdSchedule = await _teachingScheduleService.CreateAsync(teachingSchedule);
                 if (createdSchedule is not null)
                 {
-                    return new ObjectResult(createdSchedule) { StatusCode = StatusCodes.Status200OK };
+
+                    // get all weekday of calendar
+                    var weekdays = await _weekDayScheduleService.GetAllByCourseId(
+                        Guid.Parse(weekday.CourseId));
+                    // get all slots 
+                    var slots = await _slotService.GetAllAsync();
+                    // convert to list of course
+                    var listOfSlotSchedule = slots.ToList();
+                    // get teaching schedule for each slot
+                    foreach (var s in slots)
+                    {
+                        var teachingSchedules
+                            = await _teachingScheduleService.GetBySlotAndWeekDayScheduleAsync(s.SlotId,
+                                weekday.WeekdayScheduleId, 
+                                Guid.Parse(reqObj.MentorId));
+                        s.TeachingSchedules = teachingSchedules.ToList();
+                    }
+                    // set null mentors collection
+                    course.Mentors = null;
+
+                    return new ObjectResult(new BaseResponse
+                    {
+                        StatusCode = StatusCodes.Status201Created,
+                        Data = new
+                        {
+                            course = course,
+                            filter = weekdays.Select(x => new
+                            {
+                                id = x.WeekdayScheduleId,
+                                desc = x.WeekdayScheduleDesc
+                            }),
+                            weekdays = weekday,
+                            slotschedules = listOfSlotSchedule
+                        }
+                    }) { StatusCode = StatusCodes.Status200OK };
                 }
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            return BadRequest(new BaseResponse { 
+            return BadRequest(new BaseResponse {
                 StatusCode = StatusCodes.Status400BadRequest,
                 Message = $"Ngày đăng ký và slot đăng ký đã có trong lịch dạy, vui lòng chọn lại"
             });
         }
 
         [HttpGet]
+        [Route("staffs/mentors/{id:Guid}/schedule-register/range")]
+        public async Task<IActionResult> TeachingScheduleRegisterRange([FromRoute] Guid id)
+        {
+            // get course by mentor id
+            var courses = await _courseService.GetAllMentorCourseAsync(id);
+            // not found
+            if (courses is null)
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Not found any teaching schedule of mentor {id}"
+                });
+            }
+
+            // get slots
+            var slots = await _slotService.GetAllAsync();
+
+            // 404 Not found 
+            if (slots is null)
+            {
+                return NotFound(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = "Not found any slots"
+                });
+            }
+
+            var weekdays = _appSettings.WeekdaySchedules;
+
+            // 200Ok <- found
+            return Ok(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Data = new
+                {
+                    MentorCourses = courses,
+                    Slots = slots,
+                    Weekdays = weekdays
+                }
+            });
+        }
+
+        [HttpPost]
+        [Route("staffs/mentors/schedule-register/range")]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> TeachingScheduleRegisterRange([FromBody] TeachingScheduleRangeRequest reqObj)
+        {
+
+            // get course by id
+            var course = await _courseService.GetAsync(Guid.Parse(reqObj.CourseId));
+            if (course is null)
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Mentor are not allow to register this course"
+                });
+            }
+
+            // get weekdays schedule by course id
+            var weekdaySchedules = await _weekDayScheduleService.GetAllByCourseId(
+                Guid.Parse(course.CourseId));
+
+            // generate teaching schedule
+            // init model
+            var initSchedule = reqObj.ToInitScheduleModel();
+
+            // create range schedule
+            await _teachingScheduleService.CreateRangeBySlotAndWeekdayAsync(reqObj.SlotId, reqObj.Weekdays,
+                weekdaySchedules.First().WeekdayScheduleId,
+                initSchedule);
+
+            return null!;
+        }
+ 
+        [HttpGet]
         [Route("staffs/update")]
         [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> UpdateStaff() 
+        public async Task<IActionResult> UpdateStaff()
         {
             // get all job title
             var jobTitles = await _jobTitleService.GetAllAsync();
@@ -611,13 +746,13 @@ namespace DriverLicenseLearningSupport.Controllers
         [HttpPut]
         [Route("staffs/{id:Guid}/update")]
         [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> UpdateStaff([FromRoute] Guid id, [FromForm] StaffUpdateRequest reqObj) 
+        public async Task<IActionResult> UpdateStaff([FromRoute] Guid id, [FromForm] StaffUpdateRequest reqObj)
         {
             // get staff by id
             var staff = await _staffService.GetAsync(id);
 
             // 404 Not Found <- not found staff match id
-            if (staff is null) 
+            if (staff is null)
             {
                 return NotFound(new BaseResponse
                 {
@@ -666,7 +801,7 @@ namespace DriverLicenseLearningSupport.Controllers
         [HttpDelete]
         [Route("staffs/{id:Guid}/delete")]
         [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> DeleteStaff([FromRoute] Guid id) 
+        public async Task<IActionResult> DeleteStaff([FromRoute] Guid id)
         {
             // get staff
             var staff = await _staffService.GetAsync(id);
@@ -696,7 +831,7 @@ namespace DriverLicenseLearningSupport.Controllers
         public async Task<IActionResult> ImportToExcel(IFormFile file,
             int jobTitleId, int roleId)
         {
-            
+
             // validate excel file
             var validator = new ExcelFileValidator();
             var result = await validator.ValidateAsync(file);
@@ -710,7 +845,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 });
             }
 
-            if (file?.Length > 0) 
+            if (file?.Length > 0)
             {
                 // convert file to stream
                 var stream = file.OpenReadStream();
@@ -741,7 +876,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
                         // check exist email
                         var existEmail = await _accountService.GetByEmailAsync(email);
-                        if (existEmail is not null) return BadRequest(new BaseResponse { 
+                        if (existEmail is not null) return BadRequest(new BaseResponse {
                             StatusCode = StatusCodes.Status400BadRequest,
                             Message = $"Email of {firstName} {lastName}, row {row} already exist",
                         });
@@ -845,12 +980,12 @@ namespace DriverLicenseLearningSupport.Controllers
         // export excel
         [HttpGet]
         [Route("staffs/export-excel")]
-        public async Task<IActionResult> ExportToExcel([FromQuery] StaffFilter filters) 
+        public async Task<IActionResult> ExportToExcel([FromQuery] StaffFilter filters)
         {
             var staffs = await _staffService.GetAllByFilterAsync(filters);
-            if(staffs is null)
+            if (staffs is null)
             {
-                return NotFound(new BaseResponse { 
+                return NotFound(new BaseResponse {
                     StatusCode = StatusCodes.Status404NotFound,
                     Message = "Not found any staffs to export excel"
                 });
@@ -861,7 +996,7 @@ namespace DriverLicenseLearningSupport.Controllers
             var stream = new MemoryStream();
 
             // create excel package
-            using (var xlPackage = new ExcelPackage(stream)) 
+            using (var xlPackage = new ExcelPackage(stream))
             {
                 // define a worksheet
                 var worksheet = xlPackage.Workbook.Worksheets.Add("Staffs");
@@ -869,7 +1004,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 var startRow = 3;
                 // worksheet details
                 worksheet.Cells["A1"].Value = "List of Staffs";
-                using(var r = worksheet.Cells["A1:C1"])
+                using (var r = worksheet.Cells["A1:C1"])
                 {
                     r.Merge = true;
                 }
@@ -902,7 +1037,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     worksheet.Cells[row, 9].Value = s.Address.City;
                     worksheet.Cells[row, 10].Value = s.LicenseType.LicenseTypeDesc;
                     worksheet.Cells[row, 11].Value = s.JobTitle.JobTitleDesc;
-                    
+
                     // next row
                     ++row;
 

@@ -7,5 +7,8 @@ namespace DriverLicenseLearningSupport.Repositories.Impl
     {
         Task<CourseReservationModel> CreateAsync(CourseReservation courseReservation);
         Task<CourseReservationModel> GetByMemberAsync(Guid memberId);
+        Task<IEnumerable<CourseReservationModel>> GetAllByCourseId(Guid courseId);
+        Task<int> GetTotalMemberByMentorId(Guid mentorId);
+        Task<bool> UpdatePaymentStatusAsync(Guid id);
     }
 }

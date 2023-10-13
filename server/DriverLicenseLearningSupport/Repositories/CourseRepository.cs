@@ -53,11 +53,18 @@ namespace DriverLicenseLearningSupport.Repositories
                                                     Curricula = x.Curricula.Select(c => new Curriculum
                                                     {
                                                         CurriculumId = c.CurriculumId,
-                                                        CurriculumDesc = c.CurriculumDesc,
-                                                        CurriculumDetail = c.CurriculumDetail
+                                                        CurriculumDesc = WebUtility.UrlDecode(c.CurriculumDesc),
+                                                        CurriculumDetail = WebUtility.UrlDecode(c.CurriculumDetail)
                                                     }).ToList(),
                                                     Mentors = x.Mentors,
-                                                    LicenseTypeId = x.LicenseTypeId
+                                                    LicenseTypeId = x.LicenseTypeId,
+                                                    FeedBacks = x.FeedBacks.Select(x => new FeedBack { 
+                                                        FeedbackId = x.FeedbackId,
+                                                        Content = x.Content,
+                                                        CreateDate = x.CreateDate,
+                                                        RatingStar = x.RatingStar,
+                                                        Member = x.Member
+                                                    }).ToList()
                                                 }).FirstOrDefaultAsync();
 
             if (course is not null)
@@ -163,6 +170,7 @@ namespace DriverLicenseLearningSupport.Repositories
             var courses = await _context.Courses.Where(x => x.IsActive == true)
                                                 .Select(x => new Course { 
                                                     CourseId = x.CourseId,
+                                                    CourseTitle = x.CourseTitle,
                                                     CourseDesc = x.CourseDesc,
                                                     Cost = x.Cost,
                                                     TotalSession = x.TotalSession,

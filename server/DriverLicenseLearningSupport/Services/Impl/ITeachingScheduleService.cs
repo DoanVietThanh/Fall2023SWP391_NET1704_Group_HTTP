@@ -6,6 +6,7 @@ namespace DriverLicenseLearningSupport.Services.Impl
     public interface ITeachingScheduleService
     {
         Task<TeachingScheduleModel> CreateAsync(TeachingScheduleModel teachingSchedule);
+        Task<bool> CreateRangeBySlotAndWeekdayAsync(int slotId, string weekdays, int weekdayScheduleId, TeachingScheduleModel teachingSchedule);
         Task<TeachingScheduleModel> GetAsync(int teachingScheduleId);
         Task<IEnumerable<TeachingScheduleModel>> GetAllByMentorIdAndMemberIdAsync(Guid mentorId, Guid memberId);
         Task<IEnumerable<TeachingScheduleModel>> GetAllByMentorIdAsync(Guid mentorId);

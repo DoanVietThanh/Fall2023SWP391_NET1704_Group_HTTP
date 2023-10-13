@@ -28,11 +28,40 @@ namespace DriverLicenseLearningSupport.Repositories
             return _mapper.Map<CourseReservationModel>(courseReservation);
         }
 
+        public async Task<IEnumerable<CourseReservationModel>> GetAllByCourseId(Guid courseId)
+        {
+            var courseReservationEntities = await _context.CourseReservations.Where(x => x.CourseId == courseId.ToString())
+                                                                             .ToListAsync();
+            return _mapper.Map<IEnumerable<CourseReservationModel>>(courseReservationEntities);
+        }
+
         public async Task<CourseReservationModel> GetByMemberAsync(Guid memberId)
         {
             var courseReservationEntity = await _context.CourseReservations.Where(x => x.MemberId == memberId.ToString())
                                                                            .FirstOrDefaultAsync();
             return _mapper.Map<CourseReservationModel>(courseReservationEntity);
+        }
+
+        public async Task<int> GetTotalMemberByMentorId(Guid mentorId)
+        {
+            var courseReservationEntities = await _context.CourseReservations.Where(x => x.StaffId == mentorId.ToString())
+                                                                             .ToListAsync();
+            return courseReservationEntities.Count;
+        }
+
+        public async Task<bool> UpdatePaymentStatusAsync(Guid id)
+        {
+            var courseReservationEntity = await _context.CourseReservations.Where(x => x.CourseReservationId == id.ToString())
+                                                                           .FirstOrDefaultAsync();
+
+            if(courseReservationEntity is not null)
+            {
+                // update status
+                courseReservationEntity.CourseReservationStatusId = 2;
+                courseReservationEntity.LastModifiedDate = DateTime.Now;
+                return await _context.SaveChangesAsync() > 0 ? true : false;
+            }
+            return false;
         }
     }
 }

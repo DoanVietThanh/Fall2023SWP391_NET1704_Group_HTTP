@@ -17,5 +17,10 @@ namespace DriverLicenseLearningSupport.Services
         {
             return await _paymentTypeRepo.GetAllAsync();
         }
+
+        public async Task<PaymentTypeModel> GetAsync(int id)
+        {
+            return await _paymentTypeRepo.GetAsync(id);
+        }
     }
 }

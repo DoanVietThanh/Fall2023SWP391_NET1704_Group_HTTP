@@ -64,6 +64,10 @@
               "target": "Package",
               "version": "[6.4.1, )"
             },
+            "Mapster": {
+              "target": "Package",
+              "version": "[6.5.1, )"
+            },
             "MediatR": {
               "target": "Package",
               "version": "[6.0.0, )"
@@ -96,9 +100,17 @@
               "target": "Package",
               "version": "[2.1.0, )"
             },
+            "RestSharp": {
+              "target": "Package",
+              "version": "[110.0.0, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.5.0, )"
+            },
+            "System.Net.Http.Formatting.Extension": {
+              "target": "Package",
+              "version": "[5.2.3, )"
             },
             "VNPayPackage": {
               "target": "Package",
