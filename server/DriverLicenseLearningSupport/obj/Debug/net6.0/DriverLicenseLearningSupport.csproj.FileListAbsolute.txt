@@ -206,7 +206,19 @@ D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Deb
 D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\DriverLicenseLearningSupport.genruntimeconfig.cache
 D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Debug\net6.0\ref\DriverLicenseLearningSupport.dll
 D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\MediatR.Extensions.Microsoft.DependencyInjection.dll
+<<<<<<< HEAD
+D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\RestSharp.dll
+D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Text.Encodings.Web.dll
+D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Text.Json.dll
+D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\runtimes\browser\lib\net6.0\System.Text.Encodings.Web.dll
+D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Net.Http.WebRequest.dll
+D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Net.Http.Extensions.dll
+D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Net.Http.Formatting.dll
+D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\System.Net.Http.Primitives.dll
+D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Mapster.dll
+=======
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\MediatR.dll
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\MediatR.Extensions.Microsoft.DependencyInjection.dll
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\Newtonsoft.Json.dll
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\bin\Debug\net6.0\VNPayPackage.dll
+>>>>>>> 5a97c912131855d8a592de07b71454783a44ee11

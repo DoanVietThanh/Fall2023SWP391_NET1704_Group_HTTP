@@ -7,6 +7,7 @@ using DriverLicenseLearningSupport.Repositories.Impl;
 using DriverLicenseLearningSupport.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Org.BouncyCastle.Security.Certificates;
 using System.Globalization;
 
 namespace DriverLicenseLearningSupport.Repositories
@@ -61,6 +62,77 @@ namespace DriverLicenseLearningSupport.Repositories
             if (!isSucess) return null;
             return _mapper.Map<TeachingScheduleModel>(teachingSchedule);
         }
+        public async Task<bool> CreateRangeBySlotAndWeekdayAsync(int slotId, string weekdays, int weekdayScheduleId,
+            TeachingScheduleModel teachingSchedule)
+        {
+            // get from config
+            var daysInWeek = _appSettings.WeekdaySchedules;
+            // generate list from config
+            var listDays = daysInWeek.ToList();
+            // not found
+            if (!listDays.Contains(weekdays)) return false;
+            // get register range days in week
+            var rangeDaysRegister = listDays.Where(x => x == weekdays).FirstOrDefault();
+
+            // get weekday schedule by id
+            var weekdaySchedule = await _context.WeekdaySchedules.Where(x => x.WeekdayScheduleId == weekdayScheduleId)
+                                                                 .FirstOrDefaultAsync();
+             
+            // get all schedule by course id
+            var weekdaySchedules = await _context.WeekdaySchedules.Where(x => x.CourseId == weekdaySchedule.CourseId)
+                                                                 .ToListAsync();
+
+            List<DateTime> rangeSchedules 
+                = new List<DateTime>();
+            if(rangeDaysRegister is "2,4,6")
+            {
+                foreach(var ws in weekdaySchedules)
+                {
+                    rangeSchedules.Add(Convert.ToDateTime(ws.Monday));
+                    rangeSchedules.Add(Convert.ToDateTime(ws.Wednesday));
+                    rangeSchedules.Add(Convert.ToDateTime(ws.Friday));
+                }
+            }
+            else if(rangeDaysRegister is "3,5")
+            {
+                foreach (var ws in weekdaySchedules)
+                {
+                    rangeSchedules.Add(Convert.ToDateTime(ws.Tuesday));
+                    rangeSchedules.Add(Convert.ToDateTime(ws.Thursday));
+                }
+            }
+            else
+            {
+                foreach (var ws in weekdaySchedules)
+                {
+                    rangeSchedules.Add(Convert.ToDateTime(ws.Saturday));
+                    rangeSchedules.Add(Convert.ToDateTime(ws.Sunday));
+                }
+            }
+
+            var isSucess = false;
+            // generate teaching schedules
+            foreach(var dt in rangeSchedules)
+            {
+
+                var existSchedule = await GetByMentorIdAndTeachingDateAsync(weekdayScheduleId,
+                            Guid.Parse(teachingSchedule.StaffId),
+                            dt, slotId);
+
+                if(existSchedule is null)
+                {
+                    teachingSchedule.WeekdayScheduleId = weekdayScheduleId;
+                    teachingSchedule.SlotId = slotId;
+                    teachingSchedule.TeachingDate =
+                        DateTime.ParseExact(dt.ToString(_appSettings.DateFormat),
+                        _appSettings.DateFormat, CultureInfo.InvariantCulture);
+
+                    isSucess = await CreateAsync(_mapper.Map<TeachingSchedule>(teachingSchedule))
+                        is not null ? true : false;
+                }
+            }
+            return isSucess;
+        }
 
         public async Task<IEnumerable<TeachingScheduleModel>> GetAllByMentorIdAsync(Guid mentorId)
         {
@@ -84,7 +156,8 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                                 RollCallBookId = x.RollCallBookId,
                                                                                 MemberId = x.MemberId,
                                                                                 Comment = x.Comment,
-                                                                                Member = x.Member
+                                                                                Member = x.Member,
+                                                                                MemberTotalSession = x.MemberTotalSession
                                                                         }).ToList(),
                                                                         Staff = x.Staff
                                                                     })
@@ -108,7 +181,8 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                             IsAbsence = x.IsAbsence,
                                                                             Comment = x.Comment,
                                                                             MemberId = x.MemberId,
-                                                                            Member = x.Member
+                                                                            Member = x.Member,
+                                                                            MemberTotalSession = x.MemberTotalSession
                                                                         }).ToList(),
                                                                         WeekdayScheduleId = x.WeekdayScheduleId,
                                                                         SlotId = x.SlotId,
@@ -173,7 +247,8 @@ namespace DriverLicenseLearningSupport.Repositories
                                 RollCallBookId = x.RollCallBookId,
                                 MemberId = x.MemberId,
                                 Comment = x.Comment,
-                                Member = x.Member
+                                Member = x.Member,
+                                MemberTotalSession = x.MemberTotalSession
                             }).ToList(),
                     Staff = x.Staff
                 });
@@ -226,7 +301,8 @@ namespace DriverLicenseLearningSupport.Repositories
                     IsAbsence = x.IsAbsence,
                     Comment = x.Comment,
                     MemberId = x.MemberId,
-                    Member = x.Member
+                    Member = x.Member,
+                    MemberTotalSession = x.MemberTotalSession
                 }).ToList(),
                 WeekdayScheduleId = x.WeekdayScheduleId,
                 SlotId = x.SlotId,
@@ -238,9 +314,6 @@ namespace DriverLicenseLearningSupport.Repositories
                                                  .FirstOrDefault();
             return _mapper.Map<TeachingScheduleModel>(existSchedule);
         }
-
-
-        //public async Task<TeachingScheduleModel> GetByWeekdayIdAndTeachingDate(int )
 
         public async Task<IEnumerable<TeachingScheduleModel>> GetBySlotAndWeekDayScheduleAsync(int slotId, int weekDayScheduleId,
             Guid mentorId)
@@ -269,8 +342,9 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                             RollCallBookId = x.RollCallBookId,
                                                                             MemberId = x.MemberId,
                                                                             Comment = x.Comment,
-                                                                            Member = x.Member
-                                                                    }).ToList()
+                                                                            Member = x.Member,
+                                                                            MemberTotalSession = x.MemberTotalSession
+                                                                        }).ToList()
                                                                })
                                                             .ToListAsync();
 
@@ -320,7 +394,8 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                         MemberId = x.MemberId,
                                                                         Comment = x.Comment,
                                                                         Member = x.Member,
-                                                                        IsAbsence = x.IsAbsence
+                                                                        IsAbsence = x.IsAbsence,
+                                                                        MemberTotalSession = x.MemberTotalSession
                                                                     }).ToList()
                                                             })
                                                             .ToListAsync();
@@ -363,5 +438,6 @@ namespace DriverLicenseLearningSupport.Repositories
 
             return null!;
         }
+
     }
 }

@@ -12,7 +12,7 @@
         public string MembersCacheKey { get; set; }
         public string StaffsCacheKey { get; set; }
         public string TheoryCacheKey { get; set; }
-
+        public string[] WeekdaySchedules { get; set; }
 
     }
 }

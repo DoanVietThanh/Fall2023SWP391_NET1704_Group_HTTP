@@ -22,5 +22,12 @@ namespace DriverLicenseLearningSupport.Repositories
             var paymentTypes = await _context.PaymentTypes.ToListAsync();
             return _mapper.Map<IEnumerable<PaymentTypeModel>>(paymentTypes);
         }
+
+        public async Task<PaymentTypeModel> GetAsync(int id)
+        {
+            var paymentType = await _context.PaymentTypes.Where(x => x.PaymentTypeId == id)
+                                                    .FirstOrDefaultAsync();
+            return _mapper.Map<PaymentTypeModel>(paymentType);
+        }
     }
 }

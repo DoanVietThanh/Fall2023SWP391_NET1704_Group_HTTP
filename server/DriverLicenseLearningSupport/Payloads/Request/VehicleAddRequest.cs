@@ -17,6 +17,8 @@ namespace DriverLicenseLearningSupport.Payloads.Request
 
         [Required(ErrorMessage = "Vehicle Type is required")]
         public int VehicleTypeId { get; set; }
+
+        public IFormFile VehicleImage { get; set; }
     }
 
     public static class VehicleAddRequestExtension

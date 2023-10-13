@@ -22,13 +22,11 @@ namespace DriverLicenseLearningSupport.Repositories
             _context = context;
             _mapper = mapper;
         }
-
         public async Task<bool> CreateAsync(Staff staff)
         {
             _context.Staffs.Add(staff);
             return await _context.SaveChangesAsync() > 0 ? true : false;
         }
-
         public async Task<StaffModel> GetByEmailAsync(string email)
         {
             var staffEntity = await _context.Staffs.Where(x => x.Email == email)
@@ -58,7 +56,6 @@ namespace DriverLicenseLearningSupport.Repositories
                                                    }).FirstOrDefaultAsync();
             return _mapper.Map<StaffModel>(staffEntity);
         }
-
         public async Task<StaffModel> GetAsync(Guid id)
         {
             var staffEntity = await _context.Staffs.Where(x => x.StaffId == id.ToString())
@@ -88,7 +85,6 @@ namespace DriverLicenseLearningSupport.Repositories
                                                       .FirstOrDefaultAsync();
             return _mapper.Map<StaffModel>(staffEntity);
         }
-
         public async Task<StaffModel> GetMentorAsync(Guid id)
         {
             var mentorEntity = await _context.Staffs.Where(x => x.StaffId == id.ToString())
@@ -170,7 +166,6 @@ namespace DriverLicenseLearningSupport.Repositories
             }).ToListAsync();
             return _mapper.Map<IEnumerable<StaffModel>>(staffEntities);
         }
-
         public async Task<IEnumerable<StaffModel>> GetAllByFilterAsync(StaffFilter filters)
         {
             // building query
@@ -252,7 +247,6 @@ namespace DriverLicenseLearningSupport.Repositories
             // mapping model and return
             return _mapper.Map<IEnumerable<StaffModel>>(await staffs.ToListAsync());
         }
-
         public async Task<bool> UpdateAsync(Guid id, Staff staff)
         {
             // get staff by id
@@ -276,7 +270,6 @@ namespace DriverLicenseLearningSupport.Repositories
             // save changes and return 
             return await _context.SaveChangesAsync() > 0 ? true : false;
         }
-
         public async Task<bool> DeleteAsync(Guid id) 
         {
             // get staff by id
@@ -289,6 +282,5 @@ namespace DriverLicenseLearningSupport.Repositories
             _context.Staffs.Remove(staffEntity);
             return await _context.SaveChangesAsync() > 0 ? true : false;
         }
-
     }
 }

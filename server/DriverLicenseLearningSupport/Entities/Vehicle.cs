@@ -14,6 +14,7 @@ namespace DriverLicenseLearningSupport.Entities
         public int VehicleId { get; set; }
         public string VehicleName { get; set; }
         public string VehicleLicensePlate { get; set; }
+        public string? VehicleImage { get; set; }
         public DateTime? RegisterDate { get; set; }
         public int? VehicleTypeId { get; set; }
 
