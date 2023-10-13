@@ -188,8 +188,8 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpGet]
         [Route("staffs/{id:Guid}")]
-        [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> GetStaff([FromRoute] Guid id)
+        // [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> GetStaff([FromRoute] Guid id) 
         {
             // get staff by id
             var staff = await _staffService.GetAsync(id);
@@ -289,8 +289,8 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpGet]
         [Route("staffs/mentors")]
-        [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> GetAllMentor([FromRoute] int page = 1)
+        // [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> GetAllMentor()
         {
             // get all mentors
             var mentors = await _staffService.GetAllMentorAsync();
@@ -352,6 +352,10 @@ namespace DriverLicenseLearningSupport.Controllers
         {
             // get mentor's teaching course
             var course = await _courseService.GetByMentorIdAndCourseIdAsync(id, courseId);
+            course.Mentors = null;
+            course.FeedBacks = null;
+            course.Curricula = null;
+
             // check teaching course exist
             if (course is null)
             {
@@ -470,6 +474,8 @@ namespace DriverLicenseLearningSupport.Controllers
             // get course by id 
             var course = await _courseService.GetAsync(Guid.Parse(weekday.CourseId));
             course.Mentors = null;
+            course.FeedBacks = null;
+            course.Curricula = null;
 
             return Ok(new BaseResponse
             {

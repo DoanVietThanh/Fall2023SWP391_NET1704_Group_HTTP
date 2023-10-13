@@ -1,84 +1,79 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import { AiFillStar } from 'react-icons/ai';
 import BackgroundSlider from '../../components/BackgroundSlider';
-
-const intructorList = [
-  {
-    id: 'intructor1',
-    src: 'https://scontent.fsgn2-3.fna.fbcdn.net/v/t39.30808-1/326718942_3475973552726762_6277150844361274430_n.jpg?stp=c0.50.240.240a_dst-jpg_p240x240&_nc_cat=107&ccb=1-7&_nc_sid=fe8171&_nc_ohc=OAw9KYbwIYQAX8Q351_&_nc_ht=scontent.fsgn2-3.fna&oh=00_AfA0m_qQu-449kqs4UaWC1JuzrMSnoFuCiVU2ykWEBhhMg&oe=6512BAEA',
-    fullname: 'Đoàn Viết Thanh',
-    currentLisence: 'B1',
-    ratingStar: 5,
-  },
-  {
-    id: 'intructor2',
-    src: 'https://scontent.fsgn2-3.fna.fbcdn.net/v/t39.30808-1/326718942_3475973552726762_6277150844361274430_n.jpg?stp=c0.50.240.240a_dst-jpg_p240x240&_nc_cat=107&ccb=1-7&_nc_sid=fe8171&_nc_ohc=OAw9KYbwIYQAX8Q351_&_nc_ht=scontent.fsgn2-3.fna&oh=00_AfA0m_qQu-449kqs4UaWC1JuzrMSnoFuCiVU2ykWEBhhMg&oe=6512BAEA',
-    fullname: 'Nguyễn Vũ Quang Huy',
-    currentLisence: 'B2',
-    ratingStar: 4,
-  },
-  {
-    id: 'intructor3',
-    src: 'https://scontent.fsgn2-3.fna.fbcdn.net/v/t39.30808-1/326718942_3475973552726762_6277150844361274430_n.jpg?stp=c0.50.240.240a_dst-jpg_p240x240&_nc_cat=107&ccb=1-7&_nc_sid=fe8171&_nc_ohc=OAw9KYbwIYQAX8Q351_&_nc_ht=scontent.fsgn2-3.fna&oh=00_AfA0m_qQu-449kqs4UaWC1JuzrMSnoFuCiVU2ykWEBhhMg&oe=6512BAEA',
-    fullname: 'Bùi Trần Thanh Thư',
-    currentLisence: 'C',
-    ratingStar: 5,
-  },
-  {
-    id: 'intructor3',
-    src: 'https://scontent.fsgn2-3.fna.fbcdn.net/v/t39.30808-1/326718942_3475973552726762_6277150844361274430_n.jpg?stp=c0.50.240.240a_dst-jpg_p240x240&_nc_cat=107&ccb=1-7&_nc_sid=fe8171&_nc_ohc=OAw9KYbwIYQAX8Q351_&_nc_ht=scontent.fsgn2-3.fna&oh=00_AfA0m_qQu-449kqs4UaWC1JuzrMSnoFuCiVU2ykWEBhhMg&oe=6512BAEA',
-    fullname: 'Lê Xuân Phước',
-    currentLisence: 'A2',
-    ratingStar: 3,
-  },
-];
+import { Link } from 'react-router-dom';
+import { BiSearch } from 'react-icons/bi';
+import theme from '../../theme';
+import axiosClient from './../../utils/axiosClient';
+import Loading from './../../components/Loading';
 
 const IntructorPage = () => {
   const url =
     'https://themeholy.com/wordpress/edura/wp-content/uploads/2023/07/breadcumb-bg.png';
-  const breadcrumbs = 'Intructors';
+  const breadcrumbs = 'Instructors';
+  const url_server = process.env.REACT_APP_SERVER_API;
+  const [instructorList, setInstructorList] = useState([]);
+  useEffect(() => {
+    async function getListMentors() {
+      const res = await axiosClient.get(`${url_server}/staffs/mentors`);
+      setInstructorList(res?.data?.data.mentors);
+    }
+    getListMentors();
+  }, []);
+
+  console.log('instructorList: ', instructorList);
+
   return (
     <>
       <Header />
       <BackgroundSlider url={url} breadcrumbs={breadcrumbs} />
-      <h1 className='text-center font-bold text-[26px] pt-8'>
-        List Intructors
-      </h1>
-      <div className='m-8 flex justify-center flex-col items-center gap-8'>
-        {intructorList.map((course, index) => (
-          <div
-            key={course.id}
-            className='flex border-2 h-auto w-[80%] px-[30px]'
-          >
-            <div className='px-6'>
+
+      <form className='flex justify-center my-20'>
+        <input
+          placeholder='Nhập tên giảng viên ...'
+          className='w-[40%] rounded-l-lg bg-slate-100 outline-none pl-5 py-5 text-lg'
+        />
+        <button
+          className={`center rounded-r-lg bg-[${theme.color.mainColor}] w-[5%] p-3 hover:bg-blue-900`}
+        >
+          <BiSearch size={24} color='white' />
+        </button>
+      </form>
+
+      <div className='m-24 flex flex-wrap '>
+        {instructorList ? (
+          instructorList.map((instructor, index) => (
+            <div className='imgBackground w-[30%] flex flex-col p-14 m-5 uppercase gap-10 bg-gray-100'>
               <img
-                src={course.src}
-                alt='course'
-                className='w-[200px] h-[200px] object-contain'
-              />
+                src='/img/avtThanh.jpg'
+                alt={instructor.id}
+                className='zoom w-full h-[400px] object-cover'
+              ></img>
+
+              <div className='flex flex-col gap-3'>
+                <Link to={`/instructor/detail/${instructor.staffId}`}>
+                  <div className='font-semibold text-xl hover:text-blue-600'>
+                    {`${instructor.firstName} ${instructor.lastName}`}
+                  </div>
+                </Link>
+
+                <div className='flex gap-2 text-lg text-gray-500'>
+                  <div>Đánh giá:</div>
+                  <div className='flex gap-2 items-center'>
+                    {instructor.ratingStar}
+                    <AiFillStar size={26} color='#F6F669'></AiFillStar>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className='flex-1 p-6 flex flex-col gap-4 justify-between items-center'>
-              <p>
-                Họ và tên :{' '}
-                <span className='font-medium'>{course.fullname}</span>
-              </p>
-              <p>
-                Bằng lái hiện có :{' '}
-                <span className='font-medium'>{course.currentLisence}</span>
-              </p>
-              <p className='flex'>
-                Đánh giá :
-                <span className='pl-4 font-medium flex items-center gap-2'>
-                  {` ${course.ratingStar} `}
-                  <AiFillStar />
-                </span>
-              </p>
-            </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <Loading />
+        )}
       </div>
+
       <Footer />
     </>
   );

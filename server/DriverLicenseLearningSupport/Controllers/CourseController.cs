@@ -289,12 +289,20 @@ namespace DriverLicenseLearningSupport.Controllers
                         Guid.Parse(m.StaffId));
                 }
             }
+            // get all course feeback
+            //var feedbacks = await _feedbackService.GetAllCourseFeedback(Guid.Parse(course.CourseId));
+            //course.FeedBacks = feedbacks.ToList();
 
             return Ok(new BaseResponse { 
                 StatusCode = StatusCodes.Status200OK,
-                Data = new { 
+                Data = new {
                     Course = course,
-                    TotalMember = courseReservations is not null 
+                    Mentors = course.Mentors.Select(x => new
+                    {
+                        MentorId = x.StaffId,
+                        MentorName = $"{x.FirstName} {x.LastName}"
+                    }),
+                    TotalMember = courseReservations is not null
                     ? courseReservations.Count() : 0,
                 }
             });

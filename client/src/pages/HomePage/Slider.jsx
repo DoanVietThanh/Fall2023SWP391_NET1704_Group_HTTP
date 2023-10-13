@@ -1,18 +1,18 @@
-import React from 'react';
-import { AiOutlineArrowRight } from 'react-icons/ai';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/scrollbar';
+import React from "react";
+import { AiOutlineArrowRight } from "react-icons/ai";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/scrollbar";
 import {
   A11y,
   Autoplay,
   Navigation,
   Pagination,
   Scrollbar,
-} from 'swiper/modules';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import theme from '../../theme';
+} from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import theme from "../../theme";
 
 const Slider = () => {
   return (
@@ -29,40 +29,37 @@ const Slider = () => {
       pagination={{ clickable: true }}
     >
       <SwiperSlide>
-        <div className='w-full relative'>
-          <div className='slider-img'>
+        <div className="w-full relative">
+          <div className="slider-img">
             <img
-              className='slider-bg object-cover'
+              className="slider-bg object-cover"
               src={`/img/bgSlider1.png`}
-              alt='slider'
+              alt="slider"
             />
             <img
-              className='slider-hero'
+              className="slider-hero"
               src={`/img/heroSlider1.png`}
-              alt='slider'
+              alt="slider"
             />
             <img
-              className='slider-decor'
+              className="slider-decor"
               src={`/img/decorSlider.png`}
-              alt='slider'
+              alt="slider"
             />
           </div>
-          <div className='slider-content flex flex-col justify-center'>
-            <div className='flex flex-end items-center gap-4'>
-              <button className='btn'>30% OFF</button>
-            </div>
-            <h1 className='font-bold text-[60px] leading-2 mt-8'>
-              Driving Lisence Learning
+          <div className="slider-content flex flex-col gap-8 justify-center">
+            <h1 className="text-center font-extrabold text-[74px] tracking-wide leading-tight text-gray-800">
+              Driving License Learning
               <span className={`text-[${theme.color.mainColor}]`}>
-                {' '}
+                {" "}
                 Support
               </span>
             </h1>
-            <p className='font-medium text-sky-950 text-[24px]'>
+            <p className="font-semibold text-sky-900 text-[24px] pr-60 pt-5">
               Lot E2a-7, Street D1, D. D1, Long Thanh My, Thu Duc City, Ho Chi
               Minh City 700000
             </p>
-            <button className='btn w-[200px] flex items-center justify-center gap-4 mt-4'>
+            <button className="btn w-[200px] flex items-center justify-center gap-4">
               Get Started <AiOutlineArrowRight size={20} />
             </button>
           </div>

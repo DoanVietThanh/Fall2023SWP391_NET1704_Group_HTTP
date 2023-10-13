@@ -15,6 +15,7 @@ namespace DriverLicenseLearningSupport.Models
         public string AddressId { get; set; }
         public int? JobTitleId { get; set; }
         public int? LicenseTypeId { get; set; }
+        public string? SelfDescription { get; set; }
         public int? TotalMember { get; set; }
 
         public virtual AddressModel Address { get; set; }

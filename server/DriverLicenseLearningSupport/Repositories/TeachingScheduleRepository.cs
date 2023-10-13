@@ -394,6 +394,7 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                         MemberId = x.MemberId,
                                                                         Comment = x.Comment,
                                                                         Member = x.Member,
+                                                                        IsAbsence = x.IsAbsence,
                                                                         MemberTotalSession = x.MemberTotalSession
                                                                     }).ToList()
                                                             })

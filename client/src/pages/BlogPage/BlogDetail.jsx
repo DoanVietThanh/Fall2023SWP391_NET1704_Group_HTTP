@@ -197,7 +197,7 @@ const BlogDetail = () => {
                     </div>
                   </div>
                 </div>
-                <div className="pl-[120px] text-lg font-light ">
+                <div className="ml-[120px] text-lg font-light ">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste
                   cumque alias Nostrum odio explicabo quae eaque quos dolores a!
                 </div>
@@ -262,7 +262,7 @@ const BlogDetail = () => {
                     </div>
                   </div>
                 </div>
-                <div className="pl-[120px] text-lg font-light ">
+                <div className="ml-[120px] text-lg font-light ">
                   Thắc mắc ít thôi
                 </div>
               </div>
@@ -304,12 +304,12 @@ const BlogDetail = () => {
               Repellat, quo?
             </div>
 
-            <div className="ml-[120px]">{/* tạo phản hồi cho bình luận */}</div>
+            {/* <div className="ml-[120px]">tạo phản hồi mới</div>  */}
           </div>
 
           <div></div>
         </div>
-
+        
         <div className="w-[30%] ml-10">
           <div className="border drop-shadow-md rounded-lg p-10 mb-20">
             <div className="border-b-[4px] text-2xl font-bold pb-2 ">

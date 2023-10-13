@@ -53,22 +53,23 @@ namespace DriverLicenseLearningSupport.Repositories
                                                     Curricula = x.Curricula.Select(c => new Curriculum
                                                     {
                                                         CurriculumId = c.CurriculumId,
-                                                        CurriculumDesc = WebUtility.UrlDecode(c.CurriculumDesc),
-                                                        CurriculumDetail = WebUtility.UrlDecode(c.CurriculumDetail)
+                                                        CurriculumDesc = WebUtility.HtmlDecode(c.CurriculumDesc),
+                                                        CurriculumDetail = WebUtility.HtmlDecode(c.CurriculumDetail)
                                                     }).ToList(),
                                                     Mentors = x.Mentors,
-                                                    LicenseTypeId = x.LicenseTypeId,
-                                                    FeedBacks = x.FeedBacks.Select(x => new FeedBack { 
+                                                    LicenseType = x.LicenseType,
+                                                    FeedBacks = x.FeedBacks.Select(x => new FeedBack {
                                                         FeedbackId = x.FeedbackId,
                                                         Content = x.Content,
-                                                        CreateDate = x.CreateDate,
                                                         RatingStar = x.RatingStar,
+                                                        CreateDate = x.CreateDate,
                                                         Member = x.Member
                                                     }).ToList()
                                                 }).FirstOrDefaultAsync();
 
             if (course is not null)
             {
+
                 // decode text editor
                 course.CourseDesc = WebUtility.HtmlDecode(course.CourseDesc);
                 // response model
