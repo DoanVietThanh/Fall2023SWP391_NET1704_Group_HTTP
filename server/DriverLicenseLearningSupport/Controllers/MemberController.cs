@@ -876,10 +876,15 @@ namespace DriverLicenseLearningSupport.Controllers
             // get course by id 
             var course = await _courseService.GetAsync(Guid.Parse(courseReservation.CourseId));
             // set null mentors list 
-            course.Mentors = null!;
+            course.Mentors = null;
+            course.FeedBacks = null;
 
             // get staff by id
             var staff = await _staffService.GetAsync(Guid.Parse(courseReservation.StaffId));
+            staff.Courses = null;
+            staff.SelfDescription = string.Empty;
+            staff.FeedBacks = null;
+            staff.EmailNavigation = null;
 
             // generate current date time 
             var currDate = DateTime.ParseExact(DateTime.Now.ToString("yyyy-MM-dd"),
@@ -930,7 +935,8 @@ namespace DriverLicenseLearningSupport.Controllers
             }
 
             // response
-            return Ok(new BaseResponse
+            /*
+            return Ok(new BaseResponse()
             {
                 StatusCode = StatusCodes.Status200OK,
                 Data = new
@@ -944,7 +950,26 @@ namespace DriverLicenseLearningSupport.Controllers
                     Weekdays = weekday,
                     SlotSchedules = listOfSlotSchedule
                 }
-            });
+            });*/
+
+            var response = new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Data = new
+                {
+                    Course = course,
+                    Mentor = staff,
+                    Filter = weekdays.Select(x => new
+                    {
+                        Id = x.WeekdayScheduleId,
+                        Desc = x.WeekdayScheduleDesc
+                    }),
+                    Weekdays = weekday,
+                    SlotSchedules = listOfSlotSchedule
+                }
+            };
+
+            return Ok(response);
         }
 
         [HttpGet]
@@ -1013,8 +1038,14 @@ namespace DriverLicenseLearningSupport.Controllers
             // get course by id 
             var course = await _courseService.GetAsync(Guid.Parse(weekday.CourseId));
             course.Mentors = null;
+            course.FeedBacks = null;
+            course.Curricula = null;
             // get staff by id
             var staff = await _staffService.GetAsync(Guid.Parse(courseReservation.StaffId));
+            staff.Courses = null;
+            staff.SelfDescription = string.Empty;
+            staff.FeedBacks = null;
+            staff.EmailNavigation = null;
 
             // response
             return Ok(new BaseResponse

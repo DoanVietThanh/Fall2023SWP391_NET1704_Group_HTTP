@@ -958,6 +958,11 @@ namespace DriverLicenseLearningSupport.Entities
                     .HasColumnType("datetime")
                     .HasColumnName("date_birth");
 
+
+                entity.Property(e => e.SelfDescription)
+                    .HasColumnType("nvarchar(MAX)")
+                    .HasColumnName("self_description");
+
                 entity.Property(e => e.Email)
                     .HasMaxLength(255)
                     .HasColumnName("email");

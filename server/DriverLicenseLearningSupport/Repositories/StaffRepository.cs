@@ -7,6 +7,7 @@ using DriverLicenseLearningSupport.Payloads.Filters;
 using DriverLicenseLearningSupport.Repositories.Impl;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
+using System.Net;
 
 namespace DriverLicenseLearningSupport.Repositories
 {
@@ -61,25 +62,30 @@ namespace DriverLicenseLearningSupport.Repositories
         public async Task<StaffModel> GetAsync(Guid id)
         {
             var staffEntity = await _context.Staffs.Where(x => x.StaffId == id.ToString())
-                                                   .Select(x => new Staff { 
-                                                        StaffId = x.StaffId,
-                                                        FirstName = x.FirstName,
-                                                        LastName = x.LastName,
-                                                        Phone = x.Phone,
-                                                        DateBirth = x.DateBirth,
-                                                        AvatarImage = x.AvatarImage,
-                                                        Email = x.Email,
-                                                        AddressId = x.AddressId,
-                                                        JobTitleId = x.JobTitleId,
-                                                        LicenseTypeId = x.LicenseTypeId,
-                                                        Address = x.Address,
-                                                        JobTitle = x.JobTitle,
-                                                        LicenseType = x.LicenseType,
-                                                        EmailNavigation = new Account {
-                                                            Role = x.EmailNavigation.Role
-                                                        }
-                                                   })
-                                                   .FirstOrDefaultAsync();
+                                                      .Select(x => new Staff
+                                                      {
+                                                          StaffId = x.StaffId,
+                                                          FirstName = x.FirstName,
+                                                          LastName = x.LastName,
+                                                          Phone = x.Phone,
+                                                          DateBirth = x.DateBirth,
+                                                          AvatarImage = x.AvatarImage,
+                                                          Email = x.Email,
+                                                          AddressId = x.AddressId,
+                                                          JobTitleId = x.JobTitleId,
+                                                          LicenseTypeId = x.LicenseTypeId,
+                                                          Address = x.Address,
+                                                          JobTitle = x.JobTitle,
+                                                          LicenseType = x.LicenseType,
+                                                          SelfDescription = WebUtility.UrlDecode(x.SelfDescription),
+                                                          EmailNavigation = new Account
+                                                          {
+                                                              Role = x.EmailNavigation.Role
+                                                          },
+                                                          FeedBacks = x.FeedBacks,
+                                                          Courses = x.Courses
+                                                      })
+                                                      .FirstOrDefaultAsync();
             return _mapper.Map<StaffModel>(staffEntity);
         }
 
