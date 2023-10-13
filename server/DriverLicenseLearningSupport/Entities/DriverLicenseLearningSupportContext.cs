@@ -730,6 +730,8 @@ namespace DriverLicenseLearningSupport.Entities
 
                 entity.Property(e => e.RollCallBookId).HasColumnName("roll_call_book_id");
 
+                entity.Property(e => e.MemberTotalSession).HasColumnName("member_total_session");
+
                 entity.Property(e => e.Comment)
                     .HasMaxLength(255)
                     .HasColumnName("comment");
@@ -869,6 +871,10 @@ namespace DriverLicenseLearningSupport.Entities
                     .HasMaxLength(155)
                     .HasColumnName("vehicle_name");
 
+                entity.Property(e => e.VehicleImage)
+                    .HasMaxLength(155)
+                    .HasColumnName("vehicle_image");
+
                 entity.HasOne(d => d.VehicleType)
                     .WithMany(p => p.Vehicles)
                     .HasForeignKey(d => d.VehicleTypeId)
@@ -957,6 +963,11 @@ namespace DriverLicenseLearningSupport.Entities
                 entity.Property(e => e.DateBirth)
                     .HasColumnType("datetime")
                     .HasColumnName("date_birth");
+
+
+                entity.Property(e => e.SelfDescription)
+                    .HasColumnType("nvarchar(MAX)")
+                    .HasColumnName("self_description");
 
                 entity.Property(e => e.Email)
                     .HasMaxLength(255)

@@ -7,6 +7,7 @@ using DriverLicenseLearningSupport.Payloads.Filters;
 using DriverLicenseLearningSupport.Repositories.Impl;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
+using System.Net;
 
 namespace DriverLicenseLearningSupport.Repositories
 {
@@ -21,13 +22,11 @@ namespace DriverLicenseLearningSupport.Repositories
             _context = context;
             _mapper = mapper;
         }
-
         public async Task<bool> CreateAsync(Staff staff)
         {
             _context.Staffs.Add(staff);
             return await _context.SaveChangesAsync() > 0 ? true : false;
         }
-
         public async Task<StaffModel> GetByEmailAsync(string email)
         {
             var staffEntity = await _context.Staffs.Where(x => x.Email == email)
@@ -57,32 +56,35 @@ namespace DriverLicenseLearningSupport.Repositories
                                                    }).FirstOrDefaultAsync();
             return _mapper.Map<StaffModel>(staffEntity);
         }
-
         public async Task<StaffModel> GetAsync(Guid id)
         {
             var staffEntity = await _context.Staffs.Where(x => x.StaffId == id.ToString())
-                                                   .Select(x => new Staff { 
-                                                        StaffId = x.StaffId,
-                                                        FirstName = x.FirstName,
-                                                        LastName = x.LastName,
-                                                        Phone = x.Phone,
-                                                        DateBirth = x.DateBirth,
-                                                        AvatarImage = x.AvatarImage,
-                                                        Email = x.Email,
-                                                        AddressId = x.AddressId,
-                                                        JobTitleId = x.JobTitleId,
-                                                        LicenseTypeId = x.LicenseTypeId,
-                                                        Address = x.Address,
-                                                        JobTitle = x.JobTitle,
-                                                        LicenseType = x.LicenseType,
-                                                        EmailNavigation = new Account {
-                                                            Role = x.EmailNavigation.Role
-                                                        }
-                                                   })
-                                                   .FirstOrDefaultAsync();
+                                                      .Select(x => new Staff
+                                                      {
+                                                          StaffId = x.StaffId,
+                                                          FirstName = x.FirstName,
+                                                          LastName = x.LastName,
+                                                          Phone = x.Phone,
+                                                          DateBirth = x.DateBirth,
+                                                          AvatarImage = x.AvatarImage,
+                                                          Email = x.Email,
+                                                          AddressId = x.AddressId,
+                                                          JobTitleId = x.JobTitleId,
+                                                          LicenseTypeId = x.LicenseTypeId,
+                                                          Address = x.Address,
+                                                          JobTitle = x.JobTitle,
+                                                          LicenseType = x.LicenseType,
+                                                          SelfDescription = WebUtility.UrlDecode(x.SelfDescription),
+                                                          EmailNavigation = new Account
+                                                          {
+                                                              Role = x.EmailNavigation.Role
+                                                          },
+                                                          FeedBacks = x.FeedBacks,
+                                                          Courses = x.Courses
+                                                      })
+                                                      .FirstOrDefaultAsync();
             return _mapper.Map<StaffModel>(staffEntity);
         }
-
         public async Task<StaffModel> GetMentorAsync(Guid id)
         {
             var mentorEntity = await _context.Staffs.Where(x => x.StaffId == id.ToString())
@@ -164,7 +166,6 @@ namespace DriverLicenseLearningSupport.Repositories
             }).ToListAsync();
             return _mapper.Map<IEnumerable<StaffModel>>(staffEntities);
         }
-
         public async Task<IEnumerable<StaffModel>> GetAllByFilterAsync(StaffFilter filters)
         {
             // building query
@@ -246,7 +247,6 @@ namespace DriverLicenseLearningSupport.Repositories
             // mapping model and return
             return _mapper.Map<IEnumerable<StaffModel>>(await staffs.ToListAsync());
         }
-
         public async Task<bool> UpdateAsync(Guid id, Staff staff)
         {
             // get staff by id
@@ -270,7 +270,6 @@ namespace DriverLicenseLearningSupport.Repositories
             // save changes and return 
             return await _context.SaveChangesAsync() > 0 ? true : false;
         }
-
         public async Task<bool> DeleteAsync(Guid id) 
         {
             // get staff by id
@@ -283,6 +282,5 @@ namespace DriverLicenseLearningSupport.Repositories
             _context.Staffs.Remove(staffEntity);
             return await _context.SaveChangesAsync() > 0 ? true : false;
         }
-
     }
 }

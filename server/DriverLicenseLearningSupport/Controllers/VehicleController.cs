@@ -1,6 +1,7 @@
 ﻿using DriverLicenseLearningSupport.Models.Config;
 using DriverLicenseLearningSupport.Payloads.Request;
 using DriverLicenseLearningSupport.Payloads.Response;
+using DriverLicenseLearningSupport.Services;
 using DriverLicenseLearningSupport.Services.Impl;
 using DriverLicenseLearningSupport.Validation;
 using Microsoft.AspNetCore.Authorization;
@@ -14,12 +15,15 @@ namespace DriverLicenseLearningSupport.Controllers
     public class VehicleController : ControllerBase
     {
         private readonly IVehicleService _vehicleService;
+        private readonly IImageService _imageService;
         private readonly AppSettings _appSettings;
 
         public VehicleController(IVehicleService vehicleService,
-            IOptionsMonitor<AppSettings> monitor)
+            IOptionsMonitor<AppSettings> monitor,
+            IImageService imageService)
         {
             _vehicleService = vehicleService;
+            _imageService = imageService;
             _appSettings = monitor.CurrentValue;
         }
 
@@ -51,6 +55,17 @@ namespace DriverLicenseLearningSupport.Controllers
         {
             // generate vehicle model
             var vehicle = reqObj.ToVehicleModel(_appSettings.DateFormat);
+
+            // generate vehicle image
+            if(reqObj.VehicleImage is not null)
+            {
+                var imageId = Guid.NewGuid();
+                vehicle.VehicleImage = imageId.ToString();
+
+                // upload image to cloud
+                //await _imageService.UploadImageAsync(imageId, reqObj.VehicleImage);
+            }
+
             // validate
             var vehicleValidateResult = await vehicle.ValidateAsync();
             if(vehicleValidateResult is not null)

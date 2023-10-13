@@ -34,7 +34,10 @@ namespace DriverLicenseLearningSupport.Services
             var teachingScheduleEntity = _mapper.Map<TeachingSchedule>(teachingSchedule);
             return await _teachingScheduleRepo.CreateAsync(teachingScheduleEntity);
         }
-
+        public async Task<bool> CreateRangeBySlotAndWeekdayAsync(int slotId, string weekdays, int weekdayScheduleId, TeachingScheduleModel teachingSchedule)
+        {
+            return await _teachingScheduleRepo.CreateRangeBySlotAndWeekdayAsync(slotId, weekdays, weekdayScheduleId, teachingSchedule);
+        }
         public async Task<IEnumerable<TeachingScheduleModel>> GetAllByMentorIdAsync(Guid mentorId)
         {
             return await _teachingScheduleRepo.GetAllByMentorIdAsync(mentorId);
@@ -55,9 +58,9 @@ namespace DriverLicenseLearningSupport.Services
             return await _teachingScheduleRepo.GetByFilterAsync(filters);
         }
 
-        public async Task<TeachingScheduleModel> GetByMentorIdAndTeachingDateAsync(Guid mentorId, DateTime date, int slotId)
+        public async Task<TeachingScheduleModel> GetByMentorIdAndTeachingDateAsync(int weekdayScheduleId, Guid mentorId, DateTime date, int slotId)
         {
-            return await _teachingScheduleRepo.GetByMentorIdAndTeachingDateAsync(mentorId, date, slotId);
+            return await _teachingScheduleRepo.GetByMentorIdAndTeachingDateAsync(weekdayScheduleId, mentorId, date, slotId);
         }
 
         public async Task<IEnumerable<TeachingScheduleModel>> GetBySlotAndWeekDayScheduleAsync(int slotId,
@@ -77,5 +80,11 @@ namespace DriverLicenseLearningSupport.Services
         {
             return await _teachingScheduleRepo.GetMemberScheduleByFilterAsync(filters, memberId);
         }
+
+        public async Task<TeachingScheduleModel> ExistScheduleInOtherCoursesAsync(int slotId, DateTime teachingDate, Guid mentorId, Guid courseId)
+        {
+            return await _teachingScheduleRepo.ExistScheduleInOtherCoursesAsync(slotId, teachingDate, mentorId, courseId);
+        }
+
     }
 }

@@ -27,6 +27,11 @@ namespace DriverLicenseLearningSupport.Services
             return await _feedbackRepo.CreateAsync(feedbackEntity);
         }
 
+        public async Task<bool> DeleteAsync(int id)
+        {
+            return await _feedbackRepo.DeleteAsync(id);
+        }
+
         public async Task<IEnumerable<FeedBackModel>> GetAllCourseFeedback(Guid courseId)
         {
             var feedbacks = await _feedbackRepo.GetAllCourseFeedback(courseId);

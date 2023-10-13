@@ -1,7 +1,5 @@
+import { Button, Menu, MenuItem } from '@mui/material';
 import React, { useState } from 'react';
-import theme from '../theme';
-import images from '../assets/img';
-import { Link, useNavigate } from 'react-router-dom';
 import {
   AiOutlineArrowRight,
   AiOutlineClockCircle,
@@ -15,19 +13,22 @@ import {
   BsYoutube,
 } from 'react-icons/bs';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Menu, MenuItem } from '@mui/material';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import images from '../assets/img';
 import { logout } from '../features/auth/authSlice';
+import theme from '../theme';
 
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const currentLocation = useLocation().pathname;
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  let { user } = useSelector((state) => state.auth);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  let { user } = useSelector((state) => state.auth);
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -36,6 +37,39 @@ const Header = () => {
     dispatch(logout());
     navigate('/login');
   };
+
+  const listNavigate = [
+    {
+      id: 1,
+      title: 'Trang chủ',
+      link: '/',
+    },
+    {
+      id: 2,
+      title: 'khóa học',
+      link: '/course',
+    },
+    {
+      id: 3,
+      title: 'Giảng viên',
+      link: '/instructor',
+    },
+    {
+      id: 4,
+      title: 'Tài liệu',
+      link: '/document',
+    },
+    {
+      id: 5,
+      title: 'Lý thuyết',
+      link: '/theory',
+    },
+    {
+      id: 6,
+      title: 'Bài đăng',
+      link: '/blog',
+    },
+  ];
 
   return (
     <div className={`bg-[${theme.color.mainColor}] border-b-2`}>
@@ -51,11 +85,11 @@ const Header = () => {
           </div>
           <div className='flex items-center gap-2 pl-2'>
             <AiOutlineClockCircle />
-            Mon - Sat: 8:00 - 20:00
+            Thứ 2 - Thứ 7: 8:00 - 20:00
           </div>
         </div>
-        <div className='flex justify-center items-center gap-4'>
-          Follow us
+        <div className='flex justify-center items-center gap-4 capitalize'>
+          Theo dõi
           <Link to='https://www.facebook.com/fullstack2k3/'>
             <BsFacebook />
           </Link>
@@ -74,7 +108,7 @@ const Header = () => {
                 <div className='flex justify-center items-center'>
                   <div className='flex justify-center items-center'>
                     <img
-                      src='https://scontent.fsgn2-3.fna.fbcdn.net/v/t39.30808-6/326718942_3475973552726762_6277150844361274430_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=a2f6c7&_nc_ohc=bRRQZetMCywAX8oFmsA&_nc_ht=scontent.fsgn2-3.fna&oh=00_AfDgRPpavVMHYesjEd0xgFtx23HdJrh9n4nB0jyTsOdIyw&oe=6518A1EC'
+                      src='/img/avtThanh.jpg'
                       alt='Avatar'
                       className='rounded-full w-[40px] h-[40px] object-cover'
                     />
@@ -94,16 +128,16 @@ const Header = () => {
                 }}
               >
                 <MenuItem onClick={handleClose}>
-                  <Link to={`/private-information`}>Profile</Link>
+                  <Link to={`/profile`}>Cá nhân</Link>
                 </MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
-                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                <MenuItem onClick={handleClose}>Tài khoản</MenuItem>
+                <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
               </Menu>
             </div>
           ) : (
             <Link to='/login'>
               <button className='btn-login ml-2 hover:opacity-80'>
-                Login / Register
+                Đăng nhập / Đăng xuất
               </button>
             </Link>
           )}
@@ -118,30 +152,25 @@ const Header = () => {
             alt='logo'
           />
         </div>
-        <div className='flex gap-16 text-[16px] font-medium uppercase'>
-          <Link to='/'>
-            <div>Home</div>
-          </Link>
-          <Link to='/course'>
-            <div>Course</div>
-          </Link>
-          <Link to='/intructor'>
-            <div>Intructors</div>
-          </Link>
-          <Link to='/document'>
-            <div>Documents</div>
-          </Link>
-          <Link to='/theory'>
-            <div>Theory</div>
-          </Link>
-          <Link to='/blogs'>
-            <div>Blog</div>
-          </Link>
+
+        <div className='flex gap-16 text-[20px] font-medium uppercase'>
+          {listNavigate.map((item, index) =>
+            //kiem tra duong dan
+            item.link === currentLocation ? (
+              <Link to={item.link} className='curNav'>
+                {item.title}
+              </Link>
+            ) : (
+              <Link to={item.link} className='headerBar'>
+                {item.title}
+              </Link>
+            )
+          )}
         </div>
         <div>
           <Link to='/contact'>
-            <button className='btn flex gap-2 items-center'>
-              Contact us
+            <button className='btn flex gap-2 items-center capitalize'>
+              Liên lạc
               <AiOutlineArrowRight size={20} />
             </button>
           </Link>

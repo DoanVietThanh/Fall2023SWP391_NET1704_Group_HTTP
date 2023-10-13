@@ -6,7 +6,7 @@ namespace DriverLicenseLearningSupport.Payloads.Filters
     public class LearningScheduleFilter
     {
         // filter by slot (if any come along with filter teaching-date/weekday)
-        public int? SlotId { get; set; }
+        //public int? SlotId { get; set; }
 
         // filter by particular teaching date
         public DateTime? LearningDate { get; set; }
@@ -17,8 +17,8 @@ namespace DriverLicenseLearningSupport.Payloads.Filters
         //// member Id
         //public Guid MemberId { get; set; }
 
-        // MentorId
-        [Required(ErrorMessage = "Mentor id is required")]
-        public Guid MentorId { get; set; }
+        //// MentorId
+        //[Required(ErrorMessage = "Mentor id is required")]
+        //public Guid MentorId { get; set; }
     }
 }

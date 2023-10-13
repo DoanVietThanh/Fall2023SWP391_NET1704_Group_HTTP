@@ -1,5 +1,7 @@
 import React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
+import SideBar from '../../components/SideBar';
+import { Box } from '@mui/material';
 
 const columns = [
   { field: 'id', headerName: 'ID', width: 80 },
@@ -161,18 +163,25 @@ const rows = [
 
 const HistoryTest = () => {
   return (
-    <div className='w-full'>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 5 },
-          },
-        }}
-        pageSizeOptions={[5, 10]}
-        // checkboxSelection
-      />
+    <div className='flex'>
+      <SideBar />
+      <Box component='main' sx={{ flexGrow: 1, p: 3 }}>
+        <div className='h-[80vh] w-full rounded overflow-y-auto mt-[64px]'>
+          <div className='w-full'>
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              initialState={{
+                pagination: {
+                  paginationModel: { page: 0, pageSize: 5 },
+                },
+              }}
+              pageSizeOptions={[5, 10]}
+              // checkboxSelection
+            />
+          </div>
+        </div>
+      </Box>
     </div>
   );
 };

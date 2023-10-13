@@ -9,10 +9,17 @@ using DriverLicenseLearningSupport.Repositories;
 using DriverLicenseLearningSupport.Repositories.Impl;
 using DriverLicenseLearningSupport.Services;
 using DriverLicenseLearningSupport.Services.Impl;
+using DriverLicenseLearningSupport.VnPay.Base;
+using DriverLicenseLearningSupport.VnPay.Config;
+using DriverLicenseLearningSupport.VnPay.Interface;
+using DriverLicenseLearningSupport.VnPay.Request;
+using DriverLicenseLearningSupport.VnPay.Response;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,6 +40,10 @@ builder.Services.AddDbContext<DriverLicenseLearningSupportContext>(options =>
 // Add AppSettings 
 var appSettings = builder.Configuration.GetSection("AppSettings");
 builder.Services.Configure<AppSettings>(appSettings);
+
+// Add VnPay config 
+var vnpayConfig = builder.Configuration.GetSection("VNPAY");
+builder.Services.Configure<VnPayConfig>(vnpayConfig);
 
 // Add Authentication
 var secretKey = builder.Configuration.GetValue<string>("AppSettings:SecretKey");
@@ -75,7 +86,8 @@ builder.Services.AddScoped<IAnswerService, AnswerService>();
 builder.Services.AddScoped<ITheoryExamService, TheoryExamService>();
 builder.Services.AddScoped<IExamGradeService, ExamGradeService>();
 builder.Services.AddScoped<IExamHistoryService, ExamHistoryService>();
-
+builder.Services.AddScoped<IRollCallBookService, RollCallBookService>();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 // Add Repositories
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
@@ -100,7 +112,14 @@ builder.Services.AddScoped<IAnswerRepository, AnswerRepository>();
 builder.Services.AddScoped<ITheoryExamRepository, TheoryExamRepository>();
 builder.Services.AddScoped<IExamGradeRepository, ExamGradeRepository>();
 builder.Services.AddScoped<IExamHistoryRepository, ExamHistoryRepostory>();
+builder.Services.AddScoped<IRollCallBookRepository, RollCallBookRepository>();
 
+
+// Add Mediator
+builder.Services.AddMediatR();
+
+// Add HttpContextAccessor
+builder.Services.AddHttpContextAccessor();
 
 // Add Email Configs
 var emailConfig = builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();

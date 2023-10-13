@@ -8,5 +8,6 @@ namespace DriverLicenseLearningSupport.Repositories.Impl
         Task<bool> CreateAsync(FeedBack feedback);
         Task<IEnumerable<FeedBackModel>> GetAllMentorFeedback(Guid mentorId);
         Task<IEnumerable<FeedBackModel>> GetAllCourseFeedback(Guid courseId);
+        Task<bool> DeleteAsync(int id);
     }
 }

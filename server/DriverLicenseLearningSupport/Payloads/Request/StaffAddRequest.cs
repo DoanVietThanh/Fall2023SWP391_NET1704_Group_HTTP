@@ -2,6 +2,7 @@
 using DriverLicenseLearningSupport.Utils;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+using System.Net;
 
 namespace DriverLicenseLearningSupport.Payloads.Request
 {
@@ -20,6 +21,7 @@ namespace DriverLicenseLearningSupport.Payloads.Request
         public string LastName { get; set; }
         public string DateBirth { get; set; }
         public string Phone { get; set; }
+        public string? SelfDescription { get; set; }
 
 
         // Address Info
@@ -67,6 +69,7 @@ namespace DriverLicenseLearningSupport.Payloads.Request
                 Phone = reqObj.Phone,
                 JobTitleId = reqObj.JobTitleId,
                 LicenseTypeId = reqObj.LicenseTypeId,
+                SelfDescription = WebUtility.UrlEncode(reqObj.SelfDescription)
             };
         }
 
