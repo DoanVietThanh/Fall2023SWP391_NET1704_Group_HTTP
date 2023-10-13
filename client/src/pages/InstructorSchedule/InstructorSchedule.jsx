@@ -10,18 +10,19 @@ import {
   AiOutlinePlusCircle,
 } from 'react-icons/ai';
 
+import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import SideBar from '../../components/SideBar';
-import axiosClient from './../../utils/axiosClient';
+import { useNavigate, useParams } from 'react-router-dom';
+import Footer from '../../components/Footer';
+import Header from '../../components/Header';
 import { toastError } from '../../components/Toastify';
 import Loading from './../../components/Loading';
+import axiosClient from './../../utils/axiosClient';
 
-const WeekSchedule = () => {
+const InstructorSchedule = () => {
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
   const [dataWeek, setDataWeek] = useState();
@@ -33,14 +34,17 @@ const WeekSchedule = () => {
   const [open, setOpen] = useState(false);
   const [openRegister, setOpenRegister] = useState(false);
 
+  const { idInstructor, idCourse } = useParams();
+
   useEffect(() => {
     async function getDataCourse() {
       try {
         const response = await axiosClient.get(
-          `/members/${user.accountInfo.memberId}/schedule`
+          `/staffs/mentors/${idInstructor}/schedule?courseId=${idCourse}`
         );
+        console.log('response: ', response);
         setIsLoading(false);
-        setMentorId(response?.data.data.mentor.staffId);
+        setMentorId(idInstructor);
         setDataWeek(response?.data);
         setCurrentWeek(response?.data.data?.weekdays.weekdayScheduleId);
       } catch (error) {
@@ -60,9 +64,9 @@ const WeekSchedule = () => {
     setCurrentWeek(event.target.value);
     async function selectedWeek() {
       const response = await axiosClient.get(
-        `/members/${user.accountInfo.memberId}/schedule/filter?weekdayScheduleId=${event.target.value}`
+        `/staffs/mentors/${idInstructor}/schedule/filter?weekdayScheduleId=${event.target.value}`
       );
-      console.log('response filter:', response);
+      // console.log('response filter:', response);
       setDataWeek(response?.data);
     }
     selectedWeek();
@@ -94,12 +98,9 @@ const WeekSchedule = () => {
     }
   };
 
-  //console.log('dataWeek: ', dataWeek);
-
   return (
-    <div className='flex'>
-      <SideBar />
-
+    <div>
+      <Header />
       {isLoading ? (
         <Loading />
       ) : (
@@ -402,8 +403,9 @@ const WeekSchedule = () => {
           )}
         </>
       )}
+      <Footer />
     </div>
   );
 };
 
-export default WeekSchedule;
+export default InstructorSchedule;

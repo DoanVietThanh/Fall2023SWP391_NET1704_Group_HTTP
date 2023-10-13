@@ -56,19 +56,7 @@ namespace DriverLicenseLearningSupport.Repositories
                                                         CurriculumDesc = WebUtility.HtmlDecode(c.CurriculumDesc),
                                                         CurriculumDetail = WebUtility.HtmlDecode(c.CurriculumDetail)
                                                     }).ToList(),
-                                                    Mentors = x.Mentors.Select(x => new Staff {
-                                                        StaffId = x.StaffId,
-                                                        FirstName = x.FirstName,
-                                                        LastName = x.LastName,
-                                                        DateBirth = x.DateBirth,
-                                                        Phone = x.Phone,
-                                                        IsActive = x.IsActive,
-                                                        AvatarImage = x.AvatarImage,
-                                                        Email = x.Email,
-                                                        Address = x.Address,
-                                                        Courses = x.Courses
-                                                    }).ToList(),
-                                                    LicenseTypeId = x.LicenseTypeId,
+                                                    Mentors = x.Mentors,
                                                     LicenseType = x.LicenseType,
                                                     FeedBacks = x.FeedBacks.Select(x => new FeedBack {
                                                         FeedbackId = x.FeedbackId,
@@ -81,6 +69,7 @@ namespace DriverLicenseLearningSupport.Repositories
 
             if (course is not null)
             {
+
                 // decode text editor
                 course.CourseDesc = WebUtility.HtmlDecode(course.CourseDesc);
                 // response model

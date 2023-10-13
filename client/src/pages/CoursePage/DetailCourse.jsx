@@ -42,16 +42,18 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { toastError, toastSuccess } from './../../components/Toastify';
 import axiosClient from '../../utils/axiosClient';
 import Loading from '../../components/Loading';
+import { Textarea } from '@mui/joy';
+import { BsFillArrowRightCircleFill } from 'react-icons/bs';
 
 const DetailCourse = () => {
   const navigate = useNavigate();
   const { idCourse } = useParams();
-  const url_server = process.env.REACT_APP_SERVER_API;
   const [course, setCourse] = useState();
 
   const [value, setValue] = useState('1');
   const [selectedMentor, setSelectedMentor] = useState('');
   const [open, setOpen] = useState(false);
+  const [paymentList, setPaymentList] = useState([]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -61,19 +63,17 @@ const DetailCourse = () => {
     setSelectedMentor(event.target.value);
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  const handleClickOpen = () => setOpen(true);
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const handleClose = () => setOpen(false);
 
   useEffect(() => {
     async function courseDetail() {
-      const res = await axiosClient.get(`${url_server}/courses/${idCourse}`);
-      if (res?.data.statusCode === 200) {
-        setCourse(res?.data?.data);
+      const res = await axiosClient.get(`/courses/${idCourse}`);
+      const payment = await axiosClient.get(`/courses/reservation`);
+      if (res?.data.statusCode === 200 && payment?.data.statusCode === 200) {
+        setCourse(res?.data?.data?.course);
+        setPaymentList(payment?.data?.data);
       } else {
         toastError('Lỗi load chi tiết khóa học');
       }
@@ -82,6 +82,7 @@ const DetailCourse = () => {
   }, []);
 
   console.log('course: ', course);
+  console.log('paymentList: ', paymentList);
 
   return (
     <>
@@ -263,7 +264,7 @@ const DetailCourse = () => {
                   <TabPanel value='2'>
                     <div>
                       <h1 className='font-bold text-[20px] mb-4'>
-                        Summary Curriculam Course
+                        Danh sách bài học
                       </h1>
 
                       {course?.curricula.map((item, index) => (
@@ -294,57 +295,68 @@ const DetailCourse = () => {
                   </TabPanel>
 
                   <TabPanel value='3'>
-                    <div className='flex w-full gap-8'>
-                      <div className='w-[25%] center'>
-                        <img
-                          alt='avt'
-                          className='w-[160px] h-[160px] object-cover rounded-full'
-                          src='/img/avtThanh.jpg'
-                        />
-                      </div>
-                      <div className='flex-1 flex flex-col justify-between pl-4 border-l-2 text-[20px]'>
-                        <div>
-                          <span className='font-bold'> Giảng viên:</span>{' '}
-                          {`${course?.mentors[0]?.firstName} ${course?.mentors[0]?.lastName}`}
-                        </div>
-                        <div className='flex-x gap-6'>
-                          <div className='flex-x gap-2'>
-                            <PiStudentBold
-                              className={`text-[${theme.color.mainColor}]`}
+                    <div className='flex flex-col gap-16'>
+                      {course?.mentors?.map((item, index) => (
+                        <div className='flex w-full gap-8'>
+                          <div className='w-[30%] flex justify-center items-center'>
+                            <img
+                              alt='avt'
+                              className='w-[160px] h-[160px] object-cover rounded-full'
+                              src='/img/avtThanh.jpg'
                             />
-                            <span>100 students</span>
                           </div>
-                          <div className='flex-x gap-2'>
-                            <GrDocumentText
-                              className={`text-[${theme.color.mainColor}]`}
-                            />
-                            <span>
-                              {course?.mentors[0].courses.length} courses
-                            </span>
+                          <div className='flex-1 flex flex-col justify-between pl-4 border-l-2 text-[20px]'>
+                            <div>
+                              <span className='font-bold'> Giảng viên:</span>{' '}
+                              {`${item?.firstName} ${item?.lastName}`}
+                            </div>
+                            <div className='flex-x gap-6'>
+                              <div className='flex-x gap-2'>
+                                <PiStudentBold
+                                  className={`text-[${theme.color.mainColor}]`}
+                                />
+                                <span>100 students</span>
+                              </div>
+                              <div className='flex-x gap-2'>
+                                <GrDocumentText
+                                  className={`text-[${theme.color.mainColor}]`}
+                                />
+                                <span>{item.courses.length} courses</span>
+                              </div>
+                            </div>
+                            <div className='flex-x gap-4'>
+                              <span className='font-bold'> Contact:</span>{' '}
+                              <Link to={`#`}>
+                                <AiFillFacebook
+                                  className={`text-[${theme.color.mainColor}]`}
+                                  size={24}
+                                />
+                              </Link>
+                              <Link to={`#`}>
+                                <AiFillTwitterCircle
+                                  className={`text-[${theme.color.mainColor}]`}
+                                  size={24}
+                                />
+                              </Link>
+                              <Link to={`#`}>
+                                <AiFillYoutube
+                                  className={`text-red-500`}
+                                  size={24}
+                                />
+                              </Link>
+                            </div>
+
+                            <Link to={`/instructor/detail/${item?.staffId}`}>
+                              <div className='flex items-center gap-4'>
+                                <BsFillArrowRightCircleFill className='text-yellow-700' />
+                                <span className='capitalize text-yellow-700'>
+                                  Xem thêm ...
+                                </span>
+                              </div>
+                            </Link>
                           </div>
                         </div>
-                        <div className='flex-x gap-4'>
-                          <span className='font-bold'> Contact:</span>{' '}
-                          <Link to={`#`}>
-                            <AiFillFacebook
-                              className={`text-[${theme.color.mainColor}]`}
-                              size={24}
-                            />
-                          </Link>
-                          <Link to={`#`}>
-                            <AiFillTwitterCircle
-                              className={`text-[${theme.color.mainColor}]`}
-                              size={24}
-                            />
-                          </Link>
-                          <Link to={`#`}>
-                            <AiFillYoutube
-                              className={`text-red-500`}
-                              size={24}
-                            />
-                          </Link>
-                        </div>
-                      </div>
+                      ))}
                     </div>
                   </TabPanel>
 
@@ -413,6 +425,24 @@ const DetailCourse = () => {
                         </div>
                       </div>
                     ))}
+
+                    <div className='my-4'>
+                      <h1 className='font-bold text-[24px] capitalize'>
+                        Bình luận
+                      </h1>
+                      <form action=''>
+                        <Textarea
+                          minRows={3}
+                          size='lg'
+                          placeholder='Nhập bình luận...'
+                        />
+                        <div className='flex justify-end mt-4'>
+                          <button className='btn' type='submit'>
+                            Submit
+                          </button>
+                        </div>
+                      </form>
+                    </div>
                   </TabPanel>
                 </TabContext>
               </Box>
@@ -456,58 +486,57 @@ const DetailCourse = () => {
                   label='Thầy Thanh'
                   onChange={handleSelectMentor}
                   defaultValue={10}
-                  required={true}
+                  required
                 >
-                  <MenuItem value={10}>Thầy Thanh </MenuItem>
-                  <MenuItem value={20}>Thầy Phước </MenuItem>
-                  <MenuItem value={30}>Thầy Huy </MenuItem>
-                  <MenuItem value={40}>Cô Thư </MenuItem>
+                  {course?.mentors?.map((mentor, index) => (
+                    <MenuItem value={mentor.staffId}>
+                      GV. {`${mentor.firstName} ${mentor.lastName}`}{' '}
+                    </MenuItem>
+                  ))}
                 </Select>
+                <button className='btn' type='submit' onClick={handleClickOpen}>
+                  Thanh Toán
+                </button>
               </FormControl>
             </Box>
-
-            <button className='btn' onClick={handleClickOpen}>
-              Thanh Toán
-            </button>
-
-            <Dialog
-              open={open}
-              onClose={handleClose}
-              aria-labelledby='alert-dialog-title'
-              aria-describedby='alert-dialog-description'
-            >
-              <div className='p-4'>
-                <DialogTitle id='alert-dialog-title'>
-                  {'Chọn phương thức thanh toán?'}
-                </DialogTitle>
-                <DialogContent>
-                  <form action=''>
-                    <select name='' id='' className='p-2 border'>
-                      <option value='1' className='px-2'>
-                        Thanh toán trực tiếp
-                      </option>
-                      <option value='2' className='px-2'>
-                        Thanh toán trực tuyến
-                      </option>
-                    </select>
-                  </form>
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={handleClose}>Hủy</Button>
-
-                  <button
-                    className='btn'
-                    onClick={() => {
-                      toastSuccess('Thanh toán thành công');
-                      navigate('/home');
-                    }}
-                  >
-                    Xác nhận
-                  </button>
-                </DialogActions>
-              </div>
-            </Dialog>
           </div>
+
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-labelledby='alert-dialog-title'
+            aria-describedby='alert-dialog-description'
+          >
+            <div className='p-4'>
+              <DialogTitle id='alert-dialog-title'>
+                {'Chọn phương thức thanh toán?'}
+              </DialogTitle>
+              <DialogContent>
+                <form action=''>
+                  <select name='' id='' className='p-2 border'>
+                    {paymentList?.map((payItem, index) => (
+                      <option value={payItem?.paymentTypeId} className='px-2'>
+                        {payItem?.paymentTypeDesc}
+                      </option>
+                    ))}
+                  </select>
+                </form>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleClose}>Hủy</Button>
+
+                <button
+                  className='btn'
+                  onClick={() => {
+                    toastSuccess('Thanh toán thành công');
+                    navigate('/home');
+                  }}
+                >
+                  Xác nhận
+                </button>
+              </DialogActions>
+            </div>
+          </Dialog>
         </div>
       ) : (
         <Loading />

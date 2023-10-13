@@ -25,7 +25,7 @@ namespace DriverLicenseLearningSupport.Entities
         public string AddressId { get; set; }
         public int? JobTitleId { get; set; }
         public int? LicenseTypeId { get; set; }
-
+        public string? SelfDescription { get; set; }
         public virtual Address Address { get; set; }
         public virtual Account EmailNavigation { get; set; }
         public virtual JobTitle JobTitle { get; set; }

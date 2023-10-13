@@ -466,7 +466,14 @@ namespace DriverLicenseLearningSupport.Controllers
 
             return Ok(new BaseResponse { 
                 StatusCode = StatusCodes.Status200OK,
-                Data = course
+                Data = new {
+                    Course = course,
+                    Mentors = course.Mentors.Select(x => new
+                    {
+                        MentorId = x.StaffId,
+                        MentorName = $"{x.FirstName} {x.LastName}"
+                    })
+                }
             });
         }
 
