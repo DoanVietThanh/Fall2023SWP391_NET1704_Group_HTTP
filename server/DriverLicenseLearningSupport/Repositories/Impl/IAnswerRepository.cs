@@ -17,6 +17,8 @@ namespace DriverLicenseLearningSupport.Repositories.Impl
 
         public Task<int> GetRightAnswerIdByQuestionId(int questionId);
         Task<AnswerModel> GetByQuestionIdAndAnswerDesc(int questionId, string answerDesc);
+        Task<AnswerModel> UpdateAnswerAsync(int answerId, AnswerModel answer);
+
     }
 
 }

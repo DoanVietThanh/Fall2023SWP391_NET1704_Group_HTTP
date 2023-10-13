@@ -127,5 +127,15 @@ namespace DriverLicenseLearningSupport.Repositories
             }
             return -1;
         }
+
+        public async Task<AnswerModel> UpdateAnswerAsync(int answerId, AnswerModel answer)
+        {
+            var answerEntity = await _context.QuestionAnswers.Where(a => a.QuestionAnswerId == answerId)
+                .FirstOrDefaultAsync();
+            answerEntity.Answer = answer.Answer;
+            answerEntity.IsTrue = answer.IsTrue;
+            await _context.SaveChangesAsync();
+            return _mapper.Map<AnswerModel>(answerEntity);
+        }
     }
 }

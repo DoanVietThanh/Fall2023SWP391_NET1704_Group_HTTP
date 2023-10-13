@@ -25,6 +25,7 @@ namespace DriverLicenseLearningSupport.Payloads.Request
             {
                 var examGrademodel = new ExamGradeModel
                 {
+                    SelectedAnswerId = sa.SelectedAnswerId,
                     //MemberId = obj.MemberId,
                     TheoryExamId = obj.TheoryExamId,
                     Email = obj.Email,
