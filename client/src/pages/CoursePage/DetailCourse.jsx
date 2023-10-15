@@ -44,16 +44,21 @@ import axiosClient from '../../utils/axiosClient';
 import Loading from '../../components/Loading';
 import { Textarea } from '@mui/joy';
 import { BsFillArrowRightCircleFill } from 'react-icons/bs';
+import { useSelector } from 'react-redux';
+import { redirect } from 'react-router-dom';
 
 const DetailCourse = () => {
+  const { memberId } = useSelector((state) => state?.auth?.user?.accountInfo);
   const navigate = useNavigate();
   const { idCourse } = useParams();
   const [course, setCourse] = useState();
 
   const [value, setValue] = useState('1');
+  const [totalMember, setTotalMember] = useState(0);
   const [selectedMentor, setSelectedMentor] = useState('');
   const [open, setOpen] = useState(false);
   const [paymentList, setPaymentList] = useState([]);
+  const [typePayment, setTypePayment] = useState(1);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -63,7 +68,10 @@ const DetailCourse = () => {
     setSelectedMentor(event.target.value);
   };
 
-  const handleClickOpen = () => setOpen(true);
+  const handleClickOpen = (e) => {
+    e.preventDefault();
+    setOpen(true);
+  };
 
   const handleClose = () => setOpen(false);
 
@@ -72,6 +80,7 @@ const DetailCourse = () => {
       const res = await axiosClient.get(`/courses/${idCourse}`);
       const payment = await axiosClient.get(`/courses/reservation`);
       if (res?.data.statusCode === 200 && payment?.data.statusCode === 200) {
+        setTotalMember(res?.data?.data.totalMember);
         setCourse(res?.data?.data?.course);
         setPaymentList(payment?.data?.data);
       } else {
@@ -83,6 +92,29 @@ const DetailCourse = () => {
 
   console.log('course: ', course);
   console.log('paymentList: ', paymentList);
+
+  const submitPayment = async () => {
+    // window.location.href =
+    //   'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=12000000&vnp_Command=pay&vnp_CreateDate=20231013232532&vnp_CurrCode=VND&vnp_IpAddr=%3A%3A1&vnp_Locale=vn&vnp_OrderInfo=Thanh+to%C3%A1n+Kh%C3%B3a+h%E1%BB%8Dc+b%E1%BA%B1ng+l%C3%A1i+B1&vnp_OrderType=other&vnp_ReturnUrl=http%3A%2F%2Flocalhost%3A8082%2Fapi%2Fpayment%2Fvnpay-return&vnp_TmnCode=WR9WZI0K&vnp_TxnRef=5c908503-4a66-45fb-ab59-5422cdc54427&vnp_Version=2.1.0&vnp_SecureHash=734d39f3aa6032940e853936afe4c12526407e39e324871740eee1a413182af996ef479f97c4778bd04c8fbde7e7d2fe0e6d61250a07d1944c8a111fc57bae61';
+    try {
+      const resReservation = await axiosClient.post(`/courses/reservation`, {
+        memberId,
+        mentorId: selectedMentor,
+        paymentTypeId: typePayment,
+        paymentAmount: course?.cost,
+        courseId: course?.courseId,
+      });
+      console.log('resReservation: ', resReservation);
+      const resPayment = await axiosClient.post(
+        `/api/payment`,
+        resReservation?.data?.data
+      );
+      console.log('resPayment:', resPayment);
+      window.location.href = resPayment?.data?.data.paymentUrl;
+    } catch (error) {
+      toastError(error);
+    }
+  };
 
   return (
     <>
@@ -108,11 +140,11 @@ const DetailCourse = () => {
               <div className='py-6 flex gap-8'>
                 <div className='flex-x gap-2 border-r-2 pr-8'>
                   <MdOutlinePeopleAlt className='text-blue-700' size={20} />{' '}
-                  Student ????
+                  Student : {totalMember}
                 </div>
-                <div className='flex-x gap-2'>
-                  <AiFillEye className='text-blue-700' size={20} /> Views ????
-                </div>
+                {/* <div className='flex-x gap-2'>
+                  <AiFillEye className='text-blue-700' size={20} />
+                </div> */}
               </div>
 
               <h1 className='font-bold text-[30px]'>{course.courseTitle}</h1>
@@ -129,7 +161,8 @@ const DetailCourse = () => {
                   <div>
                     <p className='font-medium'>Loại bằng:</p>
                     <p className='text-center'>
-                      {course?.licenseType?.licenseTypeDesc}
+                      {/* {course?.licenseType?.licenseTypeDesc} */}
+                      B1
                     </p>
                   </div>
                 </div>
@@ -302,7 +335,7 @@ const DetailCourse = () => {
                             <img
                               alt='avt'
                               className='w-[160px] h-[160px] object-cover rounded-full'
-                              src='/img/avtThanh.jpg'
+                              src={item?.avatarImage}
                             />
                           </div>
                           <div className='flex-1 flex flex-col justify-between pl-4 border-l-2 text-[20px]'>
@@ -477,27 +510,29 @@ const DetailCourse = () => {
             </p>
 
             <Box sx={{ minWidth: 120 }}>
-              <FormControl fullWidth>
-                <InputLabel id='demo-simple-select-label'>Chọn GV</InputLabel>
-                <Select
-                  labelId='demo-simple-select-label'
-                  id='demo-simple-select'
-                  value={selectedMentor}
-                  label='Thầy Thanh'
-                  onChange={handleSelectMentor}
-                  defaultValue={10}
-                  required
-                >
-                  {course?.mentors?.map((mentor, index) => (
-                    <MenuItem value={mentor.staffId}>
-                      GV. {`${mentor.firstName} ${mentor.lastName}`}{' '}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <button className='btn' type='submit' onClick={handleClickOpen}>
-                  Thanh Toán
-                </button>
-              </FormControl>
+              <form action='' onSubmit={(e) => handleClickOpen(e)}>
+                <FormControl fullWidth>
+                  <InputLabel id='demo-simple-select-label'>Chọn GV</InputLabel>
+                  <Select
+                    labelId='demo-simple-select-label'
+                    id='demo-simple-select'
+                    value={selectedMentor}
+                    label='Thầy Thanh'
+                    onChange={(event) => handleSelectMentor(event)}
+                    defaultValue={10}
+                    required
+                  >
+                    {course?.mentors?.map((mentor, index) => (
+                      <MenuItem value={mentor.staffId}>
+                        GV. {`${mentor.firstName} ${mentor.lastName}`}{' '}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  <button className='btn' type='submit'>
+                    Thanh Toán
+                  </button>
+                </FormControl>
+              </form>
             </Box>
           </div>
 
@@ -513,7 +548,12 @@ const DetailCourse = () => {
               </DialogTitle>
               <DialogContent>
                 <form action=''>
-                  <select name='' id='' className='p-2 border'>
+                  <select
+                    className='p-2 border'
+                    value={typePayment}
+                    onChange={(e) => setTypePayment(e.target.value)}
+                    defaultValue={1}
+                  >
                     {paymentList?.map((payItem, index) => (
                       <option value={payItem?.paymentTypeId} className='px-2'>
                         {payItem?.paymentTypeDesc}
@@ -525,13 +565,7 @@ const DetailCourse = () => {
               <DialogActions>
                 <Button onClick={handleClose}>Hủy</Button>
 
-                <button
-                  className='btn'
-                  onClick={() => {
-                    toastSuccess('Thanh toán thành công');
-                    navigate('/home');
-                  }}
-                >
+                <button className='btn' onClick={submitPayment}>
                   Xác nhận
                 </button>
               </DialogActions>

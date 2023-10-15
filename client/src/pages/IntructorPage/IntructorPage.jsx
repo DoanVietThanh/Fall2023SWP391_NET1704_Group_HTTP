@@ -47,7 +47,7 @@ const IntructorPage = () => {
           instructorList.map((instructor, index) => (
             <div className='imgBackground w-[30%] flex flex-col p-14 m-5 uppercase gap-10 bg-gray-100'>
               <img
-                src='/img/avtThanh.jpg'
+                src={instructor.avatarImage}
                 alt={instructor.id}
                 className='zoom w-full h-[400px] object-cover'
               ></img>

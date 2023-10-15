@@ -93,12 +93,13 @@ namespace DriverLicenseLearningSupport.Repositories
                     rangeSchedules.Add(Convert.ToDateTime(ws.Friday));
                 }
             }
-            else if(rangeDaysRegister is "3,5")
+            else if(rangeDaysRegister is "3,5,7")
             {
                 foreach (var ws in weekdaySchedules)
                 {
                     rangeSchedules.Add(Convert.ToDateTime(ws.Tuesday));
                     rangeSchedules.Add(Convert.ToDateTime(ws.Thursday));
+                    rangeSchedules.Add(Convert.ToDateTime(ws.Saturday));
                 }
             }
             else

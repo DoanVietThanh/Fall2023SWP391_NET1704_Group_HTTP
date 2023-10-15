@@ -198,6 +198,31 @@ namespace DriverLicenseLearningSupport.Controllers
         }
 
         [HttpGet]
+        [Route("members")]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> GetAllMember()
+        {
+            var members = await _memberService.GetAllAsync();
+            
+            // not found any members
+            if (members is null) return NotFound(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = "Not found any members"
+            });
+
+            // return members, totalPage, pageIndex
+            return Ok(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Data = new
+                {
+                    Members = members
+                }
+            });
+        }
+
+        [HttpGet]
         [Route("members/{page:int}")]
         [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> GetAllMember([FromRoute] int page = 1)

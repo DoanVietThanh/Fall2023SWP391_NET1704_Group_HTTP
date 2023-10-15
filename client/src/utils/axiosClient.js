@@ -11,11 +11,11 @@ const axiosClient = axios.create({
 axiosClient.interceptors.request.use(
   function (config) {
     // Do something before request is sent
-    const accessToken = localStorage.getItem('accessToken');
+    let accessToken = localStorage.getItem('accessToken');
+    accessToken = accessToken.slice(1, accessToken.length - 1);
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
-    // console.log('🚀 ~ file: axiosClient.js:18 ~ config:', config);
     return config;
   },
   function (error) {
