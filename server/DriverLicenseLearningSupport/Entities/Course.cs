@@ -7,7 +7,7 @@ namespace DriverLicenseLearningSupport.Entities
     {
         public Course()
         {
-            CourseReservations = new HashSet<CourseReservation>();
+            CoursePackages = new HashSet<CoursePackage>();
             FeedBacks = new HashSet<FeedBack>();
             WeekdaySchedules = new HashSet<WeekdaySchedule>();
             Curricula = new HashSet<Curriculum>();
@@ -17,15 +17,15 @@ namespace DriverLicenseLearningSupport.Entities
         public string CourseId { get; set; }
         public string CourseTitle { get; set; }
         public string CourseDesc { get; set; }
-        public double Cost { get; set; }
-        public int? TotalSession { get; set; }
         public int? TotalMonth { get; set; }
         public DateTime? StartDate { get; set; }
         public bool? IsActive { get; set; }
-        public int LicenseTypeId { get; set; }
+        public int? LicenseTypeId { get; set; }
+        public int? TotalHoursRequired { get; set; }
+        public int? TotalKmRequired { get; set; }
 
         public virtual LicenseType LicenseType { get; set; }
-        public virtual ICollection<CourseReservation> CourseReservations { get; set; }
+        public virtual ICollection<CoursePackage> CoursePackages { get; set; }
         public virtual ICollection<FeedBack> FeedBacks { get; set; }
         public virtual ICollection<WeekdaySchedule> WeekdaySchedules { get; set; }
 

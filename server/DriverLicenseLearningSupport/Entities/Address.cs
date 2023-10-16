@@ -15,7 +15,7 @@ namespace DriverLicenseLearningSupport.Entities
         public string Street { get; set; }
         public string District { get; set; }
         public string City { get; set; }
-        public string? Zipcode { get; set; }
+        public string Zipcode { get; set; }
 
         public virtual ICollection<Member> Members { get; set; }
         public virtual ICollection<Staff> Staffs { get; set; }

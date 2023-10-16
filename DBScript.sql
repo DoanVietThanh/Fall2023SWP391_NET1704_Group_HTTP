@@ -71,12 +71,22 @@ CREATE TABLE [dbo].Course(
 	course_id NVARCHAR(200) PRIMARY KEY,
 	course_title NVARCHAR(255) NOT NULL,
 	course_desc NVARCHAR(MAX),
-	cost FLOAT NOT NULL,
-	total_session INT,
 	total_month INT,
 	start_date DATETIME,
 	is_active BIT,
-	license_type_id INT
+	license_type_id INT,
+	total_hours_required INT,
+	total_km_required INT
+)
+GO
+CREATE TABLE [dbo].Course_Package(
+	course_package_id NVARCHAR(200) PRIMARY KEY,
+	course_package_desc NVARCHAR(255),
+	total_session INT,
+	session_hour INT,
+	cost FLOAT,
+	age_required INT,
+	course_id NVARCHAR(200)
 )
 GO
 CREATE TABLE [dbo].Course_Mentor(
@@ -99,24 +109,21 @@ CREATE TABLE [dbo].Course_Curriculum(
 	PRIMARY KEY (course_id, curriculum_id)
 )
 GO
-CREATE TABLE [dbo].Course_Reservation(
-	course_reservation_id NVARCHAR(255) PRIMARY KEY,
-	course_start_date DATETIME NOT NULL,
+CREATE TABLE [dbo].Course_Package_Reservation(
+	course_package_reservation_id NVARCHAR(200) PRIMARY KEY,
 	create_date DATETIME,
-	last_modified_date DATETIME,
-	last_modified_by INT,
 	member_id NVARCHAR(200) NOT NULL,
-	course_id NVARCHAR(200) NOT NULL,
+	course_package_id NVARCHAR(200) NOT NULL,
 	staff_id NVARCHAR(200) NOT NULL,
-	course_reservation_status_id INT,
+	reservation_status_id INT,
 	payment_type_id INT NOT NULL,
 	payment_ammount FLOAT,
 	vehicle_id INT
 )
 GO
-CREATE TABLE [dbo].Course_Reservation_Status(
-	course_reservation_status_id INT PRIMARY KEY identity(1,1),
-	course_reservation_status_desc NVARCHAR(50) NOT NULL
+CREATE TABLE [dbo].Reservation_Status(
+	reservation_status_id INT PRIMARY KEY identity(1,1),
+	reservation_status_desc NVARCHAR(50) NOT NULL
 )
 GO
 CREATE TABLE [dbo].Payment_Type(
@@ -176,7 +183,9 @@ CREATE TABLE [dbo].Roll_Call_Book(
 	comment NVARCHAR(255),
 	member_id NVARCHAR(200) NOT NULL,
 	member_total_session INT,
-	teaching_schedule_id INT NOT NULL
+	teaching_schedule_id INT NOT NULL,
+	total_hours_driven INT,
+	total_km_driven INT
 )
 GO
 CREATE TABLE [dbo].FeedBack(
@@ -288,6 +297,14 @@ CREATE TABLE [dbo].Comment(
 	full_name NVARCHAR(255),
 	avatar_image NVARCHAR(100)
 )
+GO
+CREATE TABLE [dbo].Simulation_Situation(
+	simulation_id INT PRIMARY KEY identity(1,1),
+	simulation_video NVARCHAR(200),
+	image_result NVARCHAR(200),
+	time_result INT,
+	license_type_id INT
+)
 
 -- CONSTRAINTS 
 -- dbo.Account - dbo.Role
@@ -317,6 +334,9 @@ ADD CONSTRAINT FK_Staff_AddressId FOREIGN KEY (address_id) REFERENCES Address (a
 -- dbo.Staff - dbo.License_Type
 ALTER TABLE Staff
 ADD CONSTRAINT FK_Staff_LicenseTypeId FOREIGN KEY (license_type_id) REFERENCES License_Type (license_type_id)
+-- dbo.Course_Package - dbo.Course
+ALTER TABLE Course_Package
+ADD CONSTRAINT FK_CoursePackage_CourseId FOREIGN KEY (course_id) REFERENCES Course (course_id)
 -- dbo.Course_Mentor - dbo.Course
 ALTER TABLE Course_Mentor
 ADD CONSTRAINT FK_CourseMentor_CourseId FOREIGN KEY (course_id) REFERENCES Course (course_id)
@@ -332,24 +352,24 @@ ADD CONSTRAINT FK_CourseCurriculum_CourseId FOREIGN KEY (course_id) REFERENCES C
 -- dbo.Course - dbo.LicenseType
 ALTER TABLE Course
 ADD CONSTRAINT FK_Course_LicenseTypeId FOREIGN KEY (license_type_id) REFERENCES License_Type (license_type_id)
--- dbo.Course_Reservation - dbo.Course
-ALTER TABLE Course_Reservation
-ADD CONSTRAINT FK_CourseReservation_CourseId FOREIGN KEY (course_id) REFERENCES Course (course_id)
--- dbo.Course_Reservation - dbo.Member
-ALTER TABLE Course_Reservation
-ADD CONSTRAINT FK_CourseReservation_MemberId FOREIGN KEY (member_id) REFERENCES Member (member_id)
--- dbo.Course_Reservation - dbo.Staff
-ALTER TABLE Course_Reservation
-ADD CONSTRAINT FK_CourseReservation_StaffId FOREIGN KEY (staff_id) REFERENCES Staff (staff_id)
--- dbo.Course_Reservation - dbo.Course_Reservation_Status
-ALTER TABLE Course_Reservation
-ADD CONSTRAINT FK_CourseReservation_StatusId FOREIGN KEY (course_reservation_status_id) REFERENCES Course_Reservation_Status (course_reservation_status_id)
--- dbo.Course_Reservation - dbo.Vehicle
-ALTER TABLE Course_Reservation
-ADD CONSTRAINT FK_CourseReservation_VehicleId FOREIGN KEY (vehicle_id) REFERENCES Vehicle (vehicle_id)
--- dbo.Course_Reservation - dbo.Payment_Type
-ALTER TABLE Course_Reservation
-ADD CONSTRAINT FK_CourseReservation_PaymentTypeId FOREIGN KEY (payment_type_id) REFERENCES Payment_Type (payment_type_id)
+-- dbo.Course_Package_Reservation - dbo.Course
+ALTER TABLE Course_Package_Reservation
+ADD CONSTRAINT FK_CoursePackageReservation_CoursePackageId FOREIGN KEY (course_package_id) REFERENCES Course_Package (course_package_id)
+-- dbo.Course_Package_Reservation - dbo.Member
+ALTER TABLE Course_Package_Reservation
+ADD CONSTRAINT FK_CoursePackageReservation_MemberId FOREIGN KEY (member_id) REFERENCES Member (member_id)
+-- dbo.Course__Package_Reservation - dbo.Staff
+ALTER TABLE Course_Package_Reservation
+ADD CONSTRAINT FK_CoursePackageReservation_StaffId FOREIGN KEY (staff_id) REFERENCES Staff (staff_id)
+-- dbo.Course_Package_Reservation - dbo.Reservation_Status
+ALTER TABLE Course_Package_Reservation
+ADD CONSTRAINT FK_CoursePackageReservation_StatusId FOREIGN KEY (reservation_status_id) REFERENCES Reservation_Status (reservation_status_id)
+-- dbo.Course_Package_Reservation - dbo.Vehicle
+ALTER TABLE Course_Package_Reservation
+ADD CONSTRAINT FK_CoursePackageReservation_VehicleId FOREIGN KEY (vehicle_id) REFERENCES Vehicle (vehicle_id)
+-- dbo.Course_Package_Reservation - dbo.Payment_Type
+ALTER TABLE Course_Package_Reservation
+ADD CONSTRAINT FK_CoursePackageReservation_PaymentTypeId FOREIGN KEY (payment_type_id) REFERENCES Payment_Type (payment_type_id)
 -- dbo.Vehicle - dbo.Vehicle_Type
 ALTER TABLE Vehicle
 ADD CONSTRAINT FK_Vehicle_TypeId FOREIGN KEY (vehicle_type_id) REFERENCES Vehicle_Type (vehicle_type_id)
@@ -431,7 +451,9 @@ ADD CONSTRAINT FK_BlogTag_BlogId FOREIGN KEY (blog_id) REFERENCES Blog (blog_id)
 -- dbo.Blog_Tag - dbo.Tag
 ALTER TABLE Blog_Tag
 ADD CONSTRAINT FK_BlogTag_TagId FOREIGN KEY (tag_id) REFERENCES Tag (tag_id)
-
+-- dbo.Simulation_Situation - dbo.License_Type
+ALTER TABLE Simulation_Situation
+ADD CONSTRAINT FK_SimulationSituation_LicenseTypeId FOREIGN KEY (license_type_id) REFERENCES License_Type (license_type_id)
 
 -- default data
 INSERT INTO [dbo].Role(name)
@@ -441,19 +463,17 @@ VALUES (N'admin@gmail.com', N'QEFkbWluMTIz', 1, 1)
 INSERT INTO [dbo].Job_Title(job_title_desc)
 VALUES (N'Quản trị hệ thống'), (N'Quản lí nhân sự'), (N'Giảng viên')
 INSERT INTO [dbo].License_Type(license_type_desc)
-VALUES (N'A1'),(N'A2'),(N'B1'),(N'B1.1'),(N'B2')
+VALUES (N'Chưa có'),(N'A1'),(N'A2'),(N'B1'),(N'B1.1'),(N'B2')
 INSERT INTO [dbo].License_Register_Form_Status(register_form_status_desc)
 VALUES (N'Chưa duyệt'), (N'Đã duyệt')
-INSERT INTO [dbo].Course_Reservation_Status(course_reservation_status_desc)
-VALUES (N'Chưa thanh toán'), (N'Đã thanh toán'), (N'Đã kết thúc')
+INSERT INTO [dbo].Reservation_Status(reservation_status_desc)
+VALUES (N'Chưa thanh toán'), (N'Đã thanh toán')
 INSERT INTO [dbo].Payment_Type(payment_type_desc)
 VALUES (N'Thanh toán trực tiếp'), (N'Credit Card'), (N'VNPAY')
 INSERT INTO [dbo].Vehicle_Type(vehicle_type_desc, license_type_id)
 VALUES (N'Xe số sàn', 3), (N'Xe số tự động', 4)
 
-
-
-SET IDENTITY_INSERT [dbo].Question ON;
+SET IDENTITY_INSERT [dbo].Question OFF;
 INSERT INTO [dbo].Question(question_answer_desc,is_Paralysis,image,license_type_id,is_active)
 VALUES
 (N'Khái niệm “phương tiện giao thông thô sơ đường bộ” được hiểu như thế nào là đúng?',1,null,1,1),
@@ -556,3 +576,34 @@ VALUES
 (N'Gồm xe đạp (kể cả xe đạp máy, xe đạp điện), xe xích lô, xe lăn dùng cho người khuyết tật, xe súc vật kéo và các loại xe tương tự.',1,25),
 (N'Gồm xe đạp (kể cả xe đạp máy, xe đạp điện), xe gắn máy, xe cơ giới dùng cho người khuyết tật và xe máy chuyên dùng.',0,25),
 (N'Gồm xe ô tô, máy kéo, rơ moóc hoặc sơ mi rơ moóc được kéo bởi xe ô tô, máy kéo.',0,25)
+
+INSERT INTO [dbo].Theory_Exam(total_question, total_time, total_answer_required, license_type_id)
+VALUES(25, 15, 24, 2)
+GO
+INSERT INTO [dbo].Exam_Question(question_id, theory_exam_id)
+VALUES
+	(1,1),
+	(2,1),
+	(3,1),
+	(4,1),
+	(5,1),
+	(6,1),
+	(7,1),
+	(8,1),
+	(9,1),
+	(10,1),
+	(11,1),
+	(12,1),
+	(13,1),
+	(14,1),
+	(15,1),
+	(16,1),
+	(17,1),
+	(18,1),
+	(19,1),
+	(20,1),
+	(21,1),
+	(22,1),
+	(23,1),
+	(24,1),
+	(25,1)

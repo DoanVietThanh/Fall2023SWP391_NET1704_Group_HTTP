@@ -12,20 +12,19 @@ namespace DriverLicenseLearningSupport.Payloads.Request
         [Required(ErrorMessage = "Course Description is required")]
         public string CourseDesc { get; set; } = null!;
 
-        [Required(ErrorMessage = "Course Description is required")]
-        public double Cost { get; set; }
-
         [Required(ErrorMessage = "Start date is required")]
         public DateTime StartDate { get; set; }
 
-        [Required(ErrorMessage = "Total Session is required")]
-        public int TotalSession { get; set; }
-
-        [Required(ErrorMessage = "Total Month is required")]
-        public int TotalMonth { get; set; }
-
         [Required(ErrorMessage = "License Type is required")]
         public int LicenseTypeId { get; set; }
+
+        [Required(ErrorMessage = "Total hours is required")]
+        public int TotalHoursRequired { get; set; }
+        
+        [Required(ErrorMessage = "License Type is required")]
+        public int TotalKmRequired { get; set; }
+        [Required(ErrorMessage = "Total Month is required")]
+        public int TotalMonth { get; set; }
     }
 
     public static class CourseAddRequestExtension 
@@ -37,9 +36,9 @@ namespace DriverLicenseLearningSupport.Payloads.Request
                 CourseId = Guid.NewGuid().ToString(),
                 CourseTitle = reqObj.CourseTitle,
                 CourseDesc = WebUtility.HtmlEncode(reqObj.CourseDesc),
-                Cost = reqObj.Cost,
-                TotalSession = reqObj.TotalSession,
                 TotalMonth = reqObj.TotalMonth,
+                TotalHoursRequired = reqObj.TotalHoursRequired,
+                TotalKmRequired = reqObj.TotalKmRequired,
                 StartDate = reqObj.StartDate,
                 LicenseTypeId = reqObj.LicenseTypeId,
                 IsActive = true

@@ -43,7 +43,7 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly ICourseService _courseService;
         private readonly IFeedbackService _feedbackService;
         private readonly IImageService _imageService;
-        private readonly ICourseReservationService _courseReservationService;
+        private readonly ICoursePackageReservationService _courseReservationService;
         private readonly ITeachingScheduleService _teachingScheduleService;
         private readonly IWeekDayScheduleService _weekDayScheduleService;
         private readonly IRollCallBookService _rollCallBookService;
@@ -64,7 +64,7 @@ namespace DriverLicenseLearningSupport.Controllers
             IStaffService staffService,
             IFeedbackService feedbackService,
             ICourseService courseService,
-            ICourseReservationService courseReservationService,
+            ICoursePackageReservationService courseReservationService,
             ITeachingScheduleService teachingScheduleService,
             IWeekDayScheduleService weekDayScheduleService,
             ISlotService slotService,
@@ -903,7 +903,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 });
             }
             // get course by id 
-            var course = await _courseService.GetAsync(Guid.Parse(courseReservation.CourseId));
+            var course = await _courseService.GetAsync(Guid.Parse(courseReservation.CoursePackage.CourseId));
             // set null mentors list 
             course.Mentors = null;
             course.FeedBacks = null;
@@ -931,7 +931,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
             // get calendar by current date
             var weekday = await _weekDayScheduleService.GetByDateAndCourseId(currDate, 
-                Guid.Parse(courseReservation.CourseId));
+                Guid.Parse(courseReservation.CoursePackage.CourseId));
             if(weekday is null)
             {
                 return BadRequest(new BaseResponse { 
@@ -941,7 +941,7 @@ namespace DriverLicenseLearningSupport.Controllers
             }
             // get all weekday of calendar
             var weekdays = await _weekDayScheduleService.GetAllByCourseId(
-                Guid.Parse(courseReservation.CourseId));
+                Guid.Parse(courseReservation.CoursePackage.CourseId));
             // get all slots 
             var slots = await _slotService.GetAllAsync();
             // convert to list of course
@@ -950,12 +950,6 @@ namespace DriverLicenseLearningSupport.Controllers
             // get learning schedule for each slot
             foreach (var s in slots)
             {
-                /*
-                var teachingSchedules
-                    = await _teachingScheduleService.GetBySlotAndWeekDayScheduleOfMemberAsync(s.SlotId,
-                        weekday.WeekdayScheduleId, 
-                        Guid.Parse(courseReservation.StaffId), id);
-                s.TeachingSchedules = teachingSchedules.ToList();*/
                 var teachingSchedules
                     = await _teachingScheduleService.GetBySlotAndWeekDayScheduleAsync(s.SlotId,
                         weekday.WeekdayScheduleId,
@@ -964,23 +958,6 @@ namespace DriverLicenseLearningSupport.Controllers
             }
 
             // response
-            /*
-            return Ok(new BaseResponse()
-            {
-                StatusCode = StatusCodes.Status200OK,
-                Data = new
-                {
-                    Course = course,
-                    Mentor = staff,
-                    Filter = weekdays.Select(x => new {
-                        Id = x.WeekdayScheduleId,
-                        Desc = x.WeekdayScheduleDesc
-                    }),
-                    Weekdays = weekday,
-                    SlotSchedules = listOfSlotSchedule
-                }
-            });*/
-
             var response = new BaseResponse()
             {
                 StatusCode = StatusCodes.Status200OK,
@@ -1006,8 +983,8 @@ namespace DriverLicenseLearningSupport.Controllers
         public async Task<IActionResult> GetMemberCalendarByFilter([FromRoute] Guid id,[FromQuery] LearningScheduleFilter filters)
         {
             // get course reservation
-            var courseReservation = await _courseReservationService.GetByMemberAsync(id);
-            if(courseReservation is null)
+            var packageReservation = await _courseReservationService.GetByMemberAsync(id);
+            if(packageReservation is null)
             {
                 return BadRequest(new BaseResponse { 
                     StatusCode = StatusCodes.Status400BadRequest,
@@ -1044,7 +1021,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
             // get all weekday of calendar
             var weekdays = await _weekDayScheduleService.GetAllByCourseId(
-                Guid.Parse(courseReservation.CourseId));
+                Guid.Parse(packageReservation.CoursePackage.CourseId));
             // get all slots 
             var slots = await _slotService.GetAllAsync();
             // convert to list of course
@@ -1061,7 +1038,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 var teachingSchedules
                     = await _teachingScheduleService.GetBySlotAndWeekDayScheduleAsync(s.SlotId,
                         weekday.WeekdayScheduleId,
-                        Guid.Parse(courseReservation.StaffId));
+                        Guid.Parse(packageReservation.StaffId));
                 s.TeachingSchedules = teachingSchedules.ToList();
             }
             // get course by id 
@@ -1070,7 +1047,7 @@ namespace DriverLicenseLearningSupport.Controllers
             course.FeedBacks = null;
             course.Curricula = null;
             // get staff by id
-            var staff = await _staffService.GetAsync(Guid.Parse(courseReservation.StaffId));
+            var staff = await _staffService.GetAsync(Guid.Parse(packageReservation.StaffId));
             staff.Courses = null;
             staff.SelfDescription = string.Empty;
             staff.FeedBacks = null;
@@ -1109,7 +1086,7 @@ namespace DriverLicenseLearningSupport.Controllers
             }
 
             // check course reservation status
-            if(courseReservation.CourseReservationStatusId == 1)
+            if(courseReservation.ReservationStatusId == 1)
             {
                 return BadRequest(new BaseResponse
                 {
@@ -1124,7 +1101,11 @@ namespace DriverLicenseLearningSupport.Controllers
 
             // get course by id 
             var course = await _courseService.GetAsync(
-                Guid.Parse(courseReservation.CourseId));
+                Guid.Parse(courseReservation.CoursePackage.CourseId));
+
+            // get course package by id
+            var coursePackage = await _courseService.GetPackageAsync(
+                Guid.Parse(courseReservation.CoursePackageId));
 
             // count member total rollcallbook
             var rcbCount = 0;
@@ -1135,7 +1116,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
             // total registered session > course total session <- not allow to register 
             var totalRegisteredSession = rcbooks is not null ? rcbooks?.Count() : 0;
-            var isOverTotalSession = (totalRegisteredSession) > course.TotalSession ? true : false;
+            var isOverTotalSession = (totalRegisteredSession) > coursePackage.TotalSession ? true : false;
             if (isOverTotalSession)
             {
                 return BadRequest(new BaseResponse { 
@@ -1163,7 +1144,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
             // get weekday schedule id by teaching date request
             var weekday = await _weekDayScheduleService.GetByDateAndCourseId(teachingSchedule.TeachingDate
-                , Guid.Parse(courseReservation.CourseId));
+                , Guid.Parse(course.CourseId));
             // check teaching date exist
             if (weekday is null)
             {
@@ -1209,7 +1190,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 return BadRequest(new BaseResponse { 
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = $"Member {reqObj.MemberId} not allow to register this " +
-                        $"schedule because he/she not in course {courseReservation.CourseId}"
+                        $"schedule because he/she not in course {course.CourseTitle}"
                 });
             }
 
@@ -1244,6 +1225,5 @@ namespace DriverLicenseLearningSupport.Controllers
 
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
-
     }
 }

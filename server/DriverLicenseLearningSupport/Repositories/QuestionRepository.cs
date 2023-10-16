@@ -107,7 +107,7 @@ namespace DriverLicenseLearningSupport.Repositories
         public async Task<QuestionModel> UpdateStatusQuestionAsync(int questionId, bool status)
         {
             var QuestionEntity = await _context.Questions.Where(q => q.QuestionId == questionId).FirstOrDefaultAsync();
-            QuestionEntity.isActive = status;
+            QuestionEntity.IsActive = status;
             await _context.SaveChangesAsync();
             return _mapper.Map<QuestionModel>(QuestionEntity);
         }

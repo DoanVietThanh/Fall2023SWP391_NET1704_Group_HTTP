@@ -41,13 +41,8 @@ const Header = () => {
   const listNavigate = [
     {
       id: 1,
-<<<<<<< HEAD
-      title: "home",
-      link: "/home",
-=======
       title: 'Trang chủ',
       link: '/',
->>>>>>> d61712b00a303162d56c3c3888111d0b00ca45f4
     },
     {
       id: 2,
@@ -161,13 +156,8 @@ const Header = () => {
         <div className='flex gap-16 text-[20px] font-medium uppercase'>
           {listNavigate.map((item, index) =>
             //kiem tra duong dan
-<<<<<<< HEAD
             currentLocation.startsWith(item.link) ? (
-              <Link to={item.link} className="curNav">
-=======
-            item.link === currentLocation ? (
               <Link to={item.link} className='curNav'>
->>>>>>> d61712b00a303162d56c3c3888111d0b00ca45f4
                 {item.title}
               </Link>
             ) : (

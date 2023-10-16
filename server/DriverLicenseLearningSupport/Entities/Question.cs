@@ -15,14 +15,14 @@ namespace DriverLicenseLearningSupport.Entities
         public int QuestionId { get; set; }
         public string QuestionAnswerDesc { get; set; }
         public bool? IsParalysis { get; set; }
-        public string? Image { get; set; }
+        public string Image { get; set; }
         public int? LicenseTypeId { get; set; }
-
-        public bool? isActive { get; set; }
+        public bool? IsActive { get; set; }
 
         public virtual LicenseType LicenseType { get; set; }
         public virtual ICollection<ExamGrade> ExamGrades { get; set; }
         public virtual ICollection<QuestionAnswer> QuestionAnswers { get; set; }
+
         public virtual ICollection<TheoryExam> TheoryExams { get; set; }
     }
 }

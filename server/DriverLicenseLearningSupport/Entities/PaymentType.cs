@@ -7,12 +7,12 @@ namespace DriverLicenseLearningSupport.Entities
     {
         public PaymentType()
         {
-            CourseReservations = new HashSet<CourseReservation>();
+            CoursePackageReservations = new HashSet<CoursePackageReservation>();
         }
 
         public int PaymentTypeId { get; set; }
         public string PaymentTypeDesc { get; set; }
 
-        public virtual ICollection<CourseReservation> CourseReservations { get; set; }
+        public virtual ICollection<CoursePackageReservation> CoursePackageReservations { get; set; }
     }
 }

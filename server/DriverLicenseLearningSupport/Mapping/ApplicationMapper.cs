@@ -22,7 +22,8 @@ namespace DriverLicenseLearningSupport.Mapping
             CreateMap<LicenseRegisterForm, LicenseRegisterFormModel>().ReverseMap();
             CreateMap<LicenseRegisterFormStatus, LicenseRegisterFormStatusModel>().ReverseMap();
             CreateMap<WeekdaySchedule, WeekdayScheduleModel>().ReverseMap();
-            CreateMap<CourseReservation, CourseReservationModel>().ReverseMap();
+            CreateMap<CoursePackage, CoursePackageModel>().ReverseMap();
+            CreateMap<CoursePackageReservation, CoursePackageReservationModel>().ReverseMap();
             CreateMap<Question, QuestionModel>().ReverseMap();
             CreateMap<QuestionAnswer,AnswerModel>().ReverseMap();
             CreateMap<Vehicle, VehicleModel>().ReverseMap();

@@ -12,8 +12,10 @@ namespace DriverLicenseLearningSupport.Validation
                 .NotEmpty();
             RuleFor(x => x.CourseDesc)
                 .NotEmpty();
-            RuleFor(x => x.Cost)
+            RuleFor(x => x.TotalKmRequired)
                 .NotEmpty();
+            RuleFor(x => x.TotalHoursRequired)
+               .NotEmpty();
         }
     }
 

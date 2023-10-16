@@ -12,11 +12,10 @@ namespace DriverLicenseLearningSupport.Payloads.Request
         [Required(ErrorMessage = "Course Description is required")]
         public string CourseDesc { get; set; } = null!;
 
-        [Required(ErrorMessage = "Course Description is required")]
-        public double Cost { get; set; }
-
-        [Required(ErrorMessage = "Total Session is required")]
-        public int TotalSession { get; set; }
+        [Required(ErrorMessage = "Total Hours is required")]
+        public int? TotalHourRequired { get; set; }
+        [Required(ErrorMessage = "Total Km is required")]
+        public int? TotalKmRequired { get; set; }
     }
 
     public static class CourseUpdateRequestExtension
@@ -27,8 +26,8 @@ namespace DriverLicenseLearningSupport.Payloads.Request
             {
                 CourseTitle = reqObj.CourseTitle,
                 CourseDesc = WebUtility.HtmlEncode(reqObj.CourseDesc),
-                Cost = reqObj.Cost,
-                TotalSession = reqObj.TotalSession,
+                TotalHoursRequired = reqObj.TotalHourRequired,
+                TotalKmRequired = reqObj.TotalKmRequired,
                 IsActive = true
             };
         }

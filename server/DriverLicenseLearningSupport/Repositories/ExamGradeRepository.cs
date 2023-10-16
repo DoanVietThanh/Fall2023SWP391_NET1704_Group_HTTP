@@ -36,7 +36,7 @@ namespace DriverLicenseLearningSupport.Repositories
             eg.Email.Equals(Email)).ToListAsync();
             var formatedDate = StartedDate.ToString(_appSettings.DateTimeFormat);
             //StartedDate = DateTime.ParseExact(formatedDate, _appSettings.DateTimeFormat, CultureInfo.InvariantCulture);
-            ExamGrades = ExamGrades.Where(x => x.StartedDate.ToString(_appSettings.DateTimeFormat).Equals(formatedDate)).ToList();
+            ExamGrades = ExamGrades.Where(x => x.StartDate.ToString(_appSettings.DateTimeFormat).Equals(formatedDate)).ToList();
             return _mapper.Map<List<ExamGradeModel>>(ExamGrades);
         }
 
