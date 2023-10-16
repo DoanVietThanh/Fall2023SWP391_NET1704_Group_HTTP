@@ -78,7 +78,7 @@ const CoursePage = () => {
 
                         <div className='flex gap-5 text-2xl items-center'>
                           <BsFillArrowRightSquareFill
-                            size={38}
+                            size={34}
                             color='#0d5ef4'
                             className='iconHover'
                           />

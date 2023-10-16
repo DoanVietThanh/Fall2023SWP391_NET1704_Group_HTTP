@@ -4,11 +4,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import * as dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
-import {
-  AiOutlineCheckCircle,
-  AiOutlineCloseCircle,
-  AiOutlinePlusCircle,
-} from 'react-icons/ai';
+import { AiOutlineCheckCircle, AiOutlineCloseCircle } from 'react-icons/ai';
 
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
@@ -66,11 +62,12 @@ const InstructorSchedule = () => {
       const response = await axiosClient.get(
         `/staffs/mentors/${idInstructor}/schedule/filter?weekdayScheduleId=${event.target.value}`
       );
-      // console.log('response filter:', response);
       setDataWeek(response?.data);
     }
     selectedWeek();
   };
+
+  console.log('dataWeek: ', dataWeek);
 
   const handleClickOpenRegister = (teachingScheduleId) => {
     setIdSchedule(teachingScheduleId);
@@ -105,7 +102,7 @@ const InstructorSchedule = () => {
         <Loading />
       ) : (
         <>
-          {dataWeek && (
+          {dataWeek.data && (
             <>
               <Box component='main' sx={{ flexGrow: 1, p: 3 }}>
                 <div className='h-[80vh] w-full rounded overflow-y-auto mt-[64px]'>
@@ -129,11 +126,13 @@ const InstructorSchedule = () => {
                                   label='Tuần'
                                   onChange={handleChange}
                                 >
-                                  {dataWeek.data.filter?.map((item, index) => (
-                                    <MenuItem value={item.id} key={index}>
-                                      {item.desc}
-                                    </MenuItem>
-                                  ))}
+                                  {dataWeek?.data?.filter?.map(
+                                    (item, index) => (
+                                      <MenuItem value={item.id} key={index}>
+                                        {item.desc}
+                                      </MenuItem>
+                                    )
+                                  )}
                                 </Select>
                               </FormControl>
                             </th>
@@ -217,46 +216,19 @@ const InstructorSchedule = () => {
                                 (itemDate, indexItemDate) => (
                                   <td key={indexItemDate}>
                                     {itemDate ? (
-                                      <div>
-                                        {itemDate.rollCallBooks.length === 0 ? (
-                                          <div className='flex justify-center items-center gap-4'>
-                                            <AiOutlinePlusCircle
-                                              size={24}
-                                              className='text-green-700 cursor-pointer'
-                                              onClick={() => {
-                                                handleClickOpenRegister(
-                                                  itemDate?.teachingScheduleId
-                                                );
-                                                setSlotName(item?.slotName);
-                                              }}
-                                            />
-                                            0/1
-                                          </div>
-                                        ) : itemDate.rollCallBooks[0]
-                                            .memberId ===
-                                          user.accountInfo.memberId ? (
-                                          <div className='text-center'>
-                                            <p className='font-bold text-blue-800 text-[14px]'>
-                                              {
-                                                dataWeek?.data.course
-                                                  .courseTitle
-                                              }
-                                            </p>
-                                            <div className='bg-green-500 text-white w-auto rounded-lg mx-6 text-[14px]'>
-                                              {item.slotDesc}
-                                            </div>
-                                            <button
-                                              onClick={handleClickOpen}
-                                              className='px-2 text-black bg-gray-200 mt-2 rounded-lg hover:bg-blue-400 hover:text-white'
-                                            >
-                                              Xem chi tiết
-                                            </button>
-                                          </div>
-                                        ) : (
-                                          <div className='text-red-700'>
-                                            Hết chỗ 1/1
-                                          </div>
-                                        )}
+                                      <div className='text-center'>
+                                        <p className='font-bold text-blue-800 text-[14px]'>
+                                          {dataWeek?.data.course.courseTitle}
+                                        </p>
+                                        <div className='bg-green-500 text-white w-auto rounded-lg mx-6 text-[14px]'>
+                                          {item.slotDesc}
+                                        </div>
+                                        <button
+                                          onClick={handleClickOpen}
+                                          className='px-2 text-black bg-gray-200 mt-2 rounded-lg hover:bg-blue-400 hover:text-white'
+                                        >
+                                          Xem chi tiết
+                                        </button>
                                       </div>
                                     ) : (
                                       <div></div>

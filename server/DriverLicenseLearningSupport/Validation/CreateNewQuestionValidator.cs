@@ -7,7 +7,7 @@ namespace DriverLicenseLearningSupport.Validation
     {
         public CreateNewQuestionValidator() 
         {
-            RuleFor(x => x.imageLink).SetValidator(new ImageFileValidator());
+            RuleFor(x => x.imageLink).SetValidator(new ImageFileValidator());   
         }
     }
 }

@@ -119,20 +119,20 @@
     color: #758295;
   }
 }
-
+ 
 .imgBackground {
-  background-image: url("https://scontent.fsgn2-5.fna.fbcdn.net/v/t39.30808-6/387758828_6557043551078708_3251430406008371530_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=49d041&_nc_ohc=hRD1EuGMt8sAX-imwOv&_nc_ht=scontent.fsgn2-5.fna&oh=00_AfB2it5nGx47tposHhiEf4ur7GDTUPtL02ago3C8c3dJZQ&oe=6529DF67"); /* Thay thế link_den_anh_nen.jpg bằng đường dẫn thực tế của bạn */
+  // background-image: url("https://scontent.fsgn2-5.fna.fbcdn.net/v/t39.30808-6/387758828_6557043551078708_3251430406008371530_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=49d041&_nc_ohc=hRD1EuGMt8sAX-imwOv&_nc_ht=scontent.fsgn2-5.fna&oh=00_AfB2it5nGx47tposHhiEf4ur7GDTUPtL02ago3C8c3dJZQ&oe=6529DF67"); /* Thay thế link_den_anh_nen.jpg bằng đường dẫn thực tế của bạn */
   background-size: cover;
   background-position: center;
 }
 .imgBackground:hover {
   box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-  
   .zoom {
     transform: scale(1.1);
     transition-duration: 700ms ;
   }
 }
+
 .zoom:hover{
     transform: scale(1.1);
     transition-duration: 1000ms ;
@@ -182,4 +182,15 @@
   font-size: large;
   font-weight: 300;
   color: rgba(0, 0, 0, 0.53);
+}
+
+.documentNav {
+  border-left-color: #232323;
+  border-left-width: 4px;
+  padding: 10px;
+  border-bottom-style: none;
+}
+
+.documentType {
+  color: #4a86f7;
 }

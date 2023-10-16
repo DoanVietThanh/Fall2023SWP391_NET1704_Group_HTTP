@@ -29,6 +29,11 @@ import ManageBankTest from '../pages/PrivatePage/ManageBankTest';
 import IntructorDetail from '../pages/IntructorPage/IntructorDetail';
 import AboutUsPage from '../pages/AboutUsPage/AboutUsPage';
 import InstructorSchedule from '../pages/InstructorSchedule/InstructorSchedule';
+import WeekScheduleMentor from '../pages/PrivatePage/WeekScheduleMentor';
+import Payment from '../pages/CoursePage/Payment';
+import ManageUser from '../pages/PrivatePage/ManageUser';
+import CauHoiDiemLietPage from '../pages/DocumentPage/CauHoiDiemLietPage';
+import ToanBoCauHoiPage from '../pages/DocumentPage/ToanBoCauHoiPage';
 
 const RouterApp = () => {
   const router = createBrowserRouter([
@@ -49,13 +54,19 @@ const RouterApp = () => {
     { path: '/week-schedule', element: <WeekSchedule /> },
     { path: '/history-test', element: <HistoryTest /> },
     { path: '/history-test', element: <HistoryTest /> },
+    { path: '/week-schedule-mentor', element: <WeekScheduleMentor /> },
     { path: '/manage-question', element: <ManageQuestion /> },
     { path: '/manage-banktest', element: <ManageBankTest /> },
+    { path: '/manage-user', element: <ManageUser /> },
 
     { path: '/course', element: <CoursePage /> },
     { path: '/course/detail/:idCourse', element: <DetailCourse /> },
+    { path: '/api/payment/notification', element: <Payment /> },
+    // { path: '/test2', element: <Payment /> },
 
     { path: '/document', element: <DocumentPage /> },
+    { path: '/document/cauhoidiemliet', element: <CauHoiDiemLietPage />},
+    { path: '/document/toanbocauhoi', element: <ToanBoCauHoiPage />},
 
     { path: '/theory', element: <TheoryPage /> },
     { path: '/theory/test/:theoryExamId', element: <TestTheory /> },

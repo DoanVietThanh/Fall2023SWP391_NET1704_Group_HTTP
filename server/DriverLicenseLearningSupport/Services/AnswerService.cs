@@ -66,5 +66,10 @@ namespace DriverLicenseLearningSupport.Services
         {
             return await _answerRepository.GetRightAnswerIdByQuestionId(questionId);
         }
+
+        public async Task<AnswerModel> UpdateAnswerAsync(int answerId, AnswerModel answer)
+        {
+            return await _answerRepository.UpdateAnswerAsync(answerId, answer); 
+        }
     }
 }

@@ -10,8 +10,9 @@ namespace DriverLicenseLearningSupport.Validation
         public QuestionValidator()
         {
             //RuleFor(x => x.QuestionAnswerDesc)
-                //.Matches("^[a-zA-Z0-9 ]+$")
-                //.WithMessage("Nội dung câu hỏi hoặc ký tự đặc biệt");
+            //.Matches("^[a-zA-Z0-9 ]+$")
+            //.WithMessage("Nội dung câu hỏi hoặc ký tự đặc biệt");
+
         }
     }
     public static class QuestionValidatorExtension 

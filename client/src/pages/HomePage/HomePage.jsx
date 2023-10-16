@@ -1,17 +1,17 @@
-import React from "react";
-import Header from "../../components/Header";
-import Footer from "./../../components/Footer";
-import LastestBlog from "./LastestBlog";
-import RatedMentor from "./RatedMentor";
-import Slider from "./Slider";
-import Welcome from "./Welcome";
+import React from 'react';
+import Header from '../../components/Header';
+import Footer from './../../components/Footer';
+import LastestBlog from './LastestBlog';
+import RatedMentor from './RatedMentor';
+import Slider from './Slider';
+import Welcome from './Welcome';
 
 const HomePage = () => {
   return (
     <>
       <Header />
       <Slider />
-      <div className="">
+      <div className=''>
         <Welcome />
         <RatedMentor />
         <LastestBlog />

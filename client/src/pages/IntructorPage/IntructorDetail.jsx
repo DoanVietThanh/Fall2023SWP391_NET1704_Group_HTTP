@@ -44,7 +44,7 @@ const IntructorDetail = () => {
         <div className='flex m-20 gap-24'>
           <div className='w-[40%]'>
             <img
-              src='/img/avtThanh.jpg'
+              src={instructor?.avatarImage}
               alt={`${instructor.firstName} ${instructor.lastName}`}
               className='zoom p-5 w-full h-[700px] object-cover'
             ></img>

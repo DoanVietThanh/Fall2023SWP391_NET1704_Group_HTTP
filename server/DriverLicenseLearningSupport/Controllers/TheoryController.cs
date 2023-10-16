@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using System;
+using System.Runtime.InteropServices;
 
 namespace DriverLicenseLearningSupport.Controllers
 {
@@ -63,6 +64,42 @@ namespace DriverLicenseLearningSupport.Controllers
         }
 
 
+        [HttpPut]
+        [Route("theory/update-question")]
+        [Authorize(Roles = "Admin, Staff")]
+        public async Task<IActionResult> UpdateQuestion([FromBody] UpdateQuestionRequest reqObj)
+        {
+            if (await _theoryExamService.IsExamQuestion(reqObj.QuestionID))
+            {
+                return BadRequest(new ErrorResponse {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Câu hỏi đã trong đề thi, không thể xóa"
+                });
+            }
+            var questionToUpdate = reqObj.toQuestionModel();
+
+            var updatedQuestion = await _questionService.UpdateQuestionAsync(questionToUpdate, reqObj.QuestionID);
+
+            if (updatedQuestion is null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            foreach (AnswerModel answer in reqObj.Answers)
+            {
+                var updatedAnswer = await _answerService.UpdateAnswerAsync(answer.QuestionAnswerId, answer);
+                if (updatedAnswer is null)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+            }
+            return Ok(new BaseResponse() {
+                StatusCode = StatusCodes.Status200OK,
+                Message = "Cap nhat thanh cong"
+            });
+
+
+        }
+
 
         [HttpPost]
         [Route("theory/add-question")]
@@ -83,6 +120,14 @@ namespace DriverLicenseLearningSupport.Controllers
                 {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Errors = checkquestionModel
+                });
+            }
+            if (await _questionService.CheckExistedQuestion(questionModel.QuestionAnswerDesc, questionModel.LicenseTypeId))
+            {
+                return BadRequest(new ErrorResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Không được tạo trùng câu hỏi"
                 });
             }
 
@@ -120,11 +165,11 @@ namespace DriverLicenseLearningSupport.Controllers
             createdQuestionModel = await _questionService.UpdateStatusQuestionAsync(createdQuestionModel.QuestionId, true);
 
             List<AnswerModel> list = reqObj.ToListAnswerModel();
-            if (list.Count() >= 5) 
+            if (list.Count() >= 5)
             {
                 return BadRequest(new ErrorResponse() {
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message="Số lượng câu hỏi dưới 5"
+                    Message = "Số lượng câu hỏi dưới 5"
                 });
             }
             AnswerValidator answerValidator = new AnswerValidator();
@@ -172,24 +217,24 @@ namespace DriverLicenseLearningSupport.Controllers
         [Route("theory/{answerId:int}/delete-answer")]
         [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> DeleteSingleAnswer([FromRoute] int answerId)
-        { 
+        {
             // get answer
             AnswerModel answer = await _answerService.GetByAnswerIdAsync(answerId);
             //check the existance of the answer
             if (answer is null)
             {
-                return NotFound(new ErrorResponse() { 
+                return NotFound(new ErrorResponse() {
                     StatusCode = StatusCodes.Status404NotFound,
-                    Message ="không tìm thấy câu trả lời tương ứng"
+                    Message = "không tìm thấy câu trả lời tương ứng"
                 });
             }
             //get the question from the answer
             QuestionModel question = await _questionService.GetByIdAsync(answer.QuestionId);
 
             //check if the question is able to edit
-            if (question.isActive == false) 
+            if (question.isActive == false)
             {
-                return BadRequest(new ErrorResponse() { 
+                return BadRequest(new ErrorResponse() {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = "Câu hỏi đã nằm trong đề thi và không được chỉnh sửa"
                 });
@@ -206,7 +251,30 @@ namespace DriverLicenseLearningSupport.Controllers
                 Message = "Delete answer succesfully"
             });
         }
-        
+
+        [HttpGet]
+        [Route("theory/{questionId:int}/view-detail")]
+        [Authorize(Roles = "Admin, Staff")]
+        public async Task<IActionResult> ViewDetailQuestion([FromRoute] int questionId) 
+        {
+            var question = await _questionService.GetByIdAsync(questionId);
+            if (question is null) 
+            {
+                return BadRequest(new ErrorResponse() {
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = "Câu hỏi không tồn tại"
+                });
+            }
+            //var answer = await _answerService.GetAllByQuestionId(questionId);
+            //if (answer is null) 
+            //{
+            //    return StatusCode(StatusCodes.Status500InternalServerError); 
+            //}
+            return Ok(new BaseResponse() {
+                StatusCode = StatusCodes.Status200OK,
+                Data = question
+            });
+        }
 
         [HttpDelete]
         [Route("theory/{questionId:int}/delete-question")]

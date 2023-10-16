@@ -64,7 +64,7 @@ CREATE TABLE [dbo].Staff(
 	address_id NVARCHAR(255),
 	job_title_id INT,
 	license_type_id INT,
-	seft_description NVARCHAR(MAX)
+	self_description NVARCHAR(MAX)
 )
 GO
 CREATE TABLE [dbo].Course(

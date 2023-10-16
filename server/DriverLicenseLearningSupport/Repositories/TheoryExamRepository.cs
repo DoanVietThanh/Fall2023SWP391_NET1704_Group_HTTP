@@ -144,7 +144,12 @@ namespace DriverLicenseLearningSupport.Repositories
         {
             var theoryExams = await _context.TheoryExams.Where(te => te.LicenseTypeId == licenseTypeId)
                 .ToListAsync();
+            if (theoryExams is null) 
+            {
+                return null;
+            }
             return _mapper.Map<IEnumerable<TheoryExamModel>>(theoryExams);
+
         }
     }
 }

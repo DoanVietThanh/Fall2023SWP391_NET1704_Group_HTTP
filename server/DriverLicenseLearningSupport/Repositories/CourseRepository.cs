@@ -67,6 +67,7 @@ namespace DriverLicenseLearningSupport.Repositories
                                                     }).ToList(),
                                                     Mentors = x.Mentors,
                                                     LicenseType = x.LicenseType,
+                                                    LicenseTypeId = x.LicenseTypeId,
                                                     FeedBacks = x.FeedBacks.Select(x => new FeedBack {
                                                         FeedbackId = x.FeedbackId,
                                                         Content = x.Content,
