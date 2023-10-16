@@ -21,7 +21,7 @@ namespace DriverLicenseLearningSupport.Repositories.Impl
         Task<bool> UpdateCourseCurriculumAsync(Guid courseId, Curriculum curriculum);
         Task<bool> UpdatePackageAsync(Guid packageId, CoursePackage package);
         Task<bool> DeleteAsync(Guid id);
-        Task<bool> DeletePackageAsync(Guid id);
+        //Task<bool> DeletePackageAsync(Guid id);
         Task<bool> HideCourseAsync(Guid id);
         Task<bool> UnhideAsync(Guid id);
     }

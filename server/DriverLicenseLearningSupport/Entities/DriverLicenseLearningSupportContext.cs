@@ -1032,7 +1032,7 @@ namespace DriverLicenseLearningSupport.Entities
                     .HasMaxLength(15)
                     .HasColumnName("phone");
 
-                entity.Property(e => e.SeftDescription).HasColumnName("seft_description");
+                entity.Property(e => e.SelfDescription).HasColumnName("self_description");
 
                 entity.HasOne(d => d.Address)
                     .WithMany(p => p.Staffs)

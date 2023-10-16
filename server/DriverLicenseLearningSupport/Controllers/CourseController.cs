@@ -447,34 +447,34 @@ namespace DriverLicenseLearningSupport.Controllers
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
-        [HttpDelete]
-        [Route("courses/packages/{id:Guid}")]
-        public async Task<IActionResult> DeleteCoursePackage([FromRoute] Guid id) 
-        {
-            var coursePackage = await _courseService.GetPackageAsync(id);
-            if(coursePackage is null)
-            {
-                return BadRequest(new BaseResponse
-                {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = $"Not found any package match id {id}"
-                });
-            }
+        //[HttpDelete]
+        //[Route("courses/packages/{id:Guid}")]
+        //public async Task<IActionResult> DeleteCoursePackage([FromRoute] Guid id) 
+        //{
+        //    var coursePackage = await _courseService.GetPackageAsync(id);
+        //    if(coursePackage is null)
+        //    {
+        //        return BadRequest(new BaseResponse
+        //        {
+        //            StatusCode = StatusCodes.Status400BadRequest,
+        //            Message = $"Not found any package match id {id}"
+        //        });
+        //    }
 
-            // delete async
-            bool isSucess = await _courseService.DeletePackageAsync(id);
+        //    // delete async
+        //    bool isSucess = await _courseService.DeletePackageAsync(id);
 
-            if (isSucess)
-            {
-                return Ok(new BaseResponse
-                {
-                    StatusCode = StatusCodes.Status200OK,
-                    Message = $"Delete course package {id} success"
-                });
-            }
+        //    if (isSucess)
+        //    {
+        //        return Ok(new BaseResponse
+        //        {
+        //            StatusCode = StatusCodes.Status200OK,
+        //            Message = $"Delete course package {id} success"
+        //        });
+        //    }
 
-            return StatusCode(StatusCodes.Status500InternalServerError);
-        }
+        //    return StatusCode(StatusCodes.Status500InternalServerError);
+        //}
 
         [HttpPost]
         [Route("courses/mentor/add")]
