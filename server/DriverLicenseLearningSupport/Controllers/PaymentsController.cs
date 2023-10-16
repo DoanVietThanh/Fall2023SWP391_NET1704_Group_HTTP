@@ -1,9 +1,13 @@
-﻿using DriverLicenseLearningSupport.Services.Impl;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using DriverLicenseLearningSupport.Entities;
+using DriverLicenseLearningSupport.Payloads.Response;
+using DriverLicenseLearningSupport.Services.Impl;
 using DriverLicenseLearningSupport.VnPay.Base;
 using DriverLicenseLearningSupport.VnPay.Config;
 using DriverLicenseLearningSupport.VnPay.Extensions;
 using DriverLicenseLearningSupport.VnPay.Request;
 using DriverLicenseLearningSupport.VnPay.Response;
+using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Query.Internal;
@@ -43,7 +47,7 @@ namespace DriverLicenseLearningSupport.Controllers
         [HttpPost]
         [ProducesResponseType(typeof (BaseResultWithData<PaymentLinkResponse>), 200)]
         [ProducesResponseType((int) HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> Create([FromBody] CreatePaymentRequest request)
+        public async Task<IActionResult> CreatePayment([FromBody] CreatePaymentRequest request)
         {
             //// update course reservation payment status
             //await _courseReservationService.UpdateStatus(request.CourseReservationId,
@@ -56,17 +60,61 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpGet]
         [Route("vnpay-return")]
-        public async Task<IActionResult> VnpayReturn([FromBody] VnpayPayResponse response)
+        public async Task<IActionResult> VnpayReturn([FromQuery] VnpayPayResponse response)
         {
             var returnUrl = string.Empty;
 
             var returnModel = new PaymentReturnResponse();
 
-            if (returnUrl.EndsWith("/")){
-                returnUrl = returnUrl.Remove(returnUrl.Length - 1, 1);
+
+            //update course Reservation Status
+            var courseReservation = await _courseReservationService.UpdatePaymentStatusAsync(
+                Guid.Parse(response?.vnp_TxnRef));
+
+            var processResult = await _mediator.Send(response.Adapt(new ProcessVnpayResponse()));
+
+
+            if (processResult.Success)
+            {
+                returnModel = processResult.Data.Item1 as PaymentReturnResponse;
+
+                returnUrl = Url.Action("PaymentNotification", "Payments", string.Empty,
+                    //values: new { Success = true },
+                    Request.Scheme, host: "localhost:3000");
+            }
+            else
+            {
+                returnUrl = Url.Action("PaymentNotification", "Payments",
+                    values: new { Sucess = false },
+                    Request.Scheme, host: "localhost:3000");
             }
 
-            return Redirect($"{returnUrl}?{returnModel.ToQueryString()}");
+            //if (returnUrl.EndsWith("/")){
+            //    returnUrl = returnUrl.Remove(returnUrl.Length - 1, 1);
+            //}
+
+            //return Redirect($"{returnUrl}?{returnModel.ToQueryString()}");
+            return Redirect(returnUrl);
+        }
+
+        [HttpGet]
+        [Route("notification")]
+        public async Task<IActionResult> PaymentNotification(int statusCode, string message)
+        {
+            if(statusCode == 200)
+            {
+                return Ok(new
+                {
+                    Success = true,
+                });
+            }
+            else
+            {
+                return BadRequest(new
+                {
+                    Success = false,
+                });
+            }
         }
     }
 }

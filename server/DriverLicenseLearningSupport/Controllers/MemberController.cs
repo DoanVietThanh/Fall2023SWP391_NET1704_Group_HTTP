@@ -1,6 +1,7 @@
 ﻿using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Presentation;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DriverLicenseLearningSupport.Entities;
@@ -45,6 +46,7 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly ICourseReservationService _courseReservationService;
         private readonly ITeachingScheduleService _teachingScheduleService;
         private readonly IWeekDayScheduleService _weekDayScheduleService;
+        private readonly IRollCallBookService _rollCallBookService;
         private readonly ISlotService _slotService;
         private readonly IMemoryCache _memoryCache;
         private readonly AppSettings _appSettings;
@@ -66,6 +68,7 @@ namespace DriverLicenseLearningSupport.Controllers
             ITeachingScheduleService teachingScheduleService,
             IWeekDayScheduleService weekDayScheduleService,
             ISlotService slotService,
+            IRollCallBookService rollCallBookService,
             IOptionsMonitor<AppSettings> monitor)
         {
             _memberService = memberService;
@@ -83,6 +86,7 @@ namespace DriverLicenseLearningSupport.Controllers
             _courseReservationService = courseReservationService;
             _teachingScheduleService = teachingScheduleService;
             _weekDayScheduleService = weekDayScheduleService;
+            _rollCallBookService = rollCallBookService;
             _slotService = slotService;
             _appSettings = monitor.CurrentValue;
         }
@@ -190,6 +194,31 @@ namespace DriverLicenseLearningSupport.Controllers
             {
                 StatusCode = StatusCodes.Status200OK,
                 Data = member
+            });
+        }
+
+        [HttpGet]
+        [Route("members")]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> GetAllMember()
+        {
+            var members = await _memberService.GetAllAsync();
+            
+            // not found any members
+            if (members is null) return NotFound(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = "Not found any members"
+            });
+
+            // return members, totalPage, pageIndex
+            return Ok(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Data = new
+                {
+                    Members = members
+                }
             });
         }
 
@@ -876,10 +905,15 @@ namespace DriverLicenseLearningSupport.Controllers
             // get course by id 
             var course = await _courseService.GetAsync(Guid.Parse(courseReservation.CourseId));
             // set null mentors list 
-            course.Mentors = null!;
+            course.Mentors = null;
+            course.FeedBacks = null;
 
             // get staff by id
             var staff = await _staffService.GetAsync(Guid.Parse(courseReservation.StaffId));
+            staff.Courses = null;
+            staff.SelfDescription = string.Empty;
+            staff.FeedBacks = null;
+            staff.EmailNavigation = null;
 
             // generate current date time 
             var currDate = DateTime.ParseExact(DateTime.Now.ToString("yyyy-MM-dd"),
@@ -930,7 +964,8 @@ namespace DriverLicenseLearningSupport.Controllers
             }
 
             // response
-            return Ok(new BaseResponse
+            /*
+            return Ok(new BaseResponse()
             {
                 StatusCode = StatusCodes.Status200OK,
                 Data = new
@@ -944,7 +979,26 @@ namespace DriverLicenseLearningSupport.Controllers
                     Weekdays = weekday,
                     SlotSchedules = listOfSlotSchedule
                 }
-            });
+            });*/
+
+            var response = new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Data = new
+                {
+                    Course = course,
+                    Mentor = staff,
+                    Filter = weekdays.Select(x => new
+                    {
+                        Id = x.WeekdayScheduleId,
+                        Desc = x.WeekdayScheduleDesc
+                    }),
+                    Weekdays = weekday,
+                    SlotSchedules = listOfSlotSchedule
+                }
+            };
+
+            return Ok(response);
         }
 
         [HttpGet]
@@ -1013,8 +1067,14 @@ namespace DriverLicenseLearningSupport.Controllers
             // get course by id 
             var course = await _courseService.GetAsync(Guid.Parse(weekday.CourseId));
             course.Mentors = null;
+            course.FeedBacks = null;
+            course.Curricula = null;
             // get staff by id
             var staff = await _staffService.GetAsync(Guid.Parse(courseReservation.StaffId));
+            staff.Courses = null;
+            staff.SelfDescription = string.Empty;
+            staff.FeedBacks = null;
+            staff.EmailNavigation = null;
 
             // response
             return Ok(new BaseResponse
@@ -1040,16 +1100,54 @@ namespace DriverLicenseLearningSupport.Controllers
         {
             // check exist in course reservation
             var courseReservation = await _courseReservationService.GetByMemberAsync(reqObj.MemberId);
-            if(courseReservation is null)
+            if (courseReservation is null)
             {
-                return BadRequest(new BaseResponse { 
+                return BadRequest(new BaseResponse {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = $"Not found any learning course"
                 });
             }
 
-            // get course
-            var course = await _courseService.GetAsync(Guid.Parse(courseReservation.CourseId));
+            // check course reservation status
+            if(courseReservation.CourseReservationStatusId == 1)
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Vui lòng thanh toán khóa học để được xếp lớp"
+                });
+            }
+
+            // get all member rollcallbook
+            var rcbooks = await _rollCallBookService.GetAllByMemberIdAsync(
+                Guid.Parse(courseReservation.MemberId));
+
+            // get course by id 
+            var course = await _courseService.GetAsync(
+                Guid.Parse(courseReservation.CourseId));
+
+            // count member total rollcallbook
+            var rcbCount = 0;
+            if (rcbooks is not null)
+            {
+                rcbCount = rcbooks.Where(x => x.IsAbsence == false).Count();
+            }
+
+            // total registered session > course total session <- not allow to register 
+            var totalRegisteredSession = rcbooks is not null ? rcbooks?.Count() : 0;
+            var isOverTotalSession = (totalRegisteredSession) > course.TotalSession ? true : false;
+            if (isOverTotalSession)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Not allow to register more session, " +
+                    $"because member total session is over total course session",
+                    Data = new
+                    {
+                        TotalRegisteredSession = totalRegisteredSession
+                    }
+                });
+            }
 
             // get teaching schedule
             var teachingSchedule = await _teachingScheduleService.GetAsync(reqObj.TeachingScheduleId);
@@ -1082,12 +1180,14 @@ namespace DriverLicenseLearningSupport.Controllers
 
             // generate rollcallbook model
             var rcbModel = reqObj.ToRollCallBookModel();
-
+            rcbModel.MemberTotalSession = rcbCount;
 
             var registeredSchedule = await _teachingScheduleService.GetByMentorIdAndTeachingDateAsync(
-                weekday.WeekdayScheduleId, Guid.Parse(courseReservation.StaffId),
+                Convert.ToInt32(teachingSchedule.WeekdayScheduleId),
+                Guid.Parse(courseReservation.StaffId),
                 teachingSchedule.TeachingDate,
                 Convert.ToInt32(teachingSchedule.SlotId));
+
             // check teaching schedule already register
             if (registeredSchedule.RollCallBooks is not null)
             {
@@ -1127,6 +1227,7 @@ namespace DriverLicenseLearningSupport.Controllers
             var isSuccess = await _teachingScheduleService.AddRollCallBookAsync(
                 teachingSchedule.TeachingScheduleId, rcbModel);
 
+            /// TODO: Get Created Schedule 
             if (isSuccess)
             {
 

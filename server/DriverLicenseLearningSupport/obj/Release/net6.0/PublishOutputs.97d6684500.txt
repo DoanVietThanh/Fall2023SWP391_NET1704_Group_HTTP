@@ -16,6 +16,7 @@ D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningS
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\EPPlus.System.Drawing.dll
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\FluentValidation.dll
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\MailKit.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\Mapster.dll
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\MediatR.dll
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\MediatR.Extensions.Microsoft.DependencyInjection.dll
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\Microsoft.AspNetCore.Authentication.JwtBearer.dll
@@ -39,6 +40,7 @@ D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningS
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\NETCore.MailKit.dll
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\Newtonsoft.Json.dll
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\BouncyCastle.Crypto.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\RestSharp.dll
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\Swashbuckle.AspNetCore.Swagger.dll
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\Swashbuckle.AspNetCore.SwaggerGen.dll
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\Swashbuckle.AspNetCore.SwaggerUI.dll
@@ -47,10 +49,16 @@ D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningS
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\System.Drawing.Common.dll
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\System.IdentityModel.Tokens.Jwt.dll
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\System.IO.Packaging.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\System.Net.Http.WebRequest.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\System.Net.Http.Extensions.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\System.Net.Http.Formatting.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\System.Net.Http.Primitives.dll
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\System.Runtime.Caching.dll
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\System.Security.Cryptography.Pkcs.dll
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\System.Security.Cryptography.ProtectedData.dll
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\System.Security.Permissions.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\System.Text.Encodings.Web.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\System.Text.Json.dll
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\System.Windows.Extensions.dll
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\VNPayPackage.dll
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\cs\FluentValidation.resources.dll
@@ -79,5 +87,6 @@ D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningS
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\runtimes\win\lib\netstandard2.0\System.Runtime.Caching.dll
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\runtimes\win\lib\net6.0\System.Security.Cryptography.Pkcs.dll
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
+D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\runtimes\browser\lib\net6.0\System.Text.Encodings.Web.dll
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll
 D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\obj\Release\net6.0\PubTmp\Out\DriverLicenseLearningSupport.deps.json

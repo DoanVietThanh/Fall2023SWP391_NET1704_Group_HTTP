@@ -62,5 +62,15 @@ namespace DriverLicenseLearningSupport.Services
         {
              return await _questionRepository.UpdateStatusQuestionAsync(questionId, status);
         }
+
+        public async Task<bool> CheckExistedQuestion(string questionDesc, int lisenceId)
+        {
+            return await _questionRepository.CheckExistedQuestion(questionDesc, lisenceId);
+        }
+
+        public async Task<QuestionModel> UpdateQuestionAsync(QuestionModel updatedModel, int questionId)
+        {
+            return await _questionRepository.UpdateQuestionAsync(updatedModel, questionId);
+        }
     }
 }

@@ -53,15 +53,24 @@ namespace DriverLicenseLearningSupport.Repositories
                                                     Curricula = x.Curricula.Select(c => new Curriculum
                                                     {
                                                         CurriculumId = c.CurriculumId,
-                                                        CurriculumDesc = c.CurriculumDesc,
-                                                        CurriculumDetail = c.CurriculumDetail
+                                                        CurriculumDesc = WebUtility.HtmlDecode(c.CurriculumDesc),
+                                                        CurriculumDetail = WebUtility.HtmlDecode(c.CurriculumDetail)
                                                     }).ToList(),
                                                     Mentors = x.Mentors,
-                                                    LicenseTypeId = x.LicenseTypeId
+                                                    LicenseType = x.LicenseType,
+                                                    LicenseTypeId = x.LicenseTypeId,
+                                                    FeedBacks = x.FeedBacks.Select(x => new FeedBack {
+                                                        FeedbackId = x.FeedbackId,
+                                                        Content = x.Content,
+                                                        RatingStar = x.RatingStar,
+                                                        CreateDate = x.CreateDate,
+                                                        Member = x.Member
+                                                    }).ToList()
                                                 }).FirstOrDefaultAsync();
 
             if (course is not null)
             {
+
                 // decode text editor
                 course.CourseDesc = WebUtility.HtmlDecode(course.CourseDesc);
                 // response model
@@ -163,6 +172,7 @@ namespace DriverLicenseLearningSupport.Repositories
             var courses = await _context.Courses.Where(x => x.IsActive == true)
                                                 .Select(x => new Course { 
                                                     CourseId = x.CourseId,
+                                                    CourseTitle = x.CourseTitle,
                                                     CourseDesc = x.CourseDesc,
                                                     Cost = x.Cost,
                                                     TotalSession = x.TotalSession,

@@ -1,4 +1,5 @@
-﻿using DriverLicenseLearningSupport.Entities;
+﻿using DocumentFormat.OpenXml.Vml.Spreadsheet;
+using DriverLicenseLearningSupport.Entities;
 
 namespace DriverLicenseLearningSupport.Models
 {
@@ -15,6 +16,6 @@ namespace DriverLicenseLearningSupport.Models
         public virtual StaffModel? Staff { get; set; }
         public virtual VehicleModel? Vehicle { get; set; }
         //public virtual WeekdayScheduleModel WeekdaySchedule { get; set; }
-        public virtual ICollection<RollCallBookModel> RollCallBooks { get; set; }
+        public virtual ICollection<RollCallBookModel> RollCallBooks { get; set; } = new List<RollCallBookModel>();
     }
 }

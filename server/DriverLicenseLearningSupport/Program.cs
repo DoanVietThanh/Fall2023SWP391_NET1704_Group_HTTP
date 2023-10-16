@@ -86,8 +86,7 @@ builder.Services.AddScoped<IAnswerService, AnswerService>();
 builder.Services.AddScoped<ITheoryExamService, TheoryExamService>();
 builder.Services.AddScoped<IExamGradeService, ExamGradeService>();
 builder.Services.AddScoped<IExamHistoryService, ExamHistoryService>();
-
-
+builder.Services.AddScoped<IRollCallBookService, RollCallBookService>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 // Add Repositories
@@ -113,6 +112,7 @@ builder.Services.AddScoped<IAnswerRepository, AnswerRepository>();
 builder.Services.AddScoped<ITheoryExamRepository, TheoryExamRepository>();
 builder.Services.AddScoped<IExamGradeRepository, ExamGradeRepository>();
 builder.Services.AddScoped<IExamHistoryRepository, ExamHistoryRepostory>();
+builder.Services.AddScoped<IRollCallBookRepository, RollCallBookRepository>();
 
 
 // Add Mediator

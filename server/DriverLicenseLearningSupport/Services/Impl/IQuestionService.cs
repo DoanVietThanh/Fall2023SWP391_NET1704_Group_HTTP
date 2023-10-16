@@ -12,6 +12,7 @@ namespace DriverLicenseLearningSupport.Services.Impl
         Task<QuestionModel> GetByIdAsync(int questionIs);
         Task<bool> DeleteQuestionAsync(int questionId);
         Task<QuestionModel> UpdateStatusQuestionAsync(int questionId, bool status);
-
+        Task<QuestionModel> UpdateQuestionAsync(QuestionModel updatedModel, int questionId);
+        Task<bool> CheckExistedQuestion(string questionDesc, int lisenceId);
     }
 }

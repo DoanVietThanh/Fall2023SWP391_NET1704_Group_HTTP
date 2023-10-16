@@ -1,9 +1,9 @@
 import React from 'react';
+import 'swiper/css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import HomePage from '../pages/HomePage/HomePage';
 import ErrorPage from './../pages/ErrorPage/ErrorPage';
 import Loading from '../components/Loading';
-import 'swiper/css';
 import LoginPage from '../pages/LoginPage/LoginPage';
 import RegisterPage from '../pages/LoginPage/RegisterPage';
 import ForgotPassword from '../pages/LoginPage/ForgotPassword';
@@ -28,6 +28,10 @@ import ManageQuestion from '../pages/PrivatePage/ManageQuestion';
 import ManageBankTest from '../pages/PrivatePage/ManageBankTest';
 import IntructorDetail from '../pages/IntructorPage/IntructorDetail';
 import AboutUsPage from '../pages/AboutUsPage/AboutUsPage';
+import InstructorSchedule from '../pages/InstructorSchedule/InstructorSchedule';
+import WeekScheduleMentor from '../pages/PrivatePage/WeekScheduleMentor';
+import Payment from '../pages/CoursePage/Payment';
+import ManageUser from '../pages/PrivatePage/ManageUser';
 import CauHoiDiemLietPage from '../pages/DocumentPage/CauHoiDiemLietPage';
 import ToanBoCauHoiPage from '../pages/DocumentPage/ToanBoCauHoiPage';
 
@@ -40,17 +44,25 @@ const RouterApp = () => {
     { path: '/forgot-password', element: <ForgotPassword /> },
     { path: '/authentication/reset-password', element: <ShowForgetPass /> },
     { path: '/instructor', element: <IntructorPage /> },
-    { path: '/instructor/detail', element: <IntructorDetail />},
+    { path: '/instructor/detail/:idInstructor', element: <IntructorDetail /> },
+    {
+      path: '/instructor/teaching-schedule/:idInstructor/:idCourse',
+      element: <InstructorSchedule />,
+    },
     // { path: '/private-information', element: <PrivatePage /> },
     { path: '/profile', element: <Profile /> },
     { path: '/week-schedule', element: <WeekSchedule /> },
     { path: '/history-test', element: <HistoryTest /> },
     { path: '/history-test', element: <HistoryTest /> },
+    { path: '/week-schedule-mentor', element: <WeekScheduleMentor /> },
     { path: '/manage-question', element: <ManageQuestion /> },
     { path: '/manage-banktest', element: <ManageBankTest /> },
+    { path: '/manage-user', element: <ManageUser /> },
 
     { path: '/course', element: <CoursePage /> },
-    { path: '/course/detail', element: <DetailCourse /> },
+    { path: '/course/detail/:idCourse', element: <DetailCourse /> },
+    { path: '/api/payment/notification', element: <Payment /> },
+    // { path: '/test2', element: <Payment /> },
 
     { path: '/document', element: <DocumentPage /> },
     { path: '/document/cauhoidiemliet', element: <CauHoiDiemLietPage />},
@@ -64,7 +76,7 @@ const RouterApp = () => {
     { path: '/blog/detail', element: <BlogDetail /> },
     { path: '/contact', element: <ContactPage /> },
 
-    { path: '/aboutus', element: <AboutUsPage />},
+    { path: '/aboutus', element: <AboutUsPage /> },
     { path: '/manager/dashboard', element: <DashboardPage /> },
     { path: '/test', element: <SideBar /> },
 

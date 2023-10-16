@@ -1,6 +1,7 @@
 ﻿using Amazon.Runtime.Internal.Util;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Presentation;
+using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Models.Config;
 using DriverLicenseLearningSupport.Payloads.Request;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Org.BouncyCastle.Asn1.X9;
+using Org.BouncyCastle.Security.Certificates;
 using System;
 using System.Data;
 using System.Globalization;
@@ -115,7 +117,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     Guid.Parse(createdCourse.CourseId));
 
                 // add range week schedule
-                await _weekDayScheduleService.CreateRangeAsync(weekDaySchedules); 
+                await _weekDayScheduleService.CreateRangeAsync(weekDaySchedules);
             }
 
             // cause error
@@ -188,10 +190,6 @@ namespace DriverLicenseLearningSupport.Controllers
             // generate course reservation model
             var courseReservationModel = reqObj.ToCourseReservationModel();
 
-            // payment type
-
-
-
             // get vehicle for reservation
             var licenseType = await _licenseTypeService.GetAsync(course.LicenseTypeId);
             var vehicle = await _vehicleService.GetByLicenseTypeIdAsync(licenseType.LicenseTypeId);
@@ -217,239 +215,58 @@ namespace DriverLicenseLearningSupport.Controllers
             // course start date
             courseReservationModel.CourseStartDate = Convert.ToDateTime(course.StartDate);
 
+
             // create course reservation
             var createdReservation = await _courseReservationService.CreateAsync(courseReservationModel);
             createdReservation.Vehicle = vehicle;
-
-            // create success
-            if(createdReservation is not null)
+            
+            // payment type
+            var paymentType = await _paymentTypeService.GetAsync(reqObj.PaymentTypeId);
+            if (paymentType.PaymentTypeId == 1)
             {
-                return new ObjectResult(createdReservation) { StatusCode = StatusCodes.Status201Created };
+                return new ObjectResult(new BaseResponse { 
+                    StatusCode = StatusCodes.Status201Created,
+                    Message = "Bạn đã đăng ký thành công, vui lòng " +
+                    "đến trung tâm thanh toán để được xếp lịch sớm nhất"
+                }) { StatusCode = StatusCodes.Status201Created };
             }
-
-            // cause error
-            return StatusCode(StatusCodes.Status500InternalServerError);
-        }
-
-        [HttpGet]
-        [Route("courses/reservation/payment")]
-        public async Task<IActionResult> CourseReservationPayment()
-        {
-            return null;
-        }
-
-        [HttpGet]
-        [Route("courses/demo")]
-        public async Task<IActionResult> Demo()
-        {
-            var weekSchedules = DateTimeHelper.GenerateRangeWeekday(2, DateTime.Now, Guid.NewGuid()).ToList();
-
-            var startTime = new TimeSpan(7, 30, 0).ToString(@"hh\:mm");
-            var endTime = new TimeSpan(7, 30, 0).Add(TimeSpan.FromHours(2)).ToString(@"hh\:mm");
-            var slot1 = new SlotModel {
-                SlotId = 1,
-                SlotName = "Slot 1",
-                Duration = 2,
-                Time = new TimeSpan(7, 30, 0),
-                SlotDesc = $"{startTime} - {endTime}",
-                TeachingSchedules = new List<TeachingScheduleModel>()
-            };
-
-            var slot2 = new SlotModel
+            else if (paymentType.PaymentTypeId == 3)
             {
-                SlotId = 2,
-                SlotName = "Slot 2",
-                Duration = 2,
-                Time = new TimeSpan(9, 45, 0),
-                SlotDesc = $"{startTime} - {endTime}",
-                TeachingSchedules = new List<TeachingScheduleModel>()
-            };
-
-            var slot3 = new SlotModel
-            {
-                SlotId = 3,
-                SlotName = "Slot 3",
-                Duration = 3,
-                Time = new TimeSpan(13, 30, 0),
-                SlotDesc = $"{startTime} - {endTime}",
-                TeachingSchedules = new List<TeachingScheduleModel>()
-            };
-
-            var slot4 = new SlotModel
-            {
-                SlotId = 4,
-                SlotName = "Slot 4",
-                Duration = 3,
-                Time = new TimeSpan(15, 30, 0),
-                SlotDesc = $"{startTime} - {endTime}",
-                TeachingSchedules = new List<TeachingScheduleModel>()
-            };
-
-            var list = new List<TeachingScheduleModel>();
-            var list2 = new List<TeachingScheduleModel>();
-
-            list.Add(new TeachingScheduleModel
-            {
-                WeekdayScheduleId = weekSchedules[0].WeekdayScheduleId,
-                TeachingDate = DateTime.Now.AddDays(2),
-                Staff = new StaffModel {
-                    StaffId = Guid.NewGuid().ToString(),
-                    FirstName = "Le Xuan",
-                    LastName = "Phuoc",
-                    Address = new AddressModel
+                return new ObjectResult(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status201Created,
+                    Data = new
                     {
-                        Street = "59",
-                        District = "GV",
-                        City = "HCM"
-                    },
-                    JobTitle = new JobTitleModel
-                    {
-                        JobTitleId = 1,
-                        JobTitleDesc = "Mentor"
+                        PaymentContent = $"Thanh toán {course.CourseTitle}",
+                        PaymentCurrency = "VND",
+                        CourseReservationId = createdReservation.CourseReservationId,
+                        RequiredAmount = Convert.ToDecimal(course.Cost),
+                        PaymentLanguage = "vn",
+                        MemberId = createdReservation.MemberId,
+                        PaymentTypeDesc = paymentType.PaymentTypeDesc,
+                        Signature = Guid.NewGuid().ToString()
                     }
-                },
-                SlotId = 1
-            });
-            list.Add(new TeachingScheduleModel
-            {
-                WeekdayScheduleId = weekSchedules[0].WeekdayScheduleId,
-                TeachingDate = DateTime.Now.AddDays(5),
-                Staff = new StaffModel
-                {
-                    StaffId = Guid.NewGuid().ToString(),
-                    FirstName = "Le Xuan",
-                    LastName = "Phuoc",
-                    Address = new AddressModel
-                    {
-                        Street = "59",
-                        District = "GV",
-                        City = "HCM"
-                    },
-                    JobTitle = new JobTitleModel
-                    {
-                        JobTitleId = 1,
-                        JobTitleDesc = "Mentor"
-                    }
-                },
-                SlotId = 1
-            });
-            list.Add(new TeachingScheduleModel
-            {
-                WeekdayScheduleId = weekSchedules[0].WeekdayScheduleId,
-                TeachingDate = DateTime.Now.AddDays(6),
-                Staff = new StaffModel
-                {
-                    StaffId = Guid.NewGuid().ToString(),
-                    FirstName = "Le Xuan",
-                    LastName = "Phuoc",
-                    Address = new AddressModel
-                    {
-                        Street = "59",
-                        District = "GV",
-                        City = "HCM"
-                    },
-                    JobTitle = new JobTitleModel
-                    {
-                        JobTitleId = 1,
-                        JobTitleDesc = "Mentor"
-                    }
-                },
-                SlotId = 1
-            });
-            list.Add(new TeachingScheduleModel
-            {
-                WeekdayScheduleId = weekSchedules[2].WeekdayScheduleId,
-                TeachingDate = DateTime.Now.AddDays(6),
-                Staff = new StaffModel
-                {
-                    StaffId = Guid.NewGuid().ToString(),
-                    FirstName = "Le Xuan",
-                    LastName = "Phuoc",
-                    Address = new AddressModel
-                    {
-                        Street = "59",
-                        District = "GV",
-                        City = "HCM"
-                    },
-                    JobTitle = new JobTitleModel
-                    {
-                        JobTitleId = 1,
-                        JobTitleDesc = "Mentor"
-                    }
-                },
-                SlotId = 1
-            });
-            list.Add(new TeachingScheduleModel
-            {
-                WeekdayScheduleId = weekSchedules[4].WeekdayScheduleId,
-                TeachingDate = DateTime.Now.AddDays(6),
-                Staff = new StaffModel
-                {
-                    StaffId = Guid.NewGuid().ToString(),
-                    FirstName = "Le Xuan",
-                    LastName = "Phuoc",
-                    Address = new AddressModel
-                    {
-                        Street = "59",
-                        District = "GV",
-                        City = "HCM"
-                    },
-                    JobTitle = new JobTitleModel
-                    {
-                        JobTitleId = 1,
-                        JobTitleDesc = "Mentor"
-                    }
-                },
-                SlotId = 1
-            });
-
-            var date = DateTime.Now.AddDays(4).ToString("dd/MM/yyyy");
-            var filterDate = DateTime.ParseExact(date, 
-                "dd/MM/yyyy", CultureInfo.InvariantCulture);
-            var findDate = weekSchedules.Where(x => x.Monday <= filterDate && x.Sunday >= filterDate)
-                .FirstOrDefault();
-
-            var weekday = weekSchedules.Where(x => x.WeekdayScheduleId == findDate.WeekdayScheduleId)
-                                       .FirstOrDefault();
-
-            var dates = new List<DateTime>() 
-            { weekday.Monday, weekday.Tuesday, weekday.Wednesday,
-                weekday.Thursday, weekday.Friday, weekday.Saturday, weekday.Sunday};
-
-            // write func for 4 slot
-            foreach (var d in dates)
-            {
-                var schedule = list.Where(x => x.TeachingDate.ToString("dd/MM/yyyy").Equals(
-                    d.ToString("dd/MM/yyyy")) && x.SlotId == 1).FirstOrDefault();
-                
-                if(schedule is not null)
-                {
-                    slot1.TeachingSchedules.Add(schedule);
-                }
-                else
-                {
-                    slot1.TeachingSchedules.Add(null);
-                }
+                })
+                { StatusCode = StatusCodes.Status201Created };
             }
+            return Ok();
+            //// create success
+            //if (createdReservation is not null)
+            //{
+            //    return new ObjectResult(createdReservation) { StatusCode = StatusCodes.Status201Created };
+            //}
 
-            var course = new CourseModel
-            {
-                CourseId = Guid.NewGuid().ToString(),
-                CourseTitle = "Bai lai B1",
-                CourseDesc = "Bai lai B1",
-            };
-            return Ok(new
-            {
-                Course = course,
-                Filter = weekSchedules.Select(x => new { 
-                    Id = x.WeekdayScheduleId,
-                    Desc = x.WeekdayScheduleDesc
-                }),
-                Weekdays = weekday,
-                Slot1 = slot1
-            });
+            //// cause error
+            //return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
+        //[HttpGet]
+        //[Route("courses/reservation/payment")]
+        //public async Task<IActionResult> CourseReservationPayment()
+        //{
+        //    return null;
+        //}
+        
         [HttpGet]
         [Route("courses/{id:Guid}")]
         public async Task<IActionResult> GetCourse([FromRoute] Guid id) 
@@ -460,13 +277,34 @@ namespace DriverLicenseLearningSupport.Controllers
                 Message = $"Not found any course match id {id}"
             });
 
+            // get course total member
+            var courseReservations = await _courseReservationService.GetAllByCourseId(
+                    Guid.Parse(course.CourseId));
+
+            if(course.Mentors is not null)
+            {
+                foreach(var m in course.Mentors)
+                {
+                    m.TotalMember = await _courseReservationService.GetTotalMemberByMentorId(
+                        Guid.Parse(m.StaffId));
+                }
+            }
             // get all course feeback
-            var feedbacks = await _feedbackService.GetAllCourseFeedback(Guid.Parse(course.CourseId));
-            course.FeedBacks = feedbacks.ToList();
+            //var feedbacks = await _feedbackService.GetAllCourseFeedback(Guid.Parse(course.CourseId));
+            //course.FeedBacks = feedbacks.ToList();
 
             return Ok(new BaseResponse { 
                 StatusCode = StatusCodes.Status200OK,
-                Data = course
+                Data = new {
+                    Course = course,
+                    Mentors = course.Mentors.Select(x => new
+                    {
+                        MentorId = x.StaffId,
+                        MentorName = $"{x.FirstName} {x.LastName}"
+                    }),
+                    TotalMember = courseReservations is not null
+                    ? courseReservations.Count() : 0,
+                }
             });
         }
 
@@ -769,7 +607,5 @@ namespace DriverLicenseLearningSupport.Controllers
 
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
-
-        
     }
 }

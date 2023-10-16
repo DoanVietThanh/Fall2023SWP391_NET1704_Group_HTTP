@@ -48,5 +48,19 @@ namespace DriverLicenseLearningSupport.Repositories
                                               }).ToListAsync();
             return _mapper.Map<IEnumerable<FeedBackModel>>(feedbacks);
         }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var feedbackEntity = await _context.FeedBacks.Where(x => x.FeedbackId == id)
+                                                         .FirstOrDefaultAsync();
+
+            if(feedbackEntity is not null)
+            {
+                _context.FeedBacks.Remove(feedbackEntity);
+                return await _context.SaveChangesAsync() > 0 ? true : false;
+            }
+
+            return false;
+        }
     }
 }
