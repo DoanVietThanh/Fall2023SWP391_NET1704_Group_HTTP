@@ -78,8 +78,8 @@ namespace DriverLicenseLearningSupport.Controllers
             {
                 returnModel = processResult.Data.Item1 as PaymentReturnResponse;
 
-                returnUrl = Url.Action("PaymentNotification", "Payments",
-                    values: new { Success = true },
+                returnUrl = Url.Action("PaymentNotification", "Payments", string.Empty,
+                    //values: new { Success = true },
                     Request.Scheme, host: "localhost:3000");
             }
             else

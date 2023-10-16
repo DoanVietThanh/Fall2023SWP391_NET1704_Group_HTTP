@@ -106,7 +106,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpPost]
         [Route("staffs/add")]
-        [Authorize(Roles = "Admin,Staff")]
+        //[Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> StaffRegister([FromBody] StaffAddRequest reqObj)
         {
             // check account exist
@@ -489,7 +489,7 @@ namespace DriverLicenseLearningSupport.Controllers
                         desc = x.WeekdayScheduleDesc
                     }),
                     weekdays = weekday,
-                    slotschedules = listOfSlotSchedule
+                    slotSchedules = listOfSlotSchedule
                 }
             });
         }
@@ -724,11 +724,19 @@ namespace DriverLicenseLearningSupport.Controllers
             var initSchedule = reqObj.ToInitScheduleModel();
 
             // create range schedule
-            await _teachingScheduleService.CreateRangeBySlotAndWeekdayAsync(reqObj.SlotId, reqObj.Weekdays,
-                weekdaySchedules.First().WeekdayScheduleId,
-                initSchedule);
+            bool isSucess = await _teachingScheduleService.CreateRangeBySlotAndWeekdayAsync(reqObj.SlotId, reqObj.Weekdays,
+                            weekdaySchedules.First().WeekdayScheduleId,
+                            initSchedule);
 
-            return null!;
+            if (isSucess)
+            {
+                return Ok(new BaseResponse { 
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = "Create Sucessfully"
+                });
+            }
+
+            return StatusCode(StatusCodes.Status500InternalServerError);
         }
  
         [HttpGet]

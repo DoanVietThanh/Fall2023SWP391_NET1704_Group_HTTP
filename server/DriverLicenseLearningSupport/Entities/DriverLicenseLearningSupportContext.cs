@@ -451,7 +451,7 @@ namespace DriverLicenseLearningSupport.Entities
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_History_TheoryExamId");
             });
-           
+
 
             modelBuilder.Entity<FeedBack>(entity =>
             {
