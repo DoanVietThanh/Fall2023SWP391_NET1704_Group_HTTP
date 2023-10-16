@@ -8,6 +8,7 @@ import { BiSearch } from 'react-icons/bi';
 import theme from '../../theme';
 import axiosClient from './../../utils/axiosClient';
 import Loading from './../../components/Loading';
+import { testJson } from "../../testJson";
 
 const IntructorPage = () => {
   const url =
