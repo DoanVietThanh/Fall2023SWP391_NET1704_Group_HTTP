@@ -74,7 +74,7 @@ namespace DriverLicenseLearningSupport.Repositories
                                                           Address = x.Address,
                                                           JobTitle = x.JobTitle,
                                                           LicenseType = x.LicenseType,
-                                                          SeftDescription = WebUtility.UrlDecode(x.SeftDescription),
+                                                          SelfDescription = WebUtility.UrlDecode(x.SelfDescription),
                                                           EmailNavigation = new Account
                                                           {
                                                               Role = x.EmailNavigation.Role
