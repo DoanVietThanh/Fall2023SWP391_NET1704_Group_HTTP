@@ -55,36 +55,36 @@ const CoursePage = () => {
       <div className="m-20">
         <div className="flex flex-col gap-28">
           {courseList.map((course, index) => (
-            <div className="zoom">
-              <div className="w-[60%]">
-                <div className="px-6 relative">
+            <div className="shadow-lg hover:shadow-none">
+              <div className="zoom w-[50%]">
+                <div className="relative">
                   <img
                     src={course.src}
                     alt="course"
-                    className="imgClipPath w-full h-[500px] object-contain"
+                    className="imgClipPath w-full h-[400px] object-cover"
                   />
-                  <div className="flex flex-col gap-5  absolute top-0 right-0 translate-x-2/3 pl-20 pr-32 ">
-                    <div className="font-semibold text-5xl leading-snug">
+                  <div className="flex flex-col gap-3 absolute top-0 right-0 translate-x-2/3 pl-20 ">
+                    <div className="font-semibold text-4xl leading-snug pt-5">
                       Khóa học thực hành bằng lái {course.licenseType}
                     </div>
                     <Link to={"/course/detail"}>
-                      <button className="btn w-[40%]">Chi tiết khóa học</button>
+                      <button className="btn">Chi tiết khóa học</button>
                     </Link>
                     <div className="pl-56 pt-3 flex flex-col gap-10">
-                      <div className="flex gap-5 text-2xl items-center">
+                      <div className="flex gap-5 text-xl items-center">
                         <BsFillArrowRightSquareFill
-                          size={38}
+                          size={34}
                           color="#0d5ef4"
                           className="iconHover"
                         />
                         <div className="flex flex-col gap 5">
-                          <div>Duration: {course.duration}</div>
+                          <div>Duration: {course.duration} slots</div>
                         </div>
                       </div>
 
-                      <div className="flex gap-5 text-2xl items-center">
+                      <div className="flex gap-5 text-xl items-center">
                         <BsFillArrowRightSquareFill
-                          size={38}
+                          size={34}
                           color="#0d5ef4"
                           className="iconHover"
                         />
@@ -93,9 +93,9 @@ const CoursePage = () => {
                         </div>
                       </div>
 
-                      <div className="flex gap-5 text-2xl items-center">
+                      <div className="flex gap-5 text-xl items-center">
                         <BsFillArrowRightSquareFill
-                          size={38}
+                          size={34}
                           color="#0d5ef4"
                           className="iconHover"
                         />
@@ -105,8 +105,8 @@ const CoursePage = () => {
                       </div>
                     </div>
                   </div>
-                </div>
               </div>
+            </div>
             </div>
           ))}
         </div>

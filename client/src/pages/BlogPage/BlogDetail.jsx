@@ -1,24 +1,122 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import BackgroundSlider from "../../components/BackgroundSlider";
 import { BsPerson } from "react-icons/bs";
 import theme from "../../theme";
 import {
-  AiOutlineArrowRight,
   AiOutlineCalendar,
   AiOutlineClockCircle,
   AiOutlineEye,
 } from "react-icons/ai";
 import { BiBookBookmark, BiSearch } from "react-icons/bi";
 import { Link } from "react-router-dom";
-import { List } from "@mui/material/List";
-import { colors } from "@mui/material";
 
 const BlogDetail = () => {
   const url =
     "https://themeholy.com/wordpress/edura/wp-content/uploads/2023/07/breadcumb-bg.png";
   const breadcrumbs = "Blog Detail";
+  const initListComment = [
+    {
+      img: "https://scontent.fsgn2-5.fna.fbcdn.net/v/t1.6435-9/125833027_2756357554611638_425435607356265941_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=174925&_nc_ohc=EgnGZJgC_VIAX9xjxuY&_nc_ht=scontent.fsgn2-5.fna&oh=00_AfBgkSMHImlU2EIBmF51WT6IKRlRcAk42Q5Z00T4g_1imw&oe=6543959D",
+      name: "Viet Thanh",
+      time: "15 tháng 10, 2023 8:30am",
+      content:
+        "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus consequuntur laboriosam perspiciatis! Eligendi ea qui repellat quod reprehenderit dolorum? Voluptas.",
+      listReply: [
+        {
+          img: "https://scontent.fsgn2-9.fna.fbcdn.net/v/t39.30808-6/327973555_1552256688580238_5431785565292483664_n.jpg?stp=cp6_dst-jpg&_nc_cat=105&ccb=1-7&_nc_sid=5f2048&_nc_ohc=VRcWczgUkOoAX_lHpDp&_nc_ht=scontent.fsgn2-9.fna&oh=00_AfCyBkpzQRpsxmLSmJ86P3XWQZY3Em3rM8Fvz9_Udd36Lw&oe=653108D6",
+          name: "Thu Bui",
+          time: "15 tháng 10, 2023 11:30am",
+          content:
+            "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus consequuntur laboriosam perspiciatis! Eligendi ea qui repellat quod reprehenderit dolorum? Voluptas.",
+        },
+
+        {
+          img: "https://scontent.fsgn2-9.fna.fbcdn.net/v/t39.30808-6/327973555_1552256688580238_5431785565292483664_n.jpg?stp=cp6_dst-jpg&_nc_cat=105&ccb=1-7&_nc_sid=5f2048&_nc_ohc=VRcWczgUkOoAX_lHpDp&_nc_ht=scontent.fsgn2-9.fna&oh=00_AfCyBkpzQRpsxmLSmJ86P3XWQZY3Em3rM8Fvz9_Udd36Lw&oe=653108D6",
+          name: "Thu Bui",
+          time: "15 tháng 10, 2023 12:30am",
+          content:
+            "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus consequuntur laboriosam perspiciatis! Eligendi ea qui repellat quod reprehenderit dolorum? Voluptas.",
+        },
+      ],
+    },
+
+    {
+      img: "https://i.pinimg.com/474x/88/3d/74/883d74b5eca63acc4e07773f3a645ba6.jpg",
+      name: "Xuan Phuoc",
+      time: "3 tháng 10, 2023 11:30am",
+      content:
+        "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus consequuntur laboriosam perspiciatis! Eligendi ea qui repellat quod reprehenderit dolorum? Voluptas.",
+      listReply: [
+        {
+          img: "https://scontent.fsgn2-9.fna.fbcdn.net/v/t39.30808-6/327973555_1552256688580238_5431785565292483664_n.jpg?stp=cp6_dst-jpg&_nc_cat=105&ccb=1-7&_nc_sid=5f2048&_nc_ohc=VRcWczgUkOoAX_lHpDp&_nc_ht=scontent.fsgn2-9.fna&oh=00_AfCyBkpzQRpsxmLSmJ86P3XWQZY3Em3rM8Fvz9_Udd36Lw&oe=653108D6",
+          name: "Thu Bui",
+          time: "3 tháng 10, 2023 2:30pm",
+          content:
+            "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus consequuntur laboriosam perspiciatis! Eligendi ea qui repellat quod reprehenderit dolorum? Voluptas.",
+        },
+
+        {
+          img: "https://scontent.fsgn2-9.fna.fbcdn.net/v/t39.30808-6/327973555_1552256688580238_5431785565292483664_n.jpg?stp=cp6_dst-jpg&_nc_cat=105&ccb=1-7&_nc_sid=5f2048&_nc_ohc=VRcWczgUkOoAX_lHpDp&_nc_ht=scontent.fsgn2-9.fna&oh=00_AfCyBkpzQRpsxmLSmJ86P3XWQZY3Em3rM8Fvz9_Udd36Lw&oe=653108D6",
+          name: "Thu Bui",
+          time: "3 tháng 10, 2023 5:30pm",
+          content:
+            "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus consequuntur laboriosam perspiciatis! Eligendi ea qui repellat quod reprehenderit dolorum? Voluptas.",
+        },
+      ],
+    },
+
+    {
+      img: "https://scontent.fsgn5-6.fna.fbcdn.net/v/t1.6435-9/123116045_772985256617271_6289105269278104549_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=ad2b24&_nc_ohc=laebF5sIFUUAX8VFESQ&_nc_ht=scontent.fsgn5-6.fna&oh=00_AfBOKBYLyQ6D7SQRwsFXimrfuUuKrPYLyfKst_XNlTvmIw&oe=65353413",
+      name: "Quang Huy",
+      time: "20 tháng 9, 2023 5:30pm",
+      content:
+        "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus consequuntur laboriosam perspiciatis! Eligendi ea qui repellat quod reprehenderit dolorum? Voluptas.",
+      listReply: [
+        {
+          img: "https://scontent.fsgn2-9.fna.fbcdn.net/v/t39.30808-6/327973555_1552256688580238_5431785565292483664_n.jpg?stp=cp6_dst-jpg&_nc_cat=105&ccb=1-7&_nc_sid=5f2048&_nc_ohc=VRcWczgUkOoAX_lHpDp&_nc_ht=scontent.fsgn2-9.fna&oh=00_AfCyBkpzQRpsxmLSmJ86P3XWQZY3Em3rM8Fvz9_Udd36Lw&oe=653108D6",
+          name: "Thu Bui",
+          time: "20 tháng 9, 2023 6:00pm",
+          content:
+            "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus consequuntur laboriosam perspiciatis! Eligendi ea qui repellat quod reprehenderit dolorum? Voluptas.",
+        },
+
+        {
+          img: "https://scontent.fsgn2-9.fna.fbcdn.net/v/t39.30808-6/327973555_1552256688580238_5431785565292483664_n.jpg?stp=cp6_dst-jpg&_nc_cat=105&ccb=1-7&_nc_sid=5f2048&_nc_ohc=VRcWczgUkOoAX_lHpDp&_nc_ht=scontent.fsgn2-9.fna&oh=00_AfCyBkpzQRpsxmLSmJ86P3XWQZY3Em3rM8Fvz9_Udd36Lw&oe=653108D6",
+          name: "Thu Bui",
+          time: "20 tháng 9, 2023 8:00pm",
+          content:
+            "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus consequuntur laboriosam perspiciatis! Eligendi ea qui repellat quod reprehenderit dolorum? Voluptas.",
+        },
+      ],
+    },
+  ];
+
+  const [listComment, setListComment] = useState(initListComment);
+  const [newComment, setNewComment] = useState({
+    img: "https://i.pinimg.com/474x/64/34/69/64346960cc033ce02cdf41479d2d4237.jpg",
+    name: "Nguoi comment moi",
+    time: "15 tháng 10, 2023 11:00pm",
+    content: "",
+    listReply: [],
+  });
+  // ham xu li khi nut dang bl dc nhan
+  const handleNewComment = () => {
+    if (newComment.content.trim() !== ""){
+      //add comment moi vao list
+      setListComment([...listComment, newComment])
+      //set gtri cua comment moi ve gtri mac dinh
+      setNewComment({
+        img: "https://i.pinimg.com/474x/64/34/69/64346960cc033ce02cdf41479d2d4237.jpg",
+        name: "Nguoi comment moi",
+        time: "15 tháng 10, 2023 11:00pm",
+        content: "",
+        listReply: [],
+      });
+    }
+  }
+
   return (
     <div>
       <Header />
@@ -122,6 +220,9 @@ const BlogDetail = () => {
               <input
                 placeholder="Bình luận"
                 className="border-2 pl-2 outline-none w-[100%] h-10"
+                type="text"
+                value={newComment.content}
+                onChange={(e) => setNewComment({...newComment, content: e.target.value})}
               />
               <div className="flex gap-10 mt-5">
                 <input
@@ -137,74 +238,79 @@ const BlogDetail = () => {
 
             <button
               className={`w-[100%] h-10 center text-xl font-semibold text-white bg-[${theme.color.mainColor}] p-5 hover:bg-blue-700`}
+              onClick={handleNewComment}
             >
               Đăng bình luận
             </button>
           </div>
-          <div className="border-b-2 border-gray-200 pb-10">
-            <div className="flex items-center justify-between mt-10">
-              <div className="flex items-center gap-5 ">
-                <div className="center bg-blue-100 rounded-full w-[100px] h-[100px] ">
-                  <div className="center bg-blue-200 rounded-full w-[85px] h-[85px]  ">
-                    <img
-                      src="https://scontent.fsgn2-5.fna.fbcdn.net/v/t1.6435-9/125833027_2756357554611638_425435607356265941_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=174925&_nc_ohc=EgnGZJgC_VIAX9xjxuY&_nc_ht=scontent.fsgn2-5.fna&oh=00_AfBgkSMHImlU2EIBmF51WT6IKRlRcAk42Q5Z00T4g_1imw&oe=6543959D"
-                      alt="cmpic1"
-                      className="rounded-full w-[70px] h-[70px]"
-                    />
-                  </div>
-                </div>
-                <div className="flex flex-col">
-                  <div className="text-xl font-semibold text-gray-700">
-                    Viet Thanh
-                  </div>
-                  <div className="text-lg font-light text-gray-500">
-                    3 tháng 10, 2023 8:30am
-                  </div>
-                </div>
-              </div>
-              <div>
-                <button className="center px-3 py-1 rounded-md bg-blue-400 text-white text-md font-semibold hover:bg-blue-700">
-                  Phản hồi
-                </button>
-              </div>
-            </div>
-
-            <div className="ml-[120px] text-lg font-light ">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste
-              cumque alias ratione sunt, enim debitis dolorem fugiat saepe
-              suscipit beatae porro ut. Nostrum odio explicabo quae eaque quos
-              dolores a!
-            </div>
-
-            <div className="ml-[120px]">
-              <div>
-                <div className="flex items-center gap-5 mt-10">
+          {listComment.map((comment, index) => (
+            <div className="border-b-2 border-gray-200 pb-10">
+              <div className="flex items-center justify-between mt-10">
+                <div className="flex items-center gap-5 ">
                   <div className="center bg-blue-100 rounded-full w-[100px] h-[100px] ">
                     <div className="center bg-blue-200 rounded-full w-[85px] h-[85px]  ">
                       <img
-                        src="https://scontent.fsgn2-9.fna.fbcdn.net/v/t39.30808-6/327973555_1552256688580238_5431785565292483664_n.jpg?stp=cp6_dst-jpg&_nc_cat=105&ccb=1-7&_nc_sid=a2f6c7&_nc_ohc=yoKzLXaVmv8AX82S6cH&_nc_ht=scontent.fsgn2-9.fna&oh=00_AfD6obC62S-8DWmiSN1aUqfNO1jf5yswIVU0WVPsdpqJUA&oe=652136D6"
-                        alt="rppic1"
+                        src={comment.img}
+                        alt="cmpic1"
                         className="rounded-full w-[70px] h-[70px]"
                       />
                     </div>
                   </div>
                   <div className="flex flex-col">
                     <div className="text-xl font-semibold text-gray-700">
-                      Thu Bui
+                      {comment.name}
                     </div>
                     <div className="text-lg font-light text-gray-500">
-                      3 tháng 10, 2023 9:30am
+                      {comment.time}
                     </div>
                   </div>
                 </div>
-                <div className="ml-[120px] text-lg font-light ">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste
-                  cumque alias Nostrum odio explicabo quae eaque quos dolores a!
+                <div>
+                  <button className="center px-3 py-1 rounded-md bg-blue-400 text-white text-md font-semibold hover:bg-blue-700">
+                    Phản hồi
+                  </button>
                 </div>
               </div>
-            </div>
-          </div>
 
+              <div className="ml-[120px] text-lg font-light ">
+                {comment.content}
+              </div>
+
+              <div className="ml-[120px]">
+                {comment.listReply.map((reply, index) => (
+                  <div>
+                    <div className="flex items-center gap-5 mt-10">
+                      <div className="center bg-blue-100 rounded-full w-[100px] h-[100px] ">
+                        <div className="center bg-blue-200 rounded-full w-[85px] h-[85px]  ">
+                          <img
+                            src={reply.img}
+                            alt="rppic1"
+                            className="rounded-full w-[70px] h-[70px]"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex flex-col">
+                        <div className="text-xl font-semibold text-gray-700">
+                          {reply.name}
+                        </div>
+                        <div className="text-lg font-light text-gray-500">
+                          {reply.time}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="ml-[120px] text-lg font-light ">
+                      {reply.content}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+          {/* comment */}
+
+          {/* comment1 */}
+
+          {/* comment2 
           <div className="border-b-2 border-gray-200 pb-10">
             <div className="flex items-center justify-between mt-10">
               <div className="flex items-center gap-5 ">
@@ -268,7 +374,7 @@ const BlogDetail = () => {
               </div>
             </div>
           </div>
-
+{/* comment3 *
           <div className="border-b-2 border-gray-200 pb-10">
             <div className="flex items-center justify-between mt-10">
               <div className="flex items-center gap-5 ">
@@ -304,12 +410,10 @@ const BlogDetail = () => {
               Repellat, quo?
             </div>
 
-            {/* <div className="ml-[120px]">tạo phản hồi mới</div>  */}
-          </div>
-
-          <div></div>
+            <div className="ml-[120px]">tạo phản hồi mới</div> 
+          </div> */}
         </div>
-        
+
         <div className="w-[30%] ml-10">
           <div className="border drop-shadow-md rounded-lg p-10 mb-20">
             <div className="border-b-[4px] text-2xl font-bold pb-2 ">

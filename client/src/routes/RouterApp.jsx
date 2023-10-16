@@ -28,6 +28,8 @@ import ManageQuestion from '../pages/PrivatePage/ManageQuestion';
 import ManageBankTest from '../pages/PrivatePage/ManageBankTest';
 import IntructorDetail from '../pages/IntructorPage/IntructorDetail';
 import AboutUsPage from '../pages/AboutUsPage/AboutUsPage';
+import CauHoiDiemLietPage from '../pages/DocumentPage/CauHoiDiemLietPage';
+import ToanBoCauHoiPage from '../pages/DocumentPage/ToanBoCauHoiPage';
 
 const RouterApp = () => {
   const router = createBrowserRouter([
@@ -51,6 +53,8 @@ const RouterApp = () => {
     { path: '/course/detail', element: <DetailCourse /> },
 
     { path: '/document', element: <DocumentPage /> },
+    { path: '/document/cauhoidiemliet', element: <CauHoiDiemLietPage />},
+    { path: '/document/toanbocauhoi', element: <ToanBoCauHoiPage />},
 
     { path: '/theory', element: <TheoryPage /> },
     { path: '/theory/test/:theoryExamId', element: <TestTheory /> },
