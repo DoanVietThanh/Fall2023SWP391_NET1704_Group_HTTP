@@ -71,12 +71,22 @@ CREATE TABLE [dbo].Course(
 	course_id NVARCHAR(200) PRIMARY KEY,
 	course_title NVARCHAR(255) NOT NULL,
 	course_desc NVARCHAR(MAX),
-	cost FLOAT NOT NULL,
-	total_session INT,
 	total_month INT,
 	start_date DATETIME,
 	is_active BIT,
-	license_type_id INT
+	license_type_id INT,
+	total_hours_required INT,
+	total_km_required INT
+)
+GO
+CREATE TABLE [dbo].Course_Package(
+	course_package_id NVARCHAR(200) PRIMARY KEY,
+	course_package_desc NVARCHAR(255),
+	total_session INT,
+	session_hour INT,
+	cost FLOAT,
+	age_required INT,
+	course_id NVARCHAR(200)
 )
 GO
 CREATE TABLE [dbo].Course_Mentor(
@@ -99,24 +109,21 @@ CREATE TABLE [dbo].Course_Curriculum(
 	PRIMARY KEY (course_id, curriculum_id)
 )
 GO
-CREATE TABLE [dbo].Course_Reservation(
-	course_reservation_id NVARCHAR(255) PRIMARY KEY,
-	course_start_date DATETIME NOT NULL,
+CREATE TABLE [dbo].Course_Package_Reservation(
+	course_package_reservation_id NVARCHAR(200) PRIMARY KEY,
 	create_date DATETIME,
-	last_modified_date DATETIME,
-	last_modified_by INT,
 	member_id NVARCHAR(200) NOT NULL,
-	course_id NVARCHAR(200) NOT NULL,
+	course_package_id NVARCHAR(200) NOT NULL,
 	staff_id NVARCHAR(200) NOT NULL,
-	course_reservation_status_id INT,
+	reservation_status_id INT,
 	payment_type_id INT NOT NULL,
 	payment_ammount FLOAT,
 	vehicle_id INT
 )
 GO
-CREATE TABLE [dbo].Course_Reservation_Status(
-	course_reservation_status_id INT PRIMARY KEY identity(1,1),
-	course_reservation_status_desc NVARCHAR(50) NOT NULL
+CREATE TABLE [dbo].Reservation_Status(
+	reservation_status_id INT PRIMARY KEY identity(1,1),
+	reservation_status_desc NVARCHAR(50) NOT NULL
 )
 GO
 CREATE TABLE [dbo].Payment_Type(
@@ -176,7 +183,9 @@ CREATE TABLE [dbo].Roll_Call_Book(
 	comment NVARCHAR(255),
 	member_id NVARCHAR(200) NOT NULL,
 	member_total_session INT,
-	teaching_schedule_id INT NOT NULL
+	teaching_schedule_id INT NOT NULL,
+	total_hours_driven INT,
+	total_km_driven INT
 )
 GO
 CREATE TABLE [dbo].FeedBack(
@@ -288,6 +297,14 @@ CREATE TABLE [dbo].Comment(
 	full_name NVARCHAR(255),
 	avatar_image NVARCHAR(100)
 )
+GO
+CREATE TABLE [dbo].Simulation_Situation(
+	simulation_id INT PRIMARY KEY identity(1,1),
+	simulation_video NVARCHAR(200),
+	image_result NVARCHAR(200),
+	time_result INT,
+	license_type_id INT
+)
 
 -- CONSTRAINTS 
 -- dbo.Account - dbo.Role
@@ -317,6 +334,9 @@ ADD CONSTRAINT FK_Staff_AddressId FOREIGN KEY (address_id) REFERENCES Address (a
 -- dbo.Staff - dbo.License_Type
 ALTER TABLE Staff
 ADD CONSTRAINT FK_Staff_LicenseTypeId FOREIGN KEY (license_type_id) REFERENCES License_Type (license_type_id)
+-- dbo.Course_Package - dbo.Course
+ALTER TABLE Course_Package
+ADD CONSTRAINT FK_CoursePackage_CourseId FOREIGN KEY (course_id) REFERENCES Course (course_id)
 -- dbo.Course_Mentor - dbo.Course
 ALTER TABLE Course_Mentor
 ADD CONSTRAINT FK_CourseMentor_CourseId FOREIGN KEY (course_id) REFERENCES Course (course_id)
@@ -332,24 +352,24 @@ ADD CONSTRAINT FK_CourseCurriculum_CourseId FOREIGN KEY (course_id) REFERENCES C
 -- dbo.Course - dbo.LicenseType
 ALTER TABLE Course
 ADD CONSTRAINT FK_Course_LicenseTypeId FOREIGN KEY (license_type_id) REFERENCES License_Type (license_type_id)
--- dbo.Course_Reservation - dbo.Course
-ALTER TABLE Course_Reservation
-ADD CONSTRAINT FK_CourseReservation_CourseId FOREIGN KEY (course_id) REFERENCES Course (course_id)
--- dbo.Course_Reservation - dbo.Member
-ALTER TABLE Course_Reservation
-ADD CONSTRAINT FK_CourseReservation_MemberId FOREIGN KEY (member_id) REFERENCES Member (member_id)
--- dbo.Course_Reservation - dbo.Staff
-ALTER TABLE Course_Reservation
-ADD CONSTRAINT FK_CourseReservation_StaffId FOREIGN KEY (staff_id) REFERENCES Staff (staff_id)
--- dbo.Course_Reservation - dbo.Course_Reservation_Status
-ALTER TABLE Course_Reservation
-ADD CONSTRAINT FK_CourseReservation_StatusId FOREIGN KEY (course_reservation_status_id) REFERENCES Course_Reservation_Status (course_reservation_status_id)
--- dbo.Course_Reservation - dbo.Vehicle
-ALTER TABLE Course_Reservation
-ADD CONSTRAINT FK_CourseReservation_VehicleId FOREIGN KEY (vehicle_id) REFERENCES Vehicle (vehicle_id)
--- dbo.Course_Reservation - dbo.Payment_Type
-ALTER TABLE Course_Reservation
-ADD CONSTRAINT FK_CourseReservation_PaymentTypeId FOREIGN KEY (payment_type_id) REFERENCES Payment_Type (payment_type_id)
+-- dbo.Course_Package_Reservation - dbo.Course
+ALTER TABLE Course_Package_Reservation
+ADD CONSTRAINT FK_CoursePackageReservation_CoursePackageId FOREIGN KEY (course_package_id) REFERENCES Course_Package (course_package_id)
+-- dbo.Course_Package_Reservation - dbo.Member
+ALTER TABLE Course_Package_Reservation
+ADD CONSTRAINT FK_CoursePackageReservation_MemberId FOREIGN KEY (member_id) REFERENCES Member (member_id)
+-- dbo.Course__Package_Reservation - dbo.Staff
+ALTER TABLE Course_Package_Reservation
+ADD CONSTRAINT FK_CoursePackageReservation_StaffId FOREIGN KEY (staff_id) REFERENCES Staff (staff_id)
+-- dbo.Course_Package_Reservation - dbo.Reservation_Status
+ALTER TABLE Course_Package_Reservation
+ADD CONSTRAINT FK_CoursePackageReservation_StatusId FOREIGN KEY (reservation_status_id) REFERENCES Reservation_Status (reservation_status_id)
+-- dbo.Course_Package_Reservation - dbo.Vehicle
+ALTER TABLE Course_Package_Reservation
+ADD CONSTRAINT FK_CoursePackageReservation_VehicleId FOREIGN KEY (vehicle_id) REFERENCES Vehicle (vehicle_id)
+-- dbo.Course_Package_Reservation - dbo.Payment_Type
+ALTER TABLE Course_Package_Reservation
+ADD CONSTRAINT FK_CoursePackageReservation_PaymentTypeId FOREIGN KEY (payment_type_id) REFERENCES Payment_Type (payment_type_id)
 -- dbo.Vehicle - dbo.Vehicle_Type
 ALTER TABLE Vehicle
 ADD CONSTRAINT FK_Vehicle_TypeId FOREIGN KEY (vehicle_type_id) REFERENCES Vehicle_Type (vehicle_type_id)
@@ -431,7 +451,9 @@ ADD CONSTRAINT FK_BlogTag_BlogId FOREIGN KEY (blog_id) REFERENCES Blog (blog_id)
 -- dbo.Blog_Tag - dbo.Tag
 ALTER TABLE Blog_Tag
 ADD CONSTRAINT FK_BlogTag_TagId FOREIGN KEY (tag_id) REFERENCES Tag (tag_id)
-
+-- dbo.Simulation_Situation - dbo.License_Type
+ALTER TABLE Simulation_Situation
+ADD CONSTRAINT FK_SimulationSituation_LicenseTypeId FOREIGN KEY (license_type_id) REFERENCES License_Type (license_type_id)
 
 -- default data
 INSERT INTO [dbo].Role(name)
@@ -441,13 +463,147 @@ VALUES (N'admin@gmail.com', N'QEFkbWluMTIz', 1, 1)
 INSERT INTO [dbo].Job_Title(job_title_desc)
 VALUES (N'Quản trị hệ thống'), (N'Quản lí nhân sự'), (N'Giảng viên')
 INSERT INTO [dbo].License_Type(license_type_desc)
-VALUES (N'A1'),(N'A2'),(N'B1'),(N'B1.1'),(N'B2')
+VALUES (N'Chưa có'),(N'A1'),(N'A2'),(N'B1'),(N'B1.1'),(N'B2')
 INSERT INTO [dbo].License_Register_Form_Status(register_form_status_desc)
 VALUES (N'Chưa duyệt'), (N'Đã duyệt')
-INSERT INTO [dbo].Course_Reservation_Status(course_reservation_status_desc)
-VALUES (N'Chưa thanh toán'), (N'Đã thanh toán'), (N'Đã kết thúc')
+INSERT INTO [dbo].Reservation_Status(reservation_status_desc)
+VALUES (N'Chưa thanh toán'), (N'Đã thanh toán')
 INSERT INTO [dbo].Payment_Type(payment_type_desc)
 VALUES (N'Thanh toán trực tiếp'), (N'Credit Card'), (N'VNPAY')
 INSERT INTO [dbo].Vehicle_Type(vehicle_type_desc, license_type_id)
 VALUES (N'Xe số sàn', 3), (N'Xe số tự động', 4)
 
+SET IDENTITY_INSERT [dbo].Question OFF;
+INSERT INTO [dbo].Question(question_answer_desc,is_Paralysis,image,license_type_id,is_active)
+VALUES
+(N'Khái niệm “phương tiện giao thông thô sơ đường bộ” được hiểu như thế nào là đúng?',1,null,1,1),
+(N'Phương tiện tham gia giao thông đường bộ” gồm những loại nào?',0,null,1,1),
+(N'Người tham gia giao thông đường bộ” gồm những đối tượng nào?',0,null,1,1),
+(N'Người điều khiển phương tiện tham gia giao thông đường bộ” gồm những đối tượng nào dưới đây?',0,null,1,1),
+(N'Khái niệm “người điều khiển giao thông” được hiểu như thế nào là đúng?',0,null,1,1),
+(N'Khái niệm “đỗ xe” được hiểu như thế nào là đúng?',1,null,1,1),
+(N'Cuộc đua xe chỉ được thực hiện khi nào?',0,null,1,1),
+(N'Người điều khiển phương tiện giao thông đường bộ mà trong cơ thể có chất ma túy có bị nghiêm cấm hay không?',0,null,1,1),
+(N'Sử dụng rượu, bia khi lái xe, nếu bị phát hiện thì bị xử lý như thế nào?',1,null,1,1),
+(N'Theo luật phòng chống tác hại của rượu, bia, đối tượng nào dưới đây bị cấm sử dụng rượu, bia khi tham gia giao thông?',1,null,1,1),
+(N'Khái niệm “phương tiện giao thông thô sơ đường bộ” được hiểu như thế nào là đúng?',1,null,1,1),
+(N'Phương tiện tham gia giao thông đường bộ” gồm những loại nào?',0,null,1,1),
+(N'Người tham gia giao thông đường bộ” gồm những đối tượng nào?',0,null,1,1),
+(N'Người điều khiển phương tiện tham gia giao thông đường bộ” gồm những đối tượng nào dưới đây?',0,null,1,1),
+(N'Khái niệm “người điều khiển giao thông” được hiểu như thế nào là đúng?',0,null,1,1),
+(N'Khái niệm “đỗ xe” được hiểu như thế nào là đúng?',1,null,1,1),
+(N'Cuộc đua xe chỉ được thực hiện khi nào?',0,null,1,1),
+(N'Người điều khiển phương tiện giao thông đường bộ mà trong cơ thể có chất ma túy có bị nghiêm cấm hay không?',0,null,1,1),
+(N'Sử dụng rượu, bia khi lái xe, nếu bị phát hiện thì bị xử lý như thế nào?',1,null,1,1),
+(N'Theo luật phòng chống tác hại của rượu, bia, đối tượng nào dưới đây bị cấm sử dụng rượu, bia khi tham gia giao thông?',1,null,1,1),
+(N'Khái niệm “đỗ xe” được hiểu như thế nào là đúng?',1,null,1,1),
+(N'Phương tiện tham gia giao thông đường bộ” gồm những loại nào?',0,null,1,1),
+(N'Sử dụng rượu, bia khi lái xe, nếu bị phát hiện thì bị xử lý như thế nào?',1,null,1,1),
+(N'Theo luật phòng chống tác hại của rượu, bia, đối tượng nào dưới đây bị cấm sử dụng rượu, bia khi tham gia giao thông?',1,null,1,1),
+(N'Khái niệm “người điều khiển giao thông” được hiểu như thế nào là đúng?',0,null,1,1)
+SET IDENTITY_INSERT [dbo].Question OFF;
+INSERT INTO [dbo].Question_Answer(answer,is_true,question_id)
+VALUES 
+('Gồm xe đạp (kể cả xe đạp máy, xe đạp điện), xe xích lô, xe lăn dùng cho người khuyết tật, xe súc vật kéo và các loại xe tương tự.',1,1),
+('Gồm xe đạp (kể cả xe đạp máy, xe đạp điện), xe gắn máy, xe cơ giới dùng cho người khuyết tật và xe máy chuyên dùng.',0,1),
+('Gồm xe ô tô, máy kéo, rơ moóc hoặc sơ mi rơ moóc được kéo bởi xe ô tô, máy kéo.',0,1),
+('Phương tiện giao thông cơ giới đường bộ.',0,2),
+('Phương tiện giao thông thô sơ đường bộ và xe máy chuyên dùng.',0,2),
+('Cả ý 1 và ý 2.',1,2),
+('Người điều khiển, người sử dụng phương tiện tham gia giao thông đường bộ.',0,3),
+('Người điều khiển, dẫn dắt súc vật; người đi bộ trên đường bộ.',0,3),
+('Cả ý 1 và ý 2.',1,3),
+(N'Người điều khiển, người sử dụng phương tiện tham gia giao thông đường bộ.',0,4),
+(N'Người điều khiển, dẫn dắt súc vật; người đi bộ trên đường bộ.',0,4),
+(N'Cả ý 1 và ý 2.',1,4),
+(N'Là người điều khiển phương tiện tham gia giao thông tại nơi thi công, nơi ùn tắc giao thông, ở bến phà, tại cầu đường bộ đi chung với đường sắt.',0,5),
+(N'Là cảnh sát giao thông, người được giao nhiệm vụ hướng dẫn giao thông tại nơi thi công, nơi ùn tắc giao thông, ở bến phà, tại cầu đường bộ đi chung với đường sắt.',1,5),
+(N'Là người tham gia giao thông tại nơi thi công, nơi ùn tắc giao thông, ở bến phà, tại cầu đường bộ đi chung với đường sắt.',0,5),
+(N'Là trạng thái đứng yên của phương tiện giao thông không giới hạn thời gian để cho người lên, xuống phương tiện, xếp dỡ hàng hóa hoặc thực hiện công việc khác.',0,6),
+(N'Là trạng thái đứng yên tạm thời của phương tiện giao thông trong một khoảng thời gian cần thiết đủ để cho người lên, xuống phương tiện, xếp dỡ hàng hóa hoặc thực hiện công việc khác.',0,6),
+(N'Là trạng thái đứng yên của phương tiện giao thông không giới hạn thời gian để cho người lên, xuống phương tiện, xếp dỡ hàng hóa hoặc thực hiện công việc khác.',1,6),
+(N'Là trạng thái đứng yên của phương tiện giao thông có thời hạn trong một khoảng thời gian cần thiết đủ để cho người lên, xuống phương tiện, xếp dỡ hàng hóa hoặc thực hiện công việc khác..',0,7),
+(N'Là trạng thái đứng yên của phương tiện giao thông không giới hạn thời gian.',1,7),
+(N'Diễn ra trên đường phố không có người qua lại.',0,8),
+(N'Là trạng thái đứng yên của phương tiện giao thông không giới hạn thời gian để cho người lên, xuống phương tiện, xếp dỡ hàng hóa hoặc thực hiện công việc khác.',1,8),
+(N'Được người dân ủng hộ.',0,8),
+(N'Bị nghiêm cấm.',1,9),
+(N'Không bị nghiêm cấm.',0,9),
+(N'Không bị nghiêm cấm, nếu có chất ma túy ở mức nhẹ, có thể điều khiển phương tiện tham gia giao thông.',0,9),
+(N'Chỉ bị nhắc nhở.',0,10),
+(N'Bị xử phạt hành chính hoặc có thể bị xử lý hình sự tùy theo mức độ vi phạm.',1,10),
+(N'Không bị xử lý hình sự.',0,10),
+(N'Là người điều khiển phương tiện tham gia giao thông tại nơi thi công, nơi ùn tắc giao thông, ở bến phà, tại cầu đường bộ đi chung với đường sắt.',0,11),
+(N'Là cảnh sát giao thông, người được giao nhiệm vụ hướng dẫn giao thông tại nơi thi công, nơi ùn tắc giao thông, ở bến phà, tại cầu đường bộ đi chung với đường sắt.',1,11),
+(N'Là người tham gia giao thông tại nơi thi công, nơi ùn tắc giao thông, ở bến phà, tại cầu đường bộ đi chung với đường sắt.',0,11),
+(N'Người điều khiển, người sử dụng phương tiện tham gia giao thông đường bộ.',0,12),
+(N'Người điều khiển, dẫn dắt súc vật; người đi bộ trên đường bộ.',0,12),
+(N'Cả ý 1 và ý 2.',1,12),
+(N'Là trạng thái đứng yên của phương tiện giao thông có thời hạn trong một khoảng thời gian cần thiết đủ để cho người lên, xuống phương tiện, xếp dỡ hàng hóa hoặc thực hiện công việc khác..',0,13),
+(N'Là trạng thái đứng yên của phương tiện giao thông không giới hạn thời gian.',1,13),
+(N'Diễn ra trên đường phố không có người qua lại.',0,14),
+(N'Là trạng thái đứng yên của phương tiện giao thông không giới hạn thời gian để cho người lên, xuống phương tiện, xếp dỡ hàng hóa hoặc thực hiện công việc khác.',1,14),
+(N'Được người dân ủng hộ.',0,14),
+(N'Bị nghiêm cấm.',1,15),
+(N'Không bị nghiêm cấm.',0,15),
+(N'Không bị nghiêm cấm, nếu có chất ma túy ở mức nhẹ, có thể điều khiển phương tiện tham gia giao thông.',0,15),
+(N'Chỉ bị nhắc nhở.',0,16),
+(N'Bị xử phạt hành chính hoặc có thể bị xử lý hình sự tùy theo mức độ vi phạm.',1,16),
+(N'Không bị xử lý hình sự.',0,16),
+(N'Diễn ra trên đường phố không có người qua lại.',0,17),
+(N'Là trạng thái đứng yên của phương tiện giao thông không giới hạn thời gian để cho người lên, xuống phương tiện, xếp dỡ hàng hóa hoặc thực hiện công việc khác.',1,17),
+(N'Được người dân ủng hộ.',0,17),
+(N'Bị nghiêm cấm.',1,18),
+(N'Không bị nghiêm cấm.',0,18),
+(N'Là người điều khiển phương tiện tham gia giao thông tại nơi thi công, nơi ùn tắc giao thông, ở bến phà, tại cầu đường bộ đi chung với đường sắt.',0,19),
+(N'Là cảnh sát giao thông, người được giao nhiệm vụ hướng dẫn giao thông tại nơi thi công, nơi ùn tắc giao thông, ở bến phà, tại cầu đường bộ đi chung với đường sắt.',1,19),
+(N'Là người tham gia giao thông tại nơi thi công, nơi ùn tắc giao thông, ở bến phà, tại cầu đường bộ đi chung với đường sắt.',0,19),
+(N'Là trạng thái đứng yên của phương tiện giao thông không giới hạn thời gian để cho người lên, xuống phương tiện, xếp dỡ hàng hóa hoặc thực hiện công việc khác.',0,20),
+(N'Là trạng thái đứng yên tạm thời của phương tiện giao thông trong một khoảng thời gian cần thiết đủ để cho người lên, xuống phương tiện, xếp dỡ hàng hóa hoặc thực hiện công việc khác.',0,20),
+(N'Là trạng thái đứng yên của phương tiện giao thông không giới hạn thời gian để cho người lên, xuống phương tiện, xếp dỡ hàng hóa hoặc thực hiện công việc khác.',1,20),
+(N'Là người điều khiển phương tiện tham gia giao thông tại nơi thi công, nơi ùn tắc giao thông, ở bến phà, tại cầu đường bộ đi chung với đường sắt.',0,21),
+(N'Là cảnh sát giao thông, người được giao nhiệm vụ hướng dẫn giao thông tại nơi thi công, nơi ùn tắc giao thông, ở bến phà, tại cầu đường bộ đi chung với đường sắt.',1,21),
+(N'Là người tham gia giao thông tại nơi thi công, nơi ùn tắc giao thông, ở bến phà, tại cầu đường bộ đi chung với đường sắt.',0,21),
+(N'Là trạng thái đứng yên của phương tiện giao thông không giới hạn thời gian để cho người lên, xuống phương tiện, xếp dỡ hàng hóa hoặc thực hiện công việc khác.',0,22),
+(N'Là trạng thái đứng yên tạm thời của phương tiện giao thông trong một khoảng thời gian cần thiết đủ để cho người lên, xuống phương tiện, xếp dỡ hàng hóa hoặc thực hiện công việc khác.',0,22),
+(N'Là trạng thái đứng yên của phương tiện giao thông không giới hạn thời gian để cho người lên, xuống phương tiện, xếp dỡ hàng hóa hoặc thực hiện công việc khác.',1,22),
+(N'Chỉ bị nhắc nhở.',0,23),
+(N'Bị xử phạt hành chính hoặc có thể bị xử lý hình sự tùy theo mức độ vi phạm.',1,23),
+(N'Không bị xử lý hình sự.',0,23),
+(N'Diễn ra trên đường phố không có người qua lại.',0,24),
+(N'Là trạng thái đứng yên của phương tiện giao thông không giới hạn thời gian để cho người lên, xuống phương tiện, xếp dỡ hàng hóa hoặc thực hiện công việc khác.',1,24),
+(N'Được người dân ủng hộ.',0,24),
+(N'Gồm xe đạp (kể cả xe đạp máy, xe đạp điện), xe xích lô, xe lăn dùng cho người khuyết tật, xe súc vật kéo và các loại xe tương tự.',1,25),
+(N'Gồm xe đạp (kể cả xe đạp máy, xe đạp điện), xe gắn máy, xe cơ giới dùng cho người khuyết tật và xe máy chuyên dùng.',0,25),
+(N'Gồm xe ô tô, máy kéo, rơ moóc hoặc sơ mi rơ moóc được kéo bởi xe ô tô, máy kéo.',0,25)
+
+INSERT INTO [dbo].Theory_Exam(total_question, total_time, total_answer_required, license_type_id)
+VALUES(25, 15, 24, 2)
+GO
+INSERT INTO [dbo].Exam_Question(question_id, theory_exam_id)
+VALUES
+	(1,1),
+	(2,1),
+	(3,1),
+	(4,1),
+	(5,1),
+	(6,1),
+	(7,1),
+	(8,1),
+	(9,1),
+	(10,1),
+	(11,1),
+	(12,1),
+	(13,1),
+	(14,1),
+	(15,1),
+	(16,1),
+	(17,1),
+	(18,1),
+	(19,1),
+	(20,1),
+	(21,1),
+	(22,1),
+	(23,1),
+	(24,1),
+	(25,1)

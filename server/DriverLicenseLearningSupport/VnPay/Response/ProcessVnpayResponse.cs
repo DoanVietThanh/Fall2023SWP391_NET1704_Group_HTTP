@@ -19,10 +19,10 @@ namespace DriverLicenseLearningSupport.VnPay.Response
         : IRequestHandler<ProcessVnpayResponse, BaseResultWithData<(PaymentReturnResponse, string)>>
     {
         private readonly VnPayConfig _vnpayConfig;
-        private readonly ICourseReservationService _courseReservationService;
+        private readonly ICoursePackageReservationService _courseReservationService;
 
         public ProcessVnpayResponseHandler(IOptionsMonitor<VnPayConfig> monitor,
-            ICourseReservationService courseReservationService)
+            ICoursePackageReservationService courseReservationService)
         {
             _vnpayConfig = monitor.CurrentValue;
             _courseReservationService = courseReservationService;

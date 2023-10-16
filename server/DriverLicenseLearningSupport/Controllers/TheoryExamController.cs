@@ -97,6 +97,9 @@ namespace DriverLicenseLearningSupport.Controllers
             });
         }
 
+        // theory-exam/license-type/{id} -> d1 - d10
+        // exam-question/theory-exam-id
+
         [HttpGet]
         [Route("theory-exam/question-bank/{licenseId:int}/{page:int}")]
         public async Task<IActionResult> GetQuestionBankWithLicenseId([FromRoute] int licenseId
@@ -175,6 +178,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 }
             });
         }
+        
         [HttpPost]
         [Route("theory-exam/add-question")]
         public async Task<IActionResult> AddQuestionToExam([FromForm] TheoryAddRequest reqObj)
@@ -307,6 +311,8 @@ namespace DriverLicenseLearningSupport.Controllers
         //    }); ;
         //}
 
+        // thoery-exam/license-type/id -> list thoery exam id
+
         [HttpGet]
         [Route("theory-exam/{theoryExamId:int}")]
         public async Task<IActionResult> GetQuestionByTheoryId([FromRoute] int theoryExamId) 
@@ -324,7 +330,6 @@ namespace DriverLicenseLearningSupport.Controllers
                 Data = theoryExam
             });
         }
-
 
     }
 

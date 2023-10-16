@@ -7,8 +7,6 @@ namespace DriverLicenseLearningSupport.Payloads.Request
     public class MemberUpdateRequest
     {
         // Member Info
-        [Required]
-        public Guid MemberId { get; set; }
         [Required(ErrorMessage = "First name is required")]
         public string FirstName { get; set; }
         [Required(ErrorMessage = "Last name is required")]

@@ -78,7 +78,7 @@ builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<IPaymentTypeService, PaymentTypeService>();
 builder.Services.AddScoped<IWeekDayScheduleService, WeekDayScheduleService>();
 builder.Services.AddScoped<ISlotService, SlotService>();
-builder.Services.AddScoped<ICourseReservationService, CourseReservationService>();
+builder.Services.AddScoped<ICoursePackageReservationService, CoursePackageReservationService>();
 builder.Services.AddScoped<IVehicleService, VehicleService>();
 builder.Services.AddScoped<ITeachingScheduleService, TeachingScheduleService>();
 builder.Services.AddScoped<IQuestionService, QuestionService>();
@@ -104,7 +104,7 @@ builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 builder.Services.AddScoped<IPaymentTypeRepository, PaymentTypeRepository>();
 builder.Services.AddScoped<IWeekDayScheduleRepository, WeekDayScheduleRepository>();
 builder.Services.AddScoped<ISlotRepository, SlotRepository>();
-builder.Services.AddScoped<ICourseReservationRepository, CourseReservationRepository>();
+builder.Services.AddScoped<ICoursePackageReservationRepository, CoursePackageReservationRepository>();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<ITeachingScheduleRepository, TeachingScheduleRepository>();
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
@@ -149,6 +149,9 @@ builder.Services.AddCors(p => p.AddPolicy("Cors", policy =>
           .AllowAnyHeader()
           .AllowAnyMethod();
 }));
+
+// Add NewtonsoftJson
+builder.Services.AddControllers().AddNewtonsoftJson();
 
 // Amazon Lambda Hosting
 //builder.Services.AddAWSLambdaHosting(LambdaEventSource.RestApi);

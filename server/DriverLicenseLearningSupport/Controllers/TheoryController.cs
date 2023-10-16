@@ -45,7 +45,6 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpGet]
         [Route("theory/add-question")]
-        
         public async Task<IActionResult> LicenseFormRegister()
         {
             var licenseTypes = await _licenseTypeService.GetAllAsync();

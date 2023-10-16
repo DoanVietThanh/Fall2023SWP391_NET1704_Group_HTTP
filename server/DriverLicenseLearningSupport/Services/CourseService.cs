@@ -42,6 +42,15 @@ namespace DriverLicenseLearningSupport.Services
         {
             return await _courseRepo.GetByMentorIdAndCourseIdAsync(mentorId, courseId);
         }
+        public async Task<CoursePackageModel> CreatePackageAsync(CoursePackageModel coursePackage)
+        {
+            var packageEntity = _mapper.Map<CoursePackage>(coursePackage);
+            return await _courseRepo.CreatePackageAsync(packageEntity);
+        }
+        public async Task<CoursePackageModel> GetPackageAsync(Guid packageId)
+        {
+            return await _courseRepo.GetPackageAsync(packageId);
+        }
         public async Task<IEnumerable<CourseModel>> GetAllAsync()
         {
             return await _courseRepo.GetAllAsync();
@@ -63,6 +72,11 @@ namespace DriverLicenseLearningSupport.Services
         {
             var curriculumEntity = _mapper.Map<Curriculum>(curriculum);
             return await _courseRepo.UpdateCourseCurriculumAsync(courseId, curriculumEntity);
+        }
+        public async Task<bool> UpdatePackageAsync(Guid packageId, CoursePackageModel package)
+        {
+            var packageEntity = _mapper.Map<CoursePackage>(package);
+            return await _courseRepo.UpdatePackageAsync(packageId, packageEntity);
         }
         public async Task<bool> DeleteAsync(Guid id)
         {
