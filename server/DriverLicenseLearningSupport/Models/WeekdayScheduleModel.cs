@@ -15,7 +15,7 @@ namespace DriverLicenseLearningSupport.Models
         public string CourseId { get; set; }
         public string WeekdayScheduleDesc { get; set; }
 
-        public virtual CourseModel Course { get; set; }
+        //public virtual CourseModel Course { get; set; }
         //public virtual ICollection<TeachingScheduleModel> TeachingSchedules { get; set; }
     }
 }

@@ -17,14 +17,17 @@ namespace DriverLicenseLearningSupport.Repositories
         private readonly DriverLicenseLearningSupportContext _context;
         private readonly IMapper _mapper;
         private readonly AppSettings _appSettings;
+        private readonly CourseSettings _courseSettings;
 
         public TeachingScheduleRepository(DriverLicenseLearningSupportContext context,
             IMapper mapper,
-            IOptionsMonitor<AppSettings> monitor)
+            IOptionsMonitor<AppSettings> monitor,
+            IOptionsMonitor<CourseSettings> courseMonitor)
         {
             _context = context;
             _mapper = mapper;
             _appSettings = monitor.CurrentValue;
+            _courseSettings = courseMonitor.CurrentValue;
         }
 
         public async Task<bool> AddRollCallBookAsync(int teachingScheduleId, RollCallBook rcbModel)
@@ -54,7 +57,20 @@ namespace DriverLicenseLearningSupport.Repositories
             // save changes
             return await _context.SaveChangesAsync() > 0 ? true : false;
         }
+        public async Task<bool> AddCoursePackageAsync(int teachingScheduleId, Guid coursePackageId)
+        {
+            var teachingSchedule = await _context.TeachingSchedules.Where(x => x.TeachingScheduleId == teachingScheduleId)
+                .FirstOrDefaultAsync();
 
+            if(teachingSchedule is not null)
+            {
+                // add course package
+                teachingSchedule.CoursePackageId = coursePackageId.ToString();
+
+                return await _context.SaveChangesAsync() > 0;
+            }
+            return false;
+        }
         public async Task<TeachingScheduleModel> CreateAsync(TeachingSchedule teachingSchedule)
         {
             await _context.TeachingSchedules.AddAsync(teachingSchedule);
@@ -63,10 +79,10 @@ namespace DriverLicenseLearningSupport.Repositories
             return _mapper.Map<TeachingScheduleModel>(teachingSchedule);
         }
         public async Task<bool> CreateRangeBySlotAndWeekdayAsync(int slotId, string weekdays, int weekdayScheduleId,
-            TeachingScheduleModel teachingSchedule)
+            TeachingScheduleModel teachingSchedule, int vehicleId)
         {
             // get from config
-            var daysInWeek = _appSettings.WeekdaySchedules;
+            var daysInWeek = _courseSettings.WeekdaySchedules;
             // generate list from config
             var listDays = daysInWeek.ToList();
             // not found
@@ -120,13 +136,14 @@ namespace DriverLicenseLearningSupport.Repositories
                             Guid.Parse(teachingSchedule.StaffId),
                             dt, slotId);
 
-                if(existSchedule is null)
+                if (existSchedule is null)
                 {
                     teachingSchedule.WeekdayScheduleId = weekdayScheduleId;
                     teachingSchedule.SlotId = slotId;
                     teachingSchedule.TeachingDate =
                         DateTime.ParseExact(dt.ToString(_appSettings.DateFormat),
                         _appSettings.DateFormat, CultureInfo.InvariantCulture);
+                    teachingSchedule.VehicleId = vehicleId;
 
                     isSucess = await CreateAsync(_mapper.Map<TeachingSchedule>(teachingSchedule))
                         is not null ? true : false;
@@ -315,7 +332,17 @@ namespace DriverLicenseLearningSupport.Repositories
                                                  .FirstOrDefault();
             return _mapper.Map<TeachingScheduleModel>(existSchedule);
         }
+        public async Task<IEnumerable<TeachingScheduleModel>> GetAllByTeachingDateAsync(DateTime date)
+        {
+            var dateFormat = date.ToString("yyyy-MM-dd");
 
+            var schedules = await _context.TeachingSchedules.ToListAsync();
+
+            schedules = schedules.Where(x => x.TeachingDate.ToString("yyyy-MM-dd")
+            .Equals(dateFormat)).ToList();
+
+            return _mapper.Map<IEnumerable<TeachingScheduleModel>>(schedules);
+        }
         public async Task<IEnumerable<TeachingScheduleModel>> GetBySlotAndWeekDayScheduleAsync(int slotId, int weekDayScheduleId,
             Guid mentorId)
         {
@@ -329,13 +356,15 @@ namespace DriverLicenseLearningSupport.Repositories
             foreach (var d in dates)
             {
                 var dateFormat = d.ToString("dd/MM/yyyy");
-                var schedules = await _context.TeachingSchedules.Where(x => x.SlotId == slotId 
+                var schedules = await _context.TeachingSchedules.Where(x => x.SlotId == slotId
                                                                         && x.StaffId == mentorId.ToString())
                                                                .Select(x => new TeachingSchedule
                                                                {
                                                                    TeachingScheduleId = x.TeachingScheduleId,
                                                                    TeachingDate = x.TeachingDate,
                                                                    Vehicle = x.Vehicle,
+                                                                   CoursePackageId = x.CoursePackageId,
+                                                                   CoursePackage = x.CoursePackage,
                                                                    RollCallBooks = x.RollCallBooks
                                                                     .Select(
                                                                         x => new RollCallBook
@@ -344,7 +373,9 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                             MemberId = x.MemberId,
                                                                             Comment = x.Comment,
                                                                             Member = x.Member,
-                                                                            MemberTotalSession = x.MemberTotalSession
+                                                                            MemberTotalSession = x.MemberTotalSession,
+                                                                            TotalHoursDriven = x.TotalHoursDriven,
+                                                                            TotalKmDriven = x.TotalKmDriven
                                                                         }).ToList()
                                                                })
                                                             .ToListAsync();
@@ -364,7 +395,6 @@ namespace DriverLicenseLearningSupport.Repositories
             }
             return teachingSchedules;
         }
-
         public async Task<IEnumerable<TeachingScheduleModel>> GetBySlotAndWeekDayScheduleOfMemberAsync(int slotId, int weekDayScheduleId,
             Guid mentorId, Guid memberId)
         {

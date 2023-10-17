@@ -28,7 +28,7 @@ namespace DriverLicenseLearningSupport.Repositories
             return _mapper.Map<CoursePackageReservationModel>(courseReservation);
         }
 
-        public async Task<IEnumerable<CoursePackageReservationModel>> GetAllByCourseId(Guid courseId)
+        public async Task<IEnumerable<CoursePackageReservationModel>> GetAllByCourseIdAsync(Guid courseId)
         {
             var courseReservationEntities = await _context.CoursePackageReservations
                 .Select(x => new CoursePackageReservation { 
@@ -42,18 +42,34 @@ namespace DriverLicenseLearningSupport.Repositories
             return _mapper.Map<IEnumerable<CoursePackageReservationModel>>(courseReservationEntities);
         }
 
+        public async Task<IEnumerable<MemberModel>> GetAllMemberInCourseAsync(Guid courseId)
+        {
+            var members = await _context.CoursePackageReservations.Where(x => 
+                x.CoursePackage.CourseId == courseId.ToString())
+                    .Select(x => x.Member)
+                    .ToListAsync();
+
+            return _mapper.Map<IEnumerable<MemberModel>>(members);
+        }
+
         public async Task<CoursePackageReservationModel> GetByMemberAsync(Guid memberId)
         {
             var courseReservationEntity = await _context.CoursePackageReservations.Where(x => x.MemberId == memberId.ToString())
                                                                            .Select(x => new CoursePackageReservation { 
                                                                                 CoursePackageReservationId = x.CoursePackageReservationId,
-                                                                                CoursePackage = x.CoursePackage
+                                                                                CoursePackage = x.CoursePackage,
+                                                                                StaffId = x.StaffId,
+                                                                                CoursePackageId = x.CoursePackageId,
+                                                                                CreateDate = x.CreateDate,
+                                                                                MemberId = x.MemberId,
+                                                                                PaymentTypeId = x.PaymentTypeId,
+                                                                                ReservationStatusId = x.ReservationStatusId
                                                                            })
                                                                            .FirstOrDefaultAsync();
             return _mapper.Map<CoursePackageReservationModel>(courseReservationEntity);
         }
 
-        public async Task<int> GetTotalMemberByMentorId(Guid mentorId)
+        public async Task<int> GetTotalMemberByMentorIdAsync(Guid mentorId)
         {
             var courseReservationEntities = await _context.CoursePackageReservations.Where(x => x.StaffId == mentorId.ToString())
                                                                              .ToListAsync();

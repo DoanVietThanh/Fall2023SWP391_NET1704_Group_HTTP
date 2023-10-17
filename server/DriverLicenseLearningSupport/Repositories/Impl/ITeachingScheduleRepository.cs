@@ -7,12 +7,15 @@ namespace DriverLicenseLearningSupport.Repositories.Impl
     public interface ITeachingScheduleRepository
     {
         Task<TeachingScheduleModel> CreateAsync(TeachingSchedule teachingSchedule);
-        Task<bool> CreateRangeBySlotAndWeekdayAsync(int slotId, string weekdays, int weekdayScheduleId, TeachingScheduleModel teachingSchedule);
+        Task<bool> CreateRangeBySlotAndWeekdayAsync(int slotId, string weekdays, int weekdayScheduleId,
+            TeachingScheduleModel teachingSchedule, int vehicleId);
+        Task<bool> AddCoursePackageAsync(int teachingScheduleId, Guid coursePackageId);
         Task<TeachingScheduleModel> GetAsync(int teachingScheduleId);
         Task<IEnumerable<TeachingScheduleModel>> GetAllByMentorIdAndMemberIdAsync(Guid mentorId, Guid memberId);
         Task<IEnumerable<TeachingScheduleModel>> GetAllByMentorIdAsync(Guid mentorId);
         Task<IEnumerable<TeachingScheduleModel>> GetBySlotAndWeekDayScheduleAsync(int slotId, int weekDayScheduleId, Guid mentorId);
         Task<IEnumerable<TeachingScheduleModel>> GetBySlotAndWeekDayScheduleOfMemberAsync(int slotId, int weekDayScheduleId, Guid mentorId, Guid memberId);
+        Task<IEnumerable<TeachingScheduleModel>> GetAllByTeachingDateAsync(DateTime date);
         Task<TeachingScheduleModel> GetByMentorIdAndTeachingDateAsync(int weekdayScheduleId, Guid mentorId, DateTime date, int slotId);
         Task<TeachingScheduleModel> GetByFilterAsync(TeachingScheduleFilter filters);
         Task<TeachingScheduleModel> GetMemberScheduleByFilterAsync(LearningScheduleFilter filters, Guid memberId);

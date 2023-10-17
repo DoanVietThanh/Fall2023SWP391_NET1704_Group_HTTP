@@ -9,11 +9,6 @@ using DriverLicenseLearningSupport.Repositories;
 using DriverLicenseLearningSupport.Repositories.Impl;
 using DriverLicenseLearningSupport.Services;
 using DriverLicenseLearningSupport.Services.Impl;
-using DriverLicenseLearningSupport.VnPay.Base;
-using DriverLicenseLearningSupport.VnPay.Config;
-using DriverLicenseLearningSupport.VnPay.Interface;
-using DriverLicenseLearningSupport.VnPay.Request;
-using DriverLicenseLearningSupport.VnPay.Response;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -40,6 +35,8 @@ builder.Services.AddDbContext<DriverLicenseLearningSupportContext>(options =>
 // Add AppSettings 
 var appSettings = builder.Configuration.GetSection("AppSettings");
 builder.Services.Configure<AppSettings>(appSettings);
+var courseSettings = builder.Configuration.GetSection("CourseSettings");
+builder.Services.Configure<CourseSettings>(courseSettings);
 
 // Add VnPay config 
 var vnpayConfig = builder.Configuration.GetSection("VNPAY");
@@ -149,9 +146,6 @@ builder.Services.AddCors(p => p.AddPolicy("Cors", policy =>
           .AllowAnyHeader()
           .AllowAnyMethod();
 }));
-
-// Add NewtonsoftJson
-builder.Services.AddControllers().AddNewtonsoftJson();
 
 // Amazon Lambda Hosting
 //builder.Services.AddAWSLambdaHosting(LambdaEventSource.RestApi);

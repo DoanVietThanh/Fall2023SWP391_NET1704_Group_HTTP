@@ -1,12 +1,9 @@
 ﻿using DocumentFormat.OpenXml.Bibliography;
 using DriverLicenseLearningSupport.Entities;
+using DriverLicenseLearningSupport.Models.Config;
+using DriverLicenseLearningSupport.Payloads.Request;
 using DriverLicenseLearningSupport.Payloads.Response;
 using DriverLicenseLearningSupport.Services.Impl;
-using DriverLicenseLearningSupport.VnPay.Base;
-using DriverLicenseLearningSupport.VnPay.Config;
-using DriverLicenseLearningSupport.VnPay.Extensions;
-using DriverLicenseLearningSupport.VnPay.Request;
-using DriverLicenseLearningSupport.VnPay.Response;
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

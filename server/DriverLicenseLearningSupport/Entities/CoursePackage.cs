@@ -8,6 +8,7 @@ namespace DriverLicenseLearningSupport.Entities
         public CoursePackage()
         {
             CoursePackageReservations = new HashSet<CoursePackageReservation>();
+            TeachingSchedules = new HashSet<TeachingSchedule>();
         }
 
         public string CoursePackageId { get; set; }
@@ -20,5 +21,6 @@ namespace DriverLicenseLearningSupport.Entities
 
         public virtual Course Course { get; set; }
         public virtual ICollection<CoursePackageReservation> CoursePackageReservations { get; set; }
+        public virtual ICollection<TeachingSchedule> TeachingSchedules { get; set; }
     }
 }

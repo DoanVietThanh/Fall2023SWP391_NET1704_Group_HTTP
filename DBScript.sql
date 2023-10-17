@@ -117,8 +117,7 @@ CREATE TABLE [dbo].Course_Package_Reservation(
 	staff_id NVARCHAR(200) NOT NULL,
 	reservation_status_id INT,
 	payment_type_id INT NOT NULL,
-	payment_ammount FLOAT,
-	vehicle_id INT
+	payment_ammount FLOAT
 )
 GO
 CREATE TABLE [dbo].Reservation_Status(
@@ -144,7 +143,8 @@ CREATE TABLE [dbo].Vehicle(
 	vehicle_license_plate NVARCHAR(155) NOT NULL,
 	register_date DATETIME,
 	vehicle_type_id INT,
-	vehicle_image NVARCHAR(155)
+	vehicle_image NVARCHAR(155),
+	is_active BIT NOT NULL
 )
 GO
 CREATE TABLE [dbo].Slot(
@@ -174,7 +174,8 @@ CREATE TABLE [dbo].Teaching_Schedule(
 	staff_id NVARCHAR(200),
 	slot_id INT,
 	vehicle_id INT,
-	weekday_schedule_id INT
+	weekday_schedule_id INT,
+	course_package_id NVARCHAR(200)
 )
 GO
 CREATE TABLE [dbo].Roll_Call_Book(
@@ -364,9 +365,6 @@ ADD CONSTRAINT FK_CoursePackageReservation_StaffId FOREIGN KEY (staff_id) REFERE
 -- dbo.Course_Package_Reservation - dbo.Reservation_Status
 ALTER TABLE Course_Package_Reservation
 ADD CONSTRAINT FK_CoursePackageReservation_StatusId FOREIGN KEY (reservation_status_id) REFERENCES Reservation_Status (reservation_status_id)
--- dbo.Course_Package_Reservation - dbo.Vehicle
-ALTER TABLE Course_Package_Reservation
-ADD CONSTRAINT FK_CoursePackageReservation_VehicleId FOREIGN KEY (vehicle_id) REFERENCES Vehicle (vehicle_id)
 -- dbo.Course_Package_Reservation - dbo.Payment_Type
 ALTER TABLE Course_Package_Reservation
 ADD CONSTRAINT FK_CoursePackageReservation_PaymentTypeId FOREIGN KEY (payment_type_id) REFERENCES Payment_Type (payment_type_id)
@@ -385,6 +383,8 @@ ADD CONSTRAINT FK_TeachingSchedule_WeekdayScheduleId FOREIGN KEY (weekday_schedu
 -- dbo.Teaching_Schedule - dbi.Vehicle
 ALTER TABLE Teaching_Schedule
 ADD CONSTRAINT FK_TeachingSchedule_VehicleId FOREIGN KEY (vehicle_id) REFERENCES Vehicle (vehicle_id)
+ALTER TABLE Teaching_Schedule
+ADD CONSTRAINT FK_TeachingSchedule_CoursePackageId FOREIGN KEY (course_package_id) REFERENCES Course_Package(course_package_id)
 -- dbo.Weekday_Schedule - dbo.Course
 ALTER TABLE Weekday_Schedule
 ADD CONSTRAINT FK_WeekdaySchedule_CourseId FOREIGN KEY (course_id) REFERENCES Course (course_id)
@@ -471,7 +471,7 @@ VALUES (N'Chưa thanh toán'), (N'Đã thanh toán')
 INSERT INTO [dbo].Payment_Type(payment_type_desc)
 VALUES (N'Thanh toán trực tiếp'), (N'Credit Card'), (N'VNPAY')
 INSERT INTO [dbo].Vehicle_Type(vehicle_type_desc, license_type_id)
-VALUES (N'Xe số sàn', 3), (N'Xe số tự động', 4)
+VALUES (N'Xe số sàn', 4), (N'Xe số tự động', 5)
 
 SET IDENTITY_INSERT [dbo].Question OFF;
 INSERT INTO [dbo].Question(question_answer_desc,is_Paralysis,image,license_type_id,is_active)
