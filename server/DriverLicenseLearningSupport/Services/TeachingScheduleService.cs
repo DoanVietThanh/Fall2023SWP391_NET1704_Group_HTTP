@@ -34,9 +34,16 @@ namespace DriverLicenseLearningSupport.Services
             var teachingScheduleEntity = _mapper.Map<TeachingSchedule>(teachingSchedule);
             return await _teachingScheduleRepo.CreateAsync(teachingScheduleEntity);
         }
-        public async Task<bool> CreateRangeBySlotAndWeekdayAsync(int slotId, string weekdays, int weekdayScheduleId, TeachingScheduleModel teachingSchedule)
+        public async Task<bool> CreateRangeBySlotAndWeekdayAsync(int slotId, string weekdays, int weekdayScheduleId
+            , TeachingScheduleModel teachingSchedule, int vehicleId)
         {
-            return await _teachingScheduleRepo.CreateRangeBySlotAndWeekdayAsync(slotId, weekdays, weekdayScheduleId, teachingSchedule);
+            return await _teachingScheduleRepo.CreateRangeBySlotAndWeekdayAsync(slotId, weekdays,
+                weekdayScheduleId, teachingSchedule,
+                vehicleId);
+        }
+        public async Task<bool> AddCoursePackageAsync(int teachingScheduleId, Guid coursePackageId)
+        {
+            return await _teachingScheduleRepo.AddCoursePackageAsync(teachingScheduleId, coursePackageId);
         }
         public async Task<IEnumerable<TeachingScheduleModel>> GetAllByMentorIdAsync(Guid mentorId)
         {
@@ -80,7 +87,10 @@ namespace DriverLicenseLearningSupport.Services
         {
             return await _teachingScheduleRepo.GetMemberScheduleByFilterAsync(filters, memberId);
         }
-
+        public async Task<IEnumerable<TeachingScheduleModel>> GetAllByTeachingDateAsync(DateTime date)
+        {
+            return await _teachingScheduleRepo.GetAllByTeachingDateAsync(date);
+        }
         public async Task<TeachingScheduleModel> ExistScheduleInOtherCoursesAsync(int slotId, DateTime teachingDate, Guid mentorId, Guid courseId)
         {
             return await _teachingScheduleRepo.ExistScheduleInOtherCoursesAsync(slotId, teachingDate, mentorId, courseId);

@@ -16,5 +16,15 @@ namespace DriverLicenseLearningSupport.Services
         {
             return await _rcbRepo.GetAllByMemberIdAsync(memberId);
         }
+
+        public async Task<RollCallBookModel> GetAsync(int id)
+        {
+            return await _rcbRepo.GetAsync(id);
+        }
+
+        public async Task<bool> UpdateAsync(int rcbId, RollCallBookModel rcbook)
+        {
+            return await _rcbRepo.UpdateAsync(rcbId, rcbook);
+        }
     }
 }

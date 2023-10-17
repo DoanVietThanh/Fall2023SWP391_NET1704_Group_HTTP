@@ -1081,7 +1081,7 @@ namespace DriverLicenseLearningSupport.Controllers
             {
                 return BadRequest(new BaseResponse {
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = $"Not found any learning course"
+                    Message = $"Not found any learning course package"
                 });
             }
 
@@ -1141,6 +1141,8 @@ namespace DriverLicenseLearningSupport.Controllers
                     Message = $"Not found any schedule match required"
                 });
             }
+            
+
 
             // get weekday schedule id by teaching date request
             var weekday = await _weekDayScheduleService.GetByDateAndCourseId(teachingSchedule.TeachingDate
@@ -1170,7 +1172,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 Convert.ToInt32(teachingSchedule.SlotId));
 
             // check teaching schedule already register
-            if (registeredSchedule.RollCallBooks is not null)
+            if (registeredSchedule is not null)
             {
                 // convert to list obj
                 var schedules = registeredSchedule.RollCallBooks.ToList();
@@ -1190,7 +1192,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 return BadRequest(new BaseResponse { 
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = $"Member {reqObj.MemberId} not allow to register this " +
-                        $"schedule because he/she not in course {course.CourseTitle}"
+                        $"schedule"
                 });
             }
 
@@ -1211,11 +1213,14 @@ namespace DriverLicenseLearningSupport.Controllers
             /// TODO: Get Created Schedule 
             if (isSuccess)
             {
+                // add course package to teaching schedule id
+                await _teachingScheduleService.AddCoursePackageAsync(teachingSchedule.TeachingScheduleId,
+                    Guid.Parse(courseReservation.CoursePackageId));
 
-                // add teaching schedule vehicle
-                await _teachingScheduleService.AddVehicleAsync(
-                    teachingSchedule.TeachingScheduleId, 
-                    Convert.ToInt32(courseReservation.VehicleId));
+                //// add teaching schedule vehicle
+                //await _teachingScheduleService.AddVehicleAsync(
+                //    teachingSchedule.TeachingScheduleId, 
+                //    Convert.ToInt32(courseReservation.VehicleId));
 
                 return Ok(new BaseResponse { 
                     StatusCode = StatusCodes.Status200OK,

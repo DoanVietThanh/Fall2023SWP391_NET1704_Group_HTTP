@@ -10,7 +10,7 @@ namespace DriverLicenseLearningSupport.Models
         public string VehicleLicensePlate { get; set; } = null!;
         public DateTime? RegisterDate { get; set; }
         public int? VehicleTypeId { get; set; } = null!;
-
+        public bool IsActive { get; set; }
         public virtual VehicleTypeModel VehicleType { get; set; } = null!;
     }
 }

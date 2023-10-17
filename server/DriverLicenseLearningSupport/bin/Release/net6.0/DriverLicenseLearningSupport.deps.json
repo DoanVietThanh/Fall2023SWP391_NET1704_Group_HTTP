@@ -14,7 +14,6 @@
           "DocumentFormat.OpenXml": "2.20.0",
           "EPPlus": "6.2.9",
           "FluentValidation": "6.4.1",
-          "Mapster": "6.5.1",
           "MediatR": "6.0.0",
           "MediatR.Extensions.Microsoft.DependencyInjection": "6.0.1",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.22",
@@ -22,9 +21,7 @@
           "Microsoft.EntityFrameworkCore.SqlServer": "6.0.22",
           "Microsoft.EntityFrameworkCore.Tools": "6.0.21",
           "NETCore.MailKit": "2.1.0",
-          "RestSharp": "110.0.0",
           "Swashbuckle.AspNetCore": "6.5.0",
-          "System.Net.Http.Formatting.Extension": "5.2.3",
           "VNPayPackage": "2.1.0"
         },
         "runtime": {
@@ -224,18 +221,6 @@
           }
         }
       },
-      "Mapster/6.5.1": {
-        "dependencies": {
-          "Microsoft.CSharp": "4.5.0",
-          "System.Reflection.Emit": "4.3.0"
-        },
-        "runtime": {
-          "lib/netstandard2.0/Mapster.dll": {
-            "assemblyVersion": "6.5.1.0",
-            "fileVersion": "6.5.1.0"
-          }
-        }
-      },
       "MediatR/6.0.0": {
         "runtime": {
           "lib/netstandard2.0/MediatR.dll": {
@@ -270,7 +255,7 @@
       "Microsoft.AspNetCore.Http.Abstractions/2.2.0": {
         "dependencies": {
           "Microsoft.AspNetCore.Http.Features": "2.2.0",
-          "System.Text.Encodings.Web": "7.0.0"
+          "System.Text.Encodings.Web": "6.0.0"
         }
       },
       "Microsoft.AspNetCore.Http.Features/2.2.0": {
@@ -451,7 +436,7 @@
           "Microsoft.Extensions.Configuration.Abstractions": "6.0.0",
           "Microsoft.Extensions.Configuration.FileExtensions": "6.0.0",
           "Microsoft.Extensions.FileProviders.Abstractions": "6.0.0",
-          "System.Text.Json": "7.0.2"
+          "System.Text.Json": "6.0.0"
         }
       },
       "Microsoft.Extensions.DependencyInjection/6.0.1": {
@@ -645,17 +630,6 @@
           }
         }
       },
-      "RestSharp/110.0.0": {
-        "dependencies": {
-          "System.Text.Json": "7.0.2"
-        },
-        "runtime": {
-          "lib/net6.0/RestSharp.dll": {
-            "assemblyVersion": "110.0.0.0",
-            "fileVersion": "110.0.0.0"
-          }
-        }
-      },
       "Swashbuckle.AspNetCore/6.5.0": {
         "dependencies": {
           "Microsoft.Extensions.ApiDescription.Server": "6.0.5",
@@ -835,33 +809,6 @@
           "System.Threading": "4.0.11"
         }
       },
-      "System.Net.Http/2.0.20126.16343": {
-        "runtime": {
-          "lib/net40/System.Net.Http.WebRequest.dll": {
-            "assemblyVersion": "2.0.0.0",
-            "fileVersion": "1.0.0.0"
-          }
-        }
-      },
-      "System.Net.Http.Formatting.Extension/5.2.3": {
-        "dependencies": {
-          "System.Net.Http": "2.0.20126.16343"
-        },
-        "runtime": {
-          "lib/System.Net.Http.Extensions.dll": {
-            "assemblyVersion": "2.2.29.0",
-            "fileVersion": "2.2.29.0"
-          },
-          "lib/System.Net.Http.Formatting.dll": {
-            "assemblyVersion": "5.2.3.0",
-            "fileVersion": "5.2.30128.0"
-          },
-          "lib/System.Net.Http.Primitives.dll": {
-            "assemblyVersion": "4.2.29.0",
-            "fileVersion": "4.2.29.0"
-          }
-        }
-      },
       "System.ObjectModel/4.0.12": {
         "dependencies": {
           "System.Collections": "4.0.11",
@@ -1034,35 +981,15 @@
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
       },
-      "System.Text.Encodings.Web/7.0.0": {
+      "System.Text.Encodings.Web/6.0.0": {
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
-        },
-        "runtime": {
-          "lib/net6.0/System.Text.Encodings.Web.dll": {
-            "assemblyVersion": "7.0.0.0",
-            "fileVersion": "7.0.22.51805"
-          }
-        },
-        "runtimeTargets": {
-          "runtimes/browser/lib/net6.0/System.Text.Encodings.Web.dll": {
-            "rid": "browser",
-            "assetType": "runtime",
-            "assemblyVersion": "7.0.0.0",
-            "fileVersion": "7.0.22.51805"
-          }
         }
       },
-      "System.Text.Json/7.0.2": {
+      "System.Text.Json/6.0.0": {
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "6.0.0",
-          "System.Text.Encodings.Web": "7.0.0"
-        },
-        "runtime": {
-          "lib/net6.0/System.Text.Json.dll": {
-            "assemblyVersion": "7.0.0.0",
-            "fileVersion": "7.0.323.6910"
-          }
+          "System.Text.Encodings.Web": "6.0.0"
         }
       },
       "System.Text.RegularExpressions/4.1.0": {
@@ -1210,13 +1137,6 @@
       "sha512": "sha512-5MTpTqmjqT7HPvYbP3HozRZMth5vSaT0ReN0iM3rAM4CgLI/R1qqtLDDNWGnFFIlcNzeJkZQRJJMkv8cgzWBbA==",
       "path": "mailkit/3.2.0",
       "hashPath": "mailkit.3.2.0.nupkg.sha512"
-    },
-    "Mapster/6.5.1": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-0s4McWM8+n+AtuHqvLR2GdVPqSjVCc0exB+ropNIyaJfo0w0nnJwJzATKdrIsiAKLBDIqabf3tXw+8nBdm9HHA==",
-      "path": "mapster/6.5.1",
-      "hashPath": "mapster.6.5.1.nupkg.sha512"
     },
     "MediatR/6.0.0": {
       "type": "package",
@@ -1547,13 +1467,6 @@
       "path": "portable.bouncycastle/1.9.0",
       "hashPath": "portable.bouncycastle.1.9.0.nupkg.sha512"
     },
-    "RestSharp/110.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-+0BBUOSxKFAUqj60eJ8W2V5j1lGyN9i2ue0upA5LgAXgPrlr0mm25cNxzuybfnafbIRvnbpGiYyYNvkS9cPMow==",
-      "path": "restsharp/110.0.0",
-      "hashPath": "restsharp.110.0.0.nupkg.sha512"
-    },
     "Swashbuckle.AspNetCore/6.5.0": {
       "type": "package",
       "serviceable": true,
@@ -1679,20 +1592,6 @@
       "sha512": "sha512-I+y02iqkgmCAyfbqOmSDOgqdZQ5tTj80Akm5BPSS8EeB0VGWdy6X1KCoYe8Pk6pwDoAKZUOdLVxnTJcExiv5zw==",
       "path": "system.linq.expressions/4.1.0",
       "hashPath": "system.linq.expressions.4.1.0.nupkg.sha512"
-    },
-    "System.Net.Http/2.0.20126.16343": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-d/7SOttVRBIMJPpdZ8XIMthRNvYcBmRHzV54+z0LTp/W+h2ZIfxnMefECZSQsNtclcBoUbpFVWdpr45DwUC9FA==",
-      "path": "system.net.http/2.0.20126.16343",
-      "hashPath": "system.net.http.2.0.20126.16343.nupkg.sha512"
-    },
-    "System.Net.Http.Formatting.Extension/5.2.3": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-BlYwj3Mbgc2i+NqtBZ+bea3LiN9WuGpE8PCylBvhxV0wBs0XTkXJmDuzkNnUyPhDBqKMBwDK0ZCnwJ8LpQ0aEg==",
-      "path": "system.net.http.formatting.extension/5.2.3",
-      "hashPath": "system.net.http.formatting.extension.5.2.3.nupkg.sha512"
     },
     "System.ObjectModel/4.0.12": {
       "type": "package",
@@ -1841,19 +1740,19 @@
       "path": "system.text.encoding.codepages/6.0.0",
       "hashPath": "system.text.encoding.codepages.6.0.0.nupkg.sha512"
     },
-    "System.Text.Encodings.Web/7.0.0": {
+    "System.Text.Encodings.Web/6.0.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-OP6umVGxc0Z0MvZQBVigj4/U31Pw72ITihDWP9WiWDm+q5aoe0GaJivsfYGq53o6dxH7DcXWiCTl7+0o2CGdmg==",
-      "path": "system.text.encodings.web/7.0.0",
-      "hashPath": "system.text.encodings.web.7.0.0.nupkg.sha512"
+      "sha512": "sha512-Vg8eB5Tawm1IFqj4TVK1czJX89rhFxJo9ELqc/Eiq0eXy13RK00eubyU6TJE6y+GQXjyV5gSfiewDUZjQgSE0w==",
+      "path": "system.text.encodings.web/6.0.0",
+      "hashPath": "system.text.encodings.web.6.0.0.nupkg.sha512"
     },
-    "System.Text.Json/7.0.2": {
+    "System.Text.Json/6.0.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-/LZf/JrGyilojqwpaywb+sSz8Tew7ij4K/Sk+UW8AKfAK7KRhR6mKpKtTm06cYA7bCpGTWfYksIW+mVsdxPegQ==",
-      "path": "system.text.json/7.0.2",
-      "hashPath": "system.text.json.7.0.2.nupkg.sha512"
+      "sha512": "sha512-zaJsHfESQvJ11vbXnNlkrR46IaMULk/gHxYsJphzSF+07kTjPHv+Oc14w6QEOfo3Q4hqLJgStUaYB9DBl0TmWg==",
+      "path": "system.text.json/6.0.0",
+      "hashPath": "system.text.json.6.0.0.nupkg.sha512"
     },
     "System.Text.RegularExpressions/4.1.0": {
       "type": "package",

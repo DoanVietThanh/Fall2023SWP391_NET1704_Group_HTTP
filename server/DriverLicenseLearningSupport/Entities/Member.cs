@@ -28,7 +28,7 @@ namespace DriverLicenseLearningSupport.Entities
 
         public virtual Address Address { get; set; }
         public virtual Account EmailNavigation { get; set; }
-        public virtual LicenseRegisterForm LicenseForm { get; set; }
+        public virtual LicenseRegisterForm? LicenseForm { get; set; }
         public virtual LicenseType LicenseType { get; set; }
         public virtual ICollection<CoursePackageReservation> CoursePackageReservations { get; set; }
         public virtual ICollection<ExamGrade> ExamGrades { get; set; }

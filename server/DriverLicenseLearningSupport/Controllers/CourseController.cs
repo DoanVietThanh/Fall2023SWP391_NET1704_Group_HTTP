@@ -38,6 +38,7 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly ILicenseTypeService _licenseTypeService;
         private readonly ISlotService _slotService;
         private readonly AppSettings _appSettings;
+        private readonly CourseSettings _courseSettings;
         private readonly IWeekDayScheduleService _weekDayScheduleService;
 
         public CourseController(ICourseService courseService,
@@ -50,7 +51,8 @@ namespace DriverLicenseLearningSupport.Controllers
             IVehicleService vehicleService,
             ILicenseTypeService licenseTypeService,
             ISlotService slotService,
-            IOptionsMonitor<AppSettings> monitor)
+            IOptionsMonitor<AppSettings> monitor,
+            IOptionsMonitor<CourseSettings> courseMonitor)
         {
             _courseService = courseService;
             _feedbackService = feedbackService;
@@ -62,6 +64,7 @@ namespace DriverLicenseLearningSupport.Controllers
             _licenseTypeService = licenseTypeService;
             _slotService = slotService;
             _appSettings = monitor.CurrentValue;
+            _courseSettings = courseMonitor.CurrentValue;
             _weekDayScheduleService = weekDayScheduleService;
         }
 
@@ -129,6 +132,121 @@ namespace DriverLicenseLearningSupport.Controllers
             return new ObjectResult(createdCourse) { StatusCode = StatusCodes.Status201Created };
         }
 
+        [HttpPost]
+        [Route("courses/{id:Guid}/packages/add")]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> AddCoursePackage([FromRoute] Guid id,
+            [FromBody] CoursePackageAddRequest reqObj)
+        {
+            // get course by id 
+            var course = await _courseService.GetAsync(id);
+            if(course is null)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Not found any course match id {id}"
+                });
+            }
+            // generate package model
+            var packageModel = reqObj.ToCoursePackageModel();
+            // init course package id
+            packageModel.CoursePackageId = Guid.NewGuid().ToString();
+            packageModel.CourseId = course.CourseId;
+            // validation
+            var packageValidateResult = await packageModel.ValidateAsync();
+            if(packageValidateResult is not null)
+            {
+                return BadRequest(new ErrorResponse{ 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Errors = packageValidateResult
+                });
+            }
+            // create package
+            var createdPackage = await _courseService.CreatePackageAsync(packageModel);
+            // response
+            if(createdPackage is not null)
+            {
+                return new ObjectResult(createdPackage)
+                {
+                    StatusCode = StatusCodes.Status201Created
+                };
+            }
+
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        [HttpPost]
+        [Route("courses/mentor/add")]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> AddCourseMentor([FromForm] Guid courseId, [FromForm] Guid mentorId)
+        {
+            // get mentor by id
+            var mentor = await _staffService.GetMentorAsync(mentorId);
+            // 404 Not Found <- not found any mentor match id
+            if (mentor is null) return NotFound(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"Not found any mentor match id {mentorId}"
+            });
+
+            // get course by id
+            var course = await _courseService.GetAsync(courseId);
+            // 404 Not Found <- not found any course match id
+            if (course is null) return NotFound(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = $"Not found any course match id {courseId}"
+            });
+
+            // already taught this course
+            var courseMentor = await _courseService.GetByMentorIdAndCourseIdAsync(mentorId, courseId);
+            if (courseMentor is not null)
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Mentor {mentorId} already taught course {courseId}"
+                });
+            }
+
+            // Add mentor to course
+            var isSucess = await _courseService.AddMentorAsync(courseId, mentorId);
+            // success
+            if (isSucess)
+            {
+                return Ok(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = $"Add mentor {mentorId} to course {courseId} succesfully"
+                });
+            }
+
+            // cause error
+            return StatusCode(StatusCodes.Status500InternalServerError);
+
+        }
+
+        [HttpPost]
+        [Route("courses/curriculum/add")]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> AddCourseCurrilum([FromBody] CourseCurriculumAddRequest reqObj)
+        {
+            // generate curriculum model
+            var curriculumModel = reqObj.ToCurriculumModel();
+            // add course curriculum
+            var isSuccess = await _courseService.AddCurriculumAsync(reqObj.CourseId, curriculumModel);
+
+            // return <- cause error
+            if (!isSuccess) return StatusCode(StatusCodes.Status500InternalServerError);
+
+            // return <- success
+            return Ok(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Message = "Add course curriculum sucessfully"
+            });
+        }
+
         [HttpGet]
         [Route("courses/packages/reservation")]
         [Authorize(Roles = "Admin,Staff")]
@@ -159,26 +277,6 @@ namespace DriverLicenseLearningSupport.Controllers
                     Message = $"Not found any member match id {reqObj.MemberId}"
                 });
             }
-            // check exist mentor 
-            var mentor = await _staffService.GetAsync(reqObj.MentorId);
-            if (mentor is null)
-            {
-                return NotFound(new BaseResponse
-                {
-                    StatusCode = StatusCodes.Status404NotFound,
-                    Message = $"Not found any mentor match id {reqObj.MentorId}"
-                });
-            }
-            // check exist course
-            var coursePackage = await _courseService.GetPackageAsync(reqObj.CoursePackageId);
-            if (coursePackage is null)
-            {
-                return NotFound(new BaseResponse
-                {
-                    StatusCode = StatusCodes.Status404NotFound,
-                    Message = $"Not found any course package match id {reqObj.CoursePackageId}"
-                });
-            }
             // check member already reservation
             var PackageReservation = await _coursePackageReservationService.GetByMemberAsync(reqObj.MemberId);
             if (PackageReservation is not null)
@@ -194,26 +292,42 @@ namespace DriverLicenseLearningSupport.Controllers
                     $" Member just learn one course only"
                 });
             }
-
-            // generate course reservation model
-            var packageReservationModel = reqObj.ToCoursePackageReservationModel();
-
-            // get vehicle for reservation
-            var licenseType = await _licenseTypeService.GetAsync(
-                Convert.ToInt32(coursePackage.Course.LicenseTypeId));
-            var vehicle = await _vehicleService.GetByLicenseTypeIdAsync(licenseType.LicenseTypeId);
-
-            // check vehicle exist
-            if (vehicle is null)
+            // check exist mentor 
+            var mentor = await _staffService.GetAsync(reqObj.MentorId);
+            if (mentor is null)
             {
-                return BadRequest(new BaseResponse {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = $"Not found any vehicles in garage with license type {licenseType.LicenseTypeDesc}"
+                return NotFound(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = $"Not found any mentor match id {reqObj.MentorId}"
+                });
+            }
+            else
+            {
+                var totalMember = await _coursePackageReservationService.GetTotalMemberByMentorIdAsync(reqObj.MentorId);
+
+                if(totalMember >= _courseSettings.TotalMemberOfMentor)
+                {
+                    return BadRequest(new BaseResponse { 
+                        StatusCode = StatusCodes.Status400BadRequest,
+                        Message = $"Số lượng học viên của giảng viên `{mentor.FirstName} {mentor.LastName}` " +
+                        $"đã hết, vui lòng chọn giảng viên khác"
+                    });
+                }
+            }
+            // check exist course
+            var coursePackage = await _courseService.GetPackageAsync(reqObj.CoursePackageId);
+            if (coursePackage is null)
+            {
+                return NotFound(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = $"Not found any course package match id {reqObj.CoursePackageId}"
                 });
             }
 
-            // set vehicle for course reservation
-            packageReservationModel.VehicleId = vehicle.VehicleId;
+            // generate course reservation model
+            var packageReservationModel = reqObj.ToCoursePackageReservationModel();
 
             // gererate current date
             var createDate = DateTime.ParseExact(DateTime.Now.ToString(_appSettings.DateFormat),
@@ -225,7 +339,6 @@ namespace DriverLicenseLearningSupport.Controllers
             // create course reservation
             var createdReservation = await _coursePackageReservationService.CreateAsync(
                 packageReservationModel);
-            createdReservation.Vehicle = vehicle;
 
             // payment type
             var paymentType = await _paymentTypeService.GetAsync(reqObj.PaymentTypeId);
@@ -278,14 +391,14 @@ namespace DriverLicenseLearningSupport.Controllers
             });
 
             // get course total member
-            var courseReservations = await _coursePackageReservationService.GetAllByCourseId(
+            var courseReservations = await _coursePackageReservationService.GetAllByCourseIdAsync(
                     Guid.Parse(course.CourseId));
 
             if (course.Mentors is not null)
             {
                 foreach (var m in course.Mentors)
                 {
-                    m.TotalMember = await _coursePackageReservationService.GetTotalMemberByMentorId(
+                    m.TotalMember = await _coursePackageReservationService.GetTotalMemberByMentorIdAsync(
                         Guid.Parse(m.StaffId));
                 }
             }
@@ -306,6 +419,29 @@ namespace DriverLicenseLearningSupport.Controllers
         }
 
         [HttpGet]
+        [Route("courses/packages/{id:Guid}")]
+        public async Task<IActionResult> GetCoursePackage([FromRoute] Guid id)
+        {
+            // get course package by id
+            var coursePackage = await _courseService.GetPackageAsync(id);
+            // not found
+            if (coursePackage is null)
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Not found any package match id {id}"
+                });
+            }
+
+            return Ok(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Data = coursePackage
+            });
+        }
+
+        [HttpGet]
         [Route("courses")]
         public async Task<IActionResult> GetAllCourse()
         {
@@ -320,6 +456,40 @@ namespace DriverLicenseLearningSupport.Controllers
             {
                 StatusCode = StatusCodes.Status200OK,
                 Data = courses
+            });
+        }
+      
+        [HttpGet]
+        [Route("courses/{id:Guid}/members")]
+        public async Task<IActionResult> GetAllCourseMemberAsync([FromRoute] Guid id)
+        {
+
+            // get course by id
+            var course = await _courseService.GetAsync(id);
+            if(course is null)
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Not found course {id}"
+                });
+            }
+
+            // get all member in course
+            var members = await _coursePackageReservationService.GetAllMemberInCourseAsync(id);
+
+            // not found any members
+            if (members.Count() == 0)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Not found any member in course {id}"
+                });
+            }
+
+            return Ok(new BaseResponse { 
+                StatusCode = StatusCodes.Status200OK,
+                Data = members
             });
         }
 
@@ -340,71 +510,6 @@ namespace DriverLicenseLearningSupport.Controllers
             return Ok(new BaseResponse {
                 StatusCode = StatusCodes.Status200OK,
                 Data = courses
-            });
-        }
-
-        [HttpPost]
-        [Route("courses/{id:Guid}/packages/add")]
-        [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> AddCoursePackage([FromRoute] Guid id,
-            [FromBody] CoursePackageAddRequest reqObj)
-        {
-            // get course by id 
-            var course = await _courseService.GetAsync(id);
-            if(course is null)
-            {
-                return BadRequest(new BaseResponse { 
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = $"Not found any course match id {id}"
-                });
-            }
-            // generate package model
-            var packageModel = reqObj.ToCoursePackageModel();
-            // init course package id
-            packageModel.CoursePackageId = Guid.NewGuid().ToString();
-            packageModel.CourseId = course.CourseId;
-            // validation
-            var packageValidateResult = await packageModel.ValidateAsync();
-            if(packageValidateResult is not null)
-            {
-                return BadRequest(new ErrorResponse{ 
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Errors = packageValidateResult
-                });
-            }
-            // create package
-            var createdPackage = await _courseService.CreatePackageAsync(packageModel);
-            // response
-            if(createdPackage is not null)
-            {
-                return new ObjectResult(createdPackage)
-                {
-                    StatusCode = StatusCodes.Status201Created
-                };
-            }
-
-            return StatusCode(StatusCodes.Status500InternalServerError);
-        }
-
-        [HttpGet]
-        [Route("courses/packages/{id:Guid}")]
-        public async Task<IActionResult> GetCoursePackage([FromRoute] Guid id)
-        {
-            // get course package by id
-            var coursePackage = await _courseService.GetPackageAsync(id);
-            // not found
-            if(coursePackage is null)
-            {
-                return BadRequest(new BaseResponse { 
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = $"Not found any package match id {id}"
-                });
-            }
-
-            return Ok(new BaseResponse
-            {
-                StatusCode = StatusCodes.Status200OK,
-                Data = coursePackage
             });
         }
 
@@ -475,74 +580,6 @@ namespace DriverLicenseLearningSupport.Controllers
 
         //    return StatusCode(StatusCodes.Status500InternalServerError);
         //}
-
-        [HttpPost]
-        [Route("courses/mentor/add")]
-        [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> AddCourseMentor([FromForm] Guid courseId, [FromForm] Guid mentorId)
-        {
-            // get mentor by id
-            var mentor = await _staffService.GetMentorAsync(mentorId);
-            // 404 Not Found <- not found any mentor match id
-            if (mentor is null) return NotFound(new BaseResponse { 
-                StatusCode = StatusCodes.Status404NotFound,
-                Message = $"Not found any mentor match id {mentorId}"
-            });
-
-            // get course by id
-            var course = await _courseService.GetAsync(courseId);
-            // 404 Not Found <- not found any course match id
-            if (course is null) return NotFound(new BaseResponse
-            {
-                StatusCode = StatusCodes.Status404NotFound,
-                Message = $"Not found any course match id {courseId}"
-            });
-
-            // already taught this course
-            var courseMentor = await _courseService.GetByMentorIdAndCourseIdAsync(mentorId, courseId);
-            if(courseMentor is not null)
-            {
-                return BadRequest(new BaseResponse { 
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = $"Mentor {mentorId} already taught course {courseId}"
-                });
-            }
-            
-            // Add mentor to course
-            var isSucess = await _courseService.AddMentorAsync(courseId, mentorId);
-            // success
-            if (isSucess)
-            {
-                return Ok(new BaseResponse { 
-                    StatusCode = StatusCodes.Status200OK,
-                    Message = $"Add mentor {mentorId} to course {courseId} succesfully"
-                });
-            }
-
-            // cause error
-            return StatusCode(StatusCodes.Status500InternalServerError);
-
-        }
-
-        [HttpPost]
-        [Route("courses/curriculum/add")]
-        [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> AddCourseCurrilum([FromBody] CourseCurriculumAddRequest reqObj) 
-        {
-            // generate curriculum model
-            var curriculumModel = reqObj.ToCurriculumModel();
-            // add course curriculum
-            var isSuccess = await _courseService.AddCurriculumAsync(reqObj.CourseId,curriculumModel);
-
-            // return <- cause error
-            if (!isSuccess) return StatusCode(StatusCodes.Status500InternalServerError);
-
-            // return <- success
-            return Ok(new BaseResponse { 
-                StatusCode = StatusCodes.Status200OK,
-                Message = "Add course curriculum sucessfully"
-            });
-        }
 
         [HttpPut]
         [Route("courses/curriculum/{id:int}")]
@@ -714,7 +751,12 @@ namespace DriverLicenseLearningSupport.Controllers
             });
         }
 
-        // Slot management
+
+        /// <summary>
+        /// Slot management
+        /// </summary>
+        /// <param name="reqObj"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("courses/slot")]
         [Authorize(Roles = "Admin,Staff")]
