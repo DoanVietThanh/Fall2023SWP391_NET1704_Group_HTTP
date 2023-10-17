@@ -43,10 +43,14 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly ICourseService _courseService;
         private readonly ISlotService _slotService;
         private readonly ITeachingScheduleService _teachingScheduleService;
+        private readonly IRollCallBookService _rcbService;
+        private readonly ICoursePackageReservationService _packageService;
+        private readonly IVehicleService _vehicleService;
 
         //private readonly IVehicleService _vehicleService;
         private readonly IMemoryCache _cache;
         private readonly AppSettings _appSettings;
+        private readonly CourseSettings _courseSettings;
 
         public StaffController(ILicenseTypeService licenseTypeService,
             IJobTitleService jobTitleService,
@@ -60,8 +64,12 @@ namespace DriverLicenseLearningSupport.Controllers
             ICourseService courseService,
             ISlotService slotService,
             ITeachingScheduleService teachingScheduleService,
+            IRollCallBookService rcbService,
+            ICoursePackageReservationService packageService,
+            IVehicleService vehicleService,
             IMemoryCache cache,
-            IOptionsMonitor<AppSettings> monitor)
+            IOptionsMonitor<AppSettings> monitor,
+            IOptionsMonitor<CourseSettings> courseMonitor)
         {
             _licenseTypeService = licenseTypeService;
             _jobTitleService = jobTitleService;
@@ -75,8 +83,12 @@ namespace DriverLicenseLearningSupport.Controllers
             _courseService = courseService;
             _slotService = slotService;
             _teachingScheduleService = teachingScheduleService;
+            _rcbService = rcbService;
+            _packageService = packageService;
+            _vehicleService = vehicleService;
             _cache = cache;
             _appSettings = monitor.CurrentValue;
+            _courseSettings = courseMonitor.CurrentValue; 
         }
 
 
@@ -352,10 +364,6 @@ namespace DriverLicenseLearningSupport.Controllers
         {
             // get mentor's teaching course
             var course = await _courseService.GetByMentorIdAndCourseIdAsync(id, courseId);
-            course.Mentors = null;
-            course.FeedBacks = null;
-            course.Curricula = null;
-
             // check teaching course exist
             if (course is null)
             {
@@ -364,6 +372,9 @@ namespace DriverLicenseLearningSupport.Controllers
                     Message = $"Not found any teaching schedule of mentor {id}"
                 });
             }
+            course.Mentors = null!;
+            course.FeedBacks = null;
+            course.Curricula = null;
 
             // generate current date time 
             var currDate = DateTime.ParseExact(DateTime.Now.ToString("yyyy-MM-dd"),
@@ -421,6 +432,63 @@ namespace DriverLicenseLearningSupport.Controllers
                     SlotSchedules = listOfSlotSchedule
                 }
             });
+        }
+
+        [HttpPut]
+        [Route("staffs/mentors/{id:Guid}/schedule/rollcallbook/{rcbId:int}")]
+        public async Task<IActionResult> RollCallBookSchedule([FromRoute] Guid id, 
+            [FromRoute] int rcbId,
+            RollCallBookRequest reqObj) {
+            // get mentor by id
+            var mentor = await _staffService.GetAsync(id);
+            if(mentor is null)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Not found any mentor id {id}"
+                });
+            }
+            // get rcb by id
+            var rcbook = await _rcbService.GetAsync(rcbId);
+            if (rcbook is null)
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Not found any roll call book schedule id {rcbId}"
+                });
+            }
+
+            // get course package by member id 
+            var package = await _packageService.GetByMemberAsync(
+                Guid.Parse(rcbook.MemberId));
+            // get course limit hours, km
+            var course = await _courseService.GetAsync(
+                Guid.Parse(package.CoursePackage.CourseId));
+
+            // generate update rcb model
+            var rcbUpdateModel = reqObj.ToRollCallBookModel();
+
+            // update rcb
+            bool isSuccess = await _rcbService.UpdateAsync(rcbId, rcbUpdateModel);
+
+            if (isSuccess)
+            {
+                // get rcb after update
+                rcbook = await _rcbService.GetAsync(rcbId);
+                var remainingHour = course.TotalHoursRequired - rcbook.TotalHoursDriven;
+                var remainingKm = course.TotalKmRequired - rcbook.TotalKmDriven;
+                return Ok(new BaseResponse { 
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = "Update successfully",
+                    Data = new
+                    {
+                        RemainingRequiredHour = remainingHour,
+                        RemainingRequiredKm = remainingKm
+                    }
+                });
+            }
+            return Ok();
         }
 
         [HttpGet]
@@ -539,6 +607,22 @@ namespace DriverLicenseLearningSupport.Controllers
         [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> TeachingScheduleRegister([FromBody] TeachingScheduleRequest reqObj)
         {
+            // get mentor teaching schedule exist
+            var existSchedules = await _teachingScheduleService.GetAllByMentorIdAsync(
+                Guid.Parse(reqObj.MentorId));
+
+            if(existSchedules.Count() == 0)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Please register schedule in course" +
+                    $" before register particular teaching date"
+                });
+            }
+
+            // get vehicle 
+            var vehicleId = existSchedules.FirstOrDefault().VehicleId;
+
             // get mentor course
             var course = await _courseService.GetByMentorIdAndCourseIdAsync(Guid.Parse(reqObj.MentorId),
                 Guid.Parse(reqObj.CourseId));
@@ -606,7 +690,11 @@ namespace DriverLicenseLearningSupport.Controllers
 
             if (existSchedule is null)
             {
+                // set vehicle
+                teachingSchedule.VehicleId = vehicleId;
+                // create schedule
                 var createdSchedule = await _teachingScheduleService.CreateAsync(teachingSchedule);
+
                 if (createdSchedule is not null)
                 {
 
@@ -683,7 +771,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 });
             }
 
-            var weekdays = _appSettings.WeekdaySchedules;
+            var weekdays = _courseSettings.WeekdaySchedules;
 
             // 200Ok <- found
             return Ok(new BaseResponse
@@ -703,7 +791,17 @@ namespace DriverLicenseLearningSupport.Controllers
         [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> TeachingScheduleRegisterRange([FromBody] TeachingScheduleRangeRequest reqObj)
         {
-
+            // get mentor by id
+            var mentor = await _staffService.GetAsync(Guid.Parse(reqObj.MentorId));
+            if (mentor is null)
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Mentor not exist"
+                });
+            }
+            
             // get course by id
             var course = await _courseService.GetAsync(Guid.Parse(reqObj.CourseId));
             if (course is null)
@@ -714,10 +812,42 @@ namespace DriverLicenseLearningSupport.Controllers
                     Message = $"Mentor are not allow to register this course"
                 });
             }
+            
+            // get mentor teaching schedule exist
+            var teachingSchedules = await _teachingScheduleService.GetAllByMentorIdAsync(
+                Guid.Parse(reqObj.MentorId));
+            if(teachingSchedules.Count() > 0)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Mentor `{mentor.FirstName} {mentor.LastName}` already " +
+                    $"register schedule in course `{course.CourseTitle}`"
+                });
+            }
 
             // get weekdays schedule by course id
             var weekdaySchedules = await _weekDayScheduleService.GetAllByCourseId(
                 Guid.Parse(course.CourseId));
+
+            // get vehicle type by license type id
+            var vehicleType = await _vehicleService.GetVehicleTypeByLicenseTypeAsync(
+                Convert.ToInt32(course.LicenseTypeId));
+
+            // get available vehicle in garage
+            var vehicle = await _vehicleService.GetVehicleByVehicleTypeAsync(
+                vehicleType.VehicleTypeId);
+
+            if(vehicle is null)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Not found any vehicle type {vehicleType.VehicleTypeDesc} in garage," +
+                    $" Please contact to mananger"
+                });
+            }
+
+            // update vehicle status
+            await _vehicleService.UpdateActiveStatusAsync(vehicle.VehicleId);
 
             // generate teaching schedule
             // init model
@@ -726,7 +856,7 @@ namespace DriverLicenseLearningSupport.Controllers
             // create range schedule
             bool isSucess = await _teachingScheduleService.CreateRangeBySlotAndWeekdayAsync(reqObj.SlotId, reqObj.Weekdays,
                             weekdaySchedules.First().WeekdayScheduleId,
-                            initSchedule);
+                            initSchedule, vehicle.VehicleId);
 
             if (isSucess)
             {

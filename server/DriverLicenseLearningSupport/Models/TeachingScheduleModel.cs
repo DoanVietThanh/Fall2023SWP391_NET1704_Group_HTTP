@@ -11,6 +11,9 @@ namespace DriverLicenseLearningSupport.Models
         public int? SlotId { get; set; }
         public int? VehicleId { get; set; }
         public int? WeekdayScheduleId { get; set; }
+        public string? CoursePackageId { get; set; }
+
+        public virtual CoursePackageModel? CoursePackage { get; set; }
 
         //public virtual SlotModel Slot { get; set; }
         public virtual StaffModel? Staff { get; set; }

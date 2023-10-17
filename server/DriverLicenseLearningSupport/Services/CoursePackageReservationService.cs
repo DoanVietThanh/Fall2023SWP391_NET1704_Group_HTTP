@@ -24,19 +24,23 @@ namespace DriverLicenseLearningSupport.Services
             return await _courseReservationRepo.CreateAsync(courseReservationEntity);
         }
 
-        public async Task<IEnumerable<CoursePackageReservationModel>> GetAllByCourseId(Guid courseId)
+        public async Task<IEnumerable<CoursePackageReservationModel>> GetAllByCourseIdAsync(Guid courseId)
         {
-            return await _courseReservationRepo.GetAllByCourseId(courseId);
+            return await _courseReservationRepo.GetAllByCourseIdAsync(courseId);
+        }
+
+        public async Task<IEnumerable<MemberModel>> GetAllMemberInCourseAsync(Guid courseId)
+        {
+            return await _courseReservationRepo.GetAllMemberInCourseAsync(courseId);
         }
 
         public async Task<CoursePackageReservationModel> GetByMemberAsync(Guid memberId)
         {
             return await _courseReservationRepo.GetByMemberAsync(memberId);
         }
-
-        public async Task<int> GetTotalMemberByMentorId(Guid mentorId)
+        public async Task<int> GetTotalMemberByMentorIdAsync(Guid mentorId)
         {
-            return await _courseReservationRepo.GetTotalMemberByMentorId(mentorId);
+            return await _courseReservationRepo.GetTotalMemberByMentorIdAsync(mentorId);
         }
 
         public async Task<bool> UpdatePaymentStatusAsync(Guid id, double paymentAmmount)
