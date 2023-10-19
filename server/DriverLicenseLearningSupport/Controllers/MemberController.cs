@@ -1263,7 +1263,6 @@ namespace DriverLicenseLearningSupport.Controllers
 
             // generate rollcallbook model
             var rcbModel = reqObj.ToRollCallBookModel();
-            rcbModel.MemberTotalSession = rcbCount;
 
             var registeredSchedule = await _teachingScheduleService.GetByMentorIdAndTeachingDateAsync(
                 Convert.ToInt32(teachingSchedule.WeekdayScheduleId),

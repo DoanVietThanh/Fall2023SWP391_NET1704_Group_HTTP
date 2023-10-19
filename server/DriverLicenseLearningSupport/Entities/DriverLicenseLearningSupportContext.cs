@@ -753,8 +753,6 @@ namespace DriverLicenseLearningSupport.Entities
                     .HasMaxLength(200)
                     .HasColumnName("member_id");
 
-                entity.Property(e => e.MemberTotalSession).HasColumnName("member_total_session");
-
                 entity.Property(e => e.TeachingScheduleId).HasColumnName("teaching_schedule_id");
 
                 entity.Property(e => e.TotalHoursDriven).HasColumnName("total_hours_driven");
@@ -838,6 +836,8 @@ namespace DriverLicenseLearningSupport.Entities
                 entity.Property(e => e.TeachingScheduleId).HasColumnName("teaching_schedule_id");
 
                 entity.Property(e => e.SlotId).HasColumnName("slot_id");
+
+                entity.Property(e => e.IsActive).HasColumnName("is_active");
 
                 entity.Property(e => e.StaffId)
                     .HasMaxLength(200)

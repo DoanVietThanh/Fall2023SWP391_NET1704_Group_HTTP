@@ -35,7 +35,6 @@ namespace DriverLicenseLearningSupport.Repositories
                     Comment = x.Comment,
                     MemberId = x.MemberId,
                     Member = x.Member,
-                    MemberTotalSession = x.MemberTotalSession,
                     TotalHoursDriven = x.TotalHoursDriven,
                     TotalKmDriven = x.TotalKmDriven
                 })

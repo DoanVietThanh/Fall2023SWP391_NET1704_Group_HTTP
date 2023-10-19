@@ -1,4 +1,6 @@
-﻿using DriverLicenseLearningSupport.Models;
+﻿using DocumentFormat.OpenXml.Presentation;
+using DriverLicenseLearningSupport.Entities;
+using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Models.Config;
 using DriverLicenseLearningSupport.Payloads.Filters;
 using DriverLicenseLearningSupport.Payloads.Request;
@@ -14,6 +16,7 @@ using Microsoft.Extensions.Options;
 using OfficeOpenXml;
 using RestSharp;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 
 namespace DriverLicenseLearningSupport.Controllers
 {
@@ -577,7 +580,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpGet]
         [Route("staffs/mentors/{id:Guid}/schedule-register")]
-        [Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin,Staff,Mentor")]
         public async Task<IActionResult> TeachingScheduleRegister([FromRoute] Guid id)
         {
             // get course by mentor id
@@ -615,9 +618,15 @@ namespace DriverLicenseLearningSupport.Controllers
             });
         }
 
+        
+        /// <summary>
+        /// Teaching schedule register, with await status
+        /// </summary>
+        /// <param name="reqObj"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("staffs/mentors/schedule-register")]
-        [Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin,Staff,Mentor")]
         public async Task<IActionResult> TeachingScheduleRegister([FromBody] TeachingScheduleRequest reqObj)
         {
             // get mentor teaching schedule exist
@@ -705,6 +714,8 @@ namespace DriverLicenseLearningSupport.Controllers
             {
                 // set vehicle
                 teachingSchedule.VehicleId = vehicleId;
+                // set schedule status
+                teachingSchedule.IsActive = false;
                 // create schedule
                 var createdSchedule = await _teachingScheduleService.CreateAsync(teachingSchedule);
 
@@ -882,7 +893,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
- 
+
         [HttpGet]
         [Route("staffs/update")]
         [Authorize(Roles = "Admin")]

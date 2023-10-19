@@ -4,6 +4,7 @@ using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Payloads.Filters;
 using DriverLicenseLearningSupport.Repositories.Impl;
 using DriverLicenseLearningSupport.Services.Impl;
+using System.Runtime.InteropServices;
 
 namespace DriverLicenseLearningSupport.Services
 {
@@ -82,19 +83,40 @@ namespace DriverLicenseLearningSupport.Services
             return await _teachingScheduleRepo.GetBySlotAndWeekDayScheduleOfMemberAsync(slotId, weekDayScheduleId,
                 mentorId, memberId);
         }
-
-        public async Task<TeachingScheduleModel> GetMemberScheduleByFilterAsync(LearningScheduleFilter filters, Guid memberId)
+        public async Task<IEnumerable<TeachingScheduleModel>> GetAllAwaitScheduleByMentorAsync(int slotId, int weekDayScheduleId, Guid mentorId)
         {
-            return await _teachingScheduleRepo.GetMemberScheduleByFilterAsync(filters, memberId);
+            return await _teachingScheduleRepo.GetAllAwaitScheduleByMentorAsync(slotId, weekDayScheduleId, mentorId);
         }
+
         public async Task<IEnumerable<TeachingScheduleModel>> GetAllByTeachingDateAsync(DateTime date)
         {
             return await _teachingScheduleRepo.GetAllByTeachingDateAsync(date);
+        }
+        public async Task<IEnumerable<StaffModel>> GetAllAwaitScheduleMentor()
+        {
+            var teachingSchedules = await _teachingScheduleRepo.GetAllAwaitScheduleMentor();
+            var mentors = teachingSchedules.Select(x => x.Staff).ToList();
+            mentors = mentors.GroupBy(x => x.StaffId)
+                             .Select(x => x.First())
+                             .ToList();
+            return mentors;
+        }
+        public async Task<TeachingScheduleModel> GetMemberScheduleByFilterAsync(LearningScheduleFilter filters, Guid memberId)
+        {
+            return await _teachingScheduleRepo.GetMemberScheduleByFilterAsync(filters, memberId);
         }
         public async Task<TeachingScheduleModel> ExistScheduleInOtherCoursesAsync(int slotId, DateTime teachingDate, Guid mentorId, Guid courseId)
         {
             return await _teachingScheduleRepo.ExistScheduleInOtherCoursesAsync(slotId, teachingDate, mentorId, courseId);
         }
+        public async Task<bool> ApproveMentorAwaitSchedule(Guid mentorId)
+        {
+            return await _teachingScheduleRepo.ApproveMentorAwaitSchedule(mentorId);
+        }
 
+        public async Task<bool> AddRangeVehicleMentorSchedule(Guid mentorId, int vehicleId)
+        {
+            return await _teachingScheduleRepo.AddRangeVehicleMentorSchedule(mentorId,vehicleId);
+        }
     }
 }
