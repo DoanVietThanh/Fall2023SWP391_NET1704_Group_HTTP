@@ -69,22 +69,27 @@ const IntructorDetail = () => {
                 Các khóa học đang đứng lớp
               </div>
               <div className='font-light text-xl text-gray-600'>
-                <ul className='flex flex-col gap-6 mt-4'>
+                <ul className='flex flex-col gap-6 mt-4 list-disc'>
                   {instructor?.courses?.map((course, indexCourse) => (
-                    <Link
-                      key={indexCourse}
-                      to={`/instructor/teaching-schedule/${instructor?.staffId}/${course?.courseId}`}
-                    >
-                      <li className='hover:text-blue-700 flex items-center gap-4'>
-                        <BsFillArrowRightCircleFill
-                          size={20}
-                          className='text-blue-500'
-                        />{' '}
-                        <span className='text-blue-500'>
-                          {course.courseTitle}
-                        </span>
-                      </li>
-                    </Link>
+                    <div className='flex gap-4'>
+                      <span className='font-semibold'>
+                        - {course.courseTitle}
+                      </span>
+                      <Link
+                        key={indexCourse}
+                        to={`/instructor/teaching-schedule/${instructor?.staffId}/${course?.courseId}`}
+                      >
+                        <li className='hover:text-blue-700 flex items-center gap-4'>
+                          <BsFillArrowRightCircleFill
+                            size={20}
+                            className='text-blue-500'
+                          />{' '}
+                          <span className='text-blue-500'>
+                            Xem lịch dạy chi tiết
+                          </span>
+                        </li>
+                      </Link>
+                    </div>
                   ))}
                 </ul>
               </div>

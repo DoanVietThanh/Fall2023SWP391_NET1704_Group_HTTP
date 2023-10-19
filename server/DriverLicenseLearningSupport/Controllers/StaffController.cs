@@ -192,7 +192,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpGet]
         [Route("staffs/{id:Guid}")]
-        [Authorize(Roles = "Admin,Staff")]
+        // [Authorize(Roles = "Guest, Member, Mentor, Admin,Staff")]
         public async Task<IActionResult> GetStaff([FromRoute] Guid id) 
         {
             // get staff by id

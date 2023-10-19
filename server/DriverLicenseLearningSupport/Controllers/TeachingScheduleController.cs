@@ -26,6 +26,7 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly IVehicleService _vehicleService;
         private readonly AppSettings _appSettings;
 
+
         public TeachingScheduleController(ITeachingScheduleService teachingScheduleService,
             IRollCallBookService rollCallBookService,
             ICourseService courseService,
@@ -49,7 +50,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpGet]
         [Route("teaching-schedules/{id:int}")]
-        //[Authorize(Roles = "Admin,Staff,Mentor,")]
+        // [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var teachingSchedule = await _teachingScheduleService.GetAsync(id);

@@ -1228,7 +1228,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 // total registered session > course total session <- not allow to register 
                 var totalRegisteredSession = rcbooks is not null ? rcbooks?.Count() : 0;
                 // check over total session 
-                var isOverTotalSession = (totalRegisteredSession) > coursePackage.TotalSession ? true : false;
+                var isOverTotalSession = (totalRegisteredSession) >= coursePackage.TotalSession ? true : false;
                 if (isOverTotalSession)
                 {
                     return BadRequest(new BaseResponse
