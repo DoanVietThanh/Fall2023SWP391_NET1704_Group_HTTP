@@ -8,7 +8,6 @@ namespace DriverLicenseLearningSupport.Models
         public bool? IsAbsence { get; set; }
         public string? Comment { get; set; }
         public string MemberId { get; set; }
-        public int? MemberTotalSession { get; set; }
         public int TeachingScheduleId { get; set; }
         public int? TotalHoursDriven { get; set; }
         public int? TotalKmDriven { get; set; }

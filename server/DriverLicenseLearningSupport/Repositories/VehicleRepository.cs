@@ -3,6 +3,7 @@ using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Repositories.Impl;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.InteropServices;
 
 namespace DriverLicenseLearningSupport.Repositories
 {
@@ -26,6 +27,20 @@ namespace DriverLicenseLearningSupport.Repositories
             return _mapper.Map<VehicleModel>(vehicle);
         }
 
+        public async Task<IEnumerable<VehicleModel>> GetAllActiveVehicleByType(int vehicleTypeId)
+        {
+            var vehicles = await _context.Vehicles.Where(x => x.IsActive == true
+                                                           && x.VehicleTypeId == vehicleTypeId)
+                                                  .ToListAsync();
+            return _mapper.Map<IEnumerable<VehicleModel>>(vehicles);
+        }
+        public async Task<IEnumerable<VehicleModel>> GetAllInActiveVehicleByType(int vehicleTypeId)
+        {
+            var vehicles = await _context.Vehicles.Where(x => x.IsActive == false
+                                                           && x.VehicleTypeId == vehicleTypeId)
+                                                  .ToListAsync();
+            return _mapper.Map<IEnumerable<VehicleModel>>(vehicles);
+        }
         public async Task<IEnumerable<VehicleModel>> GetAllByVehicleTypeIdAsync(int vehicleTypeId)
         {
             var vehicles = await _context.Vehicles.Where(x => x.VehicleTypeId == vehicleTypeId).ToListAsync();
@@ -74,6 +89,13 @@ namespace DriverLicenseLearningSupport.Repositories
                 return await _context.SaveChangesAsync() > 0;
             }
             return false;
+        }
+
+        public async Task<VehicleModel> GetAsync(int vehicleId)
+        {
+            var vehicle = await _context.Vehicles.Where(x => x.VehicleId == vehicleId)
+                                                 .FirstOrDefaultAsync();
+            return _mapper.Map<VehicleModel>(vehicle);
         }
     }
 }

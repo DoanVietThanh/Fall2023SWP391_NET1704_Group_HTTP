@@ -1,4 +1,4 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
+﻿using DocumentFormat.OpenXml.Presentation;
 using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Models.Config;
@@ -11,20 +11,12 @@ using DriverLicenseLearningSupport.Utils;
 using DriverLicenseLearningSupport.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.IIS.Core;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using OfficeOpenXml;
-using Org.BouncyCastle.Asn1.Ocsp;
-using Org.BouncyCastle.Ocsp;
-using Org.BouncyCastle.Security.Certificates;
 using RestSharp;
 using System.Globalization;
-using System.Net;
-using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
-using System.Security.Cryptography.Xml;
 
 namespace DriverLicenseLearningSupport.Controllers
 {
@@ -118,7 +110,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpPost]
         [Route("staffs/add")]
-        //[Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> StaffRegister([FromBody] StaffAddRequest reqObj)
         {
             // check account exist
@@ -200,7 +192,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpGet]
         [Route("staffs/{id:Guid}")]
-        // [Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> GetStaff([FromRoute] Guid id) 
         {
             // get staff by id
@@ -436,6 +428,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpPut]
         [Route("staffs/mentors/{id:Guid}/schedule/rollcallbook/{rcbId:int}")]
+        [Authorize(Roles = "Mentor")]
         public async Task<IActionResult> RollCallBookSchedule([FromRoute] Guid id, 
             [FromRoute] int rcbId,
             RollCallBookRequest reqObj) {
@@ -476,19 +469,42 @@ namespace DriverLicenseLearningSupport.Controllers
             {
                 // get rcb after update
                 rcbook = await _rcbService.GetAsync(rcbId);
-                var remainingHour = course.TotalHoursRequired - rcbook.TotalHoursDriven;
-                var remainingKm = course.TotalKmRequired - rcbook.TotalKmDriven;
+                // get all member rcb
+                var rcbooks = await _rcbService.GetAllByMemberIdAsync(
+                    Guid.Parse(rcbook.MemberId));
+                // total hours driven 
+                var totalHoursDriven = rcbooks.Select(x => x.TotalHoursDriven).Sum();
+                // total km driven
+                var totalKmDriven = rcbooks.Select(x => x.TotalKmDriven).Sum();
+
+                var remainingHour = course.TotalHoursRequired - totalHoursDriven;
+                var remainingKm = course.TotalKmRequired - totalKmDriven;
+                
+                if(remainingHour < 0 && remainingKm < 0)
+                {
+                    return Ok(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = "Điểm danh thành công, học viên đã hoàn thành " +
+                    "đủ số giờ học và số km yêu cầu"
+                });
+                }
+                
                 return Ok(new BaseResponse { 
                     StatusCode = StatusCodes.Status200OK,
-                    Message = "Update successfully",
+                    Message = "Điểm danh thành công",
                     Data = new
                     {
-                        RemainingRequiredHour = remainingHour,
-                        RemainingRequiredKm = remainingKm
+                        RemainingRequiredHour = (remainingHour > 0) ? remainingHour : 0,
+                        RemainingRequiredKm = (remainingKm > 0) ? remainingKm : 0
                     }
                 });
+
             }
-            return Ok();
+            return new ObjectResult(new BaseResponse { 
+                StatusCode = StatusCodes.Status500InternalServerError,
+                Message = "Điểm danh thất bại"
+            });
         }
 
         [HttpGet]
@@ -564,7 +580,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpGet]
         [Route("staffs/mentors/{id:Guid}/schedule-register")]
-        [Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin,Staff,Mentor")]
         public async Task<IActionResult> TeachingScheduleRegister([FromRoute] Guid id)
         {
             // get course by mentor id
@@ -602,9 +618,15 @@ namespace DriverLicenseLearningSupport.Controllers
             });
         }
 
+        
+        /// <summary>
+        /// Teaching schedule register, with await status
+        /// </summary>
+        /// <param name="reqObj"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("staffs/mentors/schedule-register")]
-        [Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin,Staff,Mentor")]
         public async Task<IActionResult> TeachingScheduleRegister([FromBody] TeachingScheduleRequest reqObj)
         {
             // get mentor teaching schedule exist
@@ -692,6 +714,8 @@ namespace DriverLicenseLearningSupport.Controllers
             {
                 // set vehicle
                 teachingSchedule.VehicleId = vehicleId;
+                // set schedule status
+                teachingSchedule.IsActive = false;
                 // create schedule
                 var createdSchedule = await _teachingScheduleService.CreateAsync(teachingSchedule);
 
@@ -744,6 +768,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpGet]
         [Route("staffs/mentors/{id:Guid}/schedule-register/range")]
+        [Authorize(Roles = "Admin,Staff,Mentor")]
         public async Task<IActionResult> TeachingScheduleRegisterRange([FromRoute] Guid id)
         {
             // get course by mentor id
@@ -788,7 +813,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpPost]
         [Route("staffs/mentors/schedule-register/range")]
-        [Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin,Staff,Mentor")]
         public async Task<IActionResult> TeachingScheduleRegisterRange([FromBody] TeachingScheduleRangeRequest reqObj)
         {
             // get mentor by id
@@ -868,10 +893,10 @@ namespace DriverLicenseLearningSupport.Controllers
 
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
- 
+
         [HttpGet]
         [Route("staffs/update")]
-        [Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateStaff()
         {
             // get all job title
@@ -889,7 +914,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpPut]
         [Route("staffs/{id:Guid}/update")]
-        [Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateStaff([FromRoute] Guid id, [FromForm] StaffUpdateRequest reqObj)
         {
             // get staff by id
@@ -944,7 +969,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpDelete]
         [Route("staffs/{id:Guid}/delete")]
-        [Authorize(Roles = "Admin,Staff")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteStaff([FromRoute] Guid id)
         {
             // get staff
@@ -972,6 +997,7 @@ namespace DriverLicenseLearningSupport.Controllers
         // import excel
         [HttpPost]
         [Route("staffs/import-excel")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ImportToExcel(IFormFile file,
             int jobTitleId, int roleId)
         {
@@ -1124,6 +1150,7 @@ namespace DriverLicenseLearningSupport.Controllers
         // export excel
         [HttpGet]
         [Route("staffs/export-excel")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ExportToExcel([FromQuery] StaffFilter filters)
         {
             var staffs = await _staffService.GetAllByFilterAsync(filters);

@@ -138,7 +138,8 @@ namespace DriverLicenseLearningSupport.Repositories
                                                         CurriculumDesc = c.CurriculumDesc,
                                                         CurriculumDetail = c.CurriculumDetail
                                                     }).ToList(),
-                                                    Mentors = x.Mentors
+                                                    Mentors = x.Mentors,
+                                                    LicenseTypeId = x.LicenseTypeId
                                                 }).ToListAsync();
             foreach (var c in courses)
             {
