@@ -3,6 +3,7 @@ using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Repositories.Impl;
 using DriverLicenseLearningSupport.Services.Impl;
+using System.Runtime.InteropServices;
 
 namespace DriverLicenseLearningSupport.Services
 {
@@ -81,6 +82,21 @@ namespace DriverLicenseLearningSupport.Services
         public async Task<bool> UpdateActiveStatusAsync(int vehicleId)
         {
             return await _vehicleRepo.UpdateActiveStatusAsync(vehicleId);
+        }
+
+        public async Task<IEnumerable<VehicleModel>> GetAllActiveVehicleByType(int vehicleTypeId)
+        {
+            return await _vehicleRepo.GetAllActiveVehicleByType(vehicleTypeId);
+        }
+
+        public async Task<IEnumerable<VehicleModel>> GetAllInActiveVehicleByType(int vehicleTypeId)
+        {
+            return await _vehicleRepo.GetAllInActiveVehicleByType(vehicleTypeId);
+        }
+
+        public async Task<VehicleModel> GetAsync(int vehicleId)
+        {
+            return await _vehicleRepo.GetAsync(vehicleId);
         }
     }
 }
