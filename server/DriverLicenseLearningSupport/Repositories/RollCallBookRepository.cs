@@ -29,6 +29,16 @@ namespace DriverLicenseLearningSupport.Repositories
         public async Task<RollCallBookModel> GetAsync(int id)
         {
             var rcbook = await _context.RollCallBooks.Where(x => x.RollCallBookId == id)
+                .Select(x => new RollCallBook { 
+                    RollCallBookId = x.RollCallBookId,
+                    IsAbsence = x.IsAbsence,
+                    Comment = x.Comment,
+                    MemberId = x.MemberId,
+                    Member = x.Member,
+                    MemberTotalSession = x.MemberTotalSession,
+                    TotalHoursDriven = x.TotalHoursDriven,
+                    TotalKmDriven = x.TotalKmDriven
+                })
                 .FirstOrDefaultAsync();
 
             return _mapper.Map<RollCallBookModel>(rcbook);
@@ -42,10 +52,18 @@ namespace DriverLicenseLearningSupport.Repositories
 
             if(rcbookEntity is not null)
             {
+                // get total hours driven
+                var totalHour = ((rcbookEntity.TotalHoursDriven == null) ? 0 
+                    : rcbookEntity.TotalHoursDriven) + rcbook.TotalHoursDriven;
+                // get total km driven
+                var totalKm = ((rcbookEntity.TotalKmDriven == null) ? 0 
+                    : rcbookEntity.TotalKmDriven) + rcbook.TotalKmDriven;
+
+
                 rcbookEntity.Comment = rcbook.Comment;
                 rcbookEntity.IsAbsence = rcbook.IsAbsence;
-                rcbookEntity.TotalHoursDriven = rcbook.TotalHoursDriven;
-                rcbookEntity.TotalKmDriven = rcbook.TotalKmDriven;
+                rcbookEntity.TotalHoursDriven = totalHour;
+                rcbookEntity.TotalKmDriven = totalKm;
 
                 return await _context.SaveChangesAsync() > 0;
             }

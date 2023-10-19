@@ -18,8 +18,9 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import SideBar from '../../components/SideBar';
 import axiosClient from './../../utils/axiosClient';
-import { toastError } from '../../components/Toastify';
+import { toastError, toastSuccess } from '../../components/Toastify';
 import Loading from './../../components/Loading';
+import DialogDetailSchedule from './components/DialogDetailSchedule';
 
 const WeekSchedule = () => {
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ const WeekSchedule = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [openRegister, setOpenRegister] = useState(false);
+  const [dialogDetail, setDialogDetail] = useState();
 
   useEffect(() => {
     async function getDataCourse() {
@@ -39,6 +41,7 @@ const WeekSchedule = () => {
         const response = await axiosClient.get(
           `/members/${user.accountInfo.memberId}/schedule`
         );
+        console.log('response: ', response);
         setIsLoading(false);
         setMentorId(response?.data.data.mentor.staffId);
         setDataWeek(response?.data);
@@ -50,7 +53,13 @@ const WeekSchedule = () => {
     getDataCourse();
   }, [isLoading]);
 
-  const handleClickOpen = () => setOpen(true);
+  const handleClickOpen = async (teachingScheduleId) => {
+    const dataTeachingSchedule = await axiosClient.get(
+      `/teaching-schedules/${teachingScheduleId}`
+    );
+    setDialogDetail(dataTeachingSchedule?.data);
+    setOpen(true);
+  };
 
   const handleClose = () => setOpen(false);
 
@@ -77,24 +86,29 @@ const WeekSchedule = () => {
     try {
       async function submitForm() {
         //setIsLoading(true);
-        const response = await axiosClient.post(`/members/schedule`, {
-          memberId: user?.accountInfo.memberId,
-          teachingScheduleId: idSchedule,
-        });
+        const response = await axiosClient
+          .post(`/members/schedule`, {
+            memberId: user?.accountInfo.memberId,
+            teachingScheduleId: idSchedule,
+          })
+          .catch((e) => {
+            console.log(e);
+            toastError(e.response.data.message);
+            setOpenRegister(false);
+          });
         if (response?.data.statusCode === 200) {
           setIsLoading(!isLoading);
           setOpenRegister(false);
-        } else {
-          toastError('Ngày học đã đăng kí');
+          toastSuccess(response.data.message);
         }
       }
       submitForm();
     } catch (error) {
-      throw new Error(error);
+      console.log(error);
     }
   };
 
-  //console.log('dataWeek: ', dataWeek);
+  console.log('dataWeek: ', dataWeek);
 
   return (
     <div className='flex'>
@@ -106,13 +120,17 @@ const WeekSchedule = () => {
         <>
           {dataWeek && (
             <>
-              <Box component='main' sx={{ flexGrow: 1, p: 3 }}>
-                <div className='h-[80vh] w-full rounded overflow-y-auto mt-[64px]'>
+              <Box
+                component='main'
+                sx={{ flexGrow: 1, p: 3 }}
+                className='overflow-y-auto'
+              >
+                <div className='w-full rounded overflow-y-auto mt-[64px] overflow-y-auto'>
                   <div>
                     <h1 className='font-bold text-[30px] uppercase mb-4'>
                       Lịch học theo tuần
                     </h1>
-                    <div className=' min-h-[70vh]'>
+                    <div className=''>
                       <table className='w-full border-2 border-black'>
                         <thead>
                           <tr>
@@ -211,7 +229,10 @@ const WeekSchedule = () => {
                         <tbody>
                           {dataWeek?.data?.slotSchedules?.map((item, index) => (
                             <tr key={index}>
-                              <td>{item.slotName}</td>
+                              <td>
+                                <div>{item.slotName}</div>
+                                <h1> {item.slotDesc} </h1>
+                              </td>
                               {item?.teachingSchedules.map(
                                 (itemDate, indexItemDate) => (
                                   <td key={indexItemDate}>
@@ -235,21 +256,44 @@ const WeekSchedule = () => {
                                             .memberId ===
                                           user.accountInfo.memberId ? (
                                           <div className='text-center'>
-                                            <p className='font-bold text-blue-800 text-[14px]'>
-                                              {
-                                                dataWeek?.data.course
-                                                  .courseTitle
-                                              }
-                                            </p>
-                                            <div className='bg-green-500 text-white w-auto rounded-lg mx-6 text-[14px]'>
-                                              {item.slotDesc}
+                                            <div className='font-bold text-blue-800 text-[14px]'>
+                                              <div>
+                                                {
+                                                  dataWeek?.data.course
+                                                    .courseTitle
+                                                }
+                                              </div>
+                                            </div>
+
+                                            <div className='bg-yellow-500 text-white w-auto text-[14px] px-2'>
+                                              <div>
+                                                {
+                                                  itemDate?.coursePackage
+                                                    ?.coursePackageDesc
+                                                }
+                                              </div>
+                                              {/* <span className='bg-green-400 px-2 rounded'>
+                                                {item.slotDesc}
+                                              </span> */}
                                             </div>
                                             <button
-                                              onClick={handleClickOpen}
+                                              onClick={() =>
+                                                handleClickOpen(
+                                                  itemDate?.teachingScheduleId
+                                                )
+                                              }
                                               className='px-2 text-black bg-gray-200 mt-2 rounded-lg hover:bg-blue-400 hover:text-white'
                                             >
                                               Xem chi tiết
                                             </button>
+                                            {dataWeek?.data
+                                              ?.registeredSession &&
+                                              dataWeek?.data
+                                                ?.packageTotalSession && (
+                                                <div className='mt-4 text-red-600 w-auto rounded-lg mx-6 text-[14px]'>
+                                                  {`Đã đăng kí ${dataWeek?.data?.registeredSession} / ${dataWeek?.data?.packageTotalSession} buổi`}
+                                                </div>
+                                              )}
                                           </div>
                                         ) : (
                                           <div className='text-red-700'>
@@ -270,7 +314,18 @@ const WeekSchedule = () => {
                     </div>
                   </div>
                 </div>
+
+                <div>
+                  <h1>Chú thích</h1>
+                  {dataWeek?.data && (
+                    <div>
+                      <p>{dataWeek?.data?.remainingRequiredHour}</p>
+                      <p>{dataWeek?.data?.remainingRequiredKm}</p>
+                    </div>
+                  )}
+                </div>
               </Box>
+
               <Dialog
                 open={openRegister}
                 onClose={handleCloseRegister}
@@ -318,86 +373,12 @@ const WeekSchedule = () => {
                   </div>
                 </div>
               </Dialog>
-              <Dialog
-                open={open}
-                onClose={handleClose}
-                aria-labelledby='alert-dialog-title'
-                aria-describedby='alert-dialog-description'
-              >
-                <div className='flex gap-10 p-6'>
-                  <div>
-                    <h2 className='font-bold my-4 text-center font-bold text-[24px]'>
-                      Chi tiết Lịch học
-                    </h2>
-                    <div className='flex flex-col gap-4'>
-                      <div className='flex gap-4'>
-                        <div>Date:</div>
-                        <div>
-                          {dayjs(dataWeek?.data?.weekdays?.monday).format(
-                            'DD/MM/YYYY'
-                          )}
-                        </div>
-                      </div>
-                      <div className='flex gap-4'>
-                        <div>Tiết học:</div>
-                        <div> {slotName} </div>
-                      </div>
-                      <div className='flex gap-4'>
-                        <div>Giảng viên:</div>
-                        <div>Thanh Đoàn</div>
-                      </div>
-                      <div className='flex gap-4'>
-                        <div>Khóa học:</div>
-                        <div>Bằng lái B2 </div>
-                      </div>
-                      <div className='flex gap-4'>
-                        <div>Tổng buổi học:</div>
-                        <div>12</div>
-                      </div>
-                      <div className='flex gap-4'>
-                        <div>Điểm danh:</div>
-                        <div className='text-green-700 flex justify-center items-center gap-8'>
-                          <span>
-                            <AiOutlineCheckCircle size={20} />
-                          </span>
-                          <span className='text-red-800'>
-                            <AiOutlineCloseCircle size={20} />
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
 
-                  <div>
-                    <h2 className='font-bold my-4 text-center font-bold text-[24px]'>
-                      Phương tiện
-                    </h2>
-                    <div className='flex flex-col gap-4'>
-                      <div className='flex gap-4'>
-                        <div>Tên xe:</div>
-                        <div>Rand Rover</div>
-                      </div>
-                      <div className='flex gap-4'>
-                        <div>Biển số:</div>
-                        <div>51F-891.12</div>
-                      </div>
-                      <div className='w-full'>
-                        <img
-                          src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Land_Rover_Range_Rover_Autobiography_2016.jpg/1200px-Land_Rover_Range_Rover_Autobiography_2016.jpg'
-                          alt='transport'
-                          className='w-[300px]'
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <DialogActions>
-                  <Button onClick={handleClose}>Thoát</Button>
-                  {/* <Button onClick={handleClose} autoFocus>
-            Đồng ý
-          </Button> */}
-                </DialogActions>
-              </Dialog>
+              <DialogDetailSchedule
+                open={open}
+                setOpen={setOpen}
+                dialogDetail={dialogDetail}
+              />
             </>
           )}
         </>

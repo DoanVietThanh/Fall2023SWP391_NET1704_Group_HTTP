@@ -86,82 +86,89 @@ const DialogReservation = ({
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
       >
-        <div>
-          <div className='p-4 border flex-1'>
-            <h1 className='text-center font-bold'>
-              {selectedCoursePackage?.coursePackageDesc}
-            </h1>
-            <ul className='my-4 list-disc pl-[20%]'>
-              {selectedCoursePackage?.totalSession && (
-                <li>
-                  Số buổi học:{' '}
-                  <span className='text-green-800'>
-                    {selectedCoursePackage?.totalSession}
-                  </span>
-                </li>
-              )}
+        <div className='w-[26vw] rounded-lg overflow-hidden'>
+          <div>
+            <div className='p-4 border flex-1'>
+              <h1 className='text-center font-bold text-[25px]'>
+                {selectedCoursePackage?.coursePackageDesc}
+              </h1>
+              <ul className='my-4 list-disc pl-[20%] text-[22px]'>
+                {selectedCoursePackage?.totalSession && (
+                  <li>
+                    Số buổi học:{' '}
+                    <span className='text-green-800'>
+                      {selectedCoursePackage?.totalSession}
+                    </span>
+                  </li>
+                )}
 
-              {selectedCoursePackage?.sessionHour && (
-                <li>
-                  Thời gian mỗi buổi học:{' '}
-                  <span className='text-green-800'>
-                    {selectedCoursePackage?.sessionHour}
-                  </span>
-                </li>
-              )}
+                {selectedCoursePackage?.sessionHour && (
+                  <li>
+                    Thời gian mỗi buổi học:{' '}
+                    <span className='text-green-800'>
+                      {selectedCoursePackage?.sessionHour}
+                    </span>
+                  </li>
+                )}
 
-              {selectedCoursePackage?.cost && (
-                <li>
-                  Giá:{' '}
-                  <span className='text-green-800'>
-                    {selectedCoursePackage?.cost}
+                {selectedCoursePackage?.cost && (
+                  <li>
+                    Giá:{' '}
+                    <span className='text-green-800'>
+                      {selectedCoursePackage?.cost}
+                    </span>
+                  </li>
+                )}
+              </ul>
+              {selectedCoursePackage?.ageRequired && (
+                <p>
+                  Yêu cầu tuổi phải trên{' '}
+                  <span className='text-red-700'>
+                    {selectedCoursePackage?.ageRequired}
                   </span>
-                </li>
+                </p>
               )}
-            </ul>
-            {selectedCoursePackage?.ageRequired && (
-              <p>
-                Yêu cầu tuổi phải trên{' '}
-                <span className='text-red-700'>
-                  {selectedCoursePackage?.ageRequired}
-                </span>
-              </p>
-            )}
+            </div>
           </div>
+
+          <form action='' className='p-4'>
+            <div className='flex gap-4 justify-between'>
+              <h1>Chọn giảng viên: </h1>
+              <select
+                className='outline outline-1 rounded-lg px-2'
+                onChange={(e) => setSelectedMentor(e.target.value)}
+                required
+              >
+                {course?.mentors?.map((mentor, index) => (
+                  <option
+                    key={mentor?.staffId}
+                    value={mentor?.staffId}
+                  >{`${mentor?.firstName} ${mentor?.lastName}`}</option>
+                ))}
+              </select>
+            </div>
+            <div className='flex gap-4 justify-between my-4'>
+              <h1>Hình thức thanh toán: </h1>
+              <select
+                className='outline outline-1 rounded-lg px-2'
+                onChange={(e) => setTypePayment(e.target.value)}
+                required
+              >
+                {paymentList?.map((payment, index) => (
+                  <option key={index} value={payment?.paymentTypeId}>
+                    {payment.paymentTypeDesc}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <DialogActions>
+              <Button onClick={() => setOpen(false)}>Hủy</Button>
+              <Button onClick={(e) => submitForm(e)} autoFocus>
+                Thanh toán
+              </Button>
+            </DialogActions>
+          </form>
         </div>
-
-        <form action='' className='p-4'>
-          <div className='flex gap-4'>
-            <h1>Chọn giảng viên: </h1>
-            <select
-              onChange={(e) => setSelectedMentor(e.target.value)}
-              required
-            >
-              {course?.mentors?.map((mentor, index) => (
-                <option
-                  key={mentor?.staffId}
-                  value={mentor?.staffId}
-                >{`${mentor?.firstName} ${mentor?.lastName}`}</option>
-              ))}
-            </select>
-          </div>
-          <div className='flex gap-4'>
-            <h1>Hình thức thanh toán: </h1>
-            <select onChange={(e) => setTypePayment(e.target.value)} required>
-              {paymentList?.map((payment, index) => (
-                <option key={index} value={payment?.paymentTypeId}>
-                  {payment.paymentTypeDesc}
-                </option>
-              ))}
-            </select>
-          </div>
-          <DialogActions>
-            <Button onClick={() => setOpen(false)}>Hủy</Button>
-            <Button onClick={(e) => submitForm(e)} autoFocus>
-              Thanh toán
-            </Button>
-          </DialogActions>
-        </form>
       </Dialog>
     </div>
   );

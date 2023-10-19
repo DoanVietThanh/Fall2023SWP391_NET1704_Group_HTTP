@@ -1,6 +1,6 @@
 import * as dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import Header from '../../components/Header';
 import theme from '../../theme';
@@ -27,17 +27,7 @@ import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-
 import { Textarea } from '@mui/joy';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
 import { BsFillArrowRightCircleFill } from 'react-icons/bs';
 import { useSelector } from 'react-redux';
 import Loading from '../../components/Loading';
@@ -128,7 +118,7 @@ const DetailCourse = () => {
         <div className='p-8'>
           <div className='p-4 border'>
             <div className='min-h-[300px]'>
-              <div>
+              {/* <div>
                 <iframe
                   width='100%'
                   height='600px'
@@ -139,8 +129,14 @@ const DetailCourse = () => {
                   allowfullscreen
                   className='rounded-lg'
                 ></iframe>
+              </div> */}
+              <div>
+                <img
+                  className='w-full'
+                  src='https://daylaixethanhcong.vn/wp-content/uploads/2023/02/khoa-hoc-B1-giam-2.900-scaled.jpg'
+                  alt='hinhdemo'
+                />
               </div>
-
               <div className='py-6 flex gap-8'>
                 <div className='flex-x gap-2 border-r-2 pr-8'>
                   <MdOutlinePeopleAlt className='text-blue-700' size={20} />{' '}
@@ -154,13 +150,13 @@ const DetailCourse = () => {
               <h1 className='font-bold text-[30px]'>{course.courseTitle}</h1>
 
               <div className='pt-4 flex gap-8'>
-                <div className='flex-x gap-2 border-r-2 pr-8'>
+                {/* <div className='flex-x gap-2 border-r-2 pr-8'>
                   <BsPersonCircle className='text-blue-700' size={30} />
                   <div>
                     <p className='font-medium'>Giảng viên:</p>
                     <p>{`${course?.mentors[0].firstName} ${course?.mentors[0].lastName}`}</p>
                   </div>
-                </div>
+                </div> */}
                 <div className='flex-x gap-2 border-r-2 pr-8'>
                   <div>
                     <p className='font-medium'>Loại bằng:</p>
@@ -387,7 +383,7 @@ const DetailCourse = () => {
                               <div className='flex items-center gap-4'>
                                 <BsFillArrowRightCircleFill className='text-yellow-700' />
                                 <span className='capitalize text-yellow-700'>
-                                  Xem thêm ...
+                                  Xem chi tiết ...
                                 </span>
                               </div>
                             </Link>
@@ -432,7 +428,7 @@ const DetailCourse = () => {
                           <img
                             src='/img/avtThanh.jpg'
                             alt='avt'
-                            className='w-[140px] h-[140px] object-cover rounded-lg'
+                            className='w-[140px] h-[140px] object-cover rou nded-lg'
                           />
                         </div>
                         <div className='flex-1 border flex flex-col gap-2 p-4'>
@@ -488,8 +484,8 @@ const DetailCourse = () => {
 
           {coursePackage && (
             <div className='my-4'>
-              <h1 className='font-bold text-[30px] text-yellow-700 text-center'>
-                Mời bạn chọn gói
+              <h1 className='font-bold text-[30px] text-yellow-700 text-center cappitalize'>
+                Chọn gói liên quan
               </h1>
               <div className='flex gap-4'>
                 {coursePackage?.map((item, index) => (
@@ -497,22 +493,24 @@ const DetailCourse = () => {
                     <h1 className='text-center font-bold text-[26px]'>
                       {item?.coursePackageDesc}
                     </h1>
-                    <ul className='my-4 list-disc pl-[20%]'>
+                    <ul className='my-4 list-disc pl-[20%] font-bold'>
                       {item?.cost && (
                         <li>
                           {`Ưu đãi: Từ `}
-                          <span className='text-yellow-400'>{item?.cost} </span>
+                          <span className='text-red-700 text-[20px]'>
+                            {item?.cost}{' '}
+                          </span>
                           VNĐ khi đăng kí Online
                         </li>
                       )}
                       <li>
                         {`Học phí `}
-                        <span className='text-red-700'>trọn gói 100%</span>
+                        <span className='text-yellow-500'>trọn gói 100%</span>
                       </li>
                       {item?.totalSession && (
                         <li>
                           Số buổi học:{' '}
-                          <span className='text-green-800'>
+                          <span className='text-green-900 font-bold '>
                             {item?.totalSession}
                           </span>
                         </li>
@@ -521,7 +519,7 @@ const DetailCourse = () => {
                       {item?.sessionHour && (
                         <li>
                           Thời lượng mỗi buổi học:{' '}
-                          <span className='text-green-800'>
+                          <span className='text-green-900 font-bold'>
                             {item?.sessionHour}
                           </span>
                         </li>
@@ -548,7 +546,7 @@ const DetailCourse = () => {
                           setSelectedCoursePackage(item);
                         }}
                       >
-                        Chọn gói
+                        Đăng ký ngay
                       </button>
                     </div>
                   </div>

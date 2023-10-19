@@ -200,11 +200,14 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                             Comment = x.Comment,
                                                                             MemberId = x.MemberId,
                                                                             Member = x.Member,
-                                                                            MemberTotalSession = x.MemberTotalSession
+                                                                            MemberTotalSession = x.MemberTotalSession,
+                                                                            TotalHoursDriven = x.TotalHoursDriven,
+                                                                            TotalKmDriven = x.TotalKmDriven
                                                                         }).ToList(),
                                                                         WeekdayScheduleId = x.WeekdayScheduleId,
                                                                         SlotId = x.SlotId,
-                                                                        StaffId = x.StaffId
+                                                                        StaffId = x.StaffId,
+                                                                        CoursePackageId = x.CoursePackageId
                                                                     })
                                                                    .FirstOrDefaultAsync();
             return _mapper.Map<TeachingScheduleModel>(teachingSchedule);
@@ -364,7 +367,14 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                    TeachingDate = x.TeachingDate,
                                                                    Vehicle = x.Vehicle,
                                                                    CoursePackageId = x.CoursePackageId,
-                                                                   CoursePackage = x.CoursePackage,
+                                                                   CoursePackage = new CoursePackage { 
+                                                                        CoursePackageId = x.CoursePackageId,
+                                                                        AgeRequired = x.CoursePackage.AgeRequired,
+                                                                        Cost = x.CoursePackage.Cost,
+                                                                        CoursePackageDesc = x.CoursePackage.CoursePackageDesc,
+                                                                        SessionHour = x.CoursePackage.SessionHour,
+                                                                        TotalSession = x.CoursePackage.TotalSession
+                                                                   },
                                                                    RollCallBooks = x.RollCallBooks
                                                                     .Select(
                                                                         x => new RollCallBook
@@ -375,7 +385,8 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                             Member = x.Member,
                                                                             MemberTotalSession = x.MemberTotalSession,
                                                                             TotalHoursDriven = x.TotalHoursDriven,
-                                                                            TotalKmDriven = x.TotalKmDriven
+                                                                            TotalKmDriven = x.TotalKmDriven,
+                                                                            IsAbsence = x.IsAbsence
                                                                         }).ToList()
                                                                })
                                                             .ToListAsync();

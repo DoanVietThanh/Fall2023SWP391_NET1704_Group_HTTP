@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "apis1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.ApiManagement/service/DriverLicenseLearningSupportapi/apis/DriverLicenseLearningSupport",
+      "type": "apis.azure"
+    },
+    "mssql1": {
+      "ignored": "true",
+      "type": "mssql"
+    }
+  }
+}

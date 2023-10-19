@@ -249,7 +249,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpGet]
         [Route("courses/packages/reservation")]
-        [Authorize(Roles = "Admin,Staff")]
+        //[Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> CoursePackageReservation()
         {
             // get all payment type
@@ -265,7 +265,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpPost]
         [Route("courses/packages/reservation")]
-        [Authorize(Roles = "Admin,Staff")]
+        //[Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> CoursePackageReservation([FromBody] CoursePackageReservationRequest reqObj)
         {
             // check exist member
