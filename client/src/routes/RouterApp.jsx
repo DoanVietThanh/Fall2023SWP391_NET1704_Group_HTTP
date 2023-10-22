@@ -16,23 +16,25 @@ import TheoryPage from '../pages/TheoryPage/TheoryPage';
 import TestTheory from '../pages/TheoryPage/TestTheory';
 import ResultTheory from '../pages/TheoryPage/ResultTheory';
 import DashboardPage from '../pages/Manager/pages/DashboardPage/DashboardPage';
-import PrivatePage from '../pages/PrivatePage/PrivatePage';
 import BlogPage from '../pages/BlogPage/BlogPage';
 import BlogDetail from '../pages/BlogPage/BlogDetail';
 import DocumentPage from '../pages/DocumentPage/DocumentPage';
 import SideBar from '../components/SideBar';
+
 import Profile from '../pages/PrivatePage/Profile';
-import WeekSchedule from '../pages/PrivatePage/WeekSchedule';
+import ManageUser from '../pages/PrivatePage/ManageUser';
 import HistoryTest from '../pages/PrivatePage/HistoryTest';
+import WeekSchedule from '../pages/PrivatePage/WeekSchedule';
 import ManageQuestion from '../pages/PrivatePage/ManageQuestion';
 import ManageBankTest from '../pages/PrivatePage/ManageBankTest';
-import IntructorDetail from '../pages/IntructorPage/IntructorDetail';
-import AboutUsPage from '../pages/AboutUsPage/AboutUsPage';
 import WeekScheduleMentor from '../pages/PrivatePage/WeekScheduleMentor';
+import ManageAwaitSchedule from '../pages/PrivatePage/ManageAwaitSchedule';
+
 import Payment from '../pages/CoursePage/Payment';
-import ManageUser from '../pages/PrivatePage/ManageUser';
-import CauHoiDiemLietPage from '../pages/DocumentPage/CauHoiDiemLietPage';
+import AboutUsPage from '../pages/AboutUsPage/AboutUsPage';
+import IntructorDetail from '../pages/IntructorPage/IntructorDetail';
 import ToanBoCauHoiPage from '../pages/DocumentPage/ToanBoCauHoiPage';
+import CauHoiDiemLietPage from '../pages/DocumentPage/CauHoiDiemLietPage';
 import InstructorSchedule from './../pages/IntructorPage/InstructorSchedule';
 
 const RouterApp = () => {
@@ -51,13 +53,14 @@ const RouterApp = () => {
     },
     // { path: '/private-information', element: <PrivatePage /> },
     { path: '/profile', element: <Profile /> },
-    { path: '/week-schedule', element: <WeekSchedule /> },
+    { path: '/week-schedule', element: <WeekScheduleMentor /> },
     { path: '/history-test', element: <HistoryTest /> },
     { path: '/history-test', element: <HistoryTest /> },
     { path: '/week-schedule-mentor', element: <WeekScheduleMentor /> },
     { path: '/manage-question', element: <ManageQuestion /> },
     { path: '/manage-banktest', element: <ManageBankTest /> },
     { path: '/manage-user', element: <ManageUser /> },
+    { path: '/manage-await-schedule', element: <ManageAwaitSchedule /> },
 
     { path: '/course', element: <CoursePage /> },
     { path: '/course/detail/:idCourse', element: <DetailCourse /> },

@@ -343,20 +343,7 @@ const DetailCourse = () => {
                               <span className='font-bold'> Giảng viên:</span>{' '}
                               {`${item?.firstName} ${item?.lastName}`}
                             </div>
-                            <div className='flex-x gap-6'>
-                              <div className='flex-x gap-2'>
-                                <PiStudentBold
-                                  className={`text-[${theme.color.mainColor}]`}
-                                />
-                                <span>100 students</span>
-                              </div>
-                              <div className='flex-x gap-2'>
-                                <GrDocumentText
-                                  className={`text-[${theme.color.mainColor}]`}
-                                />
-                                <span>{item.courses.length} courses</span>
-                              </div>
-                            </div>
+
                             <div className='flex-x gap-4'>
                               <span className='font-bold'> Contact:</span>{' '}
                               <Link to={`#`}>

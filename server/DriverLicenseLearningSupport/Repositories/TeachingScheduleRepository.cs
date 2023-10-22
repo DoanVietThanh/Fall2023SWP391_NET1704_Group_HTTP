@@ -205,6 +205,16 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                         WeekdayScheduleId = x.WeekdayScheduleId,
                                                                         SlotId = x.SlotId,
                                                                         StaffId = x.StaffId,
+                                                                        Staff = new Staff
+                                                                        {
+                                                                            StaffId = x.StaffId,
+                                                                            FirstName = x.Staff.FirstName,
+                                                                            LastName = x.Staff.LastName,
+                                                                            DateBirth = x.Staff.DateBirth,
+                                                                            Phone = x.Staff.Phone,
+                                                                            Email = x.Staff.Email,
+                                                                            AvatarImage = x.Staff.AvatarImage
+                                                                        },
                                                                         CoursePackageId = x.CoursePackageId
                                                                     })
                                                                    .FirstOrDefaultAsync();

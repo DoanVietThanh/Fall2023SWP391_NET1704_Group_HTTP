@@ -21,6 +21,8 @@ import axiosClient from './../../utils/axiosClient';
 import { toastError, toastSuccess } from '../../components/Toastify';
 import Loading from './../../components/Loading';
 import DialogDetailSchedule from './components/DialogDetailSchedule';
+import DialogCheckAttendance from './components/DialogCheckAttendance';
+import { BsDashLg } from 'react-icons/bs';
 
 const WeekSchedule = () => {
   const navigate = useNavigate();
@@ -34,6 +36,10 @@ const WeekSchedule = () => {
   const [open, setOpen] = useState(false);
   const [openRegister, setOpenRegister] = useState(false);
   const [dialogDetail, setDialogDetail] = useState();
+
+  const [teachingScheduleId, setTeachingScheduleId] = useState(null);
+  const [rollCallBookId, setRollCallBookId] = useState(0);
+  const [slotSchedules, setSlotSchedules] = useState();
 
   useEffect(() => {
     async function getDataCourse() {
@@ -230,8 +236,12 @@ const WeekSchedule = () => {
                           {dataWeek?.data?.slotSchedules?.map((item, index) => (
                             <tr key={index}>
                               <td>
-                                <div>{item.slotName}</div>
-                                <h1> {item.slotDesc} </h1>
+                                <div className='font-semibold'>
+                                  {item.slotName}
+                                </div>
+                                <h1 className='mb-4 text-white bg-green-600 rounded-lg p-2'>
+                                  {item.slotDesc}
+                                </h1>
                               </td>
                               {item?.teachingSchedules.map(
                                 (itemDate, indexItemDate) => (
@@ -255,33 +265,36 @@ const WeekSchedule = () => {
                                         ) : itemDate.rollCallBooks[0]
                                             .memberId ===
                                           user.accountInfo.memberId ? (
-                                          <div className='text-center'>
-                                            <div className='font-bold text-blue-800 text-[14px]'>
-                                              <div>
-                                                {
-                                                  dataWeek?.data.course
-                                                    .courseTitle
-                                                }
-                                              </div>
-                                            </div>
-
-                                            <div className='bg-yellow-500 text-white w-auto text-[14px] px-2'>
-                                              <div>
+                                          <div className='text-center font-semibold'>
+                                            <p className='font-bold text-blue-800 text-[16px]'>
+                                              {
+                                                dataWeek?.data.course
+                                                  .courseTitle
+                                              }
+                                            </p>
+                                            {itemDate?.coursePackage
+                                              ?.coursePackageDesc && (
+                                              <p className='font-bold text-grey font-bold bg-yellow-400 rounded-lg p-2 text-[16px]'>
                                                 {
                                                   itemDate?.coursePackage
                                                     ?.coursePackageDesc
                                                 }
-                                              </div>
-                                              {/* <span className='bg-green-400 px-2 rounded'>
-                                                {item.slotDesc}
-                                              </span> */}
-                                            </div>
+                                              </p>
+                                            )}
                                             <button
-                                              onClick={() =>
+                                              onClick={() => {
                                                 handleClickOpen(
                                                   itemDate?.teachingScheduleId
-                                                )
-                                              }
+                                                );
+                                                setRollCallBookId(
+                                                  itemDate?.rollCallBooks[0]
+                                                    ?.rollCallBookId
+                                                );
+                                                setTeachingScheduleId(
+                                                  itemDate?.teachingScheduleId
+                                                );
+                                                setSlotSchedules(item);
+                                              }}
                                               className='px-2 text-black bg-gray-200 mt-2 rounded-lg hover:bg-blue-400 hover:text-white'
                                             >
                                               Xem chi tiết
@@ -296,13 +309,15 @@ const WeekSchedule = () => {
                                               )}
                                           </div>
                                         ) : (
-                                          <div className='text-red-700'>
-                                            Hết chỗ 1/1
+                                          <div className='font-bold text-[24px] flex justify-center'>
+                                            {/* Hết chỗ 1/1 */} <BsDashLg />
                                           </div>
                                         )}
                                       </div>
                                     ) : (
-                                      <div></div>
+                                      <div className='font-bold text-[24px] flex justify-center'>
+                                        <BsDashLg />
+                                      </div>
                                     )}
                                   </td>
                                 )
@@ -315,14 +330,26 @@ const WeekSchedule = () => {
                   </div>
                 </div>
 
-                <div>
-                  <h1>Chú thích</h1>
-                  {dataWeek?.data && (
-                    <div>
-                      <p>{dataWeek?.data?.remainingRequiredHour}</p>
-                      <p>{dataWeek?.data?.remainingRequiredKm}</p>
-                    </div>
-                  )}
+                <div className='border p-4 mt-4'>
+                  <div className='font-bold'>Chú thích: </div>
+
+                  <p className='flex items-center mt-4'>
+                    <AiOutlinePlusCircle size={24} className='text-green-700' />
+                    <span> : Ấn để đăng kí buổi học</span>
+                  </p>
+                  <p className='flex items-center mt-4'>
+                    <BsDashLg size={24} className='text-black' />
+                    <span> : Chưa có lịch</span>
+                  </p>
+                  <ul className='list-disc ml-6 flex flex-col gap-4 mt-4'>
+                    <li>
+                      Tổng giờ yêu cầu:{' '}
+                      {dataWeek?.data?.course?.totalHoursRequired}
+                    </li>
+                    <li>
+                      Tổng km yêu cầu: {dataWeek?.data?.course?.totalKmRequired}
+                    </li>
+                  </ul>
                 </div>
               </Box>
 
@@ -377,7 +404,11 @@ const WeekSchedule = () => {
               <DialogDetailSchedule
                 open={open}
                 setOpen={setOpen}
-                dialogDetail={dialogDetail}
+                rollCallBookId={rollCallBookId}
+                teachingScheduleId={teachingScheduleId}
+                dataWeek={dataWeek}
+                course={dataWeek?.data?.course}
+                slotSchedules={slotSchedules}
               />
             </>
           )}

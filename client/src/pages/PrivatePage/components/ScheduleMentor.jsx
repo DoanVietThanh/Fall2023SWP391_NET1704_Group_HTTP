@@ -15,6 +15,9 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import DialogCheckAttendance from './DialogCheckAttendance';
+import { AiFillPlusCircle, AiOutlinePlusCircle } from 'react-icons/ai';
+import { BsDashLg } from 'react-icons/bs';
+import DialogRegisterSchedule from './DialogRegisterSchedule';
 
 const ScheduleMentor = ({ itemCourse, courseId }) => {
   const { user } = useSelector((state) => state.auth);
@@ -26,9 +29,11 @@ const ScheduleMentor = ({ itemCourse, courseId }) => {
   const [mentorId, setMentorId] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
+  const [openRegisterSchedule, setOpenRegisterSchedule] = useState(false);
   const [openRegister, setOpenRegister] = useState(false);
   const [teachingScheduleId, setTeachingScheduleId] = useState(null);
   const [rollCallBookId, setRollCallBookId] = useState(0);
+  const [slotSchedules, setSlotSchedules] = useState();
 
   useEffect(() => {
     async function getDataCourse() {
@@ -37,6 +42,7 @@ const ScheduleMentor = ({ itemCourse, courseId }) => {
           `/staffs/mentors/${accountInfo.staffId}/schedule?courseId=${courseId}`
         );
         console.log('response: ', response);
+
         setIsLoading(false);
         setMentorId(accountInfo.staffId);
         setDataWeek(response?.data);
@@ -95,6 +101,17 @@ const ScheduleMentor = ({ itemCourse, courseId }) => {
         </AccordionSummary>
         <AccordionDetails>
           <div className=''>
+            <div className='flex justify-end mb-4'>
+              <div
+                className='bg-blue-400 cursor-pointer flex items-center p-2 rounded-lg gap-2'
+                onClick={() => {
+                  setOpenRegisterSchedule(true);
+                }}
+              >
+                <AiFillPlusCircle size={24} className='text-white' />
+                <p className='font-semibold text-white'>Đăng kí lịch</p>
+              </div>
+            </div>
             <table className='w-full border-2 border-black'>
               <thead>
                 <tr>
@@ -193,22 +210,25 @@ const ScheduleMentor = ({ itemCourse, courseId }) => {
               <tbody>
                 {dataWeek?.data?.slotSchedules?.map((item, index) => (
                   <tr key={index}>
-                    <td>{item.slotName}</td>
+                    <td>
+                      <div className='font-semibold'>{item.slotName}</div>
+                      <h1 className='mb-4 text-white bg-green-600 rounded-lg p-2'>
+                        {item.slotDesc}
+                      </h1>
+                    </td>
                     {item?.teachingSchedules.map((itemDate, indexItemDate) => (
                       <td key={indexItemDate}>
                         {itemDate ? (
                           <div className='text-center'>
-                            <p className='font-bold text-blue-800 text-[14px]'>
+                            <p className='font-bold text-blue-800 text-[16px]'>
                               {dataWeek?.data.course.courseTitle}
                             </p>
                             {itemDate?.coursePackage?.coursePackageDesc && (
-                              <p className='font-bold text-grey font-bold bg-yellow-400 rounded-lg p-2 text-[12px]'>
+                              <p className='font-bold text-grey font-bold bg-yellow-400 rounded-lg p-2 text-[16px]'>
                                 {itemDate?.coursePackage?.coursePackageDesc}
                               </p>
                             )}
-                            <div className='bg-green-500 text-white w-auto rounded-lg mx-6 text-[14px]'>
-                              {item.slotDesc}
-                            </div>
+
                             <button
                               onClick={() => {
                                 setOpen(true);
@@ -218,6 +238,7 @@ const ScheduleMentor = ({ itemCourse, courseId }) => {
                                 setTeachingScheduleId(
                                   itemDate?.teachingScheduleId
                                 );
+                                setSlotSchedules(item);
                               }}
                               className='px-2 text-black bg-gray-200 mt-2 rounded-lg hover:bg-blue-400 hover:text-white'
                             >
@@ -225,7 +246,9 @@ const ScheduleMentor = ({ itemCourse, courseId }) => {
                             </button>
                           </div>
                         ) : (
-                          <div></div>
+                          <div className='font-bold text-[24px] flex justify-center'>
+                            <BsDashLg />
+                          </div>
                         )}
                       </td>
                     ))}
@@ -237,10 +260,24 @@ const ScheduleMentor = ({ itemCourse, courseId }) => {
         </AccordionDetails>
         <div className='border p-4 mt-4'>
           <div className='font-bold'>Chú thích: </div>
-          <div>
-            Tổng giờ yêu cầu: {dataWeek?.data?.course?.totalHoursRequired}
+          <p className='flex items-center mt-4'>
+            <AiOutlinePlusCircle size={24} className='text-green-700' />
+            <span> : Ấn để đăng kí buổi học</span>
+          </p>
+          <p className='flex items-center mt-4'>
+            <BsDashLg size={24} className='text-black' />
+            <span> : Chưa có lịch</span>
+          </p>
+          <div className='mt-4 flex items-center gap-4'>
+            <div className='rounded bg-yellow-400 h-[20px] w-[20px]'></div>
+            <span>Ngày dạy đã có học viên đăng kí</span>
           </div>
-          <div>Tổng km yêu cầu: {dataWeek?.data?.course?.totalKmRequired}</div>
+          <ul className='list-disc ml-6 flex flex-col gap-4 mt-4'>
+            <li>
+              Tổng giờ yêu cầu: {dataWeek?.data?.course?.totalHoursRequired}
+            </li>
+            <li>Tổng km yêu cầu: {dataWeek?.data?.course?.totalKmRequired}</li>
+          </ul>
         </div>
       </Accordion>
       <div>
@@ -299,6 +336,14 @@ const ScheduleMentor = ({ itemCourse, courseId }) => {
           teachingScheduleId={teachingScheduleId}
           dataWeek={dataWeek}
           course={dataWeek?.data?.course}
+          slotSchedules={slotSchedules}
+        />
+
+        <DialogRegisterSchedule
+          openRegisterSchedule={openRegisterSchedule}
+          setOpenRegisterSchedule={setOpenRegisterSchedule}
+          itemCourse={itemCourse}
+          courseId={courseId}
         />
       </div>
     </div>

@@ -85,6 +85,12 @@ const listNavbarManage = [
     icon: <BsEnvelopePaper size={20} />,
     navigate: '/manage-banktest',
   },
+  {
+    id: 8,
+    title: 'Quản lí lịch chờ',
+    icon: <BsEnvelopePaper size={20} />,
+    navigate: '/manage-await-schedule',
+  },
 ];
 
 const openedMixin = (theme) => ({

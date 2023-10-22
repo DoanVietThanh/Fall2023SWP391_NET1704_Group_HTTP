@@ -134,7 +134,9 @@ namespace DriverLicenseLearningSupport.Controllers
             return Ok(new BaseResponse
             {
                 StatusCode = StatusCodes.Status200OK,
-                Data = teachingSchedule
+                Data = new {
+                    TeachingSchedule = teachingSchedule
+                }
             });
         }
 
@@ -303,7 +305,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 $" đến {date.AddMonths(totalMonth).ToString("dd/MM/yyyy")} đã được duyệt thành công. \n " +
                 $"Mọi thắc mắc xin liên hệ để được điều chỉnh sớm nhất \n" +
                 $"Xin cảm ơn.");
-            _emailService.SendEmail(message);
+            // _emailService.SendEmail(message);
 
             if (isApproved)
             {
