@@ -36,6 +36,7 @@ import IntructorDetail from '../pages/IntructorPage/IntructorDetail';
 import ToanBoCauHoiPage from '../pages/DocumentPage/ToanBoCauHoiPage';
 import CauHoiDiemLietPage from '../pages/DocumentPage/CauHoiDiemLietPage';
 import InstructorSchedule from './../pages/IntructorPage/InstructorSchedule';
+import ApproveSchedule from '../pages/PrivatePage/ApproveSchedule';
 
 const RouterApp = () => {
   const router = createBrowserRouter([
@@ -61,6 +62,10 @@ const RouterApp = () => {
     { path: '/manage-banktest', element: <ManageBankTest /> },
     { path: '/manage-user', element: <ManageUser /> },
     { path: '/manage-await-schedule', element: <ManageAwaitSchedule /> },
+    {
+      path: '/manage-await-schedule/:idMentor',
+      element: <ApproveSchedule />,
+    },
 
     { path: '/course', element: <CoursePage /> },
     { path: '/course/detail/:idCourse', element: <DetailCourse /> },

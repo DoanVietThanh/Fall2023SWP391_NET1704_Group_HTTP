@@ -220,7 +220,10 @@ namespace DriverLicenseLearningSupport.Controllers
             var slots = await _slotService.GetAllAsync();
             // convert to list of course
             var listOfSlotSchedule = slots.ToList();
+
             // get all teaching schedule of mentor
+            var filterSchedules = await _teachingScheduleService.GetAllByMentorIdAsync(id);
+            var mentorVehicle = filterSchedules.Select(x => x.Vehicle).FirstOrDefault();
 
             // get teaching schedule for each slot
             foreach (var s in slots)
@@ -252,6 +255,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     }),
                     Weekdays = weekday,
                     SlotSchedules = listOfSlotSchedule,
+                    MentorScheduleVehicle = mentorVehicle,
                     ActiveVehicles = activeVehicles,
                     TotalInActiveVehicle = inactiveVehicles.Count()
                 }
@@ -310,6 +314,7 @@ namespace DriverLicenseLearningSupport.Controllers
             if (isApproved)
             {
                 await _teachingScheduleService.AddRangeVehicleMentorSchedule(id, vehicleId);
+                await _vehicleService.UpdateActiveStatusAsync(vehicleId);
                 return Ok(new BaseResponse {
                     StatusCode = StatusCodes.Status200OK,
                     Message = "Duyệt lịch học thành công"

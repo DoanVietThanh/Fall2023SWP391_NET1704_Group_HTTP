@@ -156,6 +156,19 @@ namespace DriverLicenseLearningSupport.Repositories
         public async Task<IEnumerable<TeachingScheduleModel>> GetAllByMentorIdAsync(Guid mentorId)
         {
             var teachingSchedules = await _context.TeachingSchedules.Where(x => x.StaffId == mentorId.ToString())
+                                                                    .Select(x => new TeachingSchedule
+                                                                    {
+                                                                        TeachingScheduleId = x.TeachingScheduleId,
+                                                                        TeachingDate = x.TeachingDate,
+                                                                        IsActive = x.IsActive,
+                                                                        WeekdayScheduleId = x.WeekdayScheduleId,
+                                                                        SlotId = x.SlotId,
+                                                                        VehicleId = x.VehicleId,
+                                                                        Slot = x.Slot,
+                                                                        Vehicle = x.Vehicle,
+                                                                        Staff = x.Staff,
+                                                                        StaffId = x.StaffId
+                                                                    })
                                                                     .ToListAsync();
             return _mapper.Map<IEnumerable<TeachingScheduleModel>>(teachingSchedules);
         }

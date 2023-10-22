@@ -305,3 +305,24 @@ const DialogCheckAttendance = ({
 };
 
 export default DialogCheckAttendance;
+
+// /teaching-schedule/mentors/:id/approve?vehicleId=1
+
+// [
+//   {
+//       "vehicleId": 4,
+//       "vehicleName": "Roll Royes",
+//       "vehicleImage": null,
+//       "vehicleLicensePlate": "52F-666.75",
+//       "registerDate": "2019-08-02T00:00:00",
+//       "vehicleTypeId": 1,
+//       "isActive": true,
+//       "vehicleType": {
+//           "vehicleTypeId": 1,
+//           "licenseTypeId": 4,
+//           "vehicleTypeDesc": "Xe số sàn",
+//           "cost": null,
+//           "licenseType": null
+//       }
+//   }
+// ],

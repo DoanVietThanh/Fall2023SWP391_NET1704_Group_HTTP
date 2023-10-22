@@ -6,7 +6,9 @@ import SideBar from '../../components/SideBar';
 import axiosClient from '../../utils/axiosClient';
 
 import { GrFormView } from 'react-icons/gr';
+import { useNavigate } from 'react-router-dom';
 const ManageAwaitSchedule = () => {
+  const navigate = useNavigate();
   const [userId, setUserId] = useState();
 
   const [listAwait, setListAwait] = useState();
@@ -42,6 +44,7 @@ const ManageAwaitSchedule = () => {
             className='text-green-700 cursor-pointer'
             onClick={() => {
               setUserId(params.row.staffId);
+              navigate(`/manage-await-schedule/${params.row.staffId}`);
             }}
           />
         </div>
