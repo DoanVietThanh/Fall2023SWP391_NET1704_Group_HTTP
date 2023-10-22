@@ -21,6 +21,7 @@ namespace DriverLicenseLearningSupport.Services.Impl
         Task<TeachingScheduleModel> GetByFilterAsync(TeachingScheduleFilter filters);
         Task<TeachingScheduleModel> GetMemberScheduleByFilterAsync(LearningScheduleFilter filters, Guid memberId);
         Task<TeachingScheduleModel> ExistScheduleInOtherCoursesAsync(int slotId, DateTime teachingDate, Guid mentorId, Guid courseId);
+        Task<TeachingScheduleModel> GetFirstAwaitScheduleMentor(Guid mentorId);
         Task<bool> AddRollCallBookAsync(int teachingScheduleId, RollCallBookModel rcbModel);
         Task<bool> AddVehicleAsync(int teachingScheduleId, int vehicleId);
         Task<bool> ApproveMentorAwaitSchedule(Guid mentorId);

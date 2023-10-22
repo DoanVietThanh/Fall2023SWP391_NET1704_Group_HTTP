@@ -22,7 +22,8 @@ namespace DriverLicenseLearningSupport.Payloads.Request
             return new RollCallBookModel { 
                 MemberId = reqObj.MemberId.ToString(),
                 //TeachingScheduleId = reqObj.TeachingScheduleId,
-                IsAbsence = true
+                IsAbsence = true,
+                IsActive = true
             };
         }
     }
