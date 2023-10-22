@@ -11,7 +11,8 @@ namespace DriverLicenseLearningSupport.Models
         public int TeachingScheduleId { get; set; }
         public int? TotalHoursDriven { get; set; }
         public int? TotalKmDriven { get; set; }
-
+        public bool? IsActive { get; set; }
+        public string? CancelMessage { get; set; }
         public virtual MemberModel Member { get; set; }
         public virtual TeachingScheduleModel TeachingSchedule { get; set; }
     }

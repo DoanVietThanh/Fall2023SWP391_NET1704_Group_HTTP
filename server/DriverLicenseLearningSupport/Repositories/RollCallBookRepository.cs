@@ -4,6 +4,7 @@ using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Repositories.Impl;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.InteropServices;
 
 namespace DriverLicenseLearningSupport.Repositories
 {
@@ -19,9 +20,42 @@ namespace DriverLicenseLearningSupport.Repositories
             _mapper = mapper;
         }
 
+        public async Task<bool> ApproveCancelAsync(int rcbId)
+        {
+            var rcbook = await _context.RollCallBooks.Where(x => x.RollCallBookId == rcbId)
+                .FirstOrDefaultAsync();
+
+            if(rcbook is not null)
+            {
+                _context.RollCallBooks.Remove(rcbook);
+                return await _context.SaveChangesAsync() > 0;
+            }
+            return false;
+        }
+
         public async Task<IEnumerable<RollCallBookModel>> GetAllByMemberIdAsync(Guid memberId)
         {
             var rcbooks = await _context.RollCallBooks.Where(x => x.MemberId == memberId.ToString())
+                                                      .ToListAsync();
+            return _mapper.Map<IEnumerable<RollCallBookModel>>(rcbooks);
+        }
+
+        public async Task<IEnumerable<RollCallBookModel>> GetAllInActiveRollCallBookAsync()
+        {
+            var rcbooks = await _context.RollCallBooks.Where(x => x.IsActive == false 
+                                                        && x.IsAbsence == true)
+                                                      .Select(x => new RollCallBook { 
+                                                        RollCallBookId = x.RollCallBookId,
+                                                        IsActive = x.IsActive,
+                                                        IsAbsence = x.IsAbsence,
+                                                        Comment = x.Comment,
+                                                        TeachingScheduleId = x.TeachingScheduleId,
+                                                        TotalHoursDriven = x.TotalHoursDriven,
+                                                        TotalKmDriven = x.TotalKmDriven,
+                                                        CancelMessage = x.CancelMessage,
+                                                        Member = x.Member,
+                                                        TeachingSchedule = x.TeachingSchedule
+                                                      })
                                                       .ToListAsync();
             return _mapper.Map<IEnumerable<RollCallBookModel>>(rcbooks);
         }
@@ -36,7 +70,8 @@ namespace DriverLicenseLearningSupport.Repositories
                     MemberId = x.MemberId,
                     Member = x.Member,
                     TotalHoursDriven = x.TotalHoursDriven,
-                    TotalKmDriven = x.TotalKmDriven
+                    TotalKmDriven = x.TotalKmDriven,
+                    TeachingScheduleId = x.TeachingScheduleId
                 })
                 .FirstOrDefaultAsync();
 
@@ -63,6 +98,22 @@ namespace DriverLicenseLearningSupport.Repositories
                 rcbookEntity.IsAbsence = rcbook.IsAbsence;
                 rcbookEntity.TotalHoursDriven = totalHour;
                 rcbookEntity.TotalKmDriven = totalKm;
+
+                return await _context.SaveChangesAsync() > 0;
+            }
+            return false;
+        }
+
+        public async Task<bool> UpdateInActiveStatusAsync(int rcbId, string cancelMessage)
+        {
+            var rcbEntity = await _context.RollCallBooks.Where(x => x.RollCallBookId == rcbId)
+                                                        .FirstOrDefaultAsync();
+
+            if(rcbEntity is not null &&
+               rcbEntity.IsAbsence == true)
+            {
+                rcbEntity.IsActive = false;
+                rcbEntity.CancelMessage = cancelMessage;
 
                 return await _context.SaveChangesAsync() > 0;
             }

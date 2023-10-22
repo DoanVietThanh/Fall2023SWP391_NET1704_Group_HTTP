@@ -205,6 +205,16 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                         WeekdayScheduleId = x.WeekdayScheduleId,
                                                                         SlotId = x.SlotId,
                                                                         StaffId = x.StaffId,
+                                                                        Staff = new Staff
+                                                                        {
+                                                                            StaffId = x.StaffId,
+                                                                            FirstName = x.Staff.FirstName,
+                                                                            LastName = x.Staff.LastName,
+                                                                            DateBirth = x.Staff.DateBirth,
+                                                                            Phone = x.Staff.Phone,
+                                                                            Email = x.Staff.Email,
+                                                                            AvatarImage = x.Staff.AvatarImage
+                                                                        },
                                                                         CoursePackageId = x.CoursePackageId
                                                                     })
                                                                    .FirstOrDefaultAsync();
@@ -370,6 +380,8 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                         SessionHour = x.CoursePackage.SessionHour,
                                                                         TotalSession = x.CoursePackage.TotalSession
                                                                    },
+                                                                   Staff = x.Staff,
+
                                                                    RollCallBooks = x.RollCallBooks
                                                                     .Select(
                                                                         x => new RollCallBook
@@ -380,7 +392,8 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                             Member = x.Member,
                                                                             TotalHoursDriven = x.TotalHoursDriven,
                                                                             TotalKmDriven = x.TotalKmDriven,
-                                                                            IsAbsence = x.IsAbsence
+                                                                            IsAbsence = x.IsAbsence,
+                                                                            IsActive = x.IsActive
                                                                         }).ToList()
                                                                })
                                                             .ToListAsync();
@@ -565,6 +578,13 @@ namespace DriverLicenseLearningSupport.Repositories
                 ts.VehicleId = vehicleId;
             }
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<TeachingScheduleModel> GetFirstAwaitScheduleMentor(Guid mentorId)
+        {
+            var teachingSchedule = await _context.TeachingSchedules.Where(x => x.StaffId == mentorId.ToString())
+                                                                   .FirstOrDefaultAsync();
+            return _mapper.Map<TeachingScheduleModel>(teachingSchedule);
         }
     }
 }

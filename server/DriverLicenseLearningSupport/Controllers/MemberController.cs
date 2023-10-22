@@ -1176,7 +1176,7 @@ namespace DriverLicenseLearningSupport.Controllers
             {
                 return BadRequest(new BaseResponse {
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = $"Not found any learning course package"
+                    Message = $"Không tìm thấy học viên trong khóa học"
                 });
             }
 
@@ -1217,7 +1217,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 return BadRequest(new BaseResponse
                 {
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = $"Not found any schedule match required"
+                    Message = $"Không tìm thấy lịch dạy"
                 });
             }
 

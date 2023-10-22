@@ -118,5 +118,10 @@ namespace DriverLicenseLearningSupport.Services
         {
             return await _teachingScheduleRepo.AddRangeVehicleMentorSchedule(mentorId,vehicleId);
         }
+
+        public async Task<TeachingScheduleModel> GetFirstAwaitScheduleMentor(Guid mentorId)
+        {
+            return await _teachingScheduleRepo.GetFirstAwaitScheduleMentor(mentorId);
+        }
     }
 }
