@@ -27,5 +27,6 @@ namespace DriverLicenseLearningSupport.Repositories.Impl
         Task<bool> AddVehicleAsync(int teachingScheduleId, int vehicleId);
         Task<bool> ApproveMentorAwaitSchedule(Guid mentorId);
         Task<bool> AddRangeVehicleMentorSchedule(Guid mentorId, int vehicleId);
+        Task<bool> DenyMentorAwaitSchedule(Guid mentorId);
     }
 }

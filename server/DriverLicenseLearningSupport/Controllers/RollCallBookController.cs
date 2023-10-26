@@ -173,7 +173,7 @@ namespace DriverLicenseLearningSupport.Controllers
         [HttpGet]
         [Route("rollcallbooks/{id:int}/deny-cancel")]
         public async Task<IActionResult> DenyCancelSchedule([FromRoute] int id,
-            string message)
+            string? message)
         {
             // get rollcallbook by id
             var rcb = await _rollCallBookService.GetAsync(id);

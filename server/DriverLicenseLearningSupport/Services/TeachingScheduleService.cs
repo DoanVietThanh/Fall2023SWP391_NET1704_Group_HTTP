@@ -123,5 +123,10 @@ namespace DriverLicenseLearningSupport.Services
         {
             return await _teachingScheduleRepo.GetFirstAwaitScheduleMentor(mentorId);
         }
+
+        public async Task<bool> DenyMentorAwaitSchedule(Guid mentorId)
+        {
+            return await _teachingScheduleRepo.DenyMentorAwaitSchedule(mentorId);
+        }
     }
 }

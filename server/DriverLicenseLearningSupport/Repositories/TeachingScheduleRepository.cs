@@ -144,7 +144,7 @@ namespace DriverLicenseLearningSupport.Repositories
                     teachingSchedule.TeachingDate =
                         DateTime.ParseExact(dt.ToString(_appSettings.DateFormat),
                         _appSettings.DateFormat, CultureInfo.InvariantCulture);
-                    teachingSchedule.VehicleId = vehicleId;
+                    // teachingSchedule.VehicleId = vehicleId;
                     teachingSchedule.IsActive = false;
 
                     isSucess = await CreateAsync(_mapper.Map<TeachingSchedule>(teachingSchedule))
@@ -156,6 +156,19 @@ namespace DriverLicenseLearningSupport.Repositories
         public async Task<IEnumerable<TeachingScheduleModel>> GetAllByMentorIdAsync(Guid mentorId)
         {
             var teachingSchedules = await _context.TeachingSchedules.Where(x => x.StaffId == mentorId.ToString())
+                                                                    .Select(x => new TeachingSchedule
+                                                                    {
+                                                                        TeachingScheduleId = x.TeachingScheduleId,
+                                                                        TeachingDate = x.TeachingDate,
+                                                                        IsActive = x.IsActive,
+                                                                        WeekdayScheduleId = x.WeekdayScheduleId,
+                                                                        SlotId = x.SlotId,
+                                                                        VehicleId = x.VehicleId,
+                                                                        Slot = x.Slot,
+                                                                        Vehicle = x.Vehicle,
+                                                                        Staff = x.Staff,
+                                                                        StaffId = x.StaffId
+                                                                    })
                                                                     .ToListAsync();
             return _mapper.Map<IEnumerable<TeachingScheduleModel>>(teachingSchedules);
         }
@@ -393,7 +406,8 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                             TotalHoursDriven = x.TotalHoursDriven,
                                                                             TotalKmDriven = x.TotalKmDriven,
                                                                             IsAbsence = x.IsAbsence,
-                                                                            IsActive = x.IsActive
+                                                                            IsActive = x.IsActive,
+                                                                            CancelMessage = x.CancelMessage
                                                                         }).ToList()
                                                                })
                                                             .ToListAsync();
@@ -485,6 +499,7 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                    TeachingDate = x.TeachingDate,
                                                                    Vehicle = x.Vehicle,
                                                                    CoursePackageId = x.CoursePackageId,
+                                                                   IsActive = x.IsActive,
                                                                    CoursePackage = new CoursePackage
                                                                    {
                                                                        CoursePackageId = x.CoursePackageId,
@@ -585,6 +600,19 @@ namespace DriverLicenseLearningSupport.Repositories
             var teachingSchedule = await _context.TeachingSchedules.Where(x => x.StaffId == mentorId.ToString())
                                                                    .FirstOrDefaultAsync();
             return _mapper.Map<TeachingScheduleModel>(teachingSchedule);
+        }
+
+        public async Task<bool> DenyMentorAwaitSchedule(Guid mentorId)
+        {
+            var teachingSchedules = await _context.TeachingSchedules.Where(x => x.StaffId == mentorId.ToString()
+                                                                 && x.IsActive == false)
+                                                       .ToListAsync();
+            // update schedule status
+            foreach (var ts in teachingSchedules)
+            {
+                _context.TeachingSchedules.Remove(ts);
+            }
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }

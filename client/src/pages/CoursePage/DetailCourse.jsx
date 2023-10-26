@@ -87,16 +87,15 @@ const DetailCourse = () => {
     // window.location.href =
     //   'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=12000000&vnp_Command=pay&vnp_CreateDate=20231013232532&vnp_CurrCode=VND&vnp_IpAddr=%3A%3A1&vnp_Locale=vn&vnp_OrderInfo=Thanh+to%C3%A1n+Kh%C3%B3a+h%E1%BB%8Dc+b%E1%BA%B1ng+l%C3%A1i+B1&vnp_OrderType=other&vnp_ReturnUrl=http%3A%2F%2Flocalhost%3A8082%2Fapi%2Fpayment%2Fvnpay-return&vnp_TmnCode=WR9WZI0K&vnp_TxnRef=5c908503-4a66-45fb-ab59-5422cdc54427&vnp_Version=2.1.0&vnp_SecureHash=734d39f3aa6032940e853936afe4c12526407e39e324871740eee1a413182af996ef479f97c4778bd04c8fbde7e7d2fe0e6d61250a07d1944c8a111fc57bae61';
     try {
-      const resReservation = await axiosClient.post(
-        `/courses/packages/reservation`,
-        {
+      const resReservation = await axiosClient
+        .post(`/courses/packages/reservation`, {
           memberId,
           mentorId: selectedMentor,
           paymentTypeId: typePayment,
           paymentAmount: course?.cost,
           courseId: course?.courseId,
-        }
-      );
+        })
+        .catch((error) => toastError(error?.response?.data?.message));
       console.log('resReservation: ', resReservation);
       const resPayment = await axiosClient.post(
         `/api/payment`,
@@ -105,7 +104,7 @@ const DetailCourse = () => {
       console.log('resPayment:', resPayment);
       window.location.href = resPayment?.data?.data.paymentUrl;
     } catch (error) {
-      toastError(error);
+      // toastError(error);
     }
   };
 
@@ -343,20 +342,7 @@ const DetailCourse = () => {
                               <span className='font-bold'> Giảng viên:</span>{' '}
                               {`${item?.firstName} ${item?.lastName}`}
                             </div>
-                            <div className='flex-x gap-6'>
-                              <div className='flex-x gap-2'>
-                                <PiStudentBold
-                                  className={`text-[${theme.color.mainColor}]`}
-                                />
-                                <span>100 students</span>
-                              </div>
-                              <div className='flex-x gap-2'>
-                                <GrDocumentText
-                                  className={`text-[${theme.color.mainColor}]`}
-                                />
-                                <span>{item.courses.length} courses</span>
-                              </div>
-                            </div>
+
                             <div className='flex-x gap-4'>
                               <span className='font-bold'> Contact:</span>{' '}
                               <Link to={`#`}>
