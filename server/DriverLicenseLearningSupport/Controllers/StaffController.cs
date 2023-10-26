@@ -813,7 +813,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpPost]
         [Route("staffs/mentors/schedule-register/range")]
-        [Authorize(Roles = "Admin,Staff,Mentor")]
+        //[Authorize(Roles = "Admin,Staff,Mentor")]
         public async Task<IActionResult> TeachingScheduleRegisterRange([FromBody] TeachingScheduleRangeRequest reqObj)
         {
             // get mentor by id
@@ -862,17 +862,17 @@ namespace DriverLicenseLearningSupport.Controllers
             var vehicle = await _vehicleService.GetVehicleByVehicleTypeAsync(
                 vehicleType.VehicleTypeId);
 
-            if(vehicle is null)
-            {
-                return BadRequest(new BaseResponse { 
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = $"Not found any vehicle type {vehicleType.VehicleTypeDesc} in garage," +
-                    $" Please contact to mananger"
-                });
-            }
+            // if(vehicle is null)
+            // {
+            //     return BadRequest(new BaseResponse { 
+            //         StatusCode = StatusCodes.Status400BadRequest,
+            //         Message = $"Not found any vehicle type {vehicleType.VehicleTypeDesc} in garage," +
+            //         $" Please contact to mananger"
+            //     });
+            // }
 
             // update vehicle status
-            await _vehicleService.UpdateActiveStatusAsync(vehicle.VehicleId);
+            //await _vehicleService.UpdateActiveStatusAsync(vehicle.VehicleId);
 
             // generate teaching schedule
             // init model
@@ -881,7 +881,7 @@ namespace DriverLicenseLearningSupport.Controllers
             // create range schedule
             bool isSucess = await _teachingScheduleService.CreateRangeBySlotAndWeekdayAsync(reqObj.SlotId, reqObj.Weekdays,
                             weekdaySchedules.First().WeekdayScheduleId,
-                            initSchedule, vehicle.VehicleId);
+                            initSchedule, 0);
 
             if (isSucess)
             {

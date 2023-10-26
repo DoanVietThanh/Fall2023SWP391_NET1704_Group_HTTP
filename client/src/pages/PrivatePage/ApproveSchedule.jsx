@@ -1,4 +1,10 @@
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from '@mui/material';
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import { AiOutlinePlusCircle } from 'react-icons/ai';
@@ -23,20 +29,21 @@ const ApproveSchedule = () => {
   const [activeVehicles, setActiveVehicles] = useState();
   const [selectedVehicle, setSelectedVehicle] = useState();
   const [mentorScheduleVehicle, setMentorScheduleVehicle] = useState();
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     async function getAwaitSchedule() {
       try {
-        const response = await axiosClient.get(
-          `/teaching-schedules/mentors/${idMentor}/await-schedule`
-        );
+        const response = await axiosClient
+          .get(`/teaching-schedules/mentors/${idMentor}/await-schedule`)
+          .catch((error) => toastError(error?.response?.data?.message));
         console.log('response: ', response);
         setMentorScheduleVehicle(response?.data.data?.mentorScheduleVehicle);
         setActiveVehicles(response?.data.data?.activeVehicles);
         setDataWeek(response?.data);
         setCurrentWeek(response?.data.data?.weekdays.weekdayScheduleId);
       } catch (error) {
-        toastError(error.response?.data.message);
+        // toastError(error.response?.data.message);
       }
     }
     getAwaitSchedule();
@@ -46,8 +53,9 @@ const ApproveSchedule = () => {
     setCurrentWeek(event.target.value);
     async function selectedWeek() {
       const response = await axiosClient.get(
-        `/staffs/mentors/${idMentor}/schedule/filter?weekdayScheduleId=${event.target.value}`
+        `/teaching-schedules/mentors/${idMentor}/await-schedule/filter?weekdayScheduleId=${event.target.value}`
       );
+
       setDataWeek(response?.data);
     }
     selectedWeek();
@@ -63,7 +71,7 @@ const ApproveSchedule = () => {
       renderCell: (params) => (
         <div>
           <img
-            src='https://static.automotor.vn/images/upload/2022/08/28/bugatti-chay-hang-autonews.jpeg'
+            src={params.row.vehicleImage}
             alt=''
             className='w-[100px] h-[100px] object-contain'
           />
@@ -79,7 +87,7 @@ const ApproveSchedule = () => {
         <div>{dayjs(params.row.registerDate).format('DD/MM/YYYY')}</div>
       ),
     },
-    { field: 'isActive', headerName: 'Active', width: 150 },
+    // { field: 'isActive', headerName: '',s width: 150 },
     {
       field: 'select',
       headerName: 'Chọn',
@@ -100,27 +108,49 @@ const ApproveSchedule = () => {
   const submitApprove = async (e) => {
     try {
       e.preventDefault();
-      const res = await axiosClient.put(
-        `/teaching-schedule/mentors/${idMentor}/approve?vehicleId=${selectedVehicle}`
-      );
+      const res = await axiosClient
+        .put(
+          `/teaching-schedule/mentors/${idMentor}/approve?vehicleId=${selectedVehicle}`
+        )
+        .catch((error) => toastError(error?.response?.data?.message));
       toastSuccess(res?.data?.message);
       navigate('/manage-await-schedule');
     } catch (error) {
-      toastError(error.response.data.message);
+      // toastError(error.response.data.message);
     }
   };
 
-  const submitAvailableApprove = async (availableVehicleID) => {
+  const handleAvailableApprove = async (availableVehicleID) => {
     console.log('availableVehicleID: ', availableVehicleID);
     try {
-      const res = await axiosClient.put(
-        `/teaching-schedule/mentors/${idMentor}/approve?vehicleId=${availableVehicleID}`
-      );
+      const res = await axiosClient
+        .put(
+          `/teaching-schedule/mentors/${idMentor}/approve?vehicleId=${availableVehicleID}`
+        )
+        .catch((error) => toastError(error?.response?.data?.message));
       toastSuccess(res?.data?.message);
       navigate('/manage-await-schedule');
     } catch (error) {
-      toastError(error.response.data.message);
+      // toastError(error.response.data.message);
     }
+  };
+
+  // /teaching-schedule/mentors/:id/deny?message=ahihi
+
+  const handleCancelAwait = async (e) => {
+    console.log(message);
+    console.log(idMentor);
+    e.preventDefault();
+    const response = await axiosClient
+      .put(`/teaching-schedule/mentors/${idMentor}/deny?message=${message}`)
+      .then((res) => {
+        if (res?.data?.statusCode === 200) {
+          toastSuccess(res?.data?.message);
+          navigate('/manage-await-schedule');
+        }
+      })
+      .catch((error) => toastError(error?.response?.data?.message));
+    console.log('response: ', response);
   };
 
   console.log('mentorScheduleVehicle: ', mentorScheduleVehicle);
@@ -237,7 +267,7 @@ const ApproveSchedule = () => {
                     </td>
                     {item?.teachingSchedules.map((itemDate, indexItemDate) => (
                       <td key={indexItemDate}>
-                        {itemDate ? (
+                        {itemDate?.isActive != null ? (
                           <div className='text-center'>
                             <p className='font-bold text-blue-800 text-[16px]'>
                               {dataWeek?.data.course.courseTitle}
@@ -307,44 +337,69 @@ const ApproveSchedule = () => {
             {mentorScheduleVehicle ? (
               <div className='flex justify-center mt-4 rounded-lg'>
                 <div className='w-[40vw] border-2 p-4'>
-                  <h1 className='text-center capitalize font-semibold text-[24px]'>
-                    Xe đang dùng
-                  </h1>
-                  <div className='text-[20px]'>
-                    <div>
-                      <span className='font-semibold'>Tên xe : </span>
-                      {mentorScheduleVehicle?.vehicleName}
+                  <div>
+                    <h1 className='text-center capitalize font-semibold text-[24px]'>
+                      Xe đã được bàn giao
+                    </h1>
+                    <div className='text-[20px]'>
+                      <div>
+                        <span className='font-semibold'>Tên xe : </span>
+                        {mentorScheduleVehicle?.vehicleName}
+                      </div>
+
+                      <div>
+                        <span className='font-semibold'>Biển số xe : </span>
+                        {mentorScheduleVehicle?.vehicleLicensePlate}
+                      </div>
+                      <div>
+                        <span className='font-semibold'>Ngày đăng kí : </span>
+                        {dayjs(mentorScheduleVehicle?.registerDate).format(
+                          'DD/MM/YYYY'
+                        )}
+                      </div>
+                      <div>
+                        <img
+                          // src='https://cdnphoto.dantri.com.vn/-nWL80AvkaVfvsn5TpbRwrUGFG4=/2021/08/28/rimacneverafrontquarter-1630129338357.jpg'
+                          src={mentorScheduleVehicle?.vehicleImage}
+                          alt=''
+                          className='w-full'
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className='mt-4'>
+                    <div
+                      className='btn text-center cursor-pointer'
+                      onClick={() =>
+                        handleAvailableApprove(mentorScheduleVehicle?.vehicleId)
+                      }
+                    >
+                      Duyệt
                     </div>
 
-                    <div>
-                      <span className='font-semibold'>Biển số xe : </span>
-                      {mentorScheduleVehicle?.vehicleLicensePlate}
-                    </div>
-                    <div>
-                      <span className='font-semibold'>Ngày đăng kí : </span>
-                      {dayjs(mentorScheduleVehicle?.registerDate).format(
-                        'DD/MM/YYYY'
-                      )}
-                    </div>
-                    <div>
-                      <img
-                        src='https://cdnphoto.dantri.com.vn/-nWL80AvkaVfvsn5TpbRwrUGFG4=/2021/08/28/rimacneverafrontquarter-1630129338357.jpg'
-                        // src={mentorScheduleVehicle?.vehicleImage}
-                        alt=''
-                        className=''
-                      />
-                    </div>
-                    <div className='flex justify-end'>
-                      <button
-                        className='btn mt-4'
-                        onClick={() =>
-                          submitAvailableApprove(
-                            mentorScheduleVehicle?.vehicleId
-                          )
-                        }
-                      >
-                        Duyệt Ngay
-                      </button>
+                    <div className='mt-4 w-full'>
+                      <form action='flex w-[100%]'>
+                        <div className='flex'>
+                          <TextField
+                            id='outlined-basic'
+                            label='Lí do hủy'
+                            variant='outlined'
+                            className='flex-1'
+                            required={true}
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                          />
+                          <button
+                            className='btn-cancel'
+                            type='submit'
+                            onClick={(event) => handleCancelAwait(event)}
+                            disabled={message !== '' ? false : true}
+                          >
+                            Hủy
+                          </button>
+                        </div>
+                      </form>
                     </div>
                   </div>
                 </div>
@@ -353,7 +408,7 @@ const ApproveSchedule = () => {
               activeVehicles && (
                 <div className='my-4 p-4'>
                   <h1 className='text-center capitalize font-semibold text-[24px]'>
-                    Chọn xe
+                    Bàn giao xe
                   </h1>
                   <form>
                     <DataGrid
@@ -370,10 +425,35 @@ const ApproveSchedule = () => {
                       getRowId={(row) => row.vehicleId}
                     />
 
-                    <div className='flex justify-end'>
-                      <button className='btn' onClick={(e) => submitApprove(e)}>
+                    <div className='my-4'>
+                      <button
+                        className='btn w-full'
+                        onClick={(e) => submitApprove(e)}
+                      >
                         Duyệt
                       </button>
+                    </div>
+                    <div className='w-full'>
+                      <form action='flex w-full'>
+                        <div className='flex w-full'>
+                          <TextField
+                            id='outlined-basic'
+                            label='Lí do hủy'
+                            variant='outlined'
+                            className='flex-1 w-full'
+                            required={true}
+                            onChange={(e) => setMessage(e.target.value)}
+                          />
+                          <button
+                            className='btn-cancel'
+                            type='submit'
+                            disabled={message ? false : true}
+                            onClick={(event) => handleCancelAwait(event)}
+                          >
+                            Hủy
+                          </button>
+                        </div>
+                      </form>
                     </div>
                   </form>
                 </div>

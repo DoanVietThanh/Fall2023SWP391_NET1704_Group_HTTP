@@ -1,6 +1,8 @@
-﻿using DriverLicenseLearningSupport.Entities;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Models.Config;
+using DriverLicenseLearningSupport.Payloads.Filters;
 using DriverLicenseLearningSupport.Payloads.Response;
 using DriverLicenseLearningSupport.Services;
 using DriverLicenseLearningSupport.Services.Impl;
@@ -10,6 +12,7 @@ using Microsoft.Extensions.Options;
 using System.Globalization;
 using System.Net.WebSockets;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace DriverLicenseLearningSupport.Controllers
 {
@@ -48,6 +51,11 @@ namespace DriverLicenseLearningSupport.Controllers
             _appSettings = monitor.CurrentValue;
         }
 
+        /// <summary>
+        /// Get teaching schedule by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("teaching-schedules/{id:int}")]
         // [Authorize(Roles = "Admin,Staff")]
@@ -134,7 +142,8 @@ namespace DriverLicenseLearningSupport.Controllers
             return Ok(new BaseResponse
             {
                 StatusCode = StatusCodes.Status200OK,
-                Data = new {
+                Data = new
+                {
                     TeachingSchedule = teachingSchedule
                 }
             });
@@ -187,23 +196,21 @@ namespace DriverLicenseLearningSupport.Controllers
             course.FeedBacks = null!;
             course.Curricula = null!;
 
-            // get mentor await schedule
-            // generate current date time 
-            var currDate = DateTime.ParseExact(DateTime.Now.ToString("yyyy-MM-dd"),
-                _appSettings.DateFormat, CultureInfo.InvariantCulture);
+            // get first await schedule 
+            var firstAwaitSchedule = await _teachingScheduleService.GetFirstAwaitScheduleMentor(id);
 
             // check current date time with course start date
             var courseStartDate = DateTime.ParseExact(Convert.ToDateTime(course.StartDate).ToString("yyyy-MM-dd"),
                 _appSettings.DateFormat, CultureInfo.InvariantCulture);
             var courseTotalMonth = Convert.ToInt32(course.TotalMonth);
-            if (currDate < courseStartDate &&
-               currDate > courseStartDate.AddMonths(courseTotalMonth))
+            if (firstAwaitSchedule.TeachingDate < courseStartDate &&
+               firstAwaitSchedule.TeachingDate > courseStartDate.AddMonths(courseTotalMonth))
             {
-                currDate = courseStartDate;
+                firstAwaitSchedule.TeachingDate = courseStartDate;
             }
 
             // get calendar by current date
-            var weekday = await _weekDayScheduleService.GetByDateAndCourseId(currDate,
+            var weekday = await _weekDayScheduleService.GetByDateAndCourseId(firstAwaitSchedule.TeachingDate,
                 Guid.Parse(course.CourseId));
             if (weekday is null)
             {
@@ -234,6 +241,15 @@ namespace DriverLicenseLearningSupport.Controllers
                 s.TeachingSchedules = teachingSchedules.ToList();
             }
 
+
+            // get mentor schedule vehicle
+            VehicleModel mentorScheduleVehicle = null!;
+            var filtersSchedule = await _teachingScheduleService.GetAllByMentorIdAsync(id);
+            if (filtersSchedule.Count() > 0)
+            {
+                mentorScheduleVehicle = filtersSchedule.Select(x => x.Vehicle).FirstOrDefault();
+            }
+
             // get vehicle type
             var vehicleType = await _vehicleService.GetVehicleTypeByLicenseTypeAsync(
                 Convert.ToInt32(course.LicenseTypeId));
@@ -255,13 +271,103 @@ namespace DriverLicenseLearningSupport.Controllers
                     }),
                     Weekdays = weekday,
                     SlotSchedules = listOfSlotSchedule,
-                    MentorScheduleVehicle = mentorVehicle,
                     ActiveVehicles = activeVehicles,
+                    MentorScheduleVehicle = mentorScheduleVehicle,
                     TotalInActiveVehicle = inactiveVehicles.Count()
                 }
             });
         }
 
+        [HttpGet]
+        [Route("teaching-schedules/mentors/{id:Guid}/await-schedule/filter")]
+        public async Task<IActionResult> GetAwaitScheduleDetail([FromRoute] Guid id,
+            [FromQuery] TeachingScheduleFilter filters)
+        {
+            WeekdayScheduleModel weekday = null!;
+            // get weekday by id
+            if (filters.WeekDayScheduleId is not null)
+            {
+                weekday = await _weekDayScheduleService.GetAsync(
+                    Convert.ToInt32(filters.WeekDayScheduleId));
+            }
+
+            if (filters.TeachingDate is not null)
+            {
+                // get teaching date by filters
+                var teachingDate = await _teachingScheduleService.GetByFilterAsync(filters);
+
+                if (teachingDate is null)
+                {
+                    return BadRequest(new BaseResponse
+                    {
+                        StatusCode = StatusCodes.Status400BadRequest,
+                        Message = $"Not found any schedule match date {filters.TeachingDate}"
+                    });
+                }
+
+                // get calendar by id
+                weekday = await _weekDayScheduleService.GetAsync(
+                    Convert.ToInt32(teachingDate.WeekdayScheduleId));
+            }
+
+            // get all weekday of calendar
+            var weekdays = await _weekDayScheduleService.GetAllByCourseId(
+                Guid.Parse(weekday.CourseId));
+            // get all slots 
+            var slots = await _slotService.GetAllAsync();
+            // convert to list of course
+            var listOfSlotSchedule = slots.ToList();
+            // get teaching schedule for each slot
+            foreach (var s in slots)
+            {
+                var teachingSchedules
+                    = await _teachingScheduleService.GetAllAwaitScheduleByMentorAsync(s.SlotId,
+                        weekday.WeekdayScheduleId, id);
+                s.TeachingSchedules = teachingSchedules.ToList();
+            }
+
+            // get mentor schedule vehicle
+            VehicleModel mentorScheduleVehicle = null!;
+            var filtersSchedule = await _teachingScheduleService.GetAllByMentorIdAsync(id);
+            if(filtersSchedule.Count() > 0)
+            {
+                mentorScheduleVehicle = filtersSchedule.Select(x => x.Vehicle).FirstOrDefault();
+            }
+
+            // get course by id 
+            var course = await _courseService.GetAsync(Guid.Parse(weekday.CourseId));
+            course.Mentors = null;
+            course.FeedBacks = null;
+            course.Curricula = null;
+
+            // get vehicle type
+            var vehicleType = await _vehicleService.GetVehicleTypeByLicenseTypeAsync(
+                Convert.ToInt32(course.LicenseTypeId));
+            // get all active vehicle by vehicle type
+            var activeVehicles = await _vehicleService.GetAllActiveVehicleByType(vehicleType.VehicleTypeId);
+            // get all inactive vehicle by vehicle type
+            var inactiveVehicles = await _vehicleService.GetAllInActiveVehicleByType(vehicleType.VehicleTypeId);
+
+            // response
+            return Ok(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Data = new
+                {
+                    Course = course,
+                    Filter = weekdays.Select(x => new {
+                        Id = x.WeekdayScheduleId,
+                        Desc = x.WeekdayScheduleDesc
+                    }),
+                    Weekdays = weekday,
+                    SlotSchedules = listOfSlotSchedule,
+                    ActiveVehicles = activeVehicles,
+                    MentorScheduleVehicle = mentorScheduleVehicle,
+                    TotalInActiveVehicle = inactiveVehicles.Count()
+                }
+            });
+        }
+        
         /// <summary>
         /// Approve await schedule by mentor id
         /// </summary>
@@ -309,12 +415,12 @@ namespace DriverLicenseLearningSupport.Controllers
                 $" đến {date.AddMonths(totalMonth).ToString("dd/MM/yyyy")} đã được duyệt thành công. \n " +
                 $"Mọi thắc mắc xin liên hệ để được điều chỉnh sớm nhất \n" +
                 $"Xin cảm ơn.");
-            // _emailService.SendEmail(message);
+           //_emailService.SendEmail(message);
 
             if (isApproved)
             {
                 await _teachingScheduleService.AddRangeVehicleMentorSchedule(id, vehicleId);
-                await _vehicleService.UpdateActiveStatusAsync(vehicleId);
+               await _vehicleService.UpdateActiveStatusAsync(vehicleId);
                 return Ok(new BaseResponse {
                     StatusCode = StatusCodes.Status200OK,
                     Message = "Duyệt lịch học thành công"
@@ -330,11 +436,27 @@ namespace DriverLicenseLearningSupport.Controllers
             };
         }
 
+        /// <summary>
+        /// Deny await schedule by mentor id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("teaching-schedule/mentors/{id:Guid}/deny")]
         public async Task<IActionResult> DenyAwaitSchedule([FromRoute] Guid id,
             string message)
         {
+
+            if (String.IsNullOrEmpty(message))
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Vui lòng điền lý do từ chối"
+                });
+            }
+
             // get mentor by id
             var mentor = await _staffService.GetAsync(id);
             if (mentor is null)
@@ -349,6 +471,8 @@ namespace DriverLicenseLearningSupport.Controllers
             // course
             var course = await _courseService.GetByMentorIdAsync(id);
 
+            await _teachingScheduleService.DenyMentorAwaitSchedule(id);
+
             // course startdate
             var date = Convert.ToDateTime(course.StartDate);
             // course total month
@@ -360,7 +484,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 $"{date.ToString("dd/MM/yyyy")} đến {date.AddMonths(totalMonth).ToString("dd/MM/yyyy")} \n" + 
                 $"Lý do từ chối: \n" +
                 message + "\n Xin cảm ơn.");
-            _emailService.SendEmail(emailMessage);
+            //_emailService.SendEmail(emailMessage);
 
             if (emailMessage is not null)
             {
@@ -380,5 +504,18 @@ namespace DriverLicenseLearningSupport.Controllers
                 StatusCode = StatusCodes.Status500InternalServerError
             };
         }
+
+
+        /// <summary>
+        /// Substitute teaching schedule with other mentor
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns></returns>s
+        //[HttpGet]
+        //[Route("teaching-schedule/substitute")]
+        //public async Task<IActionResult> SubstituteSchedule()
+        //{
+
+        //}
     }
 }

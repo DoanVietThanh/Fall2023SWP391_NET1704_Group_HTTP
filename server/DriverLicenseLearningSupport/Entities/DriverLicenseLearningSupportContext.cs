@@ -742,6 +742,10 @@ namespace DriverLicenseLearningSupport.Entities
 
                 entity.Property(e => e.RollCallBookId).HasColumnName("roll_call_book_id");
 
+                entity.Property(e => e.IsActive).HasColumnName("is_active");
+
+                entity.Property(e => e.CancelMessage).HasColumnName("cancel_message");
+
                 entity.Property(e => e.Comment)
                     .HasMaxLength(255)
                     .HasColumnName("comment");

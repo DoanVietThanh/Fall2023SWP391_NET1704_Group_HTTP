@@ -37,6 +37,7 @@ import ToanBoCauHoiPage from '../pages/DocumentPage/ToanBoCauHoiPage';
 import CauHoiDiemLietPage from '../pages/DocumentPage/CauHoiDiemLietPage';
 import InstructorSchedule from './../pages/IntructorPage/InstructorSchedule';
 import ApproveSchedule from '../pages/PrivatePage/ApproveSchedule';
+import ManageDenySchedule from '../pages/PrivatePage/ManageDenySchedule';
 
 const RouterApp = () => {
   const router = createBrowserRouter([
@@ -54,7 +55,7 @@ const RouterApp = () => {
     },
     // { path: '/private-information', element: <PrivatePage /> },
     { path: '/profile', element: <Profile /> },
-    { path: '/week-schedule', element: <WeekScheduleMentor /> },
+    { path: '/week-schedule', element: <WeekSchedule /> },
     { path: '/history-test', element: <HistoryTest /> },
     { path: '/history-test', element: <HistoryTest /> },
     { path: '/week-schedule-mentor', element: <WeekScheduleMentor /> },
@@ -62,6 +63,7 @@ const RouterApp = () => {
     { path: '/manage-banktest', element: <ManageBankTest /> },
     { path: '/manage-user', element: <ManageUser /> },
     { path: '/manage-await-schedule', element: <ManageAwaitSchedule /> },
+    { path: '/manage-deny-schedule', element: <ManageDenySchedule /> },
     {
       path: '/manage-await-schedule/:idMentor',
       element: <ApproveSchedule />,

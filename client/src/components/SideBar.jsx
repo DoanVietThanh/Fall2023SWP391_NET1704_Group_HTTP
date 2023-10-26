@@ -91,6 +91,12 @@ const listNavbarManage = [
     icon: <BsEnvelopePaper size={20} />,
     navigate: '/manage-await-schedule',
   },
+  {
+    id: 9,
+    title: 'Quản lí lịch hủy',
+    icon: <BsEnvelopePaper size={20} />,
+    navigate: '/manage-deny-schedule',
+  },
 ];
 
 const openedMixin = (theme) => ({

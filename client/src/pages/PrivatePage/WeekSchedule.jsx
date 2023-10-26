@@ -1,28 +1,22 @@
-import { Box } from '@mui/material';
+import { Box, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
 import * as dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
-import {
-  AiOutlineCheckCircle,
-  AiOutlineCloseCircle,
-  AiOutlinePlusCircle,
-} from 'react-icons/ai';
+import { AiFillCloseCircle, AiOutlinePlusCircle } from 'react-icons/ai';
 
+import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import { BsDashLg } from 'react-icons/bs';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import SideBar from '../../components/SideBar';
-import axiosClient from './../../utils/axiosClient';
 import { toastError, toastSuccess } from '../../components/Toastify';
 import Loading from './../../components/Loading';
+import axiosClient from './../../utils/axiosClient';
 import DialogDetailSchedule from './components/DialogDetailSchedule';
-import DialogCheckAttendance from './components/DialogCheckAttendance';
-import { BsDashLg } from 'react-icons/bs';
 
 const WeekSchedule = () => {
   const navigate = useNavigate();
@@ -35,29 +29,47 @@ const WeekSchedule = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [openRegister, setOpenRegister] = useState(false);
+  const [openCancel, setOpenCancel] = useState(false);
   const [dialogDetail, setDialogDetail] = useState();
 
   const [teachingScheduleId, setTeachingScheduleId] = useState(null);
   const [rollCallBookId, setRollCallBookId] = useState(0);
   const [slotSchedules, setSlotSchedules] = useState();
+  const [messageCancel, setMessageCancel] = useState('');
+  const [cancelRckId, setCancelRckId] = useState(0);
 
   useEffect(() => {
     async function getDataCourse() {
       try {
-        const response = await axiosClient.get(
-          `/members/${user.accountInfo.memberId}/schedule`
-        );
+        const response = await axiosClient
+          .get(`/members/${user.accountInfo.memberId}/schedule`)
+          .catch((error) => toastError(error?.response?.data?.message));
         console.log('response: ', response);
         setIsLoading(false);
         setMentorId(response?.data.data.mentor.staffId);
         setDataWeek(response?.data);
         setCurrentWeek(response?.data.data?.weekdays.weekdayScheduleId);
       } catch (error) {
-        throw new Error(error);
+        // toastError(error?.response?.data.message);
       }
     }
     getDataCourse();
   }, [isLoading]);
+
+  const getInitDataCourse = async () => {
+    try {
+      const response = await axiosClient
+        .get(`/members/${user.accountInfo.memberId}/schedule`)
+        .catch((error) => toastError(error?.response?.data?.message));
+      console.log('response: ', response);
+      setIsLoading(false);
+      setMentorId(response?.data.data.mentor.staffId);
+      setDataWeek(response?.data);
+      setCurrentWeek(response?.data.data?.weekdays.weekdayScheduleId);
+    } catch (error) {
+      // toastError(error?.response?.data.message);
+    }
+  };
 
   const handleClickOpen = async (teachingScheduleId) => {
     const dataTeachingSchedule = await axiosClient.get(
@@ -114,8 +126,27 @@ const WeekSchedule = () => {
     }
   };
 
-  console.log('dataWeek: ', dataWeek);
+  const handleCancel = async (e) => {
+    e.preventDefault();
+    await axiosClient
+      .put(
+        `/rollcallbooks/${cancelRckId}/cancel?cancelMessage=${messageCancel}`
+      )
+      .then((res) => {
+        console.log(res);
+        toastSuccess(res?.data?.message);
+        setOpenCancel(false);
+        getInitDataCourse();
+        // navigate('/week-schedule');
+        // window.location.reload();
+      })
+      .catch((error) => toastError(error?.response?.data.message));
+  };
 
+  // console.log('dataWeek: ', dataWeek);
+  // console.log(dayjs(new Date()).format('YYYY-MM-DDTHH:MM:SS'));
+  console.log('cancelRckId: ', cancelRckId);
+  console.log('messageCancel: ', messageCancel);
   return (
     <div className='flex'>
       <SideBar />
@@ -307,6 +338,47 @@ const WeekSchedule = () => {
                                                   {`Đã đăng kí ${dataWeek?.data?.registeredSession} / ${dataWeek?.data?.packageTotalSession} buổi`}
                                                 </div>
                                               )}
+
+                                            {itemDate?.teachingDate >
+                                              dayjs(new Date()).format(
+                                                'YYYY-MM-DDTHH:MM:SS'
+                                              ) &&
+                                              itemDate?.rollCallBooks[0]
+                                                .isAbsence && (
+                                                <div
+                                                  onClick={() => {
+                                                    console.log(
+                                                      'itemDate?.teachingScheduleId: ',
+                                                      itemDate?.teachingScheduleId
+                                                    );
+                                                    setCancelRckId(
+                                                      itemDate?.rollCallBooks[0]
+                                                        ?.rollCallBookId
+                                                    );
+                                                  }}
+                                                  className='flex items-center justify-center gap-4 '
+                                                >
+                                                  {itemDate?.rollCallBooks[0]
+                                                    .cancelMessage ? (
+                                                    <div className='text-center text-green-700'>
+                                                      Đang chờ hủy lịch
+                                                    </div>
+                                                  ) : (
+                                                    <div
+                                                      className='cursor-pointer flex items-center justify-center gap-4'
+                                                      onClick={() =>
+                                                        setOpenCancel(true)
+                                                      }
+                                                    >
+                                                      Hủy{' '}
+                                                      <AiFillCloseCircle
+                                                        size={20}
+                                                        className='text-red-400'
+                                                      />
+                                                    </div>
+                                                  )}
+                                                </div>
+                                              )}
                                           </div>
                                         ) : (
                                           <div className='font-bold text-[24px] flex justify-center'>
@@ -398,6 +470,41 @@ const WeekSchedule = () => {
                       Xác nhận Đăng kí
                     </button>
                   </div>
+                </div>
+              </Dialog>
+
+              <Dialog
+                open={openCancel}
+                onClose={() => setOpenCancel(false)}
+                aria-labelledby='alert-dialog-title'
+                aria-describedby='alert-dialog-description'
+              >
+                <div className='p-8'>
+                  <form action='' className='w-full my-4'>
+                    <div>
+                      <TextField
+                        id='outlined-basic'
+                        label='Lý do hủy'
+                        variant='outlined'
+                        required={true}
+                        className='w-full my-4'
+                        value={messageCancel}
+                        onChange={(e) => setMessageCancel(e.target.value)}
+                      />
+                    </div>
+                    <div className='flex justify-between gap-8 mt-6'>
+                      <Button onClick={() => setOpenCancel(false)}>
+                        Thoát
+                      </Button>
+                      <button
+                        className='btn'
+                        type='submit'
+                        onClick={handleCancel}
+                      >
+                        Xác nhận Hủy
+                      </button>
+                    </div>
+                  </form>
                 </div>
               </Dialog>
 

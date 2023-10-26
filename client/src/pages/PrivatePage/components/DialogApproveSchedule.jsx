@@ -71,16 +71,18 @@ const DialogApproveSchedule = ({
   const handleCheckAttendance = async (e) => {
     e.preventDefault();
     try {
-      const res = await axiosClient.put(
-        `/staffs/mentors/${accountInfo.staffId}/schedule/rollcallbook/${rollCallBookId}`,
-        formAttendance
-      );
+      const res = await axiosClient
+        .put(
+          `/staffs/mentors/${accountInfo.staffId}/schedule/rollcallbook/${rollCallBookId}`,
+          formAttendance
+        )
+        .catch((error) => toastError(error?.response?.data?.message));
       console.log('res: ', res);
       if (res?.data.statusCode === 200) {
         toastSuccess(res?.data.message);
       }
     } catch (error) {
-      toastError(error.response.data.message);
+      // toastError(error.response.data.message);
     }
     setOpen(false);
   };

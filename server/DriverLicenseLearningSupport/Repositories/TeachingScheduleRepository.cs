@@ -144,7 +144,7 @@ namespace DriverLicenseLearningSupport.Repositories
                     teachingSchedule.TeachingDate =
                         DateTime.ParseExact(dt.ToString(_appSettings.DateFormat),
                         _appSettings.DateFormat, CultureInfo.InvariantCulture);
-                    teachingSchedule.VehicleId = vehicleId;
+                    // teachingSchedule.VehicleId = vehicleId;
                     teachingSchedule.IsActive = false;
 
                     isSucess = await CreateAsync(_mapper.Map<TeachingSchedule>(teachingSchedule))
@@ -393,6 +393,8 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                         SessionHour = x.CoursePackage.SessionHour,
                                                                         TotalSession = x.CoursePackage.TotalSession
                                                                    },
+                                                                   Staff = x.Staff,
+
                                                                    RollCallBooks = x.RollCallBooks
                                                                     .Select(
                                                                         x => new RollCallBook
@@ -403,7 +405,9 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                             Member = x.Member,
                                                                             TotalHoursDriven = x.TotalHoursDriven,
                                                                             TotalKmDriven = x.TotalKmDriven,
-                                                                            IsAbsence = x.IsAbsence
+                                                                            IsAbsence = x.IsAbsence,
+                                                                            IsActive = x.IsActive,
+                                                                            CancelMessage = x.CancelMessage
                                                                         }).ToList()
                                                                })
                                                             .ToListAsync();
@@ -495,6 +499,7 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                    TeachingDate = x.TeachingDate,
                                                                    Vehicle = x.Vehicle,
                                                                    CoursePackageId = x.CoursePackageId,
+                                                                   IsActive = x.IsActive,
                                                                    CoursePackage = new CoursePackage
                                                                    {
                                                                        CoursePackageId = x.CoursePackageId,
@@ -586,6 +591,26 @@ namespace DriverLicenseLearningSupport.Repositories
             foreach(var ts in teachingSchedules)
             {
                 ts.VehicleId = vehicleId;
+            }
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<TeachingScheduleModel> GetFirstAwaitScheduleMentor(Guid mentorId)
+        {
+            var teachingSchedule = await _context.TeachingSchedules.Where(x => x.StaffId == mentorId.ToString())
+                                                                   .FirstOrDefaultAsync();
+            return _mapper.Map<TeachingScheduleModel>(teachingSchedule);
+        }
+
+        public async Task<bool> DenyMentorAwaitSchedule(Guid mentorId)
+        {
+            var teachingSchedules = await _context.TeachingSchedules.Where(x => x.StaffId == mentorId.ToString()
+                                                                 && x.IsActive == false)
+                                                       .ToListAsync();
+            // update schedule status
+            foreach (var ts in teachingSchedules)
+            {
+                _context.TeachingSchedules.Remove(ts);
             }
             return await _context.SaveChangesAsync() > 0;
         }

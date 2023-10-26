@@ -39,18 +39,21 @@ const DialogRegisterSchedule = ({
       slotId: selectedSlot,
     });
     try {
-      const res = await axiosClient.post(`/staffs/mentors/schedule-register`, {
-        teachingDate,
-        mentorId: accountInfo?.staffId,
-        courseId: courseId,
-        slotId: selectedSlot,
-      });
+      const res = await axiosClient
+        .post(`/staffs/mentors/schedule-register`, {
+          teachingDate,
+          mentorId: accountInfo?.staffId,
+          courseId: courseId,
+          slotId: selectedSlot,
+        })
+        .catch((error) => toastError(error?.response?.data?.message));
       console.log(res);
       //   toastSuccess(res?.data?.data?.message);
       toastSuccess('Đăng kí thành công');
       setOpenRegisterSchedule(false);
     } catch (error) {
-      toastError(error?.response?.data?.message);
+      console.log(error);
+      // toastError(error?.response?.data?.message);
       setOpenRegisterSchedule(false);
     }
   };

@@ -9,6 +9,7 @@ import CountdownTimer from './CountdownTimer';
 import axiosClient from '../../utils/axiosClient';
 import { useSelector } from 'react-redux';
 import * as dayjs from 'dayjs';
+import { toastError } from '../../components/Toastify';
 
 // console.log(Array.from({ length: 10 }, (_, index) => 0));
 // console.log([...Array(10)].map(() => 0));
@@ -26,25 +27,33 @@ const TestTheory = () => {
   const [open, setOpen] = useState(false);
   const [answerList, setAnswerList] = useState([]);
   const [questionList, setQuestionList] = useState([]);
+  const [licenseDesc, setLicenseDesc] = useState();
   const charOption = ['A', 'B', 'C', 'D', 'E'];
 
   useEffect(() => {
     async function fetchData() {
-      const response = await axiosClient.get(`/theory-exam/${theoryExamId}`);
-      setQuestionList(response?.data.data);
-      setAnswerList(
-        new Array(response?.data.data.totalQuestion).fill({
-          questionId: '',
-          selectAnswer: '',
+      await axiosClient
+        .get(`/theory-exam/${theoryExamId}`)
+        .then((response) => {
+          setLicenseDesc(
+            response?.data?.data?.questions[0]?.licenseType?.licenseTypeDesc
+          );
+          setQuestionList(response?.data?.data);
+          setAnswerList(
+            new Array(response?.data?.data?.totalQuestion).fill({
+              questionId: '',
+              selectAnswer: '',
+            })
+          );
+          localStorage.setItem(
+            'startedDate',
+            dayjs(new Date())
+              .format('YYYY-MM-DD')
+              .concat('T'.concat(dayjs(new Date()).format('HH:mm:ss')))
+          );
+          setStartedDate(dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss'));
         })
-      );
-      localStorage.setItem(
-        'startedDate',
-        dayjs(new Date())
-          .format('YYYY-MM-DD')
-          .concat('T'.concat(dayjs(new Date()).format('HH:mm:ss')))
-      );
-      setStartedDate(dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss'));
+        .catch((error) => toastError(error?.response?.data?.message));
     }
     fetchData();
   }, []);
@@ -74,6 +83,7 @@ const TestTheory = () => {
 
   console.log('answerList: ', answerList);
   console.log('questionList: ', questionList);
+  console.log('licenseDesc: ', licenseDesc);
 
   return (
     <div className='flex gap-1 bg-gray-200 h-[100vh] w-[100vw]'>
@@ -94,8 +104,12 @@ const TestTheory = () => {
             </h1>
           </div>
           <div className='p-4 border-y-2 flex flex-col justify-center items-center'>
-            <h2 className='text-center font-medium text-[20px]'>Thời gian</h2>
-            <CountdownTimer minutes={60} />
+            <h2 className='text-center font-semibold uppercase text-[20px]'>
+              Thời gian
+            </h2>
+            {questionList?.totalTime && (
+              <CountdownTimer minutes={questionList?.totalTime} />
+            )}
           </div>
           <div className=''>
             <h2 className='text-center font-medium text-[20px] my-2'>
@@ -141,9 +155,11 @@ const TestTheory = () => {
                 id={indexQuestion + 1}
                 className='min-h-[360px] bg-white p-4 rounded-lg'
               >
-                <h1 className='font-medium text-[20px]'>
-                  Câu hỏi {indexQuestion + 1} :
-                </h1>
+                <div>
+                  <span className='font-semibold text-[20px] bg-orange-300 p-2 rounded-lg'>
+                    Câu Hỏi {indexQuestion + 1} :
+                  </span>
+                </div>
                 {/* Content Question  */}
                 <div className='flex gap-2 h-full mt-2 flex-1'>
                   <div className='flex-1 h-full'>
