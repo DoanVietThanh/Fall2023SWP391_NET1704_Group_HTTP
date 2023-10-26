@@ -53,13 +53,14 @@ namespace DriverLicenseLearningSupport.Controllers
             if (licenseTypes is null) return StatusCode(StatusCodes.Status500InternalServerError, new BaseResponse
             {
                 StatusCode = StatusCodes.Status500InternalServerError,
-                Message = "Something went wrong"
+                Message = "Đã xảy ra lỗi"
             });
 
             return Ok(new BaseResponse
             {
                 StatusCode = StatusCodes.Status200OK,
-                Data = licenseTypes
+                Data = licenseTypes,
+                Message = "Thành công"
             });
         }
 
@@ -76,14 +77,30 @@ namespace DriverLicenseLearningSupport.Controllers
                     Message = "Câu hỏi đã trong đề thi, không thể xóa"
                 });
             }
+            var currentQuestion = await _questionService.GetByIdAsync(reqObj.QuestionID);
+            
+            int licenseID = currentQuestion.LicenseTypeId;
+            if (await _questionService.CheckExistedQuestion(reqObj.QuestionAnswerDesc, currentQuestion.LicenseTypeId))
+            {
+                return BadRequest(new ErrorResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Không được tạo trùng câu hỏi"
+                });
+            }
+
+
             var questionToUpdate = reqObj.toQuestionModel();
 
+
             var updatedQuestion = await _questionService.UpdateQuestionAsync(questionToUpdate, reqObj.QuestionID);
+            
 
             if (updatedQuestion is null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+            
             foreach (AnswerModel answer in reqObj.Answers)
             {
                 var updatedAnswer = await _answerService.UpdateAnswerAsync(answer.QuestionAnswerId, answer);
@@ -92,9 +109,10 @@ namespace DriverLicenseLearningSupport.Controllers
                     return StatusCode(StatusCodes.Status500InternalServerError);
                 }
             }
+
             return Ok(new BaseResponse() {
                 StatusCode = StatusCodes.Status200OK,
-                Message = "Cap nhat thanh cong"
+                Message = "Cập nhật thành công"
             });
 
 
@@ -115,11 +133,13 @@ namespace DriverLicenseLearningSupport.Controllers
             QuestionValidator questionValidator = new QuestionValidator();
             var checkquestionModel = await questionValidator.ValidateAsync(questionModel);
             if (!checkquestionModel.IsValid)
-            {
+            {       
                 return BadRequest(new ErrorResponse
                 {
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Errors = checkquestionModel
+                    Errors = checkquestionModel,
+                    Message = "Điền lại form"
+                    
                 });
             }
             if (await _questionService.CheckExistedQuestion(questionModel.QuestionAnswerDesc, questionModel.LicenseTypeId))
@@ -239,16 +259,25 @@ namespace DriverLicenseLearningSupport.Controllers
                     Message = "Câu hỏi đã nằm trong đề thi và không được chỉnh sửa"
                 });
             }
+            
 
             bool isSucess = await _answerService.DeleteAnswerAsync(answerId);
             if (!isSucess)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+            else if (question.QuestionAnswers.Count < 2) 
+            {
+                return Ok(new BaseResponse()
+                {
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = "vui lòng tạo thêm câu trả lời"
+                });
+            }
             return Ok(new BaseResponse()
             {
                 StatusCode = StatusCodes.Status200OK,
-                Message = "Delete answer succesfully"
+                Message = "Xóa thành công"
             });
         }
 
@@ -273,6 +302,92 @@ namespace DriverLicenseLearningSupport.Controllers
             return Ok(new BaseResponse() {
                 StatusCode = StatusCodes.Status200OK,
                 Data = question
+            });
+        }
+
+        [HttpGet]
+        [Route("theory/question-bank/{licenseId:int}/{page:int}")]
+        public async Task<IActionResult> GetQuestionBankWithLicenseId([FromRoute] int licenseId
+           , [FromRoute] int page = 1)
+        {
+            //memory caching
+            if (!_memoryCache.TryGetValue(_appSettings.TheoryCacheKey,
+                out IEnumerable<QuestionWithAnswersModel> questionWithAnswersModel))
+            {
+                List<QuestionWithAnswersModel> result = new List<QuestionWithAnswersModel>();
+                //get all questions
+                var questions = await _questionService.GetAllByLicenseId(licenseId);
+                if (questions is null || questions.Count() == 0) 
+                {
+                    return NotFound(new ErrorResponse() {
+                        StatusCode = StatusCodes.Status404NotFound,
+                        Message = "Không tìm thấy câu hỏi theo loại đề này"
+                    });
+                }
+
+                foreach (QuestionModel qm in questions)
+                {
+                    qm.LicenseType = await _licenseTypeService.GetAsync(qm.LicenseTypeId);
+                }
+
+                //get answers for each question
+                foreach (QuestionModel question in questions)
+                {
+                    var answers = await _answerService.GetAllByQuestionId(question.QuestionId);
+                    if (answers is null)
+                    {
+                        return BadRequest(new ErrorResponse()
+                        {
+                            StatusCode = StatusCodes.Status400BadRequest,
+                            Message = "Something was wrong"
+                        });
+                    }
+                    result.Add(new QuestionWithAnswersModel
+                    {
+                        question = question,
+                        answers = answers
+                    });
+                    questionWithAnswersModel = result;
+                }
+
+                // cache options
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    // none access exceeds 45s <- remove cache
+                    .SetSlidingExpiration(TimeSpan.FromSeconds(45))
+                    // after 10m from first access <- remove cache
+                    .SetAbsoluteExpiration(TimeSpan.FromSeconds(600))
+                // cache priority
+                    .SetPriority(CacheItemPriority.Normal);
+                // set cache
+
+                _memoryCache.Set(_appSettings.MembersCacheKey, questionWithAnswersModel, cacheEntryOptions);
+            }
+            else
+            {
+                questionWithAnswersModel = (IEnumerable<QuestionWithAnswersModel>)_memoryCache.Get(_appSettings.TheoryCacheKey);
+            }
+            //page size
+            int pageSize = _appSettings.TheoryPageSize;
+            //paging
+            var list = PaginatedList<QuestionWithAnswersModel>.CreateByIEnumerable(questionWithAnswersModel, page, pageSize);
+
+            //not found suitable question with answer
+            if (questionWithAnswersModel is null)
+            {
+                return BadRequest(new ErrorResponse()
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Not found any suitable question-answers pair"
+                });
+            }
+            return Ok(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Data = new
+                {
+                    QuestionWithAnswer = questionWithAnswersModel,
+                    TotalPage = list.TotalPage,
+                }
             });
         }
 
@@ -315,7 +430,6 @@ namespace DriverLicenseLearningSupport.Controllers
                 Message = "Delete Question Successfully"
             });
         }
-        
 
         [HttpGet]
         [Route("theory/{page:int}")]

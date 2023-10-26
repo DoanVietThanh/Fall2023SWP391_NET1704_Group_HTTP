@@ -37,151 +37,11 @@ namespace DriverLicenseLearningSupport.Controllers
             _memoryCache = memoryCache;
             _appSettings = monitor.CurrentValue;
         }
-        
-        [HttpGet]
-        [Route("theory-exam/add-question")]
-        public async Task<IActionResult> LicenseFormRegister()
-        {
-            var licenseTypes = await _licenseTypeService.GetAllAsync();
 
-            if (licenseTypes is null) return StatusCode(StatusCodes.Status500InternalServerError, new BaseResponse
-            {
-                StatusCode = StatusCodes.Status500InternalServerError,
-                Message = "Something went wrong"
-            });
 
-            List<TheoryAddFormatModel> formats = new List<TheoryAddFormatModel>();
-            //Format Mocktest a1
-            var licenseTypeA1 = await _licenseTypeService.GetByDescAsync("A1");
-            formats.Add(new TheoryAddFormatModel()
-            {
-                Licensetype = licenseTypeA1.LicenseTypeDesc,
-                TotalQuestion = 3,
-                TotalAnswerRequired = 21,
-                TotalTime = 15
-            });
-            //Format MockTest a2
-            var licenseTypeA2 = await _licenseTypeService.GetByDescAsync("A2");
-            formats.Add(new TheoryAddFormatModel()
-            {
-                Licensetype = licenseTypeA2.LicenseTypeDesc,
-                TotalQuestion = 25,
-                TotalAnswerRequired = 23,
-                TotalTime = 15
-            });
-            var licenseTypeB1 = await _licenseTypeService.GetByDescAsync("B1");
-            formats.Add(new TheoryAddFormatModel()
-            {
-                Licensetype = licenseTypeB1.LicenseTypeDesc,
-                TotalQuestion = 30,
-                TotalAnswerRequired = 27,
-                TotalTime = 20
-            });
-            var licenseTypeB2 = await _licenseTypeService.GetByDescAsync("B2");
-            formats.Add(new TheoryAddFormatModel()
-            {
-                Licensetype = licenseTypeB2.LicenseTypeDesc,
-                TotalQuestion = 35,
-                TotalAnswerRequired = 32,
-                TotalTime = 22
-            });
-
-            return Ok(new BaseResponse
-            {
-                StatusCode = StatusCodes.Status200OK,
-                Data = new
-                {
-                    LicenseTypes = licenseTypes,
-                    TheoryFormats = formats
-                }
-            });
-        }
-
-        // theory-exam/license-type/{id} -> d1 - d10
-        // exam-question/theory-exam-id
-
-        [HttpGet]
-        [Route("theory-exam/question-bank/{licenseId:int}/{page:int}")]
-        public async Task<IActionResult> GetQuestionBankWithLicenseId([FromRoute] int licenseId
-            , [FromRoute] int page = 1)
-        {
-            //memory caching
-            if (!_memoryCache.TryGetValue(_appSettings.TheoryCacheKey,
-                out IEnumerable<QuestionWithAnswersModel> questionWithAnswersModel))
-            {
-                List<QuestionWithAnswersModel> result = new List<QuestionWithAnswersModel>();
-                //get all questions
-                var questions = await _questionService.GetAllByLicenseId(licenseId);
-
-                foreach (QuestionModel qm in questions)
-                {
-                    qm.LicenseType = await _licenseTypeService.GetAsync(qm.LicenseTypeId);
-                }
-
-                //get answers for each question
-                foreach (QuestionModel question in questions)
-                {
-                    var answers = await _answerService.GetAllByQuestionId(question.QuestionId);
-                    if (answers is null)
-                    {
-                        return BadRequest(new ErrorResponse()
-                        {
-                            StatusCode = StatusCodes.Status400BadRequest,
-                            Message = "Something was wrong"
-                        });
-                    }
-                    result.Add(new QuestionWithAnswersModel
-                    {
-                        question = question,
-                        answers = answers
-                    });
-                    questionWithAnswersModel = result;
-                }
-
-                // cache options
-                var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    // none access exceeds 45s <- remove cache
-                    .SetSlidingExpiration(TimeSpan.FromSeconds(45))
-                    // after 10m from first access <- remove cache
-                    .SetAbsoluteExpiration(TimeSpan.FromSeconds(600))
-                // cache priority
-                    .SetPriority(CacheItemPriority.Normal);
-                // set cache
-
-                _memoryCache.Set(_appSettings.MembersCacheKey, questionWithAnswersModel, cacheEntryOptions);
-            }
-            else
-            {
-                questionWithAnswersModel = (IEnumerable<QuestionWithAnswersModel>)_memoryCache.Get(_appSettings.TheoryCacheKey);
-            }
-            //page size
-            int pageSize = _appSettings.TheoryPageSize;
-            //paging
-            var list = PaginatedList<QuestionWithAnswersModel>.CreateByIEnumerable(questionWithAnswersModel, page, pageSize);
-
-            //not found suitable question with answer
-            if (questionWithAnswersModel is null)
-            {
-                return BadRequest(new ErrorResponse()
-                {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = "Not found any suitable question-answers pair"
-                });
-            }
-            return Ok(new BaseResponse()
-            {
-                StatusCode = StatusCodes.Status200OK,
-                Data = new
-                {
-                    QuestionWithAnswer = questionWithAnswersModel,
-                    TotalPage = list.TotalPage,
-                }
-            });
-        }
-        
         [HttpPost]
         [Route("theory-exam/add-question")]
-        [Authorize (Roles = "Staff")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> AddQuestionToExam([FromForm] TheoryAddRequest reqObj)
         {
             int currentLicenceId = 0;
@@ -316,22 +176,75 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpGet]
         [Route("theory-exam/{theoryExamId:int}")]
-        public async Task<IActionResult> GetQuestionByTheoryId([FromRoute] int theoryExamId) 
+        public async Task<IActionResult> GetQuestionByTheoryId([FromRoute] int theoryExamId)
         {
             var theoryExam = await _theoryExamService.GetByIdAsync(theoryExamId);
-            if (theoryExam is null) 
+            if (theoryExam is null)
             {
-                return NotFound(new ErrorResponse() { 
-                    StatusCode= StatusCodes.Status404NotFound,
-                    Message ="không tìm thấy đề"
+                return NotFound(new ErrorResponse()
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = "không tìm thấy đề"
                 });
             }
-            return Ok(new BaseResponse() {
+            return Ok(new BaseResponse()
+            {
                 StatusCode = StatusCodes.Status200OK,
                 Data = theoryExam
             });
         }
+        [HttpGet]
+        [Route("theory-exam/licenseID/{licenseId:int}")]
+        public async Task<IActionResult> GetTheoryExamByLicenseId([FromRoute] int licenseId)
+        {
+            var theoryExams = await _theoryExamService.GetByLicenseTypeIdAsync(licenseId);
+            if (theoryExams is null)
+            {
+                return BadRequest(new ErrorResponse()
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "chưa có bộ đề nào"
+                });
+            }
+            else
+            {
+                return Ok(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = "tải thành công",
+                    Data = theoryExams
+                });
+            }
+        }
+
+        [HttpDelete]
+        [Route("theory-exam/{theoryID:int}")]
+        public async Task<IActionResult> DeleteTheoryExam([FromRoute] int theoryID)
+        {
+            bool hasHistory = await _theoryExamService.HasHistory(theoryID);
+            if (hasHistory)
+            {
+                return BadRequest(new ErrorResponse()
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Đề thi đã được làm, không thể xóa"
+                });
+
+            }
+            bool isSuccess = await _theoryExamService.RemoveTheoryExam(theoryID);
+            if (!isSuccess)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+            else
+            {
+                return Ok(new BaseResponse()
+                {
+                    StatusCode = StatusCodes.Status204NoContent,
+                    Message = "Xóa đề thành công"
+                });
+            }
+        }
 
     }
-
 }
