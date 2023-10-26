@@ -4,19 +4,20 @@ namespace DriverLicenseLearningSupport.Models
 {
     public class CourseModel
     {
-        public string CourseId { get; set; } = null!;
-        public string CourseTitle { get; set; } = null!;
-        public string CourseDesc { get; set; } = null!;
-        public double Cost { get; set; } = 0;
-        public int? TotalSession { get; set; } = null!;
-        public int? TotalMonth { get; set; } = null!;
-        public DateTime? StartDate { get; set; } = null!;
-        public bool? IsActive { get; set; } = null!;
-        public int LicenseTypeId { get; set; }
+        public string CourseId { get; set; }
+        public string CourseTitle { get; set; }
+        public string CourseDesc { get; set; }
+        public int? TotalMonth { get; set; }
+        public DateTime? StartDate { get; set; }
+        public bool? IsActive { get; set; }
+        public int? LicenseTypeId { get; set; }
+        public int? TotalHoursRequired { get; set; }
+        public int? TotalKmRequired { get; set; }
 
         public virtual LicenseTypeModel LicenseType { get; set; }
-        public virtual ICollection<FeedBackModel> FeedBacks { get; set; } = new List<FeedBackModel>();
-        public virtual ICollection<CurriculumModel> Curricula { get; set; } = new List<CurriculumModel>();
-        public virtual ICollection<StaffModel> Mentors { get; set; } = new List<StaffModel>();
+        public virtual ICollection<CoursePackageModel> CoursePackages { get; set; }
+        public virtual ICollection<FeedBackModel> FeedBacks { get; set; }
+        public virtual ICollection<CurriculumModel> Curricula { get; set; }
+        public virtual ICollection<StaffModel> Mentors { get; set; }
     }
 }

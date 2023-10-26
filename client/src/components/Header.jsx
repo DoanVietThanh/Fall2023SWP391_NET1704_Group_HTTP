@@ -156,7 +156,7 @@ const Header = () => {
         <div className='flex gap-16 text-[20px] font-medium uppercase'>
           {listNavigate.map((item, index) =>
             //kiem tra duong dan
-            item.link === currentLocation ? (
+            currentLocation.startsWith(item.link) ? (
               <Link to={item.link} className='curNav'>
                 {item.title}
               </Link>

@@ -49,7 +49,6 @@
     <Folder Include="Models\Momo\Lib\" />
     <Folder Include="Models\Momo\Response\" />
     <Folder Include="Models\Momo\Request\" />
-    <Folder Include="VnPay\Models\" />
   </ItemGroup>
 
 </Project>

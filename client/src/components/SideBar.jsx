@@ -19,9 +19,11 @@ import {
   BsClockHistory,
   BsEnvelopePaper,
   BsPerson,
+  BsPeople,
 } from 'react-icons/bs';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { logout } from '../features/auth/authSlice';
+import { Button, Menu, MenuItem } from '@mui/material';
 
 const drawerWidth = 240;
 
@@ -44,14 +46,41 @@ const listNavbar = [
     icon: <BsClockHistory size={20} />,
     navigate: '/history-test',
   },
+];
+
+const listNavbarManage = [
+  {
+    id: 1,
+    title: 'Thông tin cá nhân',
+    icon: <BsPerson size={20} />,
+    navigate: '/profile',
+  },
+  {
+    id: 2,
+    title: 'Quản lí người dùng',
+    icon: <BsPeople size={20} />,
+    navigate: '/manage-user',
+  },
+  {
+    id: 3,
+    title: 'Lịch dạy theo tuần',
+    icon: <BsCalendarEvent size={20} />,
+    navigate: '/week-schedule-mentor',
+  },
   {
     id: 4,
+    title: 'Lịch sử kiểm tra',
+    icon: <BsClockHistory size={20} />,
+    navigate: '/history-test',
+  },
+  {
+    id: 5,
     title: 'Quản lí câu hỏi',
     icon: <AiOutlineQuestionCircle size={20} />,
     navigate: '/manage-question',
   },
   {
-    id: 5,
+    id: 6,
     title: 'Quản lí đề thi',
     icon: <BsEnvelopePaper size={20} />,
     navigate: '/manage-banktest',
@@ -127,10 +156,17 @@ export default function SideBar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
+  const { accountInfo } = useSelector((state) => state.auth.user);
   const [open, setOpen] = useState(localStorage.getItem('showNav') || false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const openControl = Boolean(anchorEl);
 
   const { user, isLoading } = useSelector((state) => state.auth);
   const location = useLocation();
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
   const handleLogout = () => {
     dispatch(logout());
@@ -159,27 +195,65 @@ export default function SideBar() {
           </IconButton>
           <div className='w-full flex justify-between'>
             <div className='font-medium capitalize flex-x'>
-              {listNavbar.map((itemNav, index) =>
-                location.pathname === itemNav.navigate ? itemNav.title : ''
-              )}
+              {accountInfo?.emailNavigation.role.roleId === 4
+                ? listNavbar.map((itemNav, index) =>
+                    location.pathname === itemNav.navigate ? itemNav.title : ''
+                  )
+                : listNavbarManage.map((itemNav, index) =>
+                    location.pathname === itemNav.navigate ? itemNav.title : ''
+                  )}
             </div>
             <div className='flex-x gap-2'>
               <div>
-                <img
-                  src='/img/avtThanh.jpg'
-                  alt='avt'
-                  className='h-[40px] w-[40px] object-cover rounded-full'
-                />
+                <Button
+                  id='basic-button'
+                  aria-controls={openControl ? 'basic-menu' : undefined}
+                  aria-haspopup='true'
+                  aria-expanded={openControl ? 'true' : undefined}
+                  onClick={handleClick}
+                >
+                  <div className='flex justify-center items-center'>
+                    <div className='flex justify-center items-center'>
+                      <img
+                        src='/img/avtThanh.jpg'
+                        alt='Avatar'
+                        className='rounded-full w-[36px] h-[36px] object-cover'
+                      />
+                    </div>
+                    <h2 className='text-white text-[16px] pl-2'>
+                      {`${user.accountInfo?.firstName} ${user.accountInfo?.lastName}`}
+                    </h2>
+                  </div>
+                </Button>
+                <Menu
+                  id='basic-menu'
+                  anchorEl={anchorEl}
+                  open={openControl}
+                  onClose={() => setAnchorEl(null)}
+                  MenuListProps={{
+                    'aria-labelledby': 'basic-button',
+                  }}
+                >
+                  <MenuItem onClick={() => setAnchorEl(null)}>
+                    <Link to={`/profile`}>Cá nhân</Link>
+                  </MenuItem>
+                  <MenuItem onClick={() => setAnchorEl(null)}>
+                    Tài khoản
+                  </MenuItem>
+                  <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
+                </Menu>
               </div>
-              <p>Thanh Đoàn</p>
             </div>
           </div>
         </Toolbar>
       </AppBar>
+
       <Drawer variant='permanent' open={open}>
         <DrawerHeader>
           <div className='flex justify-between items-center w-full'>
-            <img src='/img/logo.png' alt='' className='h-[50px]' />
+            <Link to={`/`}>
+              <img src='/img/logo.png' alt='' className='h-[50px]' />
+            </Link>
             <p className='font-bold'>Http Team</p>
             <IconButton
               onClick={() => {
@@ -197,27 +271,35 @@ export default function SideBar() {
         </DrawerHeader>
         <div className='flex flex-col justify-between h-full'>
           <div>
-            {listNavbar.map((item, index) => (
-              <div
-                key={item.id}
-                // onClick={() => {
-                //   setTitleAppbar(item.title);
-                //   setToggleIndex(item.id);
-                // }}
-                // ${
-                //   index + 1 === toggleIndex && 'active text-white hover:active'
-                // }
-                onClick={() => navigate(item.navigate)}
-                className={`min-h-[48px] flex-x px-[20px] py-[8px] hover:opacity-80 hover:cursor-pointer `}
-              >
-                <div className='flex-x gap-[30px]'>
-                  {item.icon}
-                  <p className='cappitalize font-medium capitalize'>
-                    {item.title}
-                  </p>
-                </div>
-              </div>
-            ))}
+            {accountInfo?.emailNavigation.role.roleId === 4
+              ? listNavbar.map((item, index) => (
+                  <div
+                    key={item.id}
+                    onClick={() => navigate(item.navigate)}
+                    className={`min-h-[48px] flex-x px-[20px] py-[8px] hover:opacity-80 hover:cursor-pointer `}
+                  >
+                    <div className='flex-x gap-[30px]'>
+                      {item.icon}
+                      <p className='cappitalize font-medium capitalize'>
+                        {item.title}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              : listNavbarManage.map((item, index) => (
+                  <div
+                    key={item.id}
+                    onClick={() => navigate(item.navigate)}
+                    className={`min-h-[48px] flex-x px-[20px] py-[8px] hover:opacity-80 hover:cursor-pointer `}
+                  >
+                    <div className='flex-x gap-[30px]'>
+                      {item.icon}
+                      <p className='cappitalize font-medium capitalize'>
+                        {item.title}
+                      </p>
+                    </div>
+                  </div>
+                ))}
           </div>
           <div
             className={`min-h-[48px] flex-x px-[20px] py-[8px] mb-4 hover:opacity-80 hover:cursor-pointer btn rounded-none`}
@@ -232,16 +314,6 @@ export default function SideBar() {
           </div>
         </div>
       </Drawer>
-      {/* <Box component='main' sx={{ flexGrow: 1, p: 3 }}>
-        <DrawerHeader />
-        <div className='h-[80vh] w-full rounded overflow-y-auto'>
-          {toggleIndex === 1 && <Profile accountInfo={user.accountInfo} />}
-          {toggleIndex === 2 && <WeekSchedule />}
-          {toggleIndex === 3 && <HistoryTest />}
-          {toggleIndex === 4 && <ManageQuestion />}
-          {toggleIndex === 5 && <ManageBankTest />}
-        </div>
-      </Box> */}
     </Box>
   );
 }

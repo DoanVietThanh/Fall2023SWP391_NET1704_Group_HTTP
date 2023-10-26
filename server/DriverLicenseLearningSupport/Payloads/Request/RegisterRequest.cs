@@ -58,7 +58,7 @@ namespace DriverLicenseLearningSupport.Payloads.Request
                 DateBirth = DateTime.ParseExact(reqObj.DateBirth, formatDate,
                 CultureInfo.InvariantCulture),
                 Phone = reqObj.Phone,
-                LicenseTypeId = reqObj.LicenseTypeId,
+                LicenseTypeId = reqObj.LicenseTypeId
             };
         }
 

@@ -1,9 +1,9 @@
+import * as dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import Header from '../../components/Header';
 import theme from '../../theme';
-import * as dayjs from 'dayjs';
 
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
@@ -11,7 +11,6 @@ import TabPanel from '@mui/lab/TabPanel';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import {
-  AiFillEye,
   AiFillFacebook,
   AiFillStar,
   AiFillTwitterCircle,
@@ -28,32 +27,27 @@ import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import { toastError, toastSuccess } from './../../components/Toastify';
-import axiosClient from '../../utils/axiosClient';
-import Loading from '../../components/Loading';
 import { Textarea } from '@mui/joy';
 import { BsFillArrowRightCircleFill } from 'react-icons/bs';
+import { useSelector } from 'react-redux';
+import Loading from '../../components/Loading';
+import axiosClient from '../../utils/axiosClient';
+import { toastError } from './../../components/Toastify';
+import DialogReservation from './components/DialogReservation';
 
 const DetailCourse = () => {
-  const navigate = useNavigate();
+  const { memberId } = useSelector((state) => state?.auth?.user?.accountInfo);
   const { idCourse } = useParams();
   const [course, setCourse] = useState();
 
   const [value, setValue] = useState('1');
+  const [totalMember, setTotalMember] = useState(0);
   const [selectedMentor, setSelectedMentor] = useState('');
   const [open, setOpen] = useState(false);
   const [paymentList, setPaymentList] = useState([]);
+  const [typePayment, setTypePayment] = useState(1);
+  const [coursePackage, setCoursePackage] = useState([]);
+  const [selectedCoursePackage, setSelectedCoursePackage] = useState();
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -63,15 +57,20 @@ const DetailCourse = () => {
     setSelectedMentor(event.target.value);
   };
 
-  const handleClickOpen = () => setOpen(true);
+  const handleClickOpen = (e) => {
+    e.preventDefault();
+    setOpen(true);
+  };
 
   const handleClose = () => setOpen(false);
 
   useEffect(() => {
     async function courseDetail() {
       const res = await axiosClient.get(`/courses/${idCourse}`);
-      const payment = await axiosClient.get(`/courses/reservation`);
+      setCoursePackage(res?.data?.data.course.coursePackages);
+      const payment = await axiosClient.get(`/courses/packages/reservation`);
       if (res?.data.statusCode === 200 && payment?.data.statusCode === 200) {
+        setTotalMember(res?.data?.data.totalMember);
         setCourse(res?.data?.data?.course);
         setPaymentList(payment?.data?.data);
       } else {
@@ -84,15 +83,42 @@ const DetailCourse = () => {
   console.log('course: ', course);
   console.log('paymentList: ', paymentList);
 
+  const submitPayment = async () => {
+    // window.location.href =
+    //   'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=12000000&vnp_Command=pay&vnp_CreateDate=20231013232532&vnp_CurrCode=VND&vnp_IpAddr=%3A%3A1&vnp_Locale=vn&vnp_OrderInfo=Thanh+to%C3%A1n+Kh%C3%B3a+h%E1%BB%8Dc+b%E1%BA%B1ng+l%C3%A1i+B1&vnp_OrderType=other&vnp_ReturnUrl=http%3A%2F%2Flocalhost%3A8082%2Fapi%2Fpayment%2Fvnpay-return&vnp_TmnCode=WR9WZI0K&vnp_TxnRef=5c908503-4a66-45fb-ab59-5422cdc54427&vnp_Version=2.1.0&vnp_SecureHash=734d39f3aa6032940e853936afe4c12526407e39e324871740eee1a413182af996ef479f97c4778bd04c8fbde7e7d2fe0e6d61250a07d1944c8a111fc57bae61';
+    try {
+      const resReservation = await axiosClient.post(
+        `/courses/packages/reservation`,
+        {
+          memberId,
+          mentorId: selectedMentor,
+          paymentTypeId: typePayment,
+          paymentAmount: course?.cost,
+          courseId: course?.courseId,
+        }
+      );
+      console.log('resReservation: ', resReservation);
+      const resPayment = await axiosClient.post(
+        `/api/payment`,
+        resReservation?.data?.data
+      );
+      console.log('resPayment:', resPayment);
+      window.location.href = resPayment?.data?.data.paymentUrl;
+    } catch (error) {
+      toastError(error);
+    }
+  };
+
+  console.log(coursePackage);
   return (
     <>
       <Header />
 
       {course ? (
-        <div className='flex p-8 gap-4'>
-          <div className='flex-1 p-4 border'>
+        <div className='p-8'>
+          <div className='p-4 border'>
             <div className='min-h-[300px]'>
-              <div>
+              {/* <div>
                 <iframe
                   width='100%'
                   height='600px'
@@ -103,33 +129,40 @@ const DetailCourse = () => {
                   allowfullscreen
                   className='rounded-lg'
                 ></iframe>
+              </div> */}
+              <div>
+                <img
+                  className='w-full'
+                  src='https://daylaixethanhcong.vn/wp-content/uploads/2023/02/khoa-hoc-B1-giam-2.900-scaled.jpg'
+                  alt='hinhdemo'
+                />
               </div>
-
               <div className='py-6 flex gap-8'>
                 <div className='flex-x gap-2 border-r-2 pr-8'>
                   <MdOutlinePeopleAlt className='text-blue-700' size={20} />{' '}
-                  Student ????
+                  Student : {totalMember}
                 </div>
-                <div className='flex-x gap-2'>
-                  <AiFillEye className='text-blue-700' size={20} /> Views ????
-                </div>
+                {/* <div className='flex-x gap-2'>
+                  <AiFillEye className='text-blue-700' size={20} />
+                </div> */}
               </div>
 
               <h1 className='font-bold text-[30px]'>{course.courseTitle}</h1>
 
               <div className='pt-4 flex gap-8'>
-                <div className='flex-x gap-2 border-r-2 pr-8'>
+                {/* <div className='flex-x gap-2 border-r-2 pr-8'>
                   <BsPersonCircle className='text-blue-700' size={30} />
                   <div>
                     <p className='font-medium'>Giảng viên:</p>
                     <p>{`${course?.mentors[0].firstName} ${course?.mentors[0].lastName}`}</p>
                   </div>
-                </div>
+                </div> */}
                 <div className='flex-x gap-2 border-r-2 pr-8'>
                   <div>
                     <p className='font-medium'>Loại bằng:</p>
                     <p className='text-center'>
-                      {course?.licenseType?.licenseTypeDesc}
+                      {/* {course?.licenseType?.licenseTypeDesc} */}
+                      B1
                     </p>
                   </div>
                 </div>
@@ -302,7 +335,7 @@ const DetailCourse = () => {
                             <img
                               alt='avt'
                               className='w-[160px] h-[160px] object-cover rounded-full'
-                              src='/img/avtThanh.jpg'
+                              src={item?.avatarImage}
                             />
                           </div>
                           <div className='flex-1 flex flex-col justify-between pl-4 border-l-2 text-[20px]'>
@@ -350,7 +383,7 @@ const DetailCourse = () => {
                               <div className='flex items-center gap-4'>
                                 <BsFillArrowRightCircleFill className='text-yellow-700' />
                                 <span className='capitalize text-yellow-700'>
-                                  Xem thêm ...
+                                  Xem chi tiết ...
                                 </span>
                               </div>
                             </Link>
@@ -395,7 +428,7 @@ const DetailCourse = () => {
                           <img
                             src='/img/avtThanh.jpg'
                             alt='avt'
-                            className='w-[140px] h-[140px] object-cover rounded-lg'
+                            className='w-[140px] h-[140px] object-cover rou nded-lg'
                           />
                         </div>
                         <div className='flex-1 border flex flex-col gap-2 p-4'>
@@ -449,94 +482,85 @@ const DetailCourse = () => {
             </div>
           </div>
 
-          <div className='w-[25%] p-4 border flex flex-col gap-4'>
-            <div className='px-8'>
-              <img src='/img/course1.png' alt='' className='w-full' />
+          {coursePackage && (
+            <div className='my-4'>
+              <h1 className='font-bold text-[30px] text-yellow-700 text-center cappitalize'>
+                Chọn gói liên quan
+              </h1>
+              <div className='flex gap-4'>
+                {coursePackage?.map((item, index) => (
+                  <div className='p-4 border flex-1'>
+                    <h1 className='text-center font-bold text-[26px]'>
+                      {item?.coursePackageDesc}
+                    </h1>
+                    <ul className='my-4 list-disc pl-[20%] font-bold'>
+                      {item?.cost && (
+                        <li>
+                          {`Ưu đãi: Từ `}
+                          <span className='text-red-700 text-[20px]'>
+                            {item?.cost}{' '}
+                          </span>
+                          VNĐ khi đăng kí Online
+                        </li>
+                      )}
+                      <li>
+                        {`Học phí `}
+                        <span className='text-yellow-500'>trọn gói 100%</span>
+                      </li>
+                      {item?.totalSession && (
+                        <li>
+                          Số buổi học:{' '}
+                          <span className='text-green-900 font-bold '>
+                            {item?.totalSession}
+                          </span>
+                        </li>
+                      )}
+
+                      {item?.sessionHour && (
+                        <li>
+                          Thời lượng mỗi buổi học:{' '}
+                          <span className='text-green-900 font-bold'>
+                            {item?.sessionHour}
+                          </span>
+                        </li>
+                      )}
+                      <li>Học gần nhà, thời gian linh hoạt</li>
+                      <li>Học 1 thầy 1 trò</li>
+                      <li className='font-semibold'>
+                        Cam kết KHÔNG phát sinh thêm chi phí
+                      </li>
+                      {item?.ageRequired && (
+                        <li>
+                          Yêu cầu tuổi phải trên{' '}
+                          <span className='text-red-700'>
+                            {item?.ageRequired}
+                          </span>
+                        </li>
+                      )}
+                    </ul>
+                    <div className='flex justify-center mt-4'>
+                      <button
+                        className='btn'
+                        onClick={() => {
+                          setOpen(true);
+                          setSelectedCoursePackage(item);
+                        }}
+                      >
+                        Đăng ký ngay
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
+          )}
 
-            <h2 className='text-center font-medium  text-[24px] mb-4'>
-              Tổng:{' '}
-              <span className='text-green-700'>
-                {course?.totalSession} buổi học
-              </span>
-            </h2>
-            <h2 className='text-center font-medium text-[24px] mb-4'>
-              Kéo dài:{' '}
-              <span className='text-green-700'>{course?.totalMonth} tháng</span>
-            </h2>
-
-            <h2 className='text-center font-medium text-[24px] mb-4'>
-              Ngày khai giảng:{' '}
-              <span className='text-green-800'>
-                {dayjs(course?.startDate).format('DD/MM/YYYY')}
-              </span>
-            </h2>
-            <p className='text-center font-medium text-[24px]'>
-              Giá tiền:{' '}
-              <span className='text-yellow-700'>${course?.cost} VND</span>
-            </p>
-
-            <Box sx={{ minWidth: 120 }}>
-              <FormControl fullWidth>
-                <InputLabel id='demo-simple-select-label'>Chọn GV</InputLabel>
-                <Select
-                  labelId='demo-simple-select-label'
-                  id='demo-simple-select'
-                  value={selectedMentor}
-                  label='Thầy Thanh'
-                  onChange={handleSelectMentor}
-                  defaultValue={10}
-                  required
-                >
-                  {course?.mentors?.map((mentor, index) => (
-                    <MenuItem value={mentor.staffId}>
-                      GV. {`${mentor.firstName} ${mentor.lastName}`}{' '}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <button className='btn' type='submit' onClick={handleClickOpen}>
-                  Thanh Toán
-                </button>
-              </FormControl>
-            </Box>
-          </div>
-
-          <Dialog
+          <DialogReservation
             open={open}
-            onClose={handleClose}
-            aria-labelledby='alert-dialog-title'
-            aria-describedby='alert-dialog-description'
-          >
-            <div className='p-4'>
-              <DialogTitle id='alert-dialog-title'>
-                {'Chọn phương thức thanh toán?'}
-              </DialogTitle>
-              <DialogContent>
-                <form action=''>
-                  <select name='' id='' className='p-2 border'>
-                    {paymentList?.map((payItem, index) => (
-                      <option value={payItem?.paymentTypeId} className='px-2'>
-                        {payItem?.paymentTypeDesc}
-                      </option>
-                    ))}
-                  </select>
-                </form>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleClose}>Hủy</Button>
-
-                <button
-                  className='btn'
-                  onClick={() => {
-                    toastSuccess('Thanh toán thành công');
-                    navigate('/home');
-                  }}
-                >
-                  Xác nhận
-                </button>
-              </DialogActions>
-            </div>
-          </Dialog>
+            setOpen={setOpen}
+            selectedCoursePackage={selectedCoursePackage}
+            course={course}
+          />
         </div>
       ) : (
         <Loading />

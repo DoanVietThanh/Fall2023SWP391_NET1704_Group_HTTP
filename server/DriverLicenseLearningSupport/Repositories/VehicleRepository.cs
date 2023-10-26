@@ -3,6 +3,7 @@ using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Repositories.Impl;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.InteropServices;
 
 namespace DriverLicenseLearningSupport.Repositories
 {
@@ -26,6 +27,26 @@ namespace DriverLicenseLearningSupport.Repositories
             return _mapper.Map<VehicleModel>(vehicle);
         }
 
+        public async Task<IEnumerable<VehicleModel>> GetAllActiveVehicleByType(int vehicleTypeId)
+        {
+            var vehicles = await _context.Vehicles.Where(x => x.IsActive == true
+                                                           && x.VehicleTypeId == vehicleTypeId)
+                                                  .ToListAsync();
+            return _mapper.Map<IEnumerable<VehicleModel>>(vehicles);
+        }
+        public async Task<IEnumerable<VehicleModel>> GetAllInActiveVehicleByType(int vehicleTypeId)
+        {
+            var vehicles = await _context.Vehicles.Where(x => x.IsActive == false
+                                                           && x.VehicleTypeId == vehicleTypeId)
+                                                  .ToListAsync();
+            return _mapper.Map<IEnumerable<VehicleModel>>(vehicles);
+        }
+        public async Task<IEnumerable<VehicleModel>> GetAllByVehicleTypeIdAsync(int vehicleTypeId)
+        {
+            var vehicles = await _context.Vehicles.Where(x => x.VehicleTypeId == vehicleTypeId).ToListAsync();
+            return _mapper.Map<IEnumerable<VehicleModel>>(vehicles);
+        }
+
         public async Task<IEnumerable<VehicleTypeModel>> GetAllVehicleTypeAsync()
         {
             var vehicleTypes = await _context.VehicleTypes.Select(x => new VehicleType { 
@@ -37,17 +58,44 @@ namespace DriverLicenseLearningSupport.Repositories
             return _mapper.Map<IEnumerable<VehicleTypeModel>>(vehicleTypes);
         }
 
-        public async Task<VehicleModel> GetByLicenseTypeIdAsync(int licenseTypeId)
+        public async Task<VehicleModel> GetVehicleByVehicleTypeAsync(int vehicleTypeId)
         {
-            var vehicleEntity = await _context.Vehicles.Select(x => new Vehicle { 
-                VehicleId = x.VehicleId,
-                VehicleName = x.VehicleName,
-                RegisterDate = x.RegisterDate,
-                VehicleLicensePlate = x.VehicleLicensePlate,
-                VehicleTypeId = x.VehicleTypeId,
-                VehicleType = x.VehicleType,
-            }).FirstOrDefaultAsync();
-            return _mapper.Map<VehicleModel>(vehicleEntity);
+            var vehicles = await _context.Vehicles.Where(x => x.VehicleTypeId == vehicleTypeId
+                                                        && x.IsActive == true).ToListAsync();
+            if(vehicles.Count() > 0)
+            {
+                return _mapper.Map<VehicleModel>(vehicles.FirstOrDefault());
+            }
+            return null!;
+        }
+
+        public async Task<VehicleTypeModel> GetVehicleTypeByLicenseTypeAsync(int licenseTypeId)
+        {
+            var vehicleType = await _context.VehicleTypes.Where(x => x.LicenseTypeId == licenseTypeId)
+                .FirstOrDefaultAsync();
+            return _mapper.Map<VehicleTypeModel>(vehicleType);
+        }
+
+        public async Task<bool> UpdateActiveStatusAsync(int vehicleId)
+        {
+            var vehicle = await _context.Vehicles.Where(x => x.VehicleId == vehicleId)
+                    .FirstOrDefaultAsync();
+
+            if(vehicle is not null)
+            {
+                // update status
+                vehicle.IsActive = false;
+
+                return await _context.SaveChangesAsync() > 0;
+            }
+            return false;
+        }
+
+        public async Task<VehicleModel> GetAsync(int vehicleId)
+        {
+            var vehicle = await _context.Vehicles.Where(x => x.VehicleId == vehicleId)
+                                                 .FirstOrDefaultAsync();
+            return _mapper.Map<VehicleModel>(vehicle);
         }
     }
 }

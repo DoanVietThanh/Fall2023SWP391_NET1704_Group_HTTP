@@ -1,12 +1,9 @@
 ﻿using DocumentFormat.OpenXml.Bibliography;
 using DriverLicenseLearningSupport.Entities;
+using DriverLicenseLearningSupport.Models.Config;
+using DriverLicenseLearningSupport.Payloads.Request;
 using DriverLicenseLearningSupport.Payloads.Response;
 using DriverLicenseLearningSupport.Services.Impl;
-using DriverLicenseLearningSupport.VnPay.Base;
-using DriverLicenseLearningSupport.VnPay.Config;
-using DriverLicenseLearningSupport.VnPay.Extensions;
-using DriverLicenseLearningSupport.VnPay.Request;
-using DriverLicenseLearningSupport.VnPay.Response;
 using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -24,14 +21,14 @@ namespace DriverLicenseLearningSupport.Controllers
     public class PaymentsController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly ICourseReservationService _courseReservationService;
+        private readonly ICoursePackageReservationService _courseReservationService;
         private readonly VnPayConfig _vnPayConfig;
 
         /// <summary>
         /// Constructor
         /// </summary>
         public PaymentsController(IMediator mediator,
-            ICourseReservationService coureReservationService,
+            ICoursePackageReservationService coureReservationService,
             IOptionsMonitor<VnPayConfig> monitor)
         {
             _mediator = mediator;
@@ -69,7 +66,8 @@ namespace DriverLicenseLearningSupport.Controllers
 
             //update course Reservation Status
             var courseReservation = await _courseReservationService.UpdatePaymentStatusAsync(
-                Guid.Parse(response?.vnp_TxnRef));
+                Guid.Parse(response?.vnp_TxnRef),
+                Convert.ToDouble(response.vnp_Amount));
 
             var processResult = await _mediator.Send(response.Adapt(new ProcessVnpayResponse()));
 
@@ -79,13 +77,15 @@ namespace DriverLicenseLearningSupport.Controllers
                 returnModel = processResult.Data.Item1 as PaymentReturnResponse;
 
                 returnUrl = Url.Action("PaymentNotification", "Payments",
-                    values: new { Success = true },
+                    string.Empty,
+                    //values: new { Success = true },
                     Request.Scheme, host: "localhost:3000");
             }
             else
             {
                 returnUrl = Url.Action("PaymentNotification", "Payments",
-                    values: new { Sucess = false },
+                    string.Empty,
+                    //values: new { Sucess = false },
                     Request.Scheme, host: "localhost:3000");
             }
 

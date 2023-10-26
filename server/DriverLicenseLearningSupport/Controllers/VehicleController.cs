@@ -51,7 +51,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpPost]
         [Route("vehicles/add")]
-        public async Task<IActionResult> AddVehicle([FromBody] VehicleAddRequest reqObj)
+        public async Task<IActionResult> AddVehicle([FromForm] VehicleAddRequest reqObj)
         {
             // generate vehicle model
             var vehicle = reqObj.ToVehicleModel(_appSettings.DateFormat);

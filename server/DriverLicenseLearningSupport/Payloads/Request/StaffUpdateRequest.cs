@@ -17,7 +17,7 @@ namespace DriverLicenseLearningSupport.Payloads.Request
         [Required(ErrorMessage = "Vui lòng nhập số điện thoại")]
         public string Phone { get; set; }
         // avatar image
-        public IFormFile AvatarImage { get; set; }
+        public IFormFile? AvatarImage { get; set; }
 
 
         // Address Info

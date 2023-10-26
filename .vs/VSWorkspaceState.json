@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\client\\src\\pages",
+    "\\server",
+    "\\server\\DriverLicenseLearningSupport",
+    "\\server\\DriverLicenseLearningSupport\\Controllers",
+    "\\server\\DriverLicenseLearningSupport\\Repositories"
+  ],
+  "SelectedNode": "\\server\\DriverLicenseLearningSupport\\Controllers\\AuthenticationController.cs",
+  "PreviewInSolutionExplorer": false
+}

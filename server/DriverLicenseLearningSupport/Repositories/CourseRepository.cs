@@ -35,6 +35,15 @@ namespace DriverLicenseLearningSupport.Repositories
             course.CourseDesc = WebUtility.HtmlDecode(course.CourseDesc);
             return _mapper.Map<CourseModel>(course);
         }
+        public async Task<CoursePackageModel> CreatePackageAsync(CoursePackage coursePackage)
+        {
+            // add package
+            await _context.CoursePackages.AddAsync(coursePackage);
+            // save changes
+            bool isSucess = await _context.SaveChangesAsync() > 0 ? true : false;
+            if (!isSucess) return null!; 
+            return _mapper.Map<CoursePackageModel>(coursePackage);
+        }
         public async Task<CourseModel> GetAsync(Guid id)
         {
             // get course by id 
@@ -45,9 +54,9 @@ namespace DriverLicenseLearningSupport.Repositories
                                                     CourseId = x.CourseId,
                                                     CourseDesc = x.CourseDesc,
                                                     CourseTitle = x.CourseTitle,
-                                                    Cost = x.Cost,
                                                     IsActive = x.IsActive,
-                                                    TotalSession = x.TotalSession,
+                                                    TotalHoursRequired = x.TotalHoursRequired,
+                                                    TotalKmRequired = x.TotalKmRequired,
                                                     TotalMonth = x.TotalMonth,
                                                     StartDate = x.StartDate,
                                                     Curricula = x.Curricula.Select(c => new Curriculum
@@ -58,13 +67,15 @@ namespace DriverLicenseLearningSupport.Repositories
                                                     }).ToList(),
                                                     Mentors = x.Mentors,
                                                     LicenseType = x.LicenseType,
+                                                    LicenseTypeId = x.LicenseTypeId,
                                                     FeedBacks = x.FeedBacks.Select(x => new FeedBack {
                                                         FeedbackId = x.FeedbackId,
                                                         Content = x.Content,
                                                         RatingStar = x.RatingStar,
                                                         CreateDate = x.CreateDate,
                                                         Member = x.Member
-                                                    }).ToList()
+                                                    }).ToList(),
+                                                    CoursePackages = x.CoursePackages
                                                 }).FirstOrDefaultAsync();
 
             if (course is not null)
@@ -87,9 +98,10 @@ namespace DriverLicenseLearningSupport.Repositories
                                                             CourseId = x.CourseId,
                                                             CourseDesc = x.CourseDesc,
                                                             CourseTitle = x.CourseTitle,
-                                                            Cost = x.Cost,
+                                                            TotalKmRequired = x.TotalKmRequired,
+                                                            TotalHoursRequired = x.TotalHoursRequired,
+                                                            TotalMonth = x.TotalMonth,
                                                             IsActive = x.IsActive,
-                                                            TotalSession = x.TotalSession,
                                                             Curricula = x.Curricula.Select(c => new Curriculum
                                                             {
                                                                 CurriculumId = c.CurriculumId,
@@ -97,7 +109,15 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                 CurriculumDetail = c.CurriculumDetail
                                                             }).ToList()
                                                         }).FirstOrDefaultAsync();
-            return _mapper.Map<CourseModel>(courseEntity);
+            if (courseEntity is not null)
+            {
+
+                // decode text editor
+                courseEntity.CourseDesc = WebUtility.HtmlDecode(courseEntity.CourseDesc);
+                // response model
+                return _mapper.Map<CourseModel>(courseEntity);
+            }
+            return null;
         }
         public async Task<CourseModel> GetByMentorIdAsync(Guid mentorId)
         {
@@ -107,9 +127,9 @@ namespace DriverLicenseLearningSupport.Repositories
                                                     CourseId = x.CourseId,
                                                     CourseDesc = x.CourseDesc,
                                                     CourseTitle = x.CourseTitle,
-                                                    Cost = x.Cost,
                                                     IsActive = x.IsActive,
-                                                    TotalSession = x.TotalSession,
+                                                    TotalHoursRequired = x.TotalHoursRequired,
+                                                    TotalKmRequired = x.TotalKmRequired,
                                                     TotalMonth = x.TotalMonth,
                                                     StartDate = x.StartDate,
                                                     Curricula = x.Curricula.Select(c => new Curriculum
@@ -118,7 +138,8 @@ namespace DriverLicenseLearningSupport.Repositories
                                                         CurriculumDesc = c.CurriculumDesc,
                                                         CurriculumDetail = c.CurriculumDetail
                                                     }).ToList(),
-                                                    Mentors = x.Mentors
+                                                    Mentors = x.Mentors,
+                                                    LicenseTypeId = x.LicenseTypeId
                                                 }).ToListAsync();
             foreach (var c in courses)
             {
@@ -138,9 +159,9 @@ namespace DriverLicenseLearningSupport.Repositories
                                                     CourseId = x.CourseId,
                                                     CourseDesc = x.CourseDesc,
                                                     CourseTitle = x.CourseTitle,
-                                                    Cost = x.Cost,
+                                                    TotalKmRequired = x.TotalKmRequired,
                                                     IsActive = x.IsActive,
-                                                    TotalSession = x.TotalSession,
+                                                    TotalHoursRequired = x.TotalHoursRequired,
                                                     TotalMonth = x.TotalMonth,
                                                     StartDate = x.StartDate,
                                                     Curricula = x.Curricula.Select(c => new Curriculum
@@ -149,7 +170,8 @@ namespace DriverLicenseLearningSupport.Repositories
                                                         CurriculumDesc = c.CurriculumDesc,
                                                         CurriculumDetail = c.CurriculumDetail
                                                     }).ToList(),
-                                                    Mentors = x.Mentors
+                                                    Mentors = x.Mentors,
+                                                    LicenseTypeId = x.LicenseTypeId
                                                 }).ToListAsync();
             foreach (var c in courses)
             {
@@ -160,6 +182,22 @@ namespace DriverLicenseLearningSupport.Repositories
                 }
             }
             return null;
+        }
+        public async Task<CoursePackageModel> GetPackageAsync(Guid packageId)
+        {
+            var coursePackageEntity = await _context.CoursePackages.Where(x => x.CoursePackageId == packageId.ToString())
+                                                                   .Select(x => new CoursePackage { 
+                                                                        CoursePackageId = x.CoursePackageId,
+                                                                        CoursePackageDesc = x.CoursePackageDesc,
+                                                                        Cost = x.Cost,
+                                                                        AgeRequired = x.AgeRequired,
+                                                                        Course = x.Course,
+                                                                        // Optional
+                                                                        SessionHour = x.SessionHour,
+                                                                        TotalSession = x.TotalSession
+                                                                    })
+                                                                   .FirstOrDefaultAsync();
+            return _mapper.Map<CoursePackageModel>(coursePackageEntity);
         }
         public async Task<IEnumerable<CourseModel>> GetAllAsync()
         {
@@ -173,8 +211,6 @@ namespace DriverLicenseLearningSupport.Repositories
                                                     CourseId = x.CourseId,
                                                     CourseTitle = x.CourseTitle,
                                                     CourseDesc = x.CourseDesc,
-                                                    Cost = x.Cost,
-                                                    TotalSession = x.TotalSession,
                                                     TotalMonth = x.TotalMonth,
                                                     StartDate = x.StartDate,
                                                     IsActive = x.IsActive,
@@ -231,8 +267,8 @@ namespace DriverLicenseLearningSupport.Repositories
                 // update fields
                 courseEntity.CourseTitle = course.CourseTitle;
                 courseEntity.CourseDesc = course.CourseDesc;
-                courseEntity.Cost = course.Cost;
-                courseEntity.TotalSession = course.TotalSession;
+                courseEntity.TotalHoursRequired = course.TotalHoursRequired;
+                courseEntity.TotalKmRequired = course.TotalKmRequired;
 
                 // save changes
                 return await _context.SaveChangesAsync() > 0 ? true : false;
@@ -250,9 +286,7 @@ namespace DriverLicenseLearningSupport.Repositories
                                                     CourseId = x.CourseId,
                                                     CourseDesc = x.CourseDesc,
                                                     CourseTitle = x.CourseTitle,
-                                                    Cost = x.Cost,
                                                     IsActive = x.IsActive,
-                                                    TotalSession = x.TotalSession,
                                                     Curricula = x.Curricula.Select(c => new Curriculum
                                                     {
                                                         CurriculumId = c.CurriculumId,
@@ -290,6 +324,10 @@ namespace DriverLicenseLearningSupport.Repositories
             }
             return false;
         }
+        //public Task<bool> DeletePackageAsync(Guid id)
+        //{
+        //    var coursePackage = _context.CoursePackages
+        //}
         public async Task<bool> HideCourseAsync(Guid id)
         {
             // get course by id
@@ -318,6 +356,22 @@ namespace DriverLicenseLearningSupport.Repositories
                 return await _context.SaveChangesAsync() > 0 ? true : false;
             }
             // save change failed
+            return false;
+        }
+        public async Task<bool> UpdatePackageAsync(Guid packageId, CoursePackage package)
+        {
+            var packageEntity = await _context.CoursePackages.Where(x => x.CoursePackageId == packageId.ToString())
+                                                             .FirstOrDefaultAsync();
+            if (packageEntity is not null)
+            {
+                packageEntity.CoursePackageDesc = package.CoursePackageDesc;
+                packageEntity.Cost = package.Cost;
+                packageEntity.TotalSession = package.TotalSession;
+                packageEntity.SessionHour = package.SessionHour;
+                packageEntity.AgeRequired = package.AgeRequired;
+
+                return await _context.SaveChangesAsync() > 0 ? true : false;
+            }
             return false;
         }
 

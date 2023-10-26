@@ -1,4 +1,5 @@
 ﻿using DriverLicenseLearningSupport.Models;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 
 namespace DriverLicenseLearningSupport.Payloads.Request
@@ -10,7 +11,8 @@ namespace DriverLicenseLearningSupport.Payloads.Request
         // course Id
         public string? CourseId { get; set; }
         // content
-        public string? Content { get; set; }
+        [Required(ErrorMessage = "Please input feedback content")]
+        public string Content { get; set; }
         // rating star
         public int RatingStar { get; set; }
     }

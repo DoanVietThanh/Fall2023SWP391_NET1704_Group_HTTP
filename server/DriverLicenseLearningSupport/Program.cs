@@ -9,11 +9,6 @@ using DriverLicenseLearningSupport.Repositories;
 using DriverLicenseLearningSupport.Repositories.Impl;
 using DriverLicenseLearningSupport.Services;
 using DriverLicenseLearningSupport.Services.Impl;
-using DriverLicenseLearningSupport.VnPay.Base;
-using DriverLicenseLearningSupport.VnPay.Config;
-using DriverLicenseLearningSupport.VnPay.Interface;
-using DriverLicenseLearningSupport.VnPay.Request;
-using DriverLicenseLearningSupport.VnPay.Response;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -40,6 +35,8 @@ builder.Services.AddDbContext<DriverLicenseLearningSupportContext>(options =>
 // Add AppSettings 
 var appSettings = builder.Configuration.GetSection("AppSettings");
 builder.Services.Configure<AppSettings>(appSettings);
+var courseSettings = builder.Configuration.GetSection("CourseSettings");
+builder.Services.Configure<CourseSettings>(courseSettings);
 
 // Add VnPay config 
 var vnpayConfig = builder.Configuration.GetSection("VNPAY");
@@ -78,7 +75,7 @@ builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<IPaymentTypeService, PaymentTypeService>();
 builder.Services.AddScoped<IWeekDayScheduleService, WeekDayScheduleService>();
 builder.Services.AddScoped<ISlotService, SlotService>();
-builder.Services.AddScoped<ICourseReservationService, CourseReservationService>();
+builder.Services.AddScoped<ICoursePackageReservationService, CoursePackageReservationService>();
 builder.Services.AddScoped<IVehicleService, VehicleService>();
 builder.Services.AddScoped<ITeachingScheduleService, TeachingScheduleService>();
 builder.Services.AddScoped<IQuestionService, QuestionService>();
@@ -104,7 +101,7 @@ builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 builder.Services.AddScoped<IPaymentTypeRepository, PaymentTypeRepository>();
 builder.Services.AddScoped<IWeekDayScheduleRepository, WeekDayScheduleRepository>();
 builder.Services.AddScoped<ISlotRepository, SlotRepository>();
-builder.Services.AddScoped<ICourseReservationRepository, CourseReservationRepository>();
+builder.Services.AddScoped<ICoursePackageReservationRepository, CoursePackageReservationRepository>();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<ITeachingScheduleRepository, TeachingScheduleRepository>();
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();

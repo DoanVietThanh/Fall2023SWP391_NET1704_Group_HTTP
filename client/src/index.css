@@ -182,3 +182,27 @@ tr td:first-child {
   text-align: center;
   border: 2px solid #000;
 }
+
+.moreDetail{
+  display: none;
+ }
+
+.mentor:hover .moreDetail{
+  display: block;
+}
+.mentor:hover .imgMentor{
+  opacity: 0.2;
+}
+
+
+.moreDetail{
+  display: none;
+ }
+
+.mentor:hover .moreDetail{
+  display: block;
+}
+.mentor:hover .imgMentor{
+  opacity: 0.2;
+}
+
