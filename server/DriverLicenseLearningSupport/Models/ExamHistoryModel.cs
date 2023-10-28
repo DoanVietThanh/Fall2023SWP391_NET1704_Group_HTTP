@@ -13,6 +13,7 @@ namespace DriverLicenseLearningSupport.Models
         public int? TotalTime { get; set; }
         public bool? WrongParalysisQuestion { get; set; }
         public bool? IsPassed { get; set; }
+        public string? TheoryExamDesc { get; set; }
 
         public DateTime? Date { get; set; }
         public virtual MemberModel Member { get; set; }

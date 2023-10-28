@@ -683,7 +683,7 @@ namespace DriverLicenseLearningSupport.Controllers
             }
 
             // check already exist
-            var existLicenseForm = _licenseRegisterFormService.GetByMemberId(reqObj.MemberId);
+            var existLicenseForm = await _licenseRegisterFormService.GetByMemberId(reqObj.MemberId);
             if(existLicenseForm is not null)
             {
                 return BadRequest(new BaseResponse { 

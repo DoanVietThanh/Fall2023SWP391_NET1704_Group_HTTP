@@ -420,7 +420,7 @@ namespace DriverLicenseLearningSupport.Controllers
             if (isApproved)
             {
                 await _teachingScheduleService.AddRangeVehicleMentorSchedule(id, vehicleId);
-               await _vehicleService.UpdateActiveStatusAsync(vehicleId);
+                await _vehicleService.UpdateActiveStatusAsync(vehicleId);
                 return Ok(new BaseResponse {
                     StatusCode = StatusCodes.Status200OK,
                     Message = "Duyệt lịch học thành công"

@@ -1,23 +1,24 @@
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import * as React from 'react';
+import { useFormik } from 'formik';
+import { useEffect, useState } from 'react';
+import * as yup from 'yup';
+import axiosClient from '../../../utils/axiosClient';
 import {
   FormControl,
+  IconButton,
+  InputAdornment,
   InputLabel,
   MenuItem,
   Select,
-  Typography,
+  TextField,
 } from '@mui/material';
-import IconButton from '@mui/material/IconButton';
-import InputAdornment from '@mui/material/InputAdornment';
-import TextField from '@mui/material/TextField';
-import axios from 'axios';
-import * as yup from 'yup';
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import Footer from '../../components/Footer';
-import Header from '../../components/Header';
-import { useFormik } from 'formik';
-import { toastError, toastSuccess } from '../../components/Toastify';
+import * as dayjs from 'dayjs';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import { toastError, toastSuccess } from '../../../components/Toastify';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 let schema = yup.object().shape({
   username: yup
@@ -64,24 +65,18 @@ let schema = yup.object().shape({
     .required('Vui lòng nhập tên thành phố'),
 });
 
-const RegisterPage = () => {
-  const baseServer = process.env.REACT_APP_SERVER_API;
+const DialogCreateUser = ({ open, setOpen, getAllUsers }) => {
+  const [user, setUser] = useState();
+  const [listType, setListType] = useState([]);
+  const [selectType, setSelectType] = useState();
+  const enableReinitialize = true;
+  // const [formik, setFormik] = useState()
+  const [availableValue, setAvailableValue] = useState();
+  const [labelSelected, setLabelSelected] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
-  const [lisenceType, setLisenceType] = useState([]);
-  const [selectType, setSelectType] = useState('1');
-  const navigate = useNavigate();
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
   };
-
-  useEffect(() => {
-    async function fetchType() {
-      const response = await axios.get(`${baseServer}/authentication`);
-      setLisenceType(response.data.data);
-    }
-    fetchType();
-  }, []);
-
   const formik = useFormik({
     initialValues: {
       username: '',
@@ -94,65 +89,96 @@ const RegisterPage = () => {
       district: '',
       city: '',
       confirmPassword: '',
-      licenseTypeId: selectType,
+      licenseTypeId: 1,
     },
     validationSchema: schema,
     onSubmit: async (values) => {
-      const result = await axios.post(`${baseServer}/authentication`, values);
-      if (result.data.statusCode === 200) {
-        toastSuccess(result.data.message);
-        navigate('/login');
-      } else {
-        toastError('Something went wrong');
-      }
-      console.log('result: ', result);
+      console.log('values: ', values);
+      await axiosClient
+        .post(`/authentication`, values)
+        .then((res) => {
+          console.log('res: ', res);
+          toastSuccess(res?.data?.message);
+          setOpen(false);
+          getAllUsers();
+        })
+        .catch((error) => toastError(error?.response?.data?.message));
     },
   });
 
+  const submitCreateUser = async (e) => {
+    e.preventDefault();
+    console.log('formik.values: ', formik.values);
+    // const response = await axiosClient.put(
+    //   `/members/${userId}/update`,
+    //   formik.values
+    // );
+    // toastSuccess(response?.data?.data);
+    // setOpen(false);
+    // getAllUsers();
+    // console.log('response: ', response);
+  };
+
   return (
     <div>
-      <Header />
-      <div className='center my-8'>
-        <div className='border border-1 w-[60%] flex flex-col justify-center items-center p-8'>
-          <Typography variant='h4'>Create Account</Typography>
-          <p>Fill in the fields below to sign into your account.</p>
-
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle id='alert-dialog-title'>
+          <h1 className='text-center font-bold capitalize'>
+            Tạo mới người dùng
+          </h1>
+        </DialogTitle>
+        <DialogContent>
           <form
             action=''
+            // onSubmit={formik.handleSubmit}
             onSubmit={formik.handleSubmit}
             className='w-full py-4 flex flex-col gap-4'
           >
             {/* User Name  */}
-            <TextField
-              id='outlined-basic'
-              label='Email'
-              variant='outlined'
-              className='w-full'
-              onChange={formik.handleChange('username')}
-              onBlur={formik.handleBlur('username')}
-              value={formik.values.username}
-            />
-            <div className='error text-red-900'>
-              {formik.touched.username && formik.errors.username}
+            <div>
+              <TextField
+                id='outlined-basic'
+                label='Email'
+                variant='outlined'
+                className='w-full'
+                onChange={formik.handleChange('username')}
+                onBlur={formik.handleBlur('username')}
+                value={formik.values.username}
+              />
+              <div className='error text-red-900'>
+                {formik.touched.username && formik.errors.username}
+              </div>
             </div>
 
             {/* Select Type  */}
+
             <FormControl fullWidth>
               <InputLabel id='demo-simple-select-label'>
-                Lisence Type
+                {labelSelected[0]?.licenseTypeDesc}
               </InputLabel>
               <Select
                 labelId='demo-simple-select-label'
                 id='demo-simple-select'
                 value={formik.values.licenseTypeId}
-                label='Lisence Type'
-                onChange={(event) => setSelectType(event.target.value)}
+                label={labelSelected[0]?.licenseTypeDesc}
+                // onChange={(event) => setSelectType(event.target.value)}
+                onChange={(event) =>
+                  setAvailableValue((prev) => {
+                    return {
+                      ...prev,
+                      licenseTypeId: event.target.value,
+                    };
+                  })
+                }
               >
-                {lisenceType?.map((item) => (
-                  <MenuItem value={item.licenseTypeId} key={item.lisenceTypeId}>
-                    {item.licenseTypeDesc}
-                  </MenuItem>
-                ))}
+                <MenuItem value={'1'} selected>
+                  1
+                </MenuItem>
               </Select>
             </FormControl>
 
@@ -187,6 +213,93 @@ const RegisterPage = () => {
                 <div className='error text-red-900'>
                   {formik.touched.lastName && formik.errors.lastName}
                 </div>
+              </div>
+            </div>
+
+            {/* Date Of Birth  */}
+            <div>
+              <div className='flex justify-between items-center'>
+                <h2 className='whitespace-nowrap pr-8 '>Date Of Birth</h2>
+                <TextField
+                  id='outlined-basic'
+                  variant='outlined'
+                  className='w-full'
+                  type='date'
+                  onChange={formik.handleChange('dateBirth')}
+                  onBlur={formik.handleBlur('dateBirth')}
+                  value={formik.values.dateBirth}
+                />
+              </div>
+              <div className='error text-red-900'>
+                {formik.touched.dateBirth && formik.errors.dateBirth}
+              </div>
+            </div>
+
+            {/* Phone  */}
+            <div>
+              <TextField
+                id='outlined-basic'
+                label='Phone'
+                variant='outlined'
+                className='w-full'
+                type='text'
+                onChange={formik.handleChange('phone')}
+                onBlur={formik.handleBlur('phone')}
+                value={formik.values.phone}
+              />
+              <div className='error text-red-900'>
+                {formik.touched.phone && formik.errors.phone}
+              </div>
+            </div>
+
+            {/* Street  */}
+            <div>
+              <TextField
+                id='outlined-basic'
+                label='Street'
+                variant='outlined'
+                className='w-full'
+                type='text'
+                onChange={formik.handleChange('street')}
+                onBlur={formik.handleBlur('street')}
+                value={formik.values.street}
+              />
+              <div className='error text-red-900'>
+                {formik.touched.street && formik.errors.street}
+              </div>
+            </div>
+
+            {/* District  */}
+            <div>
+              <TextField
+                id='outlined-basic'
+                label='District'
+                variant='outlined'
+                className='w-full'
+                type='text'
+                onChange={formik.handleChange('district')}
+                onBlur={formik.handleBlur('district')}
+                value={formik.values.district}
+              />
+              <div className='error text-red-900'>
+                {formik.touched.district && formik.errors.district}
+              </div>
+            </div>
+
+            {/* City  */}
+            <div>
+              <TextField
+                id='outlined-basic'
+                label='City'
+                variant='outlined'
+                className='w-full'
+                type='text'
+                onChange={formik.handleChange('city')}
+                onBlur={formik.handleBlur('city')}
+                value={formik.values.city}
+              />
+              <div className='error text-red-900'>
+                {formik.touched.city && formik.errors.city}
               </div>
             </div>
 
@@ -252,107 +365,14 @@ const RegisterPage = () => {
               {formik.touched.confirmPassword && formik.errors.confirmPassword}
             </div>
 
-            {/* Date Of Birth  */}
-            <div className='flex justify-between items-center'>
-              <h2 className='whitespace-nowrap pr-8 '>Date Of Birth</h2>
-              <TextField
-                id='outlined-basic'
-                variant='outlined'
-                className='w-full'
-                type='date'
-                onChange={formik.handleChange('dateBirth')}
-                onBlur={formik.handleBlur('dateBirth')}
-                value={formik.values.dateBirth}
-              />
-            </div>
-            <div className='error text-red-900'>
-              {formik.touched.dateBirth && formik.errors.dateBirth}
-            </div>
-
-            {/* Phone  */}
-            <TextField
-              id='outlined-basic'
-              label='Phone'
-              variant='outlined'
-              className='w-full'
-              type='text'
-              onChange={formik.handleChange('phone')}
-              onBlur={formik.handleBlur('phone')}
-              value={formik.values.phone}
-            />
-            <div className='error text-red-900'>
-              {formik.touched.phone && formik.errors.phone}
-            </div>
-
-            {/* Street  */}
-            <TextField
-              id='outlined-basic'
-              label='Street'
-              variant='outlined'
-              className='w-full'
-              type='text'
-              onChange={formik.handleChange('street')}
-              onBlur={formik.handleBlur('street')}
-              value={formik.values.street}
-            />
-            <div className='error text-red-900'>
-              {formik.touched.street && formik.errors.street}
-            </div>
-            {/* District  */}
-            <TextField
-              id='outlined-basic'
-              label='District'
-              variant='outlined'
-              className='w-full'
-              type='text'
-              onChange={formik.handleChange('district')}
-              onBlur={formik.handleBlur('district')}
-              value={formik.values.district}
-            />
-            <div className='error text-red-900'>
-              {formik.touched.district && formik.errors.district}
-            </div>
-            {/* City  */}
-            <TextField
-              id='outlined-basic'
-              label='City'
-              variant='outlined'
-              className='w-full'
-              type='text'
-              onChange={formik.handleChange('city')}
-              onBlur={formik.handleBlur('city')}
-              value={formik.values.city}
-            />
-            <div className='error text-red-900'>
-              {formik.touched.city && formik.errors.city}
-            </div>
-            <button className='btn'>Create Account</button>
+            <button className='btn' type='submit'>
+              Tạo mới
+            </button>
           </form>
-
-          <div>
-            <p className='font-medium capitalize'>
-              <Link
-                to='/forgot-password'
-                className='text-blue-400 text-[20px] py-2'
-              >
-                Forgot Password
-              </Link>
-            </p>
-          </div>
-
-          <div>
-            <p className='font-medium capitalize'>
-              Already have an account?{' '}
-              <Link to='/login' className='text-blue-400'>
-                Sign In here
-              </Link>
-            </p>
-          </div>
-        </div>
-      </div>
-      <Footer />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
 
-export default RegisterPage;
+export default DialogCreateUser;

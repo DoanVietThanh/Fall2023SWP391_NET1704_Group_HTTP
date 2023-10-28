@@ -6,10 +6,13 @@ import { BiSolidEdit } from 'react-icons/bi';
 import SideBar from '../../components/SideBar';
 import axiosClient from '../../utils/axiosClient';
 import DialogEditUser from './components/DialogEditUser';
+import { toastError } from '../../components/Toastify';
+import DialogCreateUser from './components/DialogCreateUser';
 
 const ManageUser = () => {
   const [listMembers, setListMember] = useState([]);
-  const [openCreateUser, setCreateUser] = useState(false);
+  const [openCreateUser, setOpenCreateUser] = useState(false);
+  const [openEditUser, setOpenEditUser] = useState(false);
   const [userId, setUserId] = useState();
   const [loading, setLoading] = useState(false);
 
@@ -66,7 +69,7 @@ const ManageUser = () => {
             className='text-yellow-700 cursor-pointer'
             onClick={() => {
               setUserId(params.row.memberId);
-              setCreateUser(true);
+              setOpenEditUser(true);
             }}
           />
           <AiFillDelete size={20} className='text-red-700 cursor-pointer' />
@@ -79,17 +82,28 @@ const ManageUser = () => {
     async function getAllUsers() {
       await axiosClient
         .get(`/members`)
-        .then((res) => setListMember(res?.data.data.members));
+        .then((res) => setListMember(res?.data.data.members))
+        .catch((error) => toastError(error?.response?.data?.message));
     }
     getAllUsers();
   }, []);
+
+  async function getAllUsers() {
+    await axiosClient
+      .get(`/members`)
+      .then((res) => setListMember(res?.data.data.members))
+      .catch((error) => toastError(error?.response?.data?.message));
+  }
 
   return (
     <div className='flex'>
       <SideBar />
       <div className='flex flex-col mt-[64px] h-[90vh] w-full border rounded overflow-y-auto p-4'>
         <div className='border flex justify-end '>
-          <button className='p-2 bg-blue-600 text-white rounded-lg'>
+          <button
+            className='p-2 bg-blue-600 text-white rounded-lg'
+            onClick={() => setOpenCreateUser(true)}
+          >
             Tạo mới
           </button>
         </div>
@@ -109,14 +123,23 @@ const ManageUser = () => {
               />
               {userId && (
                 <DialogEditUser
-                  open={openCreateUser}
-                  setOpen={setCreateUser}
+                  open={openEditUser}
+                  setOpen={setOpenEditUser}
                   userId={userId}
                   setLoading={setLoading}
                   loading={loading}
+                  getAllUsers={getAllUsers}
                 />
               )}
             </>
+          )}
+
+          {openCreateUser && (
+            <DialogCreateUser
+              open={openCreateUser}
+              setOpen={setOpenCreateUser}
+              getAllUsers={getAllUsers}
+            />
           )}
         </div>
       </div>

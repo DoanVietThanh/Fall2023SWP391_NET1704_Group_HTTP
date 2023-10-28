@@ -9,7 +9,7 @@ namespace DriverLicenseLearningSupport.Models
         public string QuestionAnswerDesc { get; set; }
         public bool? IsParalysis { get; set; }
         public string? Image { get; set; }
-        public bool? isActive { get; set; }
+        public bool? IsActive { get; set; }
         public int LicenseTypeId { get; set; }
 
 
