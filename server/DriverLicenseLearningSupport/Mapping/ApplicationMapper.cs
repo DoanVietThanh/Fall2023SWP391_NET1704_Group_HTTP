@@ -34,6 +34,12 @@ namespace DriverLicenseLearningSupport.Mapping
             CreateMap<TheoryExam,TheoryExamModel>().ReverseMap();
             CreateMap<ExamGrade, ExamGradeModel>().ReverseMap();
             CreateMap<ExamHistory, ExamHistoryModel>().ReverseMap();
+            CreateMap<SimulationSituation,SimulationSituationModel>().ReverseMap();
+            CreateMap<Blog,BlogModel>().ReverseMap();
+            CreateMap<Comment,CommentModel>().ReverseMap();
+            CreateMap<Tag,TagModel>().ReverseMap();
+
+            
         }
     }
 }

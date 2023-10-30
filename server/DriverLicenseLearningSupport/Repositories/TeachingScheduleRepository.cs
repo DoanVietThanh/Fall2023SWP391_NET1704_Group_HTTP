@@ -144,6 +144,7 @@ namespace DriverLicenseLearningSupport.Repositories
                     teachingSchedule.TeachingDate =
                         DateTime.ParseExact(dt.ToString(_appSettings.DateFormat),
                         _appSettings.DateFormat, CultureInfo.InvariantCulture);
+                    // teachingSchedule.VehicleId = vehicleId;
                     teachingSchedule.IsActive = false;
 
                     isSucess = await CreateAsync(_mapper.Map<TeachingSchedule>(teachingSchedule))
@@ -155,6 +156,19 @@ namespace DriverLicenseLearningSupport.Repositories
         public async Task<IEnumerable<TeachingScheduleModel>> GetAllByMentorIdAsync(Guid mentorId)
         {
             var teachingSchedules = await _context.TeachingSchedules.Where(x => x.StaffId == mentorId.ToString())
+                                                                    .Select(x => new TeachingSchedule
+                                                                    {
+                                                                        TeachingScheduleId = x.TeachingScheduleId,
+                                                                        TeachingDate = x.TeachingDate,
+                                                                        IsActive = x.IsActive,
+                                                                        WeekdayScheduleId = x.WeekdayScheduleId,
+                                                                        SlotId = x.SlotId,
+                                                                        VehicleId = x.VehicleId,
+                                                                        Slot = x.Slot,
+                                                                        Vehicle = x.Vehicle,
+                                                                        Staff = x.Staff,
+                                                                        StaffId = x.StaffId
+                                                                    })
                                                                     .ToListAsync();
             return _mapper.Map<IEnumerable<TeachingScheduleModel>>(teachingSchedules);
         }

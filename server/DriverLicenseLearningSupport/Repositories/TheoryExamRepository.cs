@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.InkML;
 using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Repositories.Impl;
@@ -45,7 +46,7 @@ namespace DriverLicenseLearningSupport.Repositories
                 //theoryEntity.Questions.Add(list);
                 theoryExam.TheoryExamId = Convert.ToInt32(theoryEntity.TheoryExamId);
 
-                List<Question> questions = new List<Question>();
+                //List<Question> questions = new List<Question>();
 
                 foreach (var question in list)
                 {
@@ -74,8 +75,9 @@ namespace DriverLicenseLearningSupport.Repositories
                     Image = q.Image,
                     LicenseType = q.LicenseType,
                     IsParalysis = q.IsParalysis,
-                    QuestionAnswers = q.QuestionAnswers.Select(a => new QuestionAnswer() { 
-                    
+                    QuestionAnswers = q.QuestionAnswers.Select(a => new QuestionAnswer()
+                    {
+
                         Answer = a.Answer,
                         QuestionAnswerId = a.QuestionAnswerId,
                         IsTrue = a.IsTrue
@@ -110,17 +112,26 @@ namespace DriverLicenseLearningSupport.Repositories
             }
             return false;
         }
+        public async Task<bool> HasHistory(int id)
+        {
+            var examHistories = await _context.ExamHistories.Where(x => x.TheoryExamId == id).ToListAsync();
+            if (examHistories is not null || examHistories.Count() != 0)
+            {
+                return false;
+            }
+            return true;
+        }
 
-        public async Task<TheoryExamModel> GetByIdAsync(int id) 
+        public async Task<TheoryExamModel> GetByIdAsync(int id)
         {
             var theoryEntity = await _context.TheoryExams.Where(x => x.TheoryExamId == id).
                 Select(x => new TheoryExam()
-            {
-                TheoryExamId = x.TheoryExamId,
-                LicenseTypeId = x.LicenseTypeId,
-                TotalAnswerRequired = x.TotalAnswerRequired,
-                TotalTime = x.TotalTime,
-                TotalQuestion = x.TotalQuestion,
+                {
+                    TheoryExamId = x.TheoryExamId,
+                    LicenseTypeId = x.LicenseTypeId,
+                    TotalAnswerRequired = x.TotalAnswerRequired,
+                    TotalTime = x.TotalTime,
+                    TotalQuestion = x.TotalQuestion,
                     Questions = x.Questions.Select(q => new Question()
                     {
                         QuestionId = q.QuestionId,
@@ -144,12 +155,32 @@ namespace DriverLicenseLearningSupport.Repositories
         {
             var theoryExams = await _context.TheoryExams.Where(te => te.LicenseTypeId == licenseTypeId)
                 .ToListAsync();
-            if (theoryExams is null) 
+            if (theoryExams is null)
             {
                 return null;
             }
             return _mapper.Map<IEnumerable<TheoryExamModel>>(theoryExams);
 
+        }
+
+        
+        public async Task<bool> RemoveTheoryExam(int id)
+        {
+            // Retrieve the TheoryExam object by its ID
+            var theoryExam = await _context.TheoryExams.Include(te => te.Questions).FirstOrDefaultAsync(e => e.TheoryExamId == id);
+
+            // Check if the TheoryExam exists
+            if (theoryExam != null)
+            {
+                // Clear the relationship between TheoryExam and Questions
+                theoryExam.Questions.Clear();
+                await _context.SaveChangesAsync(); // Save changes to the database
+            }
+
+            if (theoryExam is null) { return false; }
+
+            _context.TheoryExams.Remove(theoryExam);
+            return await _context.SaveChangesAsync() > 0 ? true : false;
         }
     }
 }

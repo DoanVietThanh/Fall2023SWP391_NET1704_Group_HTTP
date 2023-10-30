@@ -236,7 +236,10 @@ namespace DriverLicenseLearningSupport.Controllers
             var slots = await _slotService.GetAllAsync();
             // convert to list of course
             var listOfSlotSchedule = slots.ToList();
+
             // get all teaching schedule of mentor
+            var filterSchedules = await _teachingScheduleService.GetAllByMentorIdAsync(id);
+            var mentorVehicle = filterSchedules.Select(x => x.Vehicle).FirstOrDefault();
 
             // get teaching schedule for each slot
             foreach (var s in slots)
@@ -277,8 +280,8 @@ namespace DriverLicenseLearningSupport.Controllers
                     }),
                     Weekdays = weekday,
                     SlotSchedules = listOfSlotSchedule,
-                    MentorScheduleVehicle = mentorScheduleVehicle,
                     ActiveVehicles = activeVehicles,
+                    MentorScheduleVehicle = mentorScheduleVehicle,
                     TotalInActiveVehicle = inactiveVehicles.Count()
                 }
             });
@@ -428,12 +431,12 @@ namespace DriverLicenseLearningSupport.Controllers
                 $" đến {date.AddMonths(totalMonth).ToString("dd/MM/yyyy")} đã được duyệt thành công. \n " +
                 $"Mọi thắc mắc xin liên hệ để được điều chỉnh sớm nhất \n" +
                 $"Xin cảm ơn.");
-            //_emailService.SendEmail(message);
+           //_emailService.SendEmail(message);
 
             if (isApproved)
             {
                 await _teachingScheduleService.AddRangeVehicleMentorSchedule(id, vehicleId);
-                await _vehicleService.UpdateActiveStatusAsync(vehicleId);
+               await _vehicleService.UpdateActiveStatusAsync(vehicleId);
                 return Ok(new BaseResponse {
                     StatusCode = StatusCodes.Status200OK,
                     Message = "Duyệt lịch học thành công"
@@ -460,6 +463,16 @@ namespace DriverLicenseLearningSupport.Controllers
         public async Task<IActionResult> DenyAwaitSchedule([FromRoute] Guid id,
             string message)
         {
+
+            if (String.IsNullOrEmpty(message))
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Vui lòng điền lý do từ chối"
+                });
+            }
+
             // get mentor by id
             var mentor = await _staffService.GetAsync(id);
             if (mentor is null)

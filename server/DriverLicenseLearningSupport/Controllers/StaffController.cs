@@ -996,7 +996,7 @@ namespace DriverLicenseLearningSupport.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("staffs/mentors/schedule-register/range")]
-        [Authorize(Roles = "Admin,Staff,Mentor")]
+        //[Authorize(Roles = "Admin,Staff,Mentor")]
         public async Task<IActionResult> TeachingScheduleRegisterRange([FromBody] TeachingScheduleRangeRequest reqObj)
         {
             // get mentor by id
@@ -1077,6 +1077,8 @@ namespace DriverLicenseLearningSupport.Controllers
                     Message = "Không tìm thấy slot học"
                 });
             }
+
+
 
             // generate teaching schedule
             // init model

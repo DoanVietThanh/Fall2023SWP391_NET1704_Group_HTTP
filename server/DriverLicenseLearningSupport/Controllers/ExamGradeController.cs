@@ -50,7 +50,16 @@ namespace DriverLicenseLearningSupport.Controllers
             bool isWrongParalysisQuesion = false;
             bool isPassed = true;
             DateTime startedDate = DateTime.ParseExact(reqObj.StartedDate, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+            Dictionary<int, string> rawSelectedAnswer = new Dictionary<int, string>();
+
+            //Lưu lại selectedAnswer và nội dung câu hỏi trả về
+            foreach (SelectedAnswerModel sam in reqObj.SelectedAnswers) 
+            {
+                rawSelectedAnswer.Add(sam.QuestionId, sam.SelectedAnswer);
+            }            
+            
             var models = reqObj.ToListExamGradeModel();
+            
 
             //lay memberid neu co
             var member = await _memberService.GetByEmailAsync(reqObj.Email);
@@ -69,7 +78,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 //var reqModel = reqObj.SelectedAnswers.Where(x => x.QuestionId == examGradeModel.QuestionId).FirstOrDefault(); 
                 //b2.so sánh với id của selected answerid -> gắn model -> có được answer Detail
                 //b3. từ answer detail lấy được 
-                
+
                 ////var selectAnswerModel = await _answerService.GetByAnswerIdAsync(reqModel.SelectedAnswerId);
 
                 //// set select answer id 
@@ -82,29 +91,33 @@ namespace DriverLicenseLearningSupport.Controllers
                 var answers = await _answerService.GetAllByQuestionId(examGradeModel.QuestionId);
 
                 var theRightAnswerModel = answers.Where(x => x.IsTrue == true)
-                    .Select(x => new AnswerModel() 
+                    .Select(x => new AnswerModel()
                     {
-                        QuestionAnswerId = x.QuestionAnswerId,
-                        Answer = x.Answer
+                        QuestionAnswerId = x.QuestionAnswerId
                     }
                     ).FirstOrDefault();
-                var selectedAnswerModel = answers.Where(x => x.QuestionAnswerId == examGradeModel.SelectedAnswerId)
-                    .FirstOrDefault();
+
+                // lấy selected answerModel dưới dạng 0,1,2,3 để đi so sánh
+                var selectedAnswerModel = answers.Where(x => x.Answer.Equals(rawSelectedAnswer[examGradeModel.QuestionId]))
+                    .Select(x => new AnswerModel()
+                    {
+                        QuestionAnswerId = x.QuestionAnswerId
+                    }).FirstOrDefault();
                 if (selectedAnswerModel is null) 
                 {
-                    selectedAnswerModel = new AnswerModel()
-                    {
-                        QuestionAnswerId = 0
-                    };
+                    selectedAnswerModel = new AnswerModel();
+                     selectedAnswerModel.QuestionAnswerId = -1;
                 }
-                    
-                
 
+                //examGradeModel.SelectedAnswerId = selectedAnswerModel.QuestionAnswerId;
                 //var theRightAnswerId = await _answerService.GetRightAnswerByDesc(reqObj);
 
                 // set member id
-                examGradeModel.MemberId = member.MemberId;
-                if (theRightAnswerModel.QuestionAnswerId == examGradeModel.SelectedAnswerId)
+                if (member is not null)
+                {
+                    examGradeModel.MemberId = member.MemberId;
+                }
+                if (theRightAnswerModel.QuestionAnswerId == selectedAnswerModel.QuestionAnswerId)
                 {
                     examGradeModel.Point = 1;
                     countRightAnswers++;
@@ -119,24 +132,25 @@ namespace DriverLicenseLearningSupport.Controllers
                     examGradeModel.Point = 0;
                 }
 
-
+                var selectedAnswer = await _answerService.GetByQuestionIdAndAnswerDesc(question.QuestionId
+                    , rawSelectedAnswer[examGradeModel.QuestionId]);
+                if (selectedAnswer is null)
+                {
+                    examGradeModel.SelectedAnswerId = selectedAnswerModel.QuestionAnswerId;
+                }
+                else {
+                examGradeModel.SelectedAnswerId = selectedAnswer.QuestionAnswerId;
+                }
                 var date = startedDate.ToString(_appSettings.DateTimeFormat);
                 startedDate = DateTime.ParseExact(date, _appSettings.DateTimeFormat, CultureInfo.InvariantCulture);
                 examGradeModel.StartedDate = startedDate;
 
                 //right answer với id là 0,1,2,3 -> lấy nội dung và questionid để gán lại id dưới db
-                var answer = await _answerService.GetByQuestionIdAndAnswerDesc(examGradeModel.QuestionId,theRightAnswerModel.Answer);
+                var answer = await _answerService.GetByQuestionIdAndAnswerDesc(examGradeModel.QuestionId, theRightAnswerModel.Answer);
                 // gán lại vào db, bảng examGrade selectedanswerId tương ứng ở dưới db
-                examGradeModel.SelectedAnswerId = answer.QuestionAnswerId; 
-
+                
                 var createdExamGradeModel = await _examGradeService.CreateAsync(examGradeModel);
-
-                //var startedDateFormat = Convert.ToDateTime(createdExamGradeModel.StartedDate).ToString("dd-MM-yyyy HH:mm:ss");
-
                 createdExamGradeModel.StartedDate = startedDate;
-
-                //createdExamGradeModel.MemberId = member.MemberId;
-
                 listResult.Add(createdExamGradeModel);
             }
             if (listResult is null)
@@ -153,52 +167,30 @@ namespace DriverLicenseLearningSupport.Controllers
             }
 
             //sinh history
-            var HistoryModel = new ExamHistoryModel()
+            if (member is not null)
             {
-                MemberId = member.MemberId,
-                TheoryExamId = reqObj.TheoryExamId,
-                TotalQuestion = totalQuesiton,
-                TotalRightAnswer = countRightAnswers,
-                IsPassed = isPassed,
-                WrongParalysisQuestion = isWrongParalysisQuesion,
-                TotalTime = reqObj.TotalTime,
-                Date = startedDate
-            };
-            var createdHistoryModel = await _examHistoryService.CreateAsync(HistoryModel);
-            if (createdHistoryModel is null)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-            /*
-            return new ObjectResult(new
-            {
-                ListGrade = listResult,
-                TotalQuestion = totalQuesiton,
-                TotalRightAnswer = countRightAnswers,
-                IsPassed = isPassed,
-                HistoryModel = createdHistoryModel
-
+                var HistoryModel = new ExamHistoryModel()
+                {
+                    MemberId = member.MemberId,
+                    TheoryExamId = reqObj.TheoryExamId,
+                    TotalQuestion = totalQuesiton,
+                    TotalRightAnswer = countRightAnswers,
+                    IsPassed = isPassed,
+                    WrongParalysisQuestion = isWrongParalysisQuesion,
+                    TotalTime = reqObj.TotalTime,
+                    Date = startedDate
+                };
+                var createdHistoryModel = await _examHistoryService.CreateAsync(HistoryModel);
+                if (createdHistoryModel is null)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
                 }
-            })
-            { StatusCode = StatusCodes.Status201Created };*/
-
-            return Ok(new BaseResponse { 
+            }      
+            return Ok(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status200OK,
-                Message = "Submit theory test successfully!"
+                Message = "Nộp bài thành công!"
             });
-
-            //return Ok(new BaseResponse() { 
-            //    StatusCode = StatusCodes.Status200OK,
-            //    Data = new
-            //    {
-            //        ListGrade = listResult,
-            //        TotalQuestion = totalQuesiton,
-            //        TotalRightAnswer = countRightAnswers
-
-            //    },
-
-            //    Message ="Thành công"
-            //});
 
         }
 
@@ -259,8 +251,9 @@ namespace DriverLicenseLearningSupport.Controllers
             foreach (ExamGradeModel eg in examGrades)
             {
                 var selectedAnswer = await _answerService.GetByAnswerIdAsync(eg.SelectedAnswerId);
-                QuestionModel question = await _questionService.GetByIdAsync(eg.QuestionId);
                 IEnumerable<AnswerModel> answers = await _answerService.GetAllByQuestionId(eg.QuestionId);
+                if (selectedAnswer is not null) 
+                {
                 foreach (AnswerModel answer in answers) 
                 {
                     if (answer.Answer.Equals(selectedAnswer.Answer)) 
@@ -268,7 +261,9 @@ namespace DriverLicenseLearningSupport.Controllers
                         eg.SelectedAnswerId = answer.QuestionAnswerId; 
                         break;
                     }
+                }   
                 }
+                QuestionModel question = await _questionService.GetByIdAsync(eg.QuestionId);
                 question.QuestionAnswers = answers.ToList();
                 eg.Question = question;
             }

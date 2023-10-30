@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
-import BackgroundSlider from '../../components/BackgroundSlider';
-import theme from '../../theme';
-import { Link } from 'react-router-dom';
-import axiosClient from '../../utils/axiosClient';
 import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import BackgroundSlider from '../../components/BackgroundSlider';
+import Footer from '../../components/Footer';
+import Header from '../../components/Header';
+import theme from '../../theme';
 const TheoryPage = () => {
   const url =
     'https://themeholy.com/wordpress/edura/wp-content/uploads/2023/07/breadcumb-bg.png';
@@ -16,31 +15,32 @@ const TheoryPage = () => {
 
   useEffect(() => {
     async function fetchData() {
-      try {
-        const fetchListTypeTest = await axiosClient.get(
-          '/theory-exam/add-question'
-        );
-        const fetchInfoTypeTest = await axiosClient.get(
-          '/theory/license-type/1'
-        );
-        setListTypeTest(fetchListTypeTest?.data?.data);
-        setInfoTypeTest(fetchInfoTypeTest?.data?.data);
-      } catch (error) {
-        throw Error(error);
-      }
+      const fetchListTypeTest = await axios
+        .get('/theory/add-question')
+        // .then((res) => console.log(res))
+        //.catch((error) => toastError(error?.response?.data?.message));
+        .catch((error) => console.log(error));
+      console.log('fetchListTypeTest: ', fetchListTypeTest);
+
+      const fetchInfoTypeTest = await axios
+        .get('/theory/license-type/1')
+        //.catch((error) => toastError(error?.response?.data?.message));
+        .catch((error) => console.log(error));
+      setListTypeTest(fetchListTypeTest?.data?.data);
+      setInfoTypeTest(fetchInfoTypeTest?.data?.data);
     }
     fetchData();
   }, []);
 
   async function selectInfoTypeLicense(id) {
-    const fetchInfoTypeTest = await axiosClient.get(
-      `/theory/license-type/${id}`
-    );
+    const fetchInfoTypeTest = await axios.get(`/theory/license-type/${id}`);
+    console.log('fetchInfoTypeTest: ', fetchInfoTypeTest);
     setInfoTypeTest(fetchInfoTypeTest?.data?.data);
   }
 
   console.log('infoTypeTest: ', infoTypeTest);
-
+  console.log('listTypeTest: ', listTypeTest);
+  // licenseTypeDesc
   return (
     <div>
       <Header />
@@ -48,7 +48,7 @@ const TheoryPage = () => {
       <div className='flex flex-col justify-center border p-6 m-6 gap-8'>
         <div className='center gap-8'>
           {listTypeTest &&
-            listTypeTest?.licenseTypes?.map((item, index) => (
+            listTypeTest?.map((item, index) => (
               <div
                 onClick={() => selectInfoTypeLicense(item.licenseTypeId)}
                 key={item.licenseTypeDesc}
