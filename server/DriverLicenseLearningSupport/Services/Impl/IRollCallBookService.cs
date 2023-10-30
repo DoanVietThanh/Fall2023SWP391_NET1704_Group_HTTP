@@ -10,5 +10,6 @@ namespace DriverLicenseLearningSupport.Services.Impl
         Task<bool> UpdateAsync(int rcbId, RollCallBookModel rcbook);
         Task<bool> UpdateInActiveStatusAsync(int rcbId, string cancelMessage);
         Task<bool> ApproveCancelAsync(int rcbId);
+        Task<bool> DenyCancelSchedule(int rcbId);
     }
 }

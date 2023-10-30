@@ -40,8 +40,8 @@ namespace DriverLicenseLearningSupport.Payloads.Request
         [Required(ErrorMessage = "Please input City")]
         public string City { get; set; } = null!;
 
-        // License Type
-        public int LicenseTypeId { get; set; }
+        //// License Type
+        //public int LicenseTypeId { get; set; }
     }
     
     public static class MemberAddRequestExtension 
@@ -65,7 +65,7 @@ namespace DriverLicenseLearningSupport.Payloads.Request
                 DateBirth = DateTime.ParseExact(reqObj.DateBirth, formatDate,
                     CultureInfo.InvariantCulture),
                 Phone = reqObj.Phone,
-                LicenseTypeId = reqObj.LicenseTypeId,
+                //LicenseTypeId = reqObj.LicenseTypeId,
                 AvatarImage = defaultAvatar,
                 IsActive = true
             };

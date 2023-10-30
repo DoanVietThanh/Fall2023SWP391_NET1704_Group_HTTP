@@ -565,34 +565,41 @@ namespace DriverLicenseLearningSupport.Controllers
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
-        //[HttpDelete]
-        //[Route("courses/packages/{id:Guid}")]
-        //public async Task<IActionResult> DeleteCoursePackage([FromRoute] Guid id) 
-        //{
-        //    var coursePackage = await _courseService.GetPackageAsync(id);
-        //    if(coursePackage is null)
-        //    {
-        //        return BadRequest(new BaseResponse
-        //        {
-        //            StatusCode = StatusCodes.Status400BadRequest,
-        //            Message = $"Not found any package match id {id}"
-        //        });
-        //    }
+        [HttpDelete]
+        [Route("courses/packages/{id:Guid}")]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> DeleteCoursePackage([FromRoute] Guid id)
+        {
+            var coursePackage = await _courseService.GetPackageAsync(id);
+            if (coursePackage is null)
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Không tìm thấy gói học"
+                });
+            }
 
-        //    // delete async
-        //    bool isSucess = await _courseService.DeletePackageAsync(id);
+            // delete async
+            bool isSucess = await _courseService.DeletePackageAsync(id);
 
-        //    if (isSucess)
-        //    {
-        //        return Ok(new BaseResponse
-        //        {
-        //            StatusCode = StatusCodes.Status200OK,
-        //            Message = $"Delete course package {id} success"
-        //        });
-        //    }
-
-        //    return StatusCode(StatusCodes.Status500InternalServerError);
-        //}
+            if (isSucess)
+            {
+                return Ok(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = $"Xóa gói thành công"
+                });
+            }
+            else
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Xóa gói thất bại, hiện gói đang có lịch"
+                });
+            }
+        }
 
         [HttpPut]
         [Route("courses/curriculum/{id:int}")]
@@ -755,7 +762,13 @@ namespace DriverLicenseLearningSupport.Controllers
 
             if (!isSucess) 
             {
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return new ObjectResult(new BaseResponse {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = "Xóa khóa học thất bại"
+                })
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
             }
 
             return Ok(new BaseResponse { 
@@ -763,7 +776,6 @@ namespace DriverLicenseLearningSupport.Controllers
                 Message = $"Xóa khóa học thành công"
             });
         }
-
 
         /// <summary>
         /// Slot management
@@ -818,6 +830,112 @@ namespace DriverLicenseLearningSupport.Controllers
                 StatusCode = StatusCodes.Status400BadRequest,
                 Data = slots
             });
+        }
+        
+        
+        [HttpGet]
+        [Route("courses/slot/{id:int}")]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> GetSlotById([FromRoute] int id)
+        {
+            // get slot by id
+            var slot = await _slotService.GetAsync(id);
+
+            if(slot is null)
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Không tìm thấy slot học"
+                });
+            }
+
+            return Ok(new BaseResponse { 
+                StatusCode = StatusCodes.Status200OK,
+                Data = slot 
+            });
+        }
+
+        [HttpPut]
+        [Route("courses/slot/{id:int}")]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> UpdateSlot([FromRoute] int id,
+            [FromBody] SlotUpdateRequest reqObj)
+        {
+            // get slot by id 
+            var slot = await _slotService.GetAsync(id);
+
+            if (slot is null)
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Không tìm thấy slot học"
+                });
+            }
+
+            // generate slot model
+            var slotModel = reqObj.ToSlotModel();
+            var time = TimeSpan.Parse(slot.Time.ToString());
+            // generate slot desc
+            var startTime = time.ToString(@"hh\:mm");
+            var endTime = time.Add(TimeSpan.FromHours(2)).ToString(@"hh\:mm");
+            // set slot desc
+            slotModel.SlotDesc = $"{startTime} - {endTime}";
+
+            var isSucess = await _slotService.UpdateAsync(id, slotModel);
+
+            if (isSucess)
+            {
+                return Ok(new BaseResponse { 
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = "Sửa slot học thành công"
+                });
+            }
+
+            return new ObjectResult(new BaseResponse {
+                StatusCode = StatusCodes.Status500InternalServerError,
+                Message = "Xảy ra lỗi"
+            }) 
+            {
+                StatusCode = StatusCodes.Status500InternalServerError
+            };
+        }
+
+
+        [HttpDelete]
+        [Route("courses/slot/{id:int}")]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> DeleteSlot([FromRoute] int id)
+        {
+            // get slot by id 
+            var slot = await _slotService.GetAsync(id);
+            if(slot is null)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Không tìm thấy slot học"
+                });
+            }
+
+            // delete slot by id
+            bool isSucess = await _slotService.DeleteAsync(id);
+            if (isSucess)
+            {
+                return Ok(new BaseResponse { 
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = "Xóa thành công"
+                });
+            }
+
+            return new ObjectResult(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status500InternalServerError,
+                Message = "Xảy ra lỗi"
+            })
+            {
+                StatusCode = StatusCodes.Status500InternalServerError
+            };
         }
     }
 }

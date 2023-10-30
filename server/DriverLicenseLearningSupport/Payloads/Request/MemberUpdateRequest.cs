@@ -23,8 +23,8 @@ namespace DriverLicenseLearningSupport.Payloads.Request
         [Required(ErrorMessage = "City number is required")]
         public string City { get; set; }
 
-        // License Type
-        public int LicenseTypeId { get; set;}
+        //// License Type
+        //public int LicenseTypeId { get; set;}
 
     }
 
@@ -40,8 +40,8 @@ namespace DriverLicenseLearningSupport.Payloads.Request
                 Phone = reqObj.Phone,
                 DateBirth = DateTime.ParseExact(reqObj.DateBirth, dateFormat,
                 CultureInfo.InvariantCulture),
-                // license type
-                LicenseTypeId = reqObj.LicenseTypeId,
+                //// license type
+                //LicenseTypeId = reqObj.LicenseTypeId,
                 // address info
                 Address = new AddressModel 
                 {

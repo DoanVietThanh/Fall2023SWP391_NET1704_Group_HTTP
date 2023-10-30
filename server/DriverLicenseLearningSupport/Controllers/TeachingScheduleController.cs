@@ -159,7 +159,16 @@ namespace DriverLicenseLearningSupport.Controllers
         {
             // get members has all await schedule
             var mentors = await _teachingScheduleService.GetAllAwaitScheduleMentor();
-            return Ok(mentors);
+
+            if (mentors.Count() > 0) return Ok(new BaseResponse { 
+                StatusCode = StatusCodes.Status200OK,
+                Data = mentors
+            });
+            
+            return BadRequest(new BaseResponse { 
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = "Hiện chưa có lịch cần duyệt"
+            });
         }
 
         /// <summary>
@@ -397,6 +406,13 @@ namespace DriverLicenseLearningSupport.Controllers
 
             // course
             var course = await _courseService.GetByMentorIdAsync(id);
+            if(course is null)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Người hướng dẫn chưa được cấp phép dạy khóa học"
+                });
+            }
 
             // course startdate
             var date = Convert.ToDateTime(course.StartDate);
@@ -457,6 +473,9 @@ namespace DriverLicenseLearningSupport.Controllers
 
             // course
             var course = await _courseService.GetByMentorIdAsync(id);
+
+            // update status
+            await _teachingScheduleService.DenyMentorAwaitSchedule(id);
 
             // course startdate
             var date = Convert.ToDateTime(course.StartDate);

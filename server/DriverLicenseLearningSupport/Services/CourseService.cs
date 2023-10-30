@@ -107,5 +107,9 @@ namespace DriverLicenseLearningSupport.Services
             return await _courseRepo.UnhideAsync(id);
         }
 
+        public async Task<bool> DeletePackageAsync(Guid id)
+        {
+            return await _courseRepo.DeletePackageAsync(id);
+        }
     }
 }

@@ -7,7 +7,7 @@ namespace DriverLicenseLearningSupport.Services.Impl
     {
         Task<TeachingScheduleModel> CreateAsync(TeachingScheduleModel teachingSchedule);
         Task<bool> CreateRangeBySlotAndWeekdayAsync(int slotId, string weekdays, int weekdayScheduleId,
-            TeachingScheduleModel teachingSchedule, int vehicleId);
+            TeachingScheduleModel teachingSchedule);
         Task<bool> AddCoursePackageAsync(int teachingScheduleId, Guid coursePackageId);
         Task<TeachingScheduleModel> GetAsync(int teachingScheduleId);
         Task<IEnumerable<TeachingScheduleModel>> GetAllByMentorIdAndMemberIdAsync(Guid mentorId, Guid memberId);
@@ -26,5 +26,6 @@ namespace DriverLicenseLearningSupport.Services.Impl
         Task<bool> AddVehicleAsync(int teachingScheduleId, int vehicleId);
         Task<bool> ApproveMentorAwaitSchedule(Guid mentorId);
         Task<bool> AddRangeVehicleMentorSchedule(Guid mentorId, int vehicleId);
+        Task<bool> DenyMentorAwaitSchedule(Guid mentorId);
     }
 }
