@@ -57,15 +57,12 @@ namespace DriverLicenseLearningSupport.Repositories
         }
         public async Task<LicenseRegisterFormModel> GetByMemberId(Guid memberId)
         {
-            var lfEntities = await _context.LicenseRegisterForms
-                                         .Select(x => new LicenseRegisterForm { 
-                                            Members = x.Members.Select(x => new Member { 
-                                                MemberId = x.MemberId
-                                            }).ToList()
-                                         }).ToListAsync();
+            var lfEntities = await _context.LicenseRegisterForms.Include(x => x.Members)
+                                                                .ToListAsync();
+
             var memberEntity = lfEntities.Select(x => x.Members.Where(x => x.MemberId == memberId.ToString())
                                                                .FirstOrDefault())
-                                         .SingleOrDefault();
+                                         .FirstOrDefault();
             if(memberEntity is not null)
             {
                 var lfEntity = await _context.LicenseRegisterForms.Where(x => x.LicenseFormId == memberEntity.LicenseFormId)
@@ -88,5 +85,12 @@ namespace DriverLicenseLearningSupport.Repositories
             return await _context.SaveChangesAsync() > 0 ? true : false;
         }
 
+        public async Task<IEnumerable<LicenseRegisterFormModel>> GetAllAwaitAsync()
+        {
+            var awaitForms = await _context.LicenseRegisterForms.Where(x => x.RegisterFormStatusId == 1)
+                                                                .ToListAsync();
+
+            return _mapper.Map<IEnumerable<LicenseRegisterFormModel>>(awaitForms);
+        }
     }
 }

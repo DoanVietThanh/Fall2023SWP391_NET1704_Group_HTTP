@@ -122,6 +122,17 @@ namespace DriverLicenseLearningSupport.Controllers
             });
         }
 
+        [HttpGet]
+        [Route("authentication/test")]
+        public async Task<IActionResult> Test(string password)
+        {
+            return Ok(new
+            {
+                Encrypt = PasswordHelper.ConvertToEncrypt(password),
+                //Decrypt = PasswordHelper.ConvertToDecrypt(password)
+            });
+        }
+
         [HttpGet("authentication")]
         public async Task<IActionResult> Register()
         {

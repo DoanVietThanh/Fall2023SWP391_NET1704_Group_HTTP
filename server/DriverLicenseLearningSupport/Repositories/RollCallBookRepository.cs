@@ -34,6 +34,19 @@ namespace DriverLicenseLearningSupport.Repositories
             return false;
         }
 
+        public async Task<bool> DenyCancelSchedule(int rcbId)
+        {
+            var rcbEntity = await _context.RollCallBooks.Where(x => x.RollCallBookId == rcbId)
+                                                        .FirstOrDefaultAsync();
+
+            if(rcbEntity is not null)
+            {
+                rcbEntity.IsActive = true;
+                return await _context.SaveChangesAsync() > 0;
+            }
+            return false;
+        }
+
         public async Task<IEnumerable<RollCallBookModel>> GetAllByMemberIdAsync(Guid memberId)
         {
             var rcbooks = await _context.RollCallBooks.Where(x => x.MemberId == memberId.ToString())

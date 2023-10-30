@@ -66,9 +66,19 @@ namespace DriverLicenseLearningSupport.Services
             return await _theoryExamRepository.GetByLicenseTypeIdAsync(licenseTypeId);
         }
 
+        public async Task<bool> HasHistory(int id)
+        {
+            return await _theoryExamRepository.HasHistory(id);
+        }
+
         public async Task<bool> IsExamQuestion(int questionId)
         {
             return await _theoryExamRepository.IsExamQuestion(questionId);
+        }
+
+        public async Task<bool> RemoveTheoryExam(int id)
+        {
+            return await _theoryExamRepository.RemoveTheoryExam(id);
         }
     }
 }

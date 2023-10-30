@@ -13,7 +13,9 @@ namespace DriverLicenseLearningSupport.Models
         public string CourseId { get; set; }
 
         public virtual CourseModel Course { get; set; }
-        
+
+        public virtual ICollection<TeachingScheduleModel> TeachingSchedules { get; set; }
+            = new List<TeachingScheduleModel>();
         //public virtual ICollection<CoursePackageReservationModel> 
         //    CoursePackageReservations { get; set; } = new List<CoursePackageReservationModel>();    
     }

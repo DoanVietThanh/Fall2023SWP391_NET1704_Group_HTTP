@@ -49,13 +49,13 @@ namespace DriverLicenseLearningSupport.Controllers
             int totalQuesiton = 0;
             bool isWrongParalysisQuesion = false;
             bool isPassed = true;
-            DateTime startedDate = DateTime.ParseExact(reqObj.StartDate, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+            DateTime startedDate = DateTime.ParseExact(reqObj.StartedDate, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
             Dictionary<int, string> rawSelectedAnswer = new Dictionary<int, string>();
 
             //Lưu lại selectedAnswer và nội dung câu hỏi trả về
             foreach (SelectedAnswerModel sam in reqObj.SelectedAnswers) 
             {
-                rawSelectedAnswer.Add(sam.QuestionId, sam.SelectAnswer);
+                rawSelectedAnswer.Add(sam.QuestionId, sam.SelectedAnswer);
             }            
             
             var models = reqObj.ToListExamGradeModel();
@@ -143,14 +143,14 @@ namespace DriverLicenseLearningSupport.Controllers
                 }
                 var date = startedDate.ToString(_appSettings.DateTimeFormat);
                 startedDate = DateTime.ParseExact(date, _appSettings.DateTimeFormat, CultureInfo.InvariantCulture);
-                examGradeModel.StartDate = startedDate;
+                examGradeModel.StartedDate = startedDate;
 
                 //right answer với id là 0,1,2,3 -> lấy nội dung và questionid để gán lại id dưới db
                 var answer = await _answerService.GetByQuestionIdAndAnswerDesc(examGradeModel.QuestionId, theRightAnswerModel.Answer);
                 // gán lại vào db, bảng examGrade selectedanswerId tương ứng ở dưới db
                 
                 var createdExamGradeModel = await _examGradeService.CreateAsync(examGradeModel);
-                createdExamGradeModel.StartDate = startedDate;
+                createdExamGradeModel.StartedDate = startedDate;
                 listResult.Add(createdExamGradeModel);
             }
             if (listResult is null)
