@@ -2,7 +2,7 @@ import React from 'react';
 
 const BackgroundSlider = ({ url, breadcrumbs }) => {
   return (
-    <div className='slider-img mb-8'>
+    <div className='slider-img'>
       <div>
         <img src={url} alt='slider' className='w-full' />
       </div>

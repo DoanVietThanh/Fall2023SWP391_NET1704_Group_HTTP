@@ -103,7 +103,7 @@ const BlogDetail = () => {
   });
   // ham xu li khi nut dang bl dc nhan
   const handleNewComment = () => {
-    if (newComment.content.trim() !== '') {
+    if (newComment.content.trim() !== "") {
       //add comment moi vao list
       setListComment([...listComment, newComment]);
       //set gtri cua comment moi ve gtri mac dinh
@@ -117,6 +117,36 @@ const BlogDetail = () => {
     }
   };
 
+  const listTitleBlog = [
+    {
+      id: 1,
+      title: "Tips pass bằng lái B1 dễ dàng",
+      date: "26 Aug 2023",
+      img: "https://i.pinimg.com/564x/d4/97/43/d497438580268c267151a4dedc2cc55d.jpg",
+      link: "/blog/detail",
+    },
+    {
+      id: 2,
+      title: "Tips pass bằng lái B1 dễ dàng",
+      date: "26 Aug 2023",
+      img: "https://i.pinimg.com/564x/d4/97/43/d497438580268c267151a4dedc2cc55d.jpg",
+      link: "/blog/detail",
+    },
+    {
+      id: 3,
+      title: "Tips pass bằng lái B1 dễ dàng",
+      date: "26 Aug 2023",
+      img: "https://i.pinimg.com/564x/d4/97/43/d497438580268c267151a4dedc2cc55d.jpg",
+      link: "/blog/detail",
+    },
+    {
+      id: 4,
+      title: "Tips pass bằng lái B1 dễ dàng",
+      date: "26 Aug 2023",
+      img: "https://i.pinimg.com/474x/f5/1d/f8/f51df8c6a4f7f8657acabcf8ba5275fe.jpg",
+      link: "/blog/detail",
+    },
+  ];
   return (
     <div>
       <Header />
@@ -222,6 +252,9 @@ const BlogDetail = () => {
                 className='border-2 pl-2 outline-none w-[100%] h-10'
                 type='text'
                 value={newComment.content}
+                onChange={(e) =>
+                  setNewComment({ ...newComment, content: e.target.value })
+                }
                 onChange={(e) =>
                   setNewComment({ ...newComment, content: e.target.value })
                 }
@@ -436,127 +469,34 @@ const BlogDetail = () => {
 
           <div className='border drop-shadow-md rounded-lg p-10 mb-20'>
             <div className='border-b-[4px] text-2xl font-bold pb-2 '>
-              Categories
-            </div>
-
-            <div className='flex justify-between text-lg text-blue-500 hover:text-blue-900 pt-5'>
-              <div>
-                <div className='flex center gap-2 cursor-pointer'>
-                  <BiBookBookmark /> Theory
-                </div>
-              </div>
-              <div>3</div>
-            </div>
-
-            <div className='flex justify-between text-lg text-blue-500 hover:text-blue-900 pt-5'>
-              <div>
-                <div className='flex center gap-2 cursor-pointer'>
-                  <BiBookBookmark /> GuildLine
-                </div>
-              </div>
-              <div>10</div>
-            </div>
-
-            <div className='flex justify-between text-lg text-blue-500 hover:text-blue-900 pt-5'>
-              <div>
-                <div className='flex center gap-2 cursor-pointer'>
-                  <BiBookBookmark /> License
-                </div>
-              </div>
-              <div>7</div>
-            </div>
-
-            <div className='flex justify-between text-lg text-blue-500 hover:text-blue-900 pt-5'>
-              <div>
-                <div className='flex center gap-2 cursor-pointer'>
-                  <BiBookBookmark /> Register
-                </div>
-              </div>
-              <div>21</div>
-            </div>
-
-            <div className='flex justify-between text-lg text-blue-500 hover:text-blue-900 pt-5'>
-              <div>
-                <div className='flex center gap-2 cursor-pointer'>
-                  <BiBookBookmark /> New Changes
-                </div>
-              </div>
-              <div>8</div>
-            </div>
-          </div>
-
-          <div className='border drop-shadow-md rounded-lg p-10 mb-20'>
-            <div className='border-b-[4px] text-2xl font-bold pb-2 '>
               Bài đăng gần đây
             </div>
-            <div className='flex pt-10 gap-3'>
-              <div>
-                <img
-                  src='https://i.pinimg.com/474x/f5/1d/f8/f51df8c6a4f7f8657acabcf8ba5275fe.jpg'
-                  alt='Pic1'
-                  className='rounded-lg w-[80px] h-[80px]'
-                />
-              </div>
-              <div className='flex flex-col gap-2'>
-                <Link to={'/blog/detail'}>
-                  <div className='text-lg font-bold hover:text-blue-500'>
-                    Tips pass bằng lái B1 dễ dàng
+            <div className="flex flex-col gap-10 mt-10">
+              {listTitleBlog.map((item, index) => (
+                <div className="flex gap-3">
+                  <div>
+                    <img
+                      src={item.img}
+                      alt="Pic1"
+                      className="rounded-lg w-[80px] h-[100px] object-cover"
+                    />
                   </div>
-                </Link>
-                <div className='flex items-center text-md font-light gap-2 text-blue-500 hover:text-blue-900 '>
-                  <AiOutlineCalendar />
-                  26 Aug 2023
-                </div>
-              </div>
-            </div>
-
-            <div className='flex pt-10 gap-3'>
-              <div>
-                <img
-                  src='https://i.pinimg.com/474x/fd/2c/85/fd2c8579b7863641b21ec563f097694b.jpg'
-                  alt='Pic2'
-                  className='rounded-lg w-[80px] h-[80px]'
-                />
-              </div>
-              <div className='flex flex-col gap-2'>
-                <Link to={'/blog/detail'}>
-                  <div className='text-lg font-bold hover:text-blue-500'>
-                    Đề thi lý thuyết của loại bằng lái
+                  <div className="flex flex-col gap-2">
+                    <Link to={item.link}>
+                      <div className="text-lg font-bold hover:text-blue-500">
+                        {item.title}
+                      </div>
+                    </Link>
+                    <div className="flex items-center text-md font-light gap-2 text-blue-500 hover:text-blue-900 ">
+                      <AiOutlineCalendar />
+                      {item.date}
+                    </div>
                   </div>
-                </Link>
-                <div className='flex items-center text-md font-light gap-2 text-blue-500 hover:text-blue-900 '>
-                  <AiOutlineCalendar />
-                  10 Nov 2023
                 </div>
-              </div>
-            </div>
-
-            <div className='flex pt-10 gap-3'>
-              <div>
-                <img
-                  src='https://i.pinimg.com/474x/a1/31/f6/a131f61280b7a899fd2e24541d1b0e80.jpg'
-                  alt='Pic3'
-                  className='rounded-lg w-[80px] h-[80px]'
-                />
-              </div>
-              <div className='flex flex-col gap-2'>
-                <Link to={'/blog/detail'}>
-                  <div className='text-lg font-bold hover:text-blue-500'>
-                    Những thay đổi mới về bằng lái
-                  </div>
-                </Link>
-                <div className='flex items-center text-md font-light gap-2 text-blue-500 hover:text-blue-900 '>
-                  <AiOutlineCalendar />
-                  01 Jul 2023
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
-
-        <div></div>
-        <div></div>
-        <div></div>
       </div>
 
       <Footer />

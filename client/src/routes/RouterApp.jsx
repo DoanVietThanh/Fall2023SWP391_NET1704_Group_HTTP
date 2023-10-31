@@ -1,41 +1,43 @@
 import React from 'react';
-import 'swiper/css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import HomePage from '../pages/HomePage/HomePage';
-import ErrorPage from './../pages/ErrorPage/ErrorPage';
+import 'swiper/css';
 import Loading from '../components/Loading';
+import SideBar from '../components/SideBar';
+import AboutUsPage from '../pages/AboutUsPage/AboutUsPage';
+import BlogDetail from '../pages/BlogPage/BlogDetail';
+import BlogPage from '../pages/BlogPage/BlogPage';
+import ContactPage from '../pages/ContactPage/ContactPage';
+import CoursePage from '../pages/CoursePage/CoursePage';
+import DetailCourse from '../pages/CoursePage/DetailCourse';
+import Payment from '../pages/CoursePage/Payment';
+import CauHoiDiemLietPage from '../pages/DocumentPage/CauHoiDiemLietPage';
+import DocumentPage from '../pages/DocumentPage/DocumentPage';
+import ToanBoCauHoiPage from '../pages/DocumentPage/ToanBoCauHoiPage';
+import HomePage from '../pages/HomePage/HomePage';
+import InstructorSchedule from '../pages/InstructorSchedule/InstructorSchedule';
+import IntructorDetail from '../pages/IntructorPage/IntructorDetail';
+import IntructorPage from '../pages/IntructorPage/IntructorPage';
+import ForgotPassword from '../pages/LoginPage/ForgotPassword';
 import LoginPage from '../pages/LoginPage/LoginPage';
 import RegisterPage from '../pages/LoginPage/RegisterPage';
-import ForgotPassword from '../pages/LoginPage/ForgotPassword';
 import ShowForgetPass from '../pages/LoginPage/ShowForgetPass';
-import CoursePage from '../pages/CoursePage/CoursePage';
-import IntructorPage from '../pages/IntructorPage/IntructorPage';
-import DetailCourse from '../pages/CoursePage/DetailCourse';
-import ContactPage from '../pages/ContactPage/ContactPage';
-import TheoryPage from '../pages/TheoryPage/TheoryPage';
-import TestTheory from '../pages/TheoryPage/TestTheory';
-import ResultTheory from '../pages/TheoryPage/ResultTheory';
 import DashboardPage from '../pages/Manager/pages/DashboardPage/DashboardPage';
-import BlogPage from '../pages/BlogPage/BlogPage';
-import BlogDetail from '../pages/BlogPage/BlogDetail';
-import DocumentPage from '../pages/DocumentPage/DocumentPage';
-import SideBar from '../components/SideBar';
-
-import Profile from '../pages/PrivatePage/Profile';
-import ManageUser from '../pages/PrivatePage/ManageUser';
+import DashBoard from '../pages/PrivatePage/DashBoard';
 import HistoryTest from '../pages/PrivatePage/HistoryTest';
-import WeekSchedule from '../pages/PrivatePage/WeekSchedule';
-import ManageQuestion from '../pages/PrivatePage/ManageQuestion';
 import ManageBankTest from '../pages/PrivatePage/ManageBankTest';
+import ManageQuestion from '../pages/PrivatePage/ManageQuestion';
+import ManageUser from '../pages/PrivatePage/ManageUser';
+import Profile from '../pages/PrivatePage/Profile';
+import WeekSchedule from '../pages/PrivatePage/WeekSchedule';
 import WeekScheduleMentor from '../pages/PrivatePage/WeekScheduleMentor';
+import SimulationSituation from '../pages/SimulationSituationPage/SimulationSituation';
+import ResultTheory from '../pages/TheoryPage/ResultTheory';
+import TestTheory from '../pages/TheoryPage/TestTheory';
+import TheoryPage from '../pages/TheoryPage/TheoryPage';
+import ErrorPage from './../pages/ErrorPage/ErrorPage';
+
 import ManageAwaitSchedule from '../pages/PrivatePage/ManageAwaitSchedule';
 
-import Payment from '../pages/CoursePage/Payment';
-import AboutUsPage from '../pages/AboutUsPage/AboutUsPage';
-import IntructorDetail from '../pages/IntructorPage/IntructorDetail';
-import ToanBoCauHoiPage from '../pages/DocumentPage/ToanBoCauHoiPage';
-import CauHoiDiemLietPage from '../pages/DocumentPage/CauHoiDiemLietPage';
-import InstructorSchedule from './../pages/IntructorPage/InstructorSchedule';
 import ApproveSchedule from '../pages/PrivatePage/ApproveSchedule';
 import ManageDenySchedule from '../pages/PrivatePage/ManageDenySchedule';
 
@@ -62,6 +64,8 @@ const RouterApp = () => {
     { path: '/manage-question', element: <ManageQuestion /> },
     { path: '/manage-banktest', element: <ManageBankTest /> },
     { path: '/manage-user', element: <ManageUser /> },
+
+    { path: '/dashboard', element: <DashBoard /> },
     { path: '/manage-await-schedule', element: <ManageAwaitSchedule /> },
     { path: '/manage-deny-schedule', element: <ManageDenySchedule /> },
     {
@@ -81,6 +85,8 @@ const RouterApp = () => {
     { path: '/theory', element: <TheoryPage /> },
     { path: '/theory/test/:theoryExamId', element: <TestTheory /> },
     { path: '/theory/result/:mockTestId', element: <ResultTheory /> },
+
+    { path: '/simulationSituation', element: <SimulationSituation /> },
 
     { path: '/blog', element: <BlogPage /> },
     { path: '/blog/detail', element: <BlogDetail /> },

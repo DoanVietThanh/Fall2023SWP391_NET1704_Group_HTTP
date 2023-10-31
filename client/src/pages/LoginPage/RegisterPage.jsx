@@ -22,46 +22,47 @@ import { toastError, toastSuccess } from '../../components/Toastify';
 let schema = yup.object().shape({
   username: yup
     .string()
-    .email('Email không hợp lệ')
-    .required('Vui lòng nhập Email'),
+    .min(10, 'Email có ít nhất 10 kí tự')
+    .email('Email phải hợp lệ')
+    .required('Yêu cầu nhập email'),
   password: yup
     .string()
-    .min(8, 'Password có ít nhất 8 kí tự')
+    .min(8, 'Mật khẩu có ít nhất 8 kí tự')
     .matches(
       '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$',
-      'Password có chữ đầu ghi Hoa, có ít nhất 1 số'
+      'Mật khẩu có chữ đầu ghi Hoa, có ít nhất 1 số'
     )
-    .required('Vui lòng nhập Password'),
+    .required('Yêu cầu nhập mật khẩu'),
   confirmPassword: yup
     .string()
-    .oneOf([yup.ref('password'), null], 'Passwords chưa trùng khớp'),
+    .oneOf([yup.ref('password'), null], 'Mật khẩu chưa trùng khớp'),
   firstName: yup
     .string()
-    .max(10, 'Firstname có nhiều nhất 10 kí tự')
+    .max(10, 'Tên có nhiều nhất 10 kí tự')
     .matches('^[a-zA-Z ]+$', 'Không chứa số hay kí tự đặc biệt')
-    .required('Vui lòng nhập FirstName'),
+    .required('Nhập tên'),
   lastName: yup
     .string()
-    .max(10, 'Lastname có nhiều nhất 10 kí tự')
+    .max(10, 'Họ có nhiều nhất 10 kí tự')
     .matches('^[a-zA-Z ]+$', 'Không chứa số hay kí tự đặc biệt')
-    .required('Vui lòng nhập  LastName'),
+    .required('Nhập họ'),
   phone: yup
     .string()
     .matches('^0[0-9]{9,11}$', 'Số điện thoại có độ dài 10-12')
-    .required('Vui lòng nhập số điện thoại'),
-  dateBirth: yup.string().required('Vui lòng nhập Ngày sinh'),
+    .required('Nhập số điện thoại'),
+  dateBirth: yup.string().required('Nhập ngày sinh'),
   street: yup
     .string()
     .matches('^[a-zA-Z0-9 ]+$', 'Không chứa số hay kí tự đặc biệt')
-    .required('Vui lòng nhập tên đường'),
+    .required('Nhập đường'),
   district: yup
     .string()
     .matches('^[a-zA-Z ]+$', 'Không chứa số hay kí tự đặc biệt')
-    .required('Vui lòng nhập tên quận'),
+    .required('Nhập huyện/quận'),
   city: yup
     .string()
     .matches('^[a-zA-Z ]+$', 'Không chứa số hay kí tự đặc biệt')
-    .required('Vui lòng nhập tên thành phố'),
+    .required('Nhập tỉnh/thành phố'),
 });
 
 const RegisterPage = () => {
@@ -103,7 +104,7 @@ const RegisterPage = () => {
         toastSuccess(result.data.message);
         navigate('/login');
       } else {
-        toastError('Something went wrong');
+        toastError('Đăng nhập thất bại');
       }
       console.log('result: ', result);
     },
@@ -161,7 +162,7 @@ const RegisterPage = () => {
               <div className='flex-1'>
                 <TextField
                   id='outlined-basic'
-                  label='First Name'
+                  label='Tên'
                   variant='outlined'
                   className='w-full'
                   onChange={formik.handleChange('firstName')}
@@ -177,7 +178,7 @@ const RegisterPage = () => {
               <div className='flex-1'>
                 <TextField
                   id='outlined-basic'
-                  label='Last Name'
+                  label='Họ'
                   variant='outlined'
                   className='w-full'
                   onChange={formik.handleChange('lastName')}
@@ -192,7 +193,7 @@ const RegisterPage = () => {
 
             {/* Password  */}
             <TextField
-              label='Password'
+              label='Mật khẩu'
               variant='outlined'
               fullWidth
               type={showPassword ? 'text' : 'password'}
@@ -223,7 +224,7 @@ const RegisterPage = () => {
 
             {/* Confirmed Password  */}
             <TextField
-              label='Confirmed Password'
+              label='Xác nhận mật khẩu'
               variant='outlined'
               fullWidth
               type={showPassword ? 'text' : 'password'}
@@ -254,7 +255,7 @@ const RegisterPage = () => {
 
             {/* Date Of Birth  */}
             <div className='flex justify-between items-center'>
-              <h2 className='whitespace-nowrap pr-8 '>Date Of Birth</h2>
+              <h2 className='whitespace-nowrap pr-8 '>Ngày sinh</h2>
               <TextField
                 id='outlined-basic'
                 variant='outlined'
@@ -272,7 +273,7 @@ const RegisterPage = () => {
             {/* Phone  */}
             <TextField
               id='outlined-basic'
-              label='Phone'
+              label='Số điện thoại'
               variant='outlined'
               className='w-full'
               type='text'
@@ -287,7 +288,7 @@ const RegisterPage = () => {
             {/* Street  */}
             <TextField
               id='outlined-basic'
-              label='Street'
+              label='Đường'
               variant='outlined'
               className='w-full'
               type='text'
@@ -301,7 +302,7 @@ const RegisterPage = () => {
             {/* District  */}
             <TextField
               id='outlined-basic'
-              label='District'
+              label='Huyện/Quận'
               variant='outlined'
               className='w-full'
               type='text'
@@ -315,7 +316,7 @@ const RegisterPage = () => {
             {/* City  */}
             <TextField
               id='outlined-basic'
-              label='City'
+              label='Tỉnh/Thành phố'
               variant='outlined'
               className='w-full'
               type='text'
@@ -326,7 +327,7 @@ const RegisterPage = () => {
             <div className='error text-red-900'>
               {formik.touched.city && formik.errors.city}
             </div>
-            <button className='btn'>Create Account</button>
+            <button className='btn'>Tạo tài khoản</button>
           </form>
 
           <div>
@@ -342,9 +343,9 @@ const RegisterPage = () => {
 
           <div>
             <p className='font-medium capitalize'>
-              Already have an account?{' '}
+              Đã có tài khoản?{' '}
               <Link to='/login' className='text-blue-400'>
-                Sign In here
+                Đăng nhập
               </Link>
             </p>
           </div>

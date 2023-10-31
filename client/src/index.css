@@ -204,3 +204,77 @@ tr td:first-child {
 .mentor:hover .imgMentor {
   opacity: 0.2;
 }
+
+.dialogTit {
+  font-weight: 600;
+  font-size: 28px;
+  text-transform: capitalize;
+  text-align: center;
+}
+
+.dialogRemind{
+  color: #797979;
+  font-size: large;
+}
+
+.flex-item {
+  border-right: 4px solid #dee0e3;
+}
+
+/* Loại bỏ khoảng cách cuối cùng */
+.flex-item:last-child {
+  border-right: none;
+}
+
+.user-list {
+  max-height: 400px; /* Giới hạn chiều cao của danh sách */
+  overflow: auto; /* Tạo thanh kéo khi nội dung vượt quá chiều cao */
+}
+
+.scrollable {
+  max-height: none; /* Loại bỏ giới hạn chiều cao để hiển thị toàn bộ danh sách */
+  overflow: auto; /* Vẫn hiển thị thanh kéo nếu cần */
+}
+
+.datagrid-container {
+  max-height: 400px; /* Đặt chiều cao tối đa cho khung DataGrid */
+  overflow-y: auto; /* Hiển thị thanh cuộn dọc nếu cần */
+}
+
+.square {
+  width: 50px;
+  height: 50px;
+  background-color: rgb(203, 203, 203);
+  border-radius: 4px;
+  display: inline-block;
+  text-align: center;
+  line-height: 50px;
+  margin-right: 28px;
+  margin-bottom: 28px;
+  font-size: 20px;
+  padding: 10px;
+}
+
+.square-container {
+ text-align: center;
+  margin: 20px;
+}
+
+.buttonSimulate {
+  width: 33%;
+  color: white;
+  background-color: #479ee0;
+  text-transform: uppercase;
+  font-size: 24px;
+  display: flex;
+  gap: 12px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+
+

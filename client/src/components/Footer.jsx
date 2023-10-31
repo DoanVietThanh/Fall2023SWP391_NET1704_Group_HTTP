@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
-import images from './../assets/img/index';
+import React from 'react';
 import { BsTelephone } from 'react-icons/bs';
-import { MdOutlineEmail, MdAddLocation } from 'react-icons/md';
+import { MdAddLocation, MdOutlineEmail } from 'react-icons/md';
+import { useInView } from 'react-intersection-observer';
+import { animated, useSpring } from 'react-spring';
 import theme from '../theme';
-import { useSpring, animated } from 'react-spring';
-import { useInView, InView } from 'react-intersection-observer';
 
 function ComponentToDetect({ data }) {
   const [ref, inView] = useInView();
@@ -53,7 +52,7 @@ const Footer = () => {
             <BsTelephone size={24} className='text-white p-1' />
           </div>
           <div>
-            <span className='text-slate-500'>Call us any time:</span>
+            <span className='text-slate-500'>Gọi đến số điện thoại:</span>
             <h2>+364745067</h2>
           </div>
         </div>
@@ -63,7 +62,7 @@ const Footer = () => {
             <MdOutlineEmail size={24} className='text-white p-1' />
           </div>
           <div>
-            <span className='text-slate-500'>Email us 24/7:</span>
+            <span className='text-slate-500'>Email 24/7:</span>
             <h2>teamhttp@gmail.com</h2>
           </div>
         </div>
@@ -73,8 +72,8 @@ const Footer = () => {
             <MdAddLocation size={24} className='text-white p-1' />
           </div>
           <div>
-            <span className='text-slate-500'>Our location: </span>
-            <h2>Thủ Đức- TP.HCM</h2>
+            <span className='text-slate-500'>Địa chỉ: </span>
+            <h2>Thủ Đức - TP.HCM</h2>
           </div>
         </div>
       </div>
@@ -83,7 +82,7 @@ const Footer = () => {
         <div className='flex gap-6'>
           <div className='flex-1 flex flex-col'>
             <div className='w-[100px] h-[100px] flex justify-center items-center'>
-              <img src={`/img/logo.png`} alt='logo' className='' />
+              <img src={`/img/logo.png`} alt='logo' className='mb-5' />
             </div>
             <div>
               <p>
@@ -112,7 +111,7 @@ const Footer = () => {
             </ul>
           </div>
           <div className='flex-1 '>
-            <h1 className='text-[20px] font-medium'>Get in Touch</h1>
+            <h1 className='text-[20px] font-medium'>Liên lạc</h1>
             <div className='pt-4'>
               <form action='' className='flex'>
                 <input
@@ -121,7 +120,7 @@ const Footer = () => {
                   placeholder='Enter email...'
                   className='px-1 py-2'
                 />
-                <button className='btn'>Submit</button>
+                <button className='btn'></button>
               </form>
             </div>
           </div>
@@ -134,10 +133,10 @@ const Footer = () => {
           </span>
           <div className='center text-white gap-8 '>
             <span className='hover:opacity-80 hover:cursor-pointer'>
-              Privacy Policy
+              Chính sách
             </span>
             <span className='hover:opacity-80 hover:cursor-pointer'>
-              Terms & Condition
+              Điều kiện
             </span>
           </div>
         </div>
