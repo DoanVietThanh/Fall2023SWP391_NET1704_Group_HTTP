@@ -59,7 +59,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     return BadRequest(new ErrorResponse()
                     {
                         StatusCode = StatusCodes.Status400BadRequest,
-                        Message = "Error to create one theory mock test"
+                        Message = "Lỗi tạo đề thi"
                     });
                 }
                 //change status
@@ -70,30 +70,7 @@ namespace DriverLicenseLearningSupport.Controllers
             }
 
             TheoryExamModel mocktest = new TheoryExamModel();
-            //switch (currentLicenceId)
-            //{
-            //    case 1:
-            //        mocktest.TotalQuestion = 3;
-            //        mocktest.TotalAnswerRequired = 21;
-            //        mocktest.TotalTime = 15;
-            //        break;
-            //    case 2:
-            //        mocktest.TotalQuestion = 25;
-            //        mocktest.TotalAnswerRequired = 23;
-            //        mocktest.TotalTime = 15;
-            //        break;
-            //    case 3:
-            //        mocktest.TotalQuestion = 30;
-            //        mocktest.TotalAnswerRequired = 27;
-            //        mocktest.TotalTime = 20;
-            //        break;
-            //    case 4:
-            //        mocktest.TotalQuestion = 35;
-            //        mocktest.TotalAnswerRequired = 32;
-            //        mocktest.TotalTime = 22;
-            //        break;
-
-            //}
+         
             mocktest.TotalTime = reqObj.TotalTime;
             mocktest.TotalQuestion = reqObj.TotalQuestion;
             mocktest.TotalAnswerRequired = reqObj.TotalAnswerRequired;
