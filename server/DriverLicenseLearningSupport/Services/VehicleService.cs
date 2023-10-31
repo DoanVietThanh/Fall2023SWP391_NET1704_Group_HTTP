@@ -98,5 +98,20 @@ namespace DriverLicenseLearningSupport.Services
         {
             return await _vehicleRepo.GetAsync(vehicleId);
         }
+
+        public async Task<bool> UpdateAsync(int vehicleId, VehicleModel vehicle)
+        {
+            return await _vehicleRepo.UpdateAsync(vehicleId, vehicle);
+        }
+
+        public async Task<bool> DeleteAsync(int vehicleId)
+        {
+            return await _vehicleRepo.DeleteAsync(vehicleId);
+        }
+
+        public async Task<IEnumerable<VehicleModel>> GetAllAsync()
+        {
+            return await _vehicleRepo.GetAllAsync();
+        }
     }
 }

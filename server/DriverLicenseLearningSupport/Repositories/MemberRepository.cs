@@ -185,7 +185,7 @@ namespace DriverLicenseLearningSupport.Repositories
             // remove license form (if any)
             if(memberLicenseForm is not null)
             {
-                _context.Remove(memberLicenseForm);
+                _context.LicenseRegisterForms.Remove(memberLicenseForm);
                 await _context.SaveChangesAsync();
             }
 

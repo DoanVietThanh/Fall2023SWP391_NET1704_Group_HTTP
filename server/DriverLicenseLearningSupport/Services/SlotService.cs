@@ -24,9 +24,24 @@ namespace DriverLicenseLearningSupport.Services
             return await _slotRepo.CreateAsync(slotEntity);
         }
 
+        public async Task<bool> DeleteAsync(int id)
+        {
+            return await _slotRepo.DeleteAsync(id);
+        }
+
         public async Task<IEnumerable<SlotModel>> GetAllAsync()
         {
             return await _slotRepo.GetAllAsync();
+        }
+
+        public async Task<SlotModel> GetAsync(int id)
+        {
+            return await _slotRepo.GetAsync(id);
+        }
+
+        public async Task<bool> UpdateAsync(int id, SlotModel slot)
+        {
+            return await _slotRepo.UpdateAsync(id, slot);
         }
     }
 }

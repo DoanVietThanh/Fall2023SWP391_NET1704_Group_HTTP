@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection.Emit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -147,7 +148,7 @@ namespace DriverLicenseLearningSupport.Entities
                         r => r.HasOne<Blog>().WithMany().HasForeignKey("BlogId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_BlogTag_BlogId"),
                         j =>
                         {
-                            j.HasKey("BlogId", "TagId").HasName("PK__Blog_Tag__5D5CC00324E72084");
+                            j.HasKey("BlogId", "TagId").HasName("PK__Blog_Tag__5D5CC003229E4E20");
 
                             j.ToTable("Blog_Tag");
 
@@ -634,7 +635,7 @@ namespace DriverLicenseLearningSupport.Entities
                     .WithMany(p => p.Members)
                     .HasForeignKey(d => d.LicenseFormId)
                     .HasConstraintName("FK_Member_LicenseRegisterFormId");
-                
+
             });
 
             modelBuilder.Entity<PaymentType>(entity =>
@@ -738,7 +739,9 @@ namespace DriverLicenseLearningSupport.Entities
 
                 entity.Property(e => e.IsActive).HasColumnName("is_active");
 
-                entity.Property(e => e.CancelMessage).HasColumnName("cancel_message");
+                entity.Property(e => e.CancelMessage)
+                    .HasMaxLength(200)
+                    .HasColumnName("cancel_message");
 
                 entity.Property(e => e.Comment)
                     .HasMaxLength(255)

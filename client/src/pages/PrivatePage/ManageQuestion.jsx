@@ -1,6 +1,5 @@
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import React, { useCallback, useEffect, useState } from 'react';
-import { toastSuccess } from './../../components/Toastify';
+import React, { useEffect, useState } from 'react';
 
 import { Box, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
@@ -9,12 +8,12 @@ import { AiOutlineMinusCircle, AiOutlinePlusCircle } from 'react-icons/ai';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { TbEdit } from 'react-icons/tb';
 import { useDispatch, useSelector } from 'react-redux';
+import SideBar from '../../components/SideBar';
 import {
   createQuestion,
   getLisenceType,
   getQuestions,
 } from '../../features/question/questionSlice';
-import SideBar from '../../components/SideBar';
 
 const columns = [
   { field: 'id', headerName: 'ID', width: 50 },

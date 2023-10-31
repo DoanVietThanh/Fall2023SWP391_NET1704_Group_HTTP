@@ -146,7 +146,6 @@ CREATE TABLE [dbo].Vehicle(
 )
 GO
 CREATE TABLE [dbo].Slot(
-	
 	slot_id INT PRIMARY KEY identity(1,1),
 	slot_name NVARCHAR(100),
 	duration INT,

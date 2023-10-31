@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { toastError, toastSuccess } from '../../../components/Toastify';
 import axiosClient from '../../../utils/axiosClient';
 
-const DialogDetailSchedule = ({
+const DialogApproveSchedule = ({
   open,
   course,
   setOpen,
@@ -13,6 +13,7 @@ const DialogDetailSchedule = ({
   rollCallBookId,
   slotSchedules,
   teachingScheduleId,
+  activeVehicles,
 }) => {
   const { accountInfo } = useSelector((state) => state.auth.user);
   const [memberInfo, setMemberInfo] = useState();
@@ -20,6 +21,8 @@ const DialogDetailSchedule = ({
   const [rollCallBook, setRollCallBook] = useState();
   const [teachingDate, setTeachingDate] = useState();
   const [staffInfo, setStaffInfo] = useState();
+  const [vehicleType, setVehicleType] = useState();
+
   const [formAttendance, setFormAttendance] = useState({
     comment: '',
     isAbsence: false,
@@ -27,10 +30,10 @@ const DialogDetailSchedule = ({
     totalKmDriven: 0,
   });
 
-  console.log('course: ', course);
-  console.log('dataWeek: ', dataWeek);
-  console.log('slotSchedules: ', slotSchedules);
-  console.log('staffInfo: ', staffInfo);
+  //   console.log('course: ', course);
+  //   console.log('dataWeek: ', dataWeek);
+  //   console.log('slotSchedules: ', slotSchedules);
+  //   console.log('staffInfo: ', staffInfo);
 
   useEffect(() => {
     async function initialCheckAttendance() {
@@ -50,20 +53,39 @@ const DialogDetailSchedule = ({
         );
         setFormAttendance({
           comment:
-            response?.data?.data?.teachingSchedule?.rollCallBooks[0].comment,
+            response?.data?.data?.teachingSchedule?.rollCallBooks[0]?.comment,
           isAbsence:
-            response?.data?.data?.teachingSchedule?.rollCallBooks[0].isAbsence,
+            response?.data?.data?.teachingSchedule?.rollCallBooks[0]?.isAbsence,
           totalHoursDriven:
             response?.data?.data?.teachingSchedule?.rollCallBooks[0]
-              .totalHoursDriven,
+              ?.totalHoursDriven,
           totalKmDriven:
             response?.data?.data?.teachingSchedule?.rollCallBooks[0]
-              .totalKmDriven,
+              ?.totalKmDriven,
         });
       }
     }
     initialCheckAttendance();
   }, [teachingScheduleId]);
+
+  const handleCheckAttendance = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axiosClient
+        .put(
+          `/staffs/mentors/${accountInfo.staffId}/schedule/rollcallbook/${rollCallBookId}`,
+          formAttendance
+        )
+        .catch((error) => toastError(error?.response?.data?.message));
+      console.log('res: ', res);
+      if (res?.data.statusCode === 200) {
+        toastSuccess(res?.data.message);
+      }
+    } catch (error) {
+      // toastError(error.response.data.message);
+    }
+    setOpen(false);
+  };
 
   return (
     <div>
@@ -99,29 +121,20 @@ const DialogDetailSchedule = ({
               </div>
             </div>
 
-            {vehicle && (
-              <div className='mt-4'>
-                <div className='flex flex-col gap-4'>
-                  <div>
-                    <span className='font-semibold'>Tên xe: </span>
-                    {vehicle?.vehicleName}
-                  </div>
-                  <div>
-                    <span className='font-semibold'>Biển số xe: </span>
-                    {vehicle?.vehicleLicensePlate}
-                  </div>
-                  <div>
-                    <span className='font-semibold'>Ngày đăng kí xe: </span>
-                    {dayjs(vehicle?.registerDate).format('DD/MM/YYYY')}
-                  </div>
-                  <div className='w-full'>
-                    <img
-                      src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Land_Rover_Range_Rover_Autobiography_2016.jpg/1200px-Land_Rover_Range_Rover_Autobiography_2016.jpg'
-                      alt='transport'
-                      className='w-[300px]'
-                    />
-                  </div>
-                </div>
+            {vehicleType && (
+              <div>
+                <h2 className='font-bold my-4 text-center font-bold text-[24px]'>
+                  Chọn loại xe
+                </h2>
+                <form action=''>
+                  <select name='' id=''>
+                    {vehicleType?.map((vehicle, index) => (
+                      <option value={vehicle?.vehicleTypeId}>
+                        {vehicle?.vehicleTypeDesc}
+                      </option>
+                    ))}
+                  </select>
+                </form>
               </div>
             )}
           </div>
@@ -177,7 +190,7 @@ const DialogDetailSchedule = ({
                 {` ${memberInfo?.phone}`}
               </div>
             </div>
-            <div>
+            <form action=''>
               <TextField
                 id='outlined-basic'
                 label='Nhận xét'
@@ -185,18 +198,37 @@ const DialogDetailSchedule = ({
                 className='w-full'
                 required={true}
                 value={formAttendance?.comment || ''}
-                disabled
+                onChange={(e) =>
+                  setFormAttendance((prev) => ({
+                    ...prev,
+                    comment: e.target.value,
+                  }))
+                }
               />
-              <div className='mt-4'>
-                {formAttendance?.isAbsence ? (
-                  <h1 className='mb-2 font-bold text-[20px] text-red-700 text-center'>
-                    Vắng mặt
-                  </h1>
-                ) : (
-                  <h1 className='mb-2 font-bold text-[20px] text-green-700 text-center'>
-                    Có mặt
-                  </h1>
-                )}
+              <div className='flex justify-end'>
+                <div>
+                  <label
+                    htmlFor='#isAbsence'
+                    className={`font-semibold text-yellow-700 ${
+                      formAttendance?.isAbsence
+                        ? 'text-red-700'
+                        : 'text-green-700'
+                    }`}
+                  >
+                    {formAttendance?.isAbsence ? 'Vắng' : 'Có mặt'}
+                  </label>
+                  <Switch
+                    id='isAbsence'
+                    checked={!formAttendance?.isAbsence}
+                    onChange={(e) =>
+                      setFormAttendance((prev) => ({
+                        ...prev,
+                        isAbsence: !e.target.checked,
+                      }))
+                    }
+                    size='medium'
+                  />
+                </div>
               </div>
 
               {!formAttendance?.isAbsence && (
@@ -212,7 +244,12 @@ const DialogDetailSchedule = ({
                       InputProps={{
                         inputProps: { min: 0 }, // Set the minimum value here
                       }}
-                      disabled
+                      onChange={(e) =>
+                        setFormAttendance((prev) => ({
+                          ...prev,
+                          totalKmDriven: e.target.value,
+                        }))
+                      }
                     />
                   </div>
                   <div className='mt-4'>
@@ -226,18 +263,27 @@ const DialogDetailSchedule = ({
                       InputProps={{
                         inputProps: { min: 0 }, // Set the minimum value here
                       }}
-                      disabled
+                      onChange={(e) =>
+                        setFormAttendance((prev) => ({
+                          ...prev,
+                          totalHoursDriven: e.target.value,
+                        }))
+                      }
                     />
                   </div>
                 </div>
               )}
 
               <div className='flex justify-end mt-4'>
-                <button className='btn' onClick={() => setOpen(false)}>
-                  Thoát
+                <button
+                  className='btn'
+                  type='submit'
+                  onClick={(e) => handleCheckAttendance(e)}
+                >
+                  Điểm danh
                 </button>
               </div>
-            </div>
+            </form>
           </div>
         ) : (
           <div className='flex justify-end p-4'>
@@ -251,4 +297,4 @@ const DialogDetailSchedule = ({
   );
 };
 
-export default DialogDetailSchedule;
+export default DialogApproveSchedule;

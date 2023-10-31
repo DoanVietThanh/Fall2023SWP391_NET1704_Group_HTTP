@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Wordprocessing;
 using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Repositories.Impl;
@@ -33,6 +34,19 @@ namespace DriverLicenseLearningSupport.Repositories
             return false;
         }
 
+        public async Task<bool> DenyCancelSchedule(int rcbId)
+        {
+            var rcbEntity = await _context.RollCallBooks.Where(x => x.RollCallBookId == rcbId)
+                                                        .FirstOrDefaultAsync();
+
+            if(rcbEntity is not null)
+            {
+                rcbEntity.IsActive = true;
+                return await _context.SaveChangesAsync() > 0;
+            }
+            return false;
+        }
+
         public async Task<IEnumerable<RollCallBookModel>> GetAllByMemberIdAsync(Guid memberId)
         {
             var rcbooks = await _context.RollCallBooks.Where(x => x.MemberId == memberId.ToString())
@@ -54,7 +68,19 @@ namespace DriverLicenseLearningSupport.Repositories
                                                         TotalKmDriven = x.TotalKmDriven,
                                                         CancelMessage = x.CancelMessage,
                                                         Member = x.Member,
-                                                        TeachingSchedule = x.TeachingSchedule
+                                                        TeachingSchedule = new TeachingSchedule()
+                                                        {
+                                                            TeachingScheduleId = x.TeachingScheduleId,
+                                                            TeachingDate = x.TeachingSchedule.TeachingDate,
+                                                            StaffId = x.TeachingSchedule.StaffId,
+                                                            SlotId = x.TeachingSchedule.SlotId,
+                                                            VehicleId = x.TeachingSchedule.VehicleId,
+                                                            WeekdayScheduleId = x.TeachingSchedule.WeekdayScheduleId,
+                                                            CoursePackageId = x.TeachingSchedule.CoursePackageId,
+                                                            IsActive = x.TeachingSchedule.IsActive,
+                                                            Staff = x.TeachingSchedule.Staff,
+                                                            CoursePackage = x.TeachingSchedule.CoursePackage
+                                                        }
                                                       })
                                                       .ToListAsync();
             return _mapper.Map<IEnumerable<RollCallBookModel>>(rcbooks);

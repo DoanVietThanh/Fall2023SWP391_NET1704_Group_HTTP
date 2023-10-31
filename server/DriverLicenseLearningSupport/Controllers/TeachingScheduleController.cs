@@ -159,7 +159,16 @@ namespace DriverLicenseLearningSupport.Controllers
         {
             // get members has all await schedule
             var mentors = await _teachingScheduleService.GetAllAwaitScheduleMentor();
-            return Ok(mentors);
+
+            if (mentors.Count() > 0) return Ok(new BaseResponse { 
+                StatusCode = StatusCodes.Status200OK,
+                Data = mentors
+            });
+            
+            return BadRequest(new BaseResponse { 
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = "Hiện chưa có lịch cần duyệt"
+            });
         }
 
         /// <summary>
@@ -227,7 +236,10 @@ namespace DriverLicenseLearningSupport.Controllers
             var slots = await _slotService.GetAllAsync();
             // convert to list of course
             var listOfSlotSchedule = slots.ToList();
+
             // get all teaching schedule of mentor
+            var filterSchedules = await _teachingScheduleService.GetAllByMentorIdAsync(id);
+            var mentorVehicle = filterSchedules.Select(x => x.Vehicle).FirstOrDefault();
 
             // get teaching schedule for each slot
             foreach (var s in slots)
@@ -268,8 +280,8 @@ namespace DriverLicenseLearningSupport.Controllers
                     }),
                     Weekdays = weekday,
                     SlotSchedules = listOfSlotSchedule,
-                    MentorScheduleVehicle = mentorScheduleVehicle,
                     ActiveVehicles = activeVehicles,
+                    MentorScheduleVehicle = mentorScheduleVehicle,
                     TotalInActiveVehicle = inactiveVehicles.Count()
                 }
             });
@@ -397,6 +409,13 @@ namespace DriverLicenseLearningSupport.Controllers
 
             // course
             var course = await _courseService.GetByMentorIdAsync(id);
+            if(course is null)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Người hướng dẫn chưa được cấp phép dạy khóa học"
+                });
+            }
 
             // course startdate
             var date = Convert.ToDateTime(course.StartDate);
@@ -412,12 +431,12 @@ namespace DriverLicenseLearningSupport.Controllers
                 $" đến {date.AddMonths(totalMonth).ToString("dd/MM/yyyy")} đã được duyệt thành công. \n " +
                 $"Mọi thắc mắc xin liên hệ để được điều chỉnh sớm nhất \n" +
                 $"Xin cảm ơn.");
-            //_emailService.SendEmail(message);
+           //_emailService.SendEmail(message);
 
             if (isApproved)
             {
                 await _teachingScheduleService.AddRangeVehicleMentorSchedule(id, vehicleId);
-                await _vehicleService.UpdateActiveStatusAsync(vehicleId);
+               await _vehicleService.UpdateActiveStatusAsync(vehicleId);
                 return Ok(new BaseResponse {
                     StatusCode = StatusCodes.Status200OK,
                     Message = "Duyệt lịch học thành công"
@@ -444,6 +463,16 @@ namespace DriverLicenseLearningSupport.Controllers
         public async Task<IActionResult> DenyAwaitSchedule([FromRoute] Guid id,
             string message)
         {
+
+            if (String.IsNullOrEmpty(message))
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Vui lòng điền lý do từ chối"
+                });
+            }
+
             // get mentor by id
             var mentor = await _staffService.GetAsync(id);
             if (mentor is null)
@@ -457,6 +486,9 @@ namespace DriverLicenseLearningSupport.Controllers
 
             // course
             var course = await _courseService.GetByMentorIdAsync(id);
+
+            // update status
+            await _teachingScheduleService.DenyMentorAwaitSchedule(id);
 
             // course startdate
             var date = Convert.ToDateTime(course.StartDate);

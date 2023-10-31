@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 import Footer from '../../components/Footer';
 import Header from '../../components/Header';
-import { toastSuccess } from '../../components/Toastify';
+import { toastError, toastSuccess } from '../../components/Toastify';
 
 let schema = yup.object().shape({
   username: yup
@@ -27,9 +27,11 @@ const ForgotPassword = () => {
     validationSchema: schema,
     onSubmit: async (values) => {
       try {
-        await axios.post(
-          `${url_server}/authentication/forgot-password?email=${values.username}`
-        );
+        await axios
+          .post(
+            `${url_server}/authentication/forgot-password?email=${values.username}`
+          )
+          .catch((error) => toastError(error?.response?.data?.message));
         toastSuccess('Check Mail to get New Password');
       } catch (error) {
         console.log(error);

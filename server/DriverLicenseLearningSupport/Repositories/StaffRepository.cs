@@ -261,6 +261,12 @@ namespace DriverLicenseLearningSupport.Repositories
         {
             // get staff by id
             var staffEntity = await _context.Staffs.Where(x => x.StaffId == id.ToString())
+                                                   .Include(x => x.Address)
+                                                   .Include(x => x.Courses)
+                                                   .Include(x => x.EmailNavigation)
+                                                   .Include(x => x.FeedBacks)
+                                                   .Include(x => x.TeachingSchedules)
+                                                   .Include(x => x.CoursePackageReservations)
                                                    .FirstOrDefaultAsync();
 
             if(staffEntity is null) return false;

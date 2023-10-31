@@ -97,5 +97,40 @@ namespace DriverLicenseLearningSupport.Repositories
                                                  .FirstOrDefaultAsync();
             return _mapper.Map<VehicleModel>(vehicle);
         }
+
+        public async Task<bool> UpdateAsync(int vehicleId, VehicleModel vehicle)
+        {
+            var vehicleEntity = await _context.Vehicles.Where(x => x.VehicleId == vehicleId)
+                                                       .FirstOrDefaultAsync();
+
+            if (vehicleEntity is null) return false;
+
+            // update vehicle
+            vehicleEntity.VehicleLicensePlate = vehicle.VehicleLicensePlate;
+            vehicleEntity.VehicleImage = vehicle.VehicleImage;
+            vehicleEntity.VehicleName = vehicle.VehicleName;
+            vehicleEntity.RegisterDate = vehicle.RegisterDate;
+            vehicleEntity.VehicleTypeId = vehicle.VehicleTypeId;
+
+            return await _context.SaveChangesAsync() > 0;
+
+        }
+
+        public async Task<bool> DeleteAsync(int vehicleId)
+        {
+            var vehicle = await _context.Vehicles.Where(x => x.VehicleId == vehicleId)
+                    .FirstOrDefaultAsync();
+
+            if (vehicle is null) return false;
+
+            _context.Vehicles.Remove(vehicle);
+
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<IEnumerable<VehicleModel>> GetAllAsync()
+        {
+            return _mapper.Map<IEnumerable<VehicleModel>>(await _context.Vehicles.ToListAsync());
+        }
     }
 }

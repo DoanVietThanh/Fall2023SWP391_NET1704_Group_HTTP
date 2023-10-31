@@ -18,6 +18,11 @@ namespace DriverLicenseLearningSupport.Services
             return await _rcbRepo.ApproveCancelAsync(rcbId);
         }
 
+        public async Task<bool> DenyCancelSchedule(int rcbId)
+        {
+            return await _rcbRepo.DenyCancelSchedule(rcbId);
+        }
+
         public async Task<IEnumerable<RollCallBookModel>> GetAllByMemberIdAsync(Guid memberId)
         {
             return await _rcbRepo.GetAllByMemberIdAsync(memberId);

@@ -29,20 +29,19 @@ const ResultTheory = () => {
   useEffect(() => {
     async function getReview() {
       try {
-        const response = await axiosClient.post(
-          `${url_Service}/theory/review`,
-          {
+        const response = await axiosClient
+          .post(`${url_Service}/theory/review`, {
             email,
             mockTestId,
             joinDate: localStorage.getItem('startedDate'),
-          }
-        );
+          })
+          .catch((error) => toastError(error?.response?.data?.message));
         if (response.data.statusCode === 200) {
           setExamResult(response.data.data);
         }
         console.log('getReview: ', response);
       } catch (error) {
-        toastError('Review thất bại');
+        // toastError('Review thất bại');
       }
     }
     getReview();
