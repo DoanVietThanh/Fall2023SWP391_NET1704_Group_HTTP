@@ -38,6 +38,7 @@ import CauHoiDiemLietPage from '../pages/DocumentPage/CauHoiDiemLietPage';
 import InstructorSchedule from './../pages/IntructorPage/InstructorSchedule';
 import ApproveSchedule from '../pages/PrivatePage/ApproveSchedule';
 import ManageDenySchedule from '../pages/PrivatePage/ManageDenySchedule';
+import ManageCourse from '../pages/PrivatePage/ManageCourse/ManageCourse';
 
 const RouterApp = () => {
   const router = createBrowserRouter([
@@ -64,6 +65,7 @@ const RouterApp = () => {
     { path: '/manage-user', element: <ManageUser /> },
     { path: '/manage-await-schedule', element: <ManageAwaitSchedule /> },
     { path: '/manage-deny-schedule', element: <ManageDenySchedule /> },
+    { path: '/manage-course', element: <ManageCourse /> },
     {
       path: '/manage-await-schedule/:idMentor',
       element: <ApproveSchedule />,

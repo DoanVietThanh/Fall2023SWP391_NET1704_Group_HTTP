@@ -20,6 +20,8 @@ namespace DriverLicenseLearningSupport.Repositories.Impl
 
         Task<bool> RemoveTheoryExam(int id);
 
+        Task<IEnumerable<TheoryExamModel>> GetAllMockTest();
+
 
     }
 }

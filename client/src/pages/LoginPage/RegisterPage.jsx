@@ -94,7 +94,7 @@ const RegisterPage = () => {
       district: '',
       city: '',
       confirmPassword: '',
-      licenseTypeId: selectType,
+      // licenseTypeId: selectType,
     },
     validationSchema: schema,
     onSubmit: async (values) => {
@@ -137,7 +137,7 @@ const RegisterPage = () => {
             </div>
 
             {/* Select Type  */}
-            <FormControl fullWidth>
+            {/* <FormControl fullWidth>
               <InputLabel id='demo-simple-select-label'>
                 Lisence Type
               </InputLabel>
@@ -154,7 +154,7 @@ const RegisterPage = () => {
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </FormControl> */}
 
             <div className='flex gap-4 w-full'>
               {/* First Name  */}

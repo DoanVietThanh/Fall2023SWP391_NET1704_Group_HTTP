@@ -97,6 +97,12 @@ const listNavbarManage = [
     icon: <BsEnvelopePaper size={20} />,
     navigate: '/manage-deny-schedule',
   },
+  {
+    id: 13,
+    title: 'Quản lí khóa học',
+    icon: <BsEnvelopePaper size={20} />,
+    navigate: '/manage-course',
+  },
 ];
 
 const openedMixin = (theme) => ({

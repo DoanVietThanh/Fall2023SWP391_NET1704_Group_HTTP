@@ -29,7 +29,7 @@ const Profile = () => {
               <div className='flex-x gap-4 w-full'>
                 <span className='text-[20px] font-semibold'>Họ và tên:</span>
                 <span className='text-[20px] font-normal'>
-                  {`${accInfo.firstName} ${accInfo.lastName}`}
+                  {`${accInfo?.firstName} ${accInfo?.lastName}`}
                 </span>
               </div>
 
@@ -42,26 +42,30 @@ const Profile = () => {
 
               <div className='flex-x gap-4'>
                 <span className='text-[20px] font-semibold'>Email:</span>
-                <span className='text-[20px] font-normal'>{accInfo.email}</span>
+                <span className='text-[20px] font-normal'>
+                  {accInfo?.email}
+                </span>
               </div>
 
               <div className='flex-x gap-4'>
                 <span className='text-[20px] font-semibold'>
                   Số điện thoại:
                 </span>
-                <span className='text-[20px] font-normal'>{accInfo.phone}</span>
+                <span className='text-[20px] font-normal'>
+                  {accInfo?.phone}
+                </span>
               </div>
-              <div className='flex-x gap-4'>
+              {/* <div className='flex-x gap-4'>
                 <span className='text-[20px] font-semibold'>
                   Loại bằng lái:
                 </span>
                 <span className='text-[20px] font-normal'>
-                  {accInfo.licenseType.licenseTypeDesc}
+                  {accInfo?.licenseType.licenseTypeDesc}
                 </span>
-              </div>
+              </div> */}
               <div className='flex-x gap-4'>
                 <span className='text-[20px] font-semibold'>Địa chỉ:</span>
-                <span className='text-[20px] font-normal'>{`${accInfo.address.street}, ${accInfo.address.district}, ${accInfo.address.city}`}</span>
+                <span className='text-[20px] font-normal'>{`${accInfo?.address.street}, ${accInfo?.address.district}, ${accInfo?.address.city}`}</span>
               </div>
             </div>
             <div className='flex justify-end w-full'>

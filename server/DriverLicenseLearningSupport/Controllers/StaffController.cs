@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Presentation;
+using DocumentFormat.OpenXml.Spreadsheet;
 using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Models.Config;
@@ -178,6 +179,19 @@ namespace DriverLicenseLearningSupport.Controllers
             staff.Address = address;
             staff.IsActive = true;
             staff.AvatarImage = _appSettings.DefaultAvatar;
+
+            // validate birthdate
+            var currDate = DateTime.ParseExact(DateTime.Now.ToString(_appSettings.DateFormat),
+                _appSettings.DateFormat, CultureInfo.InvariantCulture);
+            var birthdate = staff.DateBirth;
+            if (birthdate >= currDate)
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Ngày sinh không hợp lệ"
+                });
+            }
 
             // is mentor 
             if (staff.JobTitle.JobTitleDesc.Equals("Mentor")) 
@@ -1022,7 +1036,7 @@ namespace DriverLicenseLearningSupport.Controllers
             }
 
             // course
-            var courseMentor = await _courseService.GetByMentorIdAsync(Guid.Parse(reqObj.CourseId));
+            var courseMentor = await _courseService.GetByMentorIdAsync(Guid.Parse(reqObj.MentorId));
             if (courseMentor is null)
             {
                 return BadRequest(new BaseResponse
