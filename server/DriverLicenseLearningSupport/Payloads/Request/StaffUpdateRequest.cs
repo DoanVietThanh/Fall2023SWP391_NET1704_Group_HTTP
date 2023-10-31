@@ -28,9 +28,9 @@ namespace DriverLicenseLearningSupport.Payloads.Request
         [Required(ErrorMessage = "Vui lòng nhập Thành Phố")]
         public string City { get; set; }
 
-        // License Type
-        [Required(ErrorMessage = "Vui lòng chọn loại bằng lái")]
-        public int LicenseTypeId { get; set; }
+        //// License Type
+        //[Required(ErrorMessage = "Vui lòng chọn loại bằng lái")]
+        //public int LicenseTypeId { get; set; }
 
         // Job Title
         [Required(ErrorMessage = "Vui lòng chọn loại công việc")]
@@ -49,7 +49,7 @@ namespace DriverLicenseLearningSupport.Payloads.Request
                 CultureInfo.InvariantCulture),
                 Phone = reqObj.Phone,
                 JobTitleId = reqObj.JobTitleId,
-                LicenseTypeId = reqObj.LicenseTypeId,
+                //LicenseTypeId = reqObj.LicenseTypeId,
             };
         }
 

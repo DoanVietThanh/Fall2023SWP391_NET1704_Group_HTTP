@@ -572,6 +572,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 StatusCode = StatusCodes.Status200OK,
                 Data = theoryExams
             });
+
         }
 
     }

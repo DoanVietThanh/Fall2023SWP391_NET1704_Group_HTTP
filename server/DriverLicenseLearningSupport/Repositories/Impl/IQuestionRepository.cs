@@ -13,6 +13,8 @@ namespace DriverLicenseLearningSupport.Repositories.Impl
         Task<QuestionModel> GetByIdAsync(int questionId);
         Task<QuestionModel> UpdateStatusQuestionAsync(int questionId, bool status);
 
+        Task<List<QuestionModel>> GetAllInExam(int theoryExamId);
+
         Task<QuestionModel> UpdateQuestionAsync(QuestionModel updatedModel, int quesitonId);
         Task<bool> CheckExistedQuestion(string questionDesc,int lisenceId);
 

@@ -27,7 +27,7 @@ namespace DriverLicenseLearningSupport.Payloads.Request
         {
             return new LicenseRegisterFormModel {
                 CreateDate = DateTime.Now,
-                LicenseFormDesc = $"Create at {DateTime.Now}",
+                LicenseFormDesc = $"Tạo ngày {DateTime.Now}",
                 LicenseTypeId = reqObj.LicenseTypeId,
                 RegisterFormStatusId = 1
             };

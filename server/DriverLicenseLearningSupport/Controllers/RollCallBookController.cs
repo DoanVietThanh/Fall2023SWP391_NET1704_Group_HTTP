@@ -195,17 +195,39 @@ namespace DriverLicenseLearningSupport.Controllers
             var teachingSchedule = await _teachingScheduleService.GetAsync(
                 rcb.TeachingScheduleId);
 
-            // send schedule deny email
-            var emailMessage = new EmailMessage(new string[] { member.Email! }, "Yêu cầu hủy lịch học đã bị từ chối",
-                $"Lịch học ngày {teachingSchedule.TeachingDate.ToString("dd/MM/yyyy")}" +
-                $"Lý do từ chối: \n" +
-                message + "\n Xin cảm ơn.");
-            //_emailService.SendEmail(emailMessage);
+            // check exist teaching schedule
+            if(teachingSchedule is null)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Không tìm thấy lịch học"
+                });
+            }
 
-            return Ok(new BaseResponse { 
-                StatusCode = StatusCodes.Status200OK,
-                Message = $"Từ chối hủy lịch học thành công"
-            });
+            // update status
+            bool isDenied = await _rollCallBookService.DenyCancelSchedule(rcb.RollCallBookId);
+            if (isDenied)
+            {
+                // send schedule deny email
+                var emailMessage = new EmailMessage(new string[] { member.Email! }, "Yêu cầu hủy lịch học đã bị từ chối",
+                    $"Lịch học ngày {teachingSchedule.TeachingDate.ToString("dd/MM/yyyy")}" +
+                    $"Lý do từ chối: \n" +
+                    message + "\n Xin cảm ơn.");
+                //_emailService.SendEmail(emailMessage);
+
+                return Ok(new BaseResponse { 
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = $"Từ chối hủy lịch học thành công"
+                });
+            }
+
+            return new ObjectResult(new BaseResponse {
+                StatusCode = StatusCodes.Status500InternalServerError,
+                Message = "Có lỗi xảy ra"
+            })
+            {
+                StatusCode = StatusCodes.Status500InternalServerError
+            };
         }
 
     }

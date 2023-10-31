@@ -72,7 +72,7 @@ namespace DriverLicenseLearningSupport.Repositories
                 TotalAnswerRequired = x.TotalAnswerRequired,
                 TotalTime = x.TotalTime,
                 TotalQuestion = x.TotalQuestion,
-                /*Questions = x.Questions.Select(q => new Question()
+                Questions = x.Questions.Select(q => new Question()
                 {
                     QuestionId = q.QuestionId,
                     Image = q.Image,
@@ -85,7 +85,7 @@ namespace DriverLicenseLearningSupport.Repositories
                         QuestionAnswerId = a.QuestionAnswerId,
                         IsTrue = a.IsTrue
                     }).ToList()
-                }).ToList()*/
+                }).ToList()
             }).ToListAsync();
 
             return _mapper.Map<IEnumerable<TheoryExamModel>>(theoryExams);

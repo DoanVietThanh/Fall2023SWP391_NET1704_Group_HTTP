@@ -39,11 +39,9 @@ namespace DriverLicenseLearningSupport.Repositories
                                                        Email = x.Email,
                                                        AddressId = x.AddressId,
                                                        JobTitleId = x.JobTitleId,
-                                                       LicenseTypeId = x.LicenseTypeId,
                                                        AvatarImage = x.AvatarImage,
                                                        Phone = x.Phone,
                                                        Address = x.Address,
-                                                       LicenseType = x.LicenseType,
                                                        JobTitle = x.JobTitle,
                                                        EmailNavigation = new Account
                                                        {
@@ -70,10 +68,8 @@ namespace DriverLicenseLearningSupport.Repositories
                                                           Email = x.Email,
                                                           AddressId = x.AddressId,
                                                           JobTitleId = x.JobTitleId,
-                                                          LicenseTypeId = x.LicenseTypeId,
                                                           Address = x.Address,
                                                           JobTitle = x.JobTitle,
-                                                          LicenseType = x.LicenseType,
                                                           SelfDescription = WebUtility.UrlDecode(x.SelfDescription),
                                                           EmailNavigation = new Account
                                                           {
@@ -97,11 +93,9 @@ namespace DriverLicenseLearningSupport.Repositories
                                                   Email = x.Email,
                                                   AddressId = x.AddressId,
                                                   JobTitleId = x.JobTitleId,
-                                                  LicenseTypeId = x.LicenseTypeId,
                                                   AvatarImage = x.AvatarImage,
                                                   Phone = x.Phone,
                                                   Address = x.Address,
-                                                  LicenseType = x.LicenseType,
                                                   JobTitle = x.JobTitle,
                                                   EmailNavigation = new Account
                                                   {
@@ -130,10 +124,8 @@ namespace DriverLicenseLearningSupport.Repositories
                     Email = x.Email,
                     AddressId = x.AddressId,
                     JobTitleId = x.JobTitleId,
-                    LicenseTypeId = x.LicenseTypeId,
                     Address = x.Address,
                     JobTitle = x.JobTitle,
-                    LicenseType = x.LicenseType,
                     EmailNavigation = new Account
                     {
                         Role = x.EmailNavigation.Role
@@ -155,10 +147,8 @@ namespace DriverLicenseLearningSupport.Repositories
                 Email = x.Email,
                 AddressId = x.AddressId,
                 JobTitleId = x.JobTitleId,
-                LicenseTypeId = x.LicenseTypeId,
                 Address = x.Address,
                 JobTitle = x.JobTitle,
-                LicenseType = x.LicenseType,
                 EmailNavigation = new Account
                 {
                     Role = x.EmailNavigation.Role
@@ -207,10 +197,10 @@ namespace DriverLicenseLearningSupport.Repositories
                 staffs = staffs.Where(x => x.Address.District.Contains(filters.District));
             }
 
-            if (!String.IsNullOrEmpty(filters.LicenseTypeId.ToString())) // filter by license type
-            {
-                staffs = staffs.Where(x => x.LicenseTypeId == filters.LicenseTypeId);
-            }
+            //if (!String.IsNullOrEmpty(filters.LicenseTypeId.ToString())) // filter by license type
+            //{
+            //    staffs = staffs.Where(x => x.LicenseTypeId == filters.LicenseTypeId);
+            //}
 
             if (!String.IsNullOrEmpty(filters.JobTitleId.ToString())) // filter by job title
             {
@@ -234,10 +224,8 @@ namespace DriverLicenseLearningSupport.Repositories
                         Email = x.Email,
                         AddressId = x.AddressId,
                         JobTitleId = x.JobTitleId,
-                        LicenseTypeId = x.LicenseTypeId,
                         Address = x.Address,
                         JobTitle = x.JobTitle,
-                        LicenseType = x.LicenseType,
                         EmailNavigation = new Account
                         {
                             Role = x.EmailNavigation.Role
@@ -265,7 +253,6 @@ namespace DriverLicenseLearningSupport.Repositories
             staffEntity.Address.District = staff.Address.District;
             staffEntity.Address.City = staff.Address.City;
             staffEntity.JobTitleId = staff.JobTitleId;
-            staffEntity.LicenseTypeId = staff.LicenseTypeId;
 
             // save changes and return 
             return await _context.SaveChangesAsync() > 0 ? true : false;
@@ -274,6 +261,12 @@ namespace DriverLicenseLearningSupport.Repositories
         {
             // get staff by id
             var staffEntity = await _context.Staffs.Where(x => x.StaffId == id.ToString())
+                                                   .Include(x => x.Address)
+                                                   .Include(x => x.Courses)
+                                                   .Include(x => x.EmailNavigation)
+                                                   .Include(x => x.FeedBacks)
+                                                   .Include(x => x.TeachingSchedules)
+                                                   .Include(x => x.CoursePackageReservations)
                                                    .FirstOrDefaultAsync();
 
             if(staffEntity is null) return false;

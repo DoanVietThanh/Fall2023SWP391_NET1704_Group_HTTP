@@ -113,9 +113,8 @@ namespace DriverLicenseLearningSupport.Controllers
         [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> AddMember([FromBody] MemberAddRequest reqObj)
         {
-
             // check email already exist
-            var existEmail = await _memberService.GetByEmailAsync(reqObj.Email);
+            var existEmail = await _accountService.GetByEmailAsync(reqObj.Email);
             if (existEmail is not null) return BadRequest(new BaseResponse
             {
                 StatusCode = StatusCodes.Status400BadRequest,
@@ -167,9 +166,9 @@ namespace DriverLicenseLearningSupport.Controllers
 
             // add member
             member = await _memberService.CreateAsync(member);
-            if (member is not null)
-                // get member license type desc
-                member.LicenseType = await _licenseTypes.GetAsync(Convert.ToInt32(member.LicenseTypeId));
+            //if (member is not null)
+            //    // get member license type desc
+            //    member.LicenseType = await _licenseTypes.GetAsync(Convert.ToInt32(member.LicenseTypeId));
 
 
             return new ObjectResult(new BaseResponse{
@@ -476,7 +475,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 {
                     // Get member address
                     m.Address = await _addressService.GetAsync(Guid.Parse(m.AddressId));
-                    m.LicenseType = await _licenseTypeService.GetAsync(Convert.ToInt32(m.LicenseTypeId));
+                    //m.LicenseType = await _licenseTypeService.GetAsync(Convert.ToInt32(m.LicenseTypeId));
                     // set row record
                     worksheet.Cells[row, 1].Value = m.MemberId.ToString();
                     worksheet.Cells[row, 2].Value = m.FirstName;
@@ -487,7 +486,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     worksheet.Cells[row, 7].Value = m.Address.Street;
                     worksheet.Cells[row, 8].Value = m.Address.District;
                     worksheet.Cells[row, 9].Value = m.Address.City;
-                    worksheet.Cells[row, 10].Value = m.LicenseType.LicenseTypeDesc;
+                    //worksheet.Cells[row, 10].Value = m.LicenseType.LicenseTypeDesc;
 
                     // next row
                     ++row;
@@ -600,7 +599,7 @@ namespace DriverLicenseLearningSupport.Controllers
                                 Phone = phone,
                                 Email = email,
                                 Address = address,
-                                LicenseTypeId = licenseType.LicenseTypeId,
+                                //LicenseTypeId = licenseType.LicenseTypeId,
                                 EmailNavigation = account
                             };
                             // Validate member model
@@ -777,6 +776,28 @@ namespace DriverLicenseLearningSupport.Controllers
             return Ok(new BaseResponse { 
                 StatusCode = StatusCodes.Status200OK,
                 Message = $"Sửa hồ sơ thành công"
+            });
+        }
+
+        [HttpGet]
+        [Route("members/license-form/await")]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> AwaitLicenseFormRegister()
+        {
+            // get all await license form
+            var awaitForms = await _licenseRegisterFormService.GetAllAwaitAsync();
+
+            if (awaitForms.Count() == 0)
+            {
+                return BadRequest(new BaseResponse {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Không tìm thấy hồ sơ cần duyệt"
+                });
+            }
+
+            return Ok(new BaseResponse { 
+                StatusCode = StatusCodes.Status200OK,
+                Data = awaitForms
             });
         }
 

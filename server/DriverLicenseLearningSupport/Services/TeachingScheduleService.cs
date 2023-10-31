@@ -36,11 +36,10 @@ namespace DriverLicenseLearningSupport.Services
             return await _teachingScheduleRepo.CreateAsync(teachingScheduleEntity);
         }
         public async Task<bool> CreateRangeBySlotAndWeekdayAsync(int slotId, string weekdays, int weekdayScheduleId
-            , TeachingScheduleModel teachingSchedule, int vehicleId)
+            , TeachingScheduleModel teachingSchedule)
         {
             return await _teachingScheduleRepo.CreateRangeBySlotAndWeekdayAsync(slotId, weekdays,
-                weekdayScheduleId, teachingSchedule,
-                vehicleId);
+                weekdayScheduleId, teachingSchedule);
         }
         public async Task<bool> AddCoursePackageAsync(int teachingScheduleId, Guid coursePackageId)
         {

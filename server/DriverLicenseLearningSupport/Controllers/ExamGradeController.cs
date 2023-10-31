@@ -49,43 +49,63 @@ namespace DriverLicenseLearningSupport.Controllers
             int totalQuesiton = 0;
             bool isWrongParalysisQuesion = false;
             bool isPassed = true;
-            DateTime startedDate = DateTime.ParseExact(reqObj.StartedDate, _appSettings.DateTimeFormat,
-            CultureInfo.InvariantCulture);
+            DateTime startedDate = DateTime.ParseExact(reqObj.StartedDate, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
             Dictionary<int, string> rawSelectedAnswer = new Dictionary<int, string>();
+
+            //lấy member dựa trên mail
+            var member = await _memberService.GetByEmailAsync(reqObj.Email);
+
 
             //Lưu lại selectedAnswer và nội dung câu hỏi trả về
             foreach (SelectedAnswerModel sam in reqObj.SelectedAnswers)
             {
-                rawSelectedAnswer.Add(sam.QuestionId, sam.SelectAnswer);
+                rawSelectedAnswer.Add(sam.QuestionId, sam.SelectedAnswer);
+            }
+
+
+            //Lấy ra các câu hỏi không được
+            var QuestionInTest = await _questionService.GetAllInExam(reqObj.TheoryExamId);
+            var QuestionIDInTest = QuestionInTest.Select(x => x.QuestionId).ToList();
+
+            List<int> QuestionNotSelected = QuestionIDInTest.Except(rawSelectedAnswer.Keys).ToList();
+
+            List<ExamGradeModel> emptyAnswerExamGrades = new List<ExamGradeModel>();
+            foreach (int id in QuestionNotSelected)
+            {
+                ExamGradeModel emptyAnswerExamGrade = new ExamGradeModel();
+                emptyAnswerExamGrade.QuestionId = id;
+                emptyAnswerExamGrade.Email = reqObj.Email;
+                if (member != null)
+                {
+                    emptyAnswerExamGrade.MemberId = member.MemberId;
+                }
+                emptyAnswerExamGrade.StartedDate = startedDate;
+                emptyAnswerExamGrade.TheoryExamId = reqObj.TheoryExamId;
+                emptyAnswerExamGrade.Point = 0;
+                emptyAnswerExamGrade.SelectedAnswerId = -1;
+                var createdModel = await _examGradeService.CreateAsync(emptyAnswerExamGrade);
+                if (createdModel != null)
+                {
+                    emptyAnswerExamGrades.Add(createdModel);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
             }
 
             var models = reqObj.ToListExamGradeModel();
 
-
-            //lay memberid neu co
-            var member = await _memberService.GetByEmailAsync(reqObj.Email);
-
-
             //lay de thi
             var theoryExam = await _theoryExamService.GetByIdAsync(models[0].TheoryExamId);
             //lay tong so cau hoi, so cau dung yeu cau
-            totalQuesiton = Convert.ToInt32(theoryExam.TotalQuestion);
+            //totalQuesiton = Convert.ToInt32(theoryExam.TotalQuestion);
             int requiredRightAnswer = Convert.ToInt32(theoryExam.TotalAnswerRequired);
 
             List<ExamGradeModel> listResult = new List<ExamGradeModel>();
             foreach (ExamGradeModel examGradeModel in models)
             {
-                // get selected answer model
-                //var reqModel = reqObj.SelectedAnswers.Where(x => x.QuestionId == examGradeModel.QuestionId).FirstOrDefault(); 
-                //b2.so sánh với id của selected answerid -> gắn model -> có được answer Detail
-                //b3. từ answer detail lấy được 
-
-                ////var selectAnswerModel = await _answerService.GetByAnswerIdAsync(reqModel.SelectedAnswerId);
-
-                //// set select answer id 
-                //examGradeModel.SelectedAnswerId = selectAnswerModel.QuestionAnswerId;
-
-                // get question by id
+                // Get question by ID from examgrade
                 QuestionModel question = await _questionService.GetByIdAsync(examGradeModel.QuestionId);
 
                 //get all answer of the question 
@@ -115,6 +135,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
                 // set member id
                 if (member is not null)
+
                 {
                     examGradeModel.MemberId = member.MemberId;
                 }
@@ -143,15 +164,18 @@ namespace DriverLicenseLearningSupport.Controllers
                 {
                     examGradeModel.SelectedAnswerId = selectedAnswer.QuestionAnswerId;
                 }
-                startedDate = DateTime.ParseExact(reqObj.StartedDate, _appSettings.DateTimeFormat, CultureInfo.InvariantCulture);
-                examGradeModel.StartDate = startedDate;
+                var date = startedDate.ToString(_appSettings.DateTimeFormat);
+                startedDate = DateTime.ParseExact(date, _appSettings.DateTimeFormat, CultureInfo.InvariantCulture);
+                examGradeModel.StartedDate = startedDate;
 
                 //right answer với id là 0,1,2,3 -> lấy nội dung và questionid để gán lại id dưới db
                 var answer = await _answerService.GetByQuestionIdAndAnswerDesc(examGradeModel.QuestionId, theRightAnswerModel.Answer);
                 // gán lại vào db, bảng examGrade selectedanswerId tương ứng ở dưới db
 
+
+
                 var createdExamGradeModel = await _examGradeService.CreateAsync(examGradeModel);
-                createdExamGradeModel.StartDate = startedDate;
+                createdExamGradeModel.StartedDate = startedDate;
                 listResult.Add(createdExamGradeModel);
             }
             if (listResult is null)

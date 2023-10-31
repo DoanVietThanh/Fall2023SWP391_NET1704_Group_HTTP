@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection.Emit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -616,8 +617,6 @@ namespace DriverLicenseLearningSupport.Entities
 
                 entity.Property(e => e.LicenseFormId).HasColumnName("license_form_id");
 
-                entity.Property(e => e.LicenseTypeId).HasColumnName("license_type_id");
-
                 entity.Property(e => e.Phone)
                     .HasMaxLength(15)
                     .HasColumnName("phone");
@@ -637,10 +636,6 @@ namespace DriverLicenseLearningSupport.Entities
                     .HasForeignKey(d => d.LicenseFormId)
                     .HasConstraintName("FK_Member_LicenseRegisterFormId");
 
-                entity.HasOne(d => d.LicenseType)
-                    .WithMany(p => p.Members)
-                    .HasForeignKey(d => d.LicenseTypeId)
-                    .HasConstraintName("FK_Member_LicenseTypeId");
             });
 
             modelBuilder.Entity<PaymentType>(entity =>
@@ -744,7 +739,9 @@ namespace DriverLicenseLearningSupport.Entities
 
                 entity.Property(e => e.IsActive).HasColumnName("is_active");
 
-                entity.Property(e => e.CancelMessage).HasColumnName("cancel_message");
+                entity.Property(e => e.CancelMessage)
+                    .HasMaxLength(200)
+                    .HasColumnName("cancel_message");
 
                 entity.Property(e => e.Comment)
                     .HasMaxLength(255)
@@ -897,6 +894,12 @@ namespace DriverLicenseLearningSupport.Entities
 
                 entity.Property(e => e.TotalTime).HasColumnName("total_time");
 
+                entity.Property(e => e.StartTime).HasColumnName("start_time");
+
+                entity.Property(e => e.StartDate).HasColumnName("start_date");
+
+                entity.Property(e => e.IsMockExam).HasColumnName("is_mock_exam");
+
                 entity.HasOne(d => d.LicenseType)
                     .WithMany(p => p.TheoryExams)
                     .HasForeignKey(d => d.LicenseTypeId)
@@ -1039,8 +1042,6 @@ namespace DriverLicenseLearningSupport.Entities
                     .HasMaxLength(155)
                     .HasColumnName("last_name");
 
-                //entity.Property(e => e.LicenseTypeId).HasColumnName("license_type_id");
-
                 entity.Property(e => e.Phone)
                     .IsRequired()
                     .HasMaxLength(15)
@@ -1062,11 +1063,6 @@ namespace DriverLicenseLearningSupport.Entities
                     .WithMany(p => p.Staffs)
                     .HasForeignKey(d => d.JobTitleId)
                     .HasConstraintName("FK_Staff_JobTitleId");
-
-                /*entity.HasOne(d => d.LicenseType)
-                    .WithMany(p => p.Staffs)
-                    .HasForeignKey(d => d.LicenseTypeId)
-                    .HasConstraintName("FK_Staff_LicenseTypeId");*/
             });
 
             OnModelCreatingPartial(modelBuilder);

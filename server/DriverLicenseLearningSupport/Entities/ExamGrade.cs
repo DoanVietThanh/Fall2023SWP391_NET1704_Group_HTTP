@@ -6,7 +6,7 @@ namespace DriverLicenseLearningSupport.Entities
     public partial class ExamGrade
     {
         public int ExamGradeId { get; set; }
-        public string MemberId { get; set; }
+        public string? MemberId { get; set; }
         public int? TheoryExamId { get; set; }
         public double? Point { get; set; }
         public int QuestionId { get; set; }

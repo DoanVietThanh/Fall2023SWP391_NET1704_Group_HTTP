@@ -79,7 +79,7 @@ namespace DriverLicenseLearningSupport.Repositories
             return _mapper.Map<TeachingScheduleModel>(teachingSchedule);
         }
         public async Task<bool> CreateRangeBySlotAndWeekdayAsync(int slotId, string weekdays, int weekdayScheduleId,
-            TeachingScheduleModel teachingSchedule, int vehicleId)
+            TeachingScheduleModel teachingSchedule)
         {
             // get from config
             var daysInWeek = _courseSettings.WeekdaySchedules;
@@ -377,8 +377,7 @@ namespace DriverLicenseLearningSupport.Repositories
             {
                 var dateFormat = d.ToString("dd/MM/yyyy");
                 var schedules = await _context.TeachingSchedules.Where(x => x.SlotId == slotId
-                                                                        && x.StaffId == mentorId.ToString()
-                                                                        && x.IsActive == true)
+                                                                        && x.StaffId == mentorId.ToString())
                                                                .Select(x => new TeachingSchedule
                                                                {
                                                                    TeachingScheduleId = x.TeachingScheduleId,
@@ -498,8 +497,8 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                    TeachingScheduleId = x.TeachingScheduleId,
                                                                    TeachingDate = x.TeachingDate,
                                                                    Vehicle = x.Vehicle,
-                                                                   CoursePackageId = x.CoursePackageId,
                                                                    IsActive = x.IsActive,
+                                                                   CoursePackageId = x.CoursePackageId,
                                                                    CoursePackage = new CoursePackage
                                                                    {
                                                                        CoursePackageId = x.CoursePackageId,
@@ -604,9 +603,9 @@ namespace DriverLicenseLearningSupport.Repositories
 
         public async Task<bool> DenyMentorAwaitSchedule(Guid mentorId)
         {
-            var teachingSchedules = await _context.TeachingSchedules.Where(x => x.StaffId == mentorId.ToString()
-                                                                 && x.IsActive == false)
-                                                       .ToListAsync();
+            var teachingSchedules = await _context.TeachingSchedules.Where(x => x.StaffId == mentorId.ToString() 
+                                                                             && x.IsActive == false)
+                                                                   .ToListAsync();
             // update schedule status
             foreach (var ts in teachingSchedules)
             {

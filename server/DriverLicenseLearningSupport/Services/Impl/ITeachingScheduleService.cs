@@ -7,7 +7,7 @@ namespace DriverLicenseLearningSupport.Services.Impl
     {
         Task<TeachingScheduleModel> CreateAsync(TeachingScheduleModel teachingSchedule);
         Task<bool> CreateRangeBySlotAndWeekdayAsync(int slotId, string weekdays, int weekdayScheduleId,
-            TeachingScheduleModel teachingSchedule, int vehicleId);
+            TeachingScheduleModel teachingSchedule);
         Task<bool> AddCoursePackageAsync(int teachingScheduleId, Guid coursePackageId);
         Task<TeachingScheduleModel> GetAsync(int teachingScheduleId);
         Task<IEnumerable<TeachingScheduleModel>> GetAllByMentorIdAndMemberIdAsync(Guid mentorId, Guid memberId);
