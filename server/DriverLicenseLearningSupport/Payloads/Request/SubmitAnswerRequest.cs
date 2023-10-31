@@ -1,4 +1,6 @@
 ﻿using DriverLicenseLearningSupport.Models;
+using DriverLicenseLearningSupport.Services;
+using DriverLicenseLearningSupport.Services.Impl;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -18,6 +20,7 @@ namespace DriverLicenseLearningSupport.Payloads.Request
     }
     public static class SubmitAnswerRequestExtension 
     {
+
         public static List<ExamGradeModel> ToListExamGradeModel(this SubmitAnswerRequest obj) 
         {
             List<ExamGradeModel> result = new List<ExamGradeModel>();
@@ -25,7 +28,7 @@ namespace DriverLicenseLearningSupport.Payloads.Request
             {
                 var examGrademodel = new ExamGradeModel
                 {
-                    SelectedAnswerId = sa.SelectedAnswerId,
+                    //SelectedAnswerId = sa.SelectedAnswerId,
                     //MemberId = obj.MemberId,
                     TheoryExamId = obj.TheoryExamId,
                     Email = obj.Email,

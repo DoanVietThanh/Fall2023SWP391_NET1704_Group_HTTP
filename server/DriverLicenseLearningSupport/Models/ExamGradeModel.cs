@@ -5,7 +5,7 @@ namespace DriverLicenseLearningSupport.Models
     public class ExamGradeModel
     {
         public int ExamGradeId { get; set; }
-        public string MemberId { get; set; }
+        public string? MemberId { get; set; }
         public int TheoryExamId { get; set; }
         public double? Point { get; set; }
         public int QuestionId { get; set; }

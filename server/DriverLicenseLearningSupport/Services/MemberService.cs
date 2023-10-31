@@ -72,7 +72,7 @@ namespace DriverLicenseLearningSupport.Services
             var member = await _memberRepository.GetAsync(id);
             if(member is not null ) 
             {
-                member.LicenseType = await _licenseTypeService.GetAsync(Convert.ToInt32(member.LicenseTypeId));
+                //member.LicenseType = await _licenseTypeService.GetAsync(Convert.ToInt32(member.LicenseTypeId));
                 member.Address = await _addressService.GetAsync(Guid.Parse(member.AddressId));
                 member.EmailNavigation = await _accountService.GetByEmailAsync(member.Email);
                 member.EmailNavigation.Password = null!;

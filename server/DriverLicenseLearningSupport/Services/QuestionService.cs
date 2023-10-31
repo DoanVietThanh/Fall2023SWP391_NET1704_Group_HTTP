@@ -72,5 +72,10 @@ namespace DriverLicenseLearningSupport.Services
         {
             return await _questionRepository.UpdateQuestionAsync(updatedModel, questionId);
         }
+
+        public async Task<List<QuestionModel>> GetAllInExam(int theoryExamId)
+        {
+            return await _questionRepository.GetAllInExam(theoryExamId);
+        }
     }
 }

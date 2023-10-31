@@ -23,13 +23,11 @@ namespace DriverLicenseLearningSupport.Entities
         public string AvatarImage { get; set; }
         public string AddressId { get; set; }
         public string Email { get; set; }
-        public int? LicenseTypeId { get; set; }
         public int? LicenseFormId { get; set; }
 
         public virtual Address Address { get; set; }
         public virtual Account EmailNavigation { get; set; }
         public virtual LicenseRegisterForm? LicenseForm { get; set; }
-        public virtual LicenseType LicenseType { get; set; }
         public virtual ICollection<CoursePackageReservation> CoursePackageReservations { get; set; }
         public virtual ICollection<ExamGrade> ExamGrades { get; set; }
         public virtual ICollection<ExamHistory> ExamHistories { get; set; }

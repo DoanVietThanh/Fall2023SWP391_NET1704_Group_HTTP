@@ -55,11 +55,6 @@ namespace DriverLicenseLearningSupport.Repositories
                                                     Phone = x.Phone,
                                                     DateBirth = x.DateBirth,
                                                     Email = x.Email,
-                                                    LicenseType = new LicenseType
-                                                    {
-                                                        LicenseTypeId = x.LicenseType.LicenseTypeId,
-                                                        LicenseTypeDesc = x.LicenseType.LicenseTypeDesc
-                                                    },
                                                     Address = new Address
                                                     {
                                                         AddressId = x.AddressId,
@@ -76,20 +71,21 @@ namespace DriverLicenseLearningSupport.Repositories
                                                             Name = x.EmailNavigation.Role.Name
                                                         }
                                                     },
-                                                    LicenseFormId = x.LicenseFormId
-                                                    //LicenseForm = new LicenseRegisterForm { 
-                                                    //    LicenseFormId = x.LicenseForm.LicenseFormId,
-                                                    //    LicenseFormDesc = x.LicenseForm.LicenseFormDesc,
-                                                    //    CreateDate = x.LicenseForm.CreateDate,
-                                                    //    Image = x.LicenseForm.Image,
-                                                    //    IdentityCardImage = x.LicenseForm.IdentityCardImage,
-                                                    //    HealthCertificationImage = x.LicenseForm.HealthCertificationImage,
-                                                    //    RegisterFormStatus = new LicenseRegisterFormStatus 
-                                                    //    {
-                                                    //        RegisterFormStatusId = x.LicenseForm.RegisterFormStatus.RegisterFormStatusId, 
-                                                    //        RegisterFormStatusDesc = x.LicenseForm.RegisterFormStatus.RegisterFormStatusDesc 
-                                                    //    }
-                                                    //}
+                                                    LicenseFormId = x.LicenseFormId,
+                                                    LicenseForm = new LicenseRegisterForm
+                                                    {
+                                                        LicenseFormId = x.LicenseForm.LicenseFormId,
+                                                        LicenseFormDesc = x.LicenseForm.LicenseFormDesc,
+                                                        CreateDate = x.LicenseForm.CreateDate,
+                                                        Image = x.LicenseForm.Image,
+                                                        IdentityCardImage = x.LicenseForm.IdentityCardImage,
+                                                        HealthCertificationImage = x.LicenseForm.HealthCertificationImage,
+                                                        RegisterFormStatus = new LicenseRegisterFormStatus
+                                                        {
+                                                            RegisterFormStatusId = x.LicenseForm.RegisterFormStatus.RegisterFormStatusId,
+                                                            RegisterFormStatusDesc = x.LicenseForm.RegisterFormStatus.RegisterFormStatusDesc
+                                                        }
+                                                    }
                                                 }).FirstOrDefaultAsync();
             // map to model and return
             return _mapper.Map<MemberModel>(memberEntity);
@@ -176,9 +172,23 @@ namespace DriverLicenseLearningSupport.Repositories
         {
             // get member by id
             var member = await _context.Members.Where(x => x.MemberId.Equals(id.ToString()))
+                                                   .Include(x => x.Address)
+                                                   .Include(x => x.EmailNavigation)
+                                                   .Include(x => x.LicenseForm)
                                                .FirstOrDefaultAsync();
+            // get member license form
+            var memberLicenseForm = await _context.LicenseRegisterForms.Where(x => x.LicenseFormId == member.LicenseFormId)
+                                                                       .FirstOrDefaultAsync();
+
             // not found
             if (member is null) return false;
+            // remove license form (if any)
+            if(memberLicenseForm is not null)
+            {
+                _context.Remove(memberLicenseForm);
+                await _context.SaveChangesAsync();
+            }
+
             //remove member
             _context.Members.Remove(member);
             // save changes and return 

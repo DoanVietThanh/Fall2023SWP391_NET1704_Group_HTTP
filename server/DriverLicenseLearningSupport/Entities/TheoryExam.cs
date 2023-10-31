@@ -17,6 +17,9 @@ namespace DriverLicenseLearningSupport.Entities
         public int? TotalTime { get; set; }
         public int? TotalAnswerRequired { get; set; }
         public int? LicenseTypeId { get; set; }
+        public bool? IsMockExam { get; set; }
+        public DateTime? StartDate { get; set; }
+        public TimeSpan? StartTime { get; set; } 
 
         public virtual LicenseType LicenseType { get; set; }
         public virtual ICollection<ExamGrade> ExamGrades { get; set; }

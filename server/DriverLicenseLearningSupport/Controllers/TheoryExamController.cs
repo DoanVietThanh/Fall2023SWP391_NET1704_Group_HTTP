@@ -109,6 +109,7 @@ namespace DriverLicenseLearningSupport.Controllers
             mocktest.LicenseTypeId = listQuestions[0].LicenseTypeId;
             //set list questions to the mock test
             mocktest.Questions = listQuestions;
+            mocktest.IsMockExam = reqObj.IsMockTest;
 
             var result = await _theoryExamService.CreateAsync(mocktest);
             //set mock 
@@ -173,7 +174,8 @@ namespace DriverLicenseLearningSupport.Controllers
         //}
 
         // thoery-exam/license-type/id -> list thoery exam id
-
+        [HttpGet]        
+        
         [HttpGet]
         [Route("theory-exam/{theoryExamId:int}")]
         public async Task<IActionResult> GetQuestionByTheoryId([FromRoute] int theoryExamId)
@@ -187,6 +189,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     Message = "không tìm thấy đề"
                 });
             }
+            
             return Ok(new BaseResponse()
             {
                 StatusCode = StatusCodes.Status200OK,

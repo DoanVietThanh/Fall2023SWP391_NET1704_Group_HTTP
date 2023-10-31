@@ -27,5 +27,10 @@ namespace DriverLicenseLearningSupport.Services
         {
             return await _blogRepo.GetAllAsync();
         }
+
+        public async Task<IEnumerable<BlogModel>> GetBlogByIdAsync(int id)
+        {
+            return await _blogRepo.GetBlogByIdAsync(id);
+        }
     }
 }

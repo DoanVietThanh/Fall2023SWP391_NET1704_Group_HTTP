@@ -13,11 +13,9 @@ namespace DriverLicenseLearningSupport.Models
         public string AvatarImage { get; set; }
         public string AddressId { get; set; }
         public string Email { get; set; }
-        public int? LicenseTypeId { get; set; }
         public int? LicenseFormId { get; set; }
         public virtual AddressModel Address { get; set; }
         public virtual AccountModel EmailNavigation { get; set; }
         public virtual LicenseRegisterFormModel? LicenseForm { get; set; }
-        public virtual LicenseTypeModel LicenseType { get; set; }
     }
 }

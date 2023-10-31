@@ -8,5 +8,9 @@ namespace DriverLicenseLearningSupport.Repositories.Impl
         Task<BlogModel> CreateAsync(Blog blog);
 
         Task<IEnumerable<BlogModel>> GetAllAsync();
+
+        Task<IEnumerable<BlogModel>> GetBlogByIdAsync(int id);
+
+        Task<IEnumerable<BlogModel>> GetBlogsByStaffId(string id);
     }
 }
