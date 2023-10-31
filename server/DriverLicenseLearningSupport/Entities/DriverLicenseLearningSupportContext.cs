@@ -901,6 +901,7 @@ namespace DriverLicenseLearningSupport.Entities
                     .WithMany(p => p.TheoryExams)
                     .HasForeignKey(d => d.LicenseTypeId)
                     .HasConstraintName("FK_PracticeExam_LicenseTypeId");
+
             });
 
             modelBuilder.Entity<Vehicle>(entity =>
@@ -1038,7 +1039,7 @@ namespace DriverLicenseLearningSupport.Entities
                     .HasMaxLength(155)
                     .HasColumnName("last_name");
 
-                entity.Property(e => e.LicenseTypeId).HasColumnName("license_type_id");
+                //entity.Property(e => e.LicenseTypeId).HasColumnName("license_type_id");
 
                 entity.Property(e => e.Phone)
                     .IsRequired()
@@ -1062,10 +1063,10 @@ namespace DriverLicenseLearningSupport.Entities
                     .HasForeignKey(d => d.JobTitleId)
                     .HasConstraintName("FK_Staff_JobTitleId");
 
-                entity.HasOne(d => d.LicenseType)
+                /*entity.HasOne(d => d.LicenseType)
                     .WithMany(p => p.Staffs)
                     .HasForeignKey(d => d.LicenseTypeId)
-                    .HasConstraintName("FK_Staff_LicenseTypeId");
+                    .HasConstraintName("FK_Staff_LicenseTypeId");*/
             });
 
             OnModelCreatingPartial(modelBuilder);

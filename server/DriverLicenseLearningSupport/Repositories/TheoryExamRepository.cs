@@ -46,6 +46,9 @@ namespace DriverLicenseLearningSupport.Repositories
                 //theoryEntity.Questions.Add(list);
                 theoryExam.TheoryExamId = Convert.ToInt32(theoryEntity.TheoryExamId);
 
+                // set null
+                theoryExam.LicenseType.Questions = new List<Question>();
+
                 List<Question> questions = new List<Question>();
 
                 foreach (var question in list)

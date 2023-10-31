@@ -24,13 +24,13 @@ namespace DriverLicenseLearningSupport.Entities
         public string Email { get; set; }
         public string AddressId { get; set; }
         public int? JobTitleId { get; set; }
-        public int? LicenseTypeId { get; set; }
+        //public int? LicenseTypeId { get; set; }
         public string? SelfDescription { get; set; }
 
         public virtual Address Address { get; set; }
         public virtual Account EmailNavigation { get; set; }
         public virtual JobTitle JobTitle { get; set; }
-        public virtual LicenseType LicenseType { get; set; }
+        //public virtual LicenseType LicenseType { get; set; }
         public virtual ICollection<Blog> Blogs { get; set; }
         public virtual ICollection<CoursePackageReservation> CoursePackageReservations { get; set; }
         public virtual ICollection<FeedBack> FeedBacks { get; set; }

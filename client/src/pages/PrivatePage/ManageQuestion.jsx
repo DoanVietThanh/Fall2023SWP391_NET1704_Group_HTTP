@@ -2,16 +2,7 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import React, { useEffect, useState } from 'react';
 
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import {
-  Box,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Menu,
-  MenuItem,
-  TextField,
-} from '@mui/material';
+import { Box, DialogActions, Menu, MenuItem, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from 'react-icons/ai';
@@ -255,6 +246,16 @@ const ManageQuestion = () => {
       TotalTime: createRule?.totalTime,
       TotalAnswerRequired: createRule?.totalAnswerRequired,
     });
+
+    console.log(
+      JSON.stringify({
+        questionIds: selection,
+        TotalQuestion: createRule?.totalQuestion,
+        TotalTime: createRule?.totalTime,
+        TotalAnswerRequired: createRule?.totalAnswerRequired,
+      })
+    );
+
     await axiosUrlencoded
       .post(`/theory-exam/add-question`, {
         questionIds: selection,

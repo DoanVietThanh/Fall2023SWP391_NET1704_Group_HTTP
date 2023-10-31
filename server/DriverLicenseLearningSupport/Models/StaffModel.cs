@@ -14,14 +14,14 @@ namespace DriverLicenseLearningSupport.Models
         public string Email { get; set; }
         public string AddressId { get; set; }
         public int? JobTitleId { get; set; }
-        public int? LicenseTypeId { get; set; }
+        //public int? LicenseTypeId { get; set; }
         public string? SelfDescription { get; set; }
         public int? TotalMember { get; set; }
 
         public virtual AddressModel Address { get; set; }
         public virtual AccountModel EmailNavigation { get; set; }
         public virtual JobTitleModel JobTitle { get; set; }
-        public virtual LicenseTypeModel LicenseType { get; set; }
+        //public virtual LicenseTypeModel LicenseType { get; set; }
         public virtual ICollection<FeedBackModel> FeedBacks { get; set; } = new List<FeedBackModel>();
         public virtual ICollection<CourseModel> Courses { get; set; } = new List<CourseModel>();
     }
