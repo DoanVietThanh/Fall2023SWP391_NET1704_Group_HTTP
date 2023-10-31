@@ -1,89 +1,109 @@
-import * as React from 'react';
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import * as React from "react";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import MenuIcon from '@mui/icons-material/Menu';
-import MuiAppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
-import MuiDrawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
-import Toolbar from '@mui/material/Toolbar';
-import { styled, useTheme } from '@mui/material/styles';
-import { AiOutlineQuestionCircle } from 'react-icons/ai';
-import { BiLogOut } from 'react-icons/bi';
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import MenuIcon from "@mui/icons-material/Menu";
+import MuiAppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import CssBaseline from "@mui/material/CssBaseline";
+import MuiDrawer from "@mui/material/Drawer";
+import IconButton from "@mui/material/IconButton";
+import Toolbar from "@mui/material/Toolbar";
+import { styled, useTheme } from "@mui/material/styles";
+import { AiOutlineQuestionCircle } from "react-icons/ai";
+import { BiLogOut } from "react-icons/bi";
 import {
   BsCalendarEvent,
   BsClockHistory,
   BsEnvelopePaper,
   BsPerson,
   BsPeople,
+  BsBarChartLine,
 } from 'react-icons/bs';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { logout } from '../features/auth/authSlice';
 import { Button, Menu, MenuItem } from '@mui/material';
+
 
 const drawerWidth = 240;
 
 const listNavbar = [
   {
     id: 1,
-    title: 'Thông tin cá nhân',
+    title: "Thông tin cá nhân",
     icon: <BsPerson size={20} />,
-    navigate: '/profile',
+    navigate: "/profile",
   },
   {
     id: 2,
-    title: 'Lịch học theo tuần',
+    title: "Lịch học theo tuần",
     icon: <BsCalendarEvent size={20} />,
-    navigate: '/week-schedule',
+    navigate: "/week-schedule",
   },
   {
     id: 3,
-    title: 'Lịch sử kiểm tra',
+    title: "Lịch sử kiểm tra",
     icon: <BsClockHistory size={20} />,
-    navigate: '/history-test',
+    navigate: "/history-test",
   },
 ];
 
 const listNavbarManage = [
   {
     id: 1,
-    title: 'Thông tin cá nhân',
+    title: "Thông tin cá nhân",
     icon: <BsPerson size={20} />,
-    navigate: '/profile',
+    navigate: "/profile",
   },
   {
     id: 2,
-    title: 'Quản lí người dùng',
+    title: "Quản lí người dùng",
     icon: <BsPeople size={20} />,
-    navigate: '/manage-user',
+    navigate: "/manage-user",
   },
   {
     id: 3,
-    title: 'Lịch dạy theo tuần',
+    title: "Lịch dạy theo tuần",
     icon: <BsCalendarEvent size={20} />,
-    navigate: '/week-schedule-mentor',
+    navigate: "/week-schedule-mentor",
   },
   {
     id: 4,
-    title: 'Lịch sử kiểm tra',
+    title: "Lịch sử kiểm tra",
     icon: <BsClockHistory size={20} />,
-    navigate: '/history-test',
+    navigate: "/history-test",
   },
   {
     id: 5,
-    title: 'Quản lí câu hỏi',
+    title: "Quản lí câu hỏi",
     icon: <AiOutlineQuestionCircle size={20} />,
-    navigate: '/manage-question',
+    navigate: "/manage-question",
   },
   {
     id: 6,
-    title: 'Quản lí đề thi',
+    title: "Quản lí đề thi",
     icon: <BsEnvelopePaper size={20} />,
-    navigate: '/manage-banktest',
+    navigate: "/manage-banktest",
+  },
+  {
+    id: 7,
+    title: "Thống kê hệ thống",
+    icon: <BsBarChartLine size={20} />,
+    navigate: "/dashboard",
+  },
+  {
+    id: 8,
+    title: 'Quản lí lịch chờ',
+    icon: <BsEnvelopePaper size={20} />,
+    navigate: '/manage-await-schedule',
+  },
+  {
+    id: 9,
+    title: 'Quản lí lịch hủy',
+    icon: <BsEnvelopePaper size={20} />,
+    navigate: '/manage-deny-schedule',
   },
   {
     id: 8,

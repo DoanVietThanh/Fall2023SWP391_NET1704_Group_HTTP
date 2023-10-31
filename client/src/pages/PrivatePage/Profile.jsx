@@ -1,9 +1,9 @@
-import React from 'react';
-import * as dayjs from 'dayjs';
 import { Box } from '@mui/material';
-import SideBar from '../../components/SideBar';
+import * as dayjs from 'dayjs';
+import React from 'react';
 import { useSelector } from 'react-redux';
-
+import SideBar from '../../components/SideBar';
+import DialogEditUser from './components/DialogEditUser';
 const Profile = () => {
   const { user, isLoading } = useSelector((state) => state.auth);
   const accInfo = user.accountInfo;
@@ -29,7 +29,7 @@ const Profile = () => {
               <div className='flex-x gap-4 w-full'>
                 <span className='text-[20px] font-semibold'>Họ và tên:</span>
                 <span className='text-[20px] font-normal'>
-                  {`${accInfo?.firstName} ${accInfo?.lastName}`}
+                  {`${accInfo.firstName} ${accInfo.lastName}`}
                 </span>
               </div>
 
@@ -42,9 +42,7 @@ const Profile = () => {
 
               <div className='flex-x gap-4'>
                 <span className='text-[20px] font-semibold'>Email:</span>
-                <span className='text-[20px] font-normal'>
-                  {accInfo?.email}
-                </span>
+                <span className='text-[20px] font-normal'>{accInfo.email}</span>
               </div>
 
               <div className='flex-x gap-4'>
@@ -69,7 +67,7 @@ const Profile = () => {
               </div>
             </div>
             <div className='flex justify-end w-full'>
-              <button className='btn mt-4'>Chỉnh sửa</button>
+              <DialogEditUser />
             </div>
           </div>
         </div>
