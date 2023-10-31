@@ -904,6 +904,7 @@ namespace DriverLicenseLearningSupport.Entities
                     .WithMany(p => p.TheoryExams)
                     .HasForeignKey(d => d.LicenseTypeId)
                     .HasConstraintName("FK_PracticeExam_LicenseTypeId");
+
             });
 
             modelBuilder.Entity<Vehicle>(entity =>

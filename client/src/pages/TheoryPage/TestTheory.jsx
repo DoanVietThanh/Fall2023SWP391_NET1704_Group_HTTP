@@ -9,7 +9,7 @@ import CountdownTimer from './CountdownTimer';
 import axiosClient from '../../utils/axiosClient';
 import { useSelector } from 'react-redux';
 import * as dayjs from 'dayjs';
-import { toastError } from '../../components/Toastify';
+import { toastError, toastSuccess } from '../../components/Toastify';
 
 // console.log(Array.from({ length: 10 }, (_, index) => 0));
 // console.log([...Array(10)].map(() => 0));
@@ -21,7 +21,6 @@ const TestTheory = () => {
   const { memberId, email } = useSelector(
     (state) => state.auth.user.accountInfo
   );
-  const url_Service = process.env.REACT_APP_SERVER_API;
   const currentDate = new Date();
   const [startedDate, setStartedDate] = useState('');
   const [open, setOpen] = useState(false);
@@ -38,18 +37,21 @@ const TestTheory = () => {
           setLicenseDesc(
             response?.data?.data?.questions[0]?.licenseType?.licenseTypeDesc
           );
+          console.log('response: ', response);
           setQuestionList(response?.data?.data);
           setAnswerList(
-            new Array(response?.data?.data?.totalQuestion).fill({
-              questionId: '',
-              selectAnswer: '',
+            response?.data?.data?.questions?.map((item, index) => {
+              return {
+                questionId: item?.questionId,
+                selectAnswer: '',
+              };
             })
           );
           localStorage.setItem(
             'startedDate',
             dayjs(new Date())
               .format('YYYY-MM-DD')
-              .concat('T'.concat(dayjs(new Date()).format('HH:mm:ss')))
+              .concat(' '.concat(dayjs(new Date()).format('HH:mm:ss')))
           );
           setStartedDate(dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss'));
         })
@@ -59,10 +61,12 @@ const TestTheory = () => {
   }, []);
 
   const selectAnswer = (indexQuestion, indexOption) => {
-    // answerList: [{ questionId: '', selectAnswer: '' }]
-    // indexQuestion: 1, indexOption: "2 - Câu C"
     const newAnswerList = [...answerList];
-    newAnswerList[indexQuestion - 1] = {
+    const indexAnswer = newAnswerList.findIndex(
+      (itemAnswer) => itemAnswer.questionId === indexQuestion
+    );
+    // console.log('indexAnswer: ', indexAnswer);
+    newAnswerList[indexAnswer] = {
       questionId: indexQuestion,
       selectAnswer: indexOption,
     };
@@ -70,15 +74,32 @@ const TestTheory = () => {
   };
 
   const handleSubmit = async (id) => {
-    const response = await axiosClient.post(`${url_Service}/theory/submit`, {
-      email,
-      memberId,
-      theoryExamId,
-      startedDate: startedDate,
-      selectedAnswers: answerList,
-    });
-    console.log('submit: ', response);
-    navigate(`/theory/result/${id}`);
+    console.log(
+      JSON.stringify({
+        email,
+        theoryExamId,
+        totalTime: questionList?.totalTime,
+        startedDate: startedDate,
+        selectedAnswers: answerList,
+      })
+    );
+    await axiosClient
+      .post(`/theory/submit`, {
+        email,
+        theoryExamId,
+        totalTime: questionList?.totalTime,
+        startedDate: startedDate,
+        selectedAnswers: answerList,
+      })
+      .then((res) => {
+        console.log('res: ', res);
+        toastSuccess(res?.data?.message);
+        navigate(`/theory/result/${id}`);
+      })
+      .catch((error) => {
+        console.log('error: ', error);
+        toastError(error?.response?.data?.message);
+      });
   };
 
   console.log('answerList: ', answerList);
@@ -116,23 +137,16 @@ const TestTheory = () => {
               Câu hỏi
             </h2>
             <div className='grid grid-cols-5 gap-2'>
-              {Array.from(
-                { length: questionList.totalQuestion },
-                (_, index) => (
-                  <div
-                    key={index}
-                    className={`${
-                      answerList[index]?.questionId === ''
-                        ? ''
-                        : 'selected-color'
-                    } text-center cursor-pointer hover:text-white hover:bg-[#0D5EF4] border p-2`}
-                  >
-                    <a href={`#${index + 1}`} className='font-medium'>
-                      {index + 1}
-                    </a>
-                  </div>
-                )
-              )}
+              {answerList?.map((item, index) => (
+                <div
+                  key={item?.questionId}
+                  className={`
+                  ${item?.selectAnswer === '' ? '' : 'selected-color '}
+                   text-center cursor-pointer hover:text-white hover:bg-[#0D5EF4] border p-2`}
+                >
+                  <a href={`#${item?.questionId}`}>{index + 1}</a>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -150,7 +164,7 @@ const TestTheory = () => {
       <div className='flex-1 p-2 pr-4 border-2 overflow-y-auto py-8'>
         <div className='flex flex-col gap-8 scroll-smooth'>
           {questionList &&
-            questionList.questions?.map((itemQuestion, indexQuestion) => (
+            questionList?.questions?.map((itemQuestion, indexQuestion) => (
               <div
                 id={indexQuestion + 1}
                 className='min-h-[360px] bg-white p-4 rounded-lg'
@@ -185,10 +199,11 @@ const TestTheory = () => {
                             }}
                             className={`${
                               answerList[indexQuestion].selectAnswer ===
-                              item.answer
+                              item?.answer
                                 ? 'selected-color '
                                 : ''
-                            } border p-2 cursor-pointer hover:opacity-80 rounded`}
+                            } 
+                            border p-2 cursor-pointer hover:opacity-80 rounded`}
                           >
                             <span className='font-bold'>
                               {charOption[indexOption]}

@@ -124,11 +124,11 @@ namespace DriverLicenseLearningSupport.Controllers
                     {
                         QuestionAnswerId = x.QuestionAnswerId
                     }).FirstOrDefault();
-                //if (selectedAnswerModel is null)
-                //{
-                //    selectedAnswerModel = new AnswerModel();
-                //    selectedAnswerModel.QuestionAnswerId = -1;
-                //}
+                if (selectedAnswerModel is null)
+                {
+                    selectedAnswerModel = new AnswerModel();
+                    selectedAnswerModel.QuestionAnswerId = -1;
+                }
 
                 //examGradeModel.SelectedAnswerId = selectedAnswerModel.QuestionAnswerId;
                 //var theRightAnswerId = await _answerService.GetRightAnswerByDesc(reqObj);
@@ -219,10 +219,12 @@ namespace DriverLicenseLearningSupport.Controllers
 
         }
 
+
+
         //api get all history của member đó -> có nút review -> theory/review (review Detail)
         [HttpGet]
         [Route("theory/history/{id:Guid}")]
-        [Authorize(Roles = "Member")]
+        //[Authorize(Roles = "Member")]
         public async Task<IActionResult> GetAllHistoryOfMember([FromRoute] Guid id)
         {
             MemberModel memberModel = await _memberService.GetAsync(id);
@@ -234,7 +236,16 @@ namespace DriverLicenseLearningSupport.Controllers
                     Message = "Lỗi xuất rì viu"
                 });
             }
+
+            var theoryExams = await _theoryExamService.GetAllAsync();
+            var theoryExamIds = theoryExams.Select(x => x.TheoryExamId).ToList();
             var Histories = await _examHistoryService.GetAllByMemberIdAsysn(memberModel.MemberId);
+
+            foreach(var history in Histories)
+            {
+                var index = theoryExamIds.IndexOf(history.TheoryExam.TheoryExamId);
+                history.TheoryExamDesc = $"Đề {index + 1}";
+            }
 
             if (Histories is null)
             {
@@ -267,17 +278,23 @@ namespace DriverLicenseLearningSupport.Controllers
                     Message = "Lỗi rì viu"
                 });
             }
-            //var startedDate = joinDate.ToString(_appSettings.DateFormat);
+            var joinDate = DateTime.ParseExact(reqObj.JoinDate,
+                _appSettings.DateTimeFormat, CultureInfo.InvariantCulture);
             List<ExamGradeModel> examGrades = await _examGradeService.GetAllByTheoryExamIdandEmailAsync(reqObj.Email
-                , reqObj.MockTestId, reqObj.JoinDate);
+                , reqObj.MockTestId, joinDate);
             //lay toan bo cau hoi va dap an trong de thi
 
 
             foreach (ExamGradeModel eg in examGrades)
             {
                 var selectedAnswer = await _answerService.GetByAnswerIdAsync(eg.SelectedAnswerId);
+                QuestionModel question = await _questionService.GetByIdAsync(eg.QuestionId);
                 IEnumerable<AnswerModel> answers = await _answerService.GetAllByQuestionId(eg.QuestionId);
-                if (selectedAnswer is not null)
+                if(selectedAnswer is null)
+                {
+                    eg.SelectedAnswerId = -1;
+                }
+                else
                 {
                     foreach (AnswerModel answer in answers)
                     {
@@ -288,7 +305,6 @@ namespace DriverLicenseLearningSupport.Controllers
                         }
                     }
                 }
-                QuestionModel question = await _questionService.GetByIdAsync(eg.QuestionId);
                 question.QuestionAnswers = answers.ToList();
                 eg.Question = question;
             }
@@ -296,7 +312,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
 
             ExamHistoryModel history = await _examHistoryService.GetHistoryDetailAsync(memberModel.MemberId
-                , reqObj.MockTestId, reqObj.JoinDate);
+                , reqObj.MockTestId, joinDate);
             {
                 if (history is null)
                 {

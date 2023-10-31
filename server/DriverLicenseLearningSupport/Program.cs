@@ -42,6 +42,10 @@ builder.Services.Configure<CourseSettings>(courseSettings);
 var vnpayConfig = builder.Configuration.GetSection("VNPAY");
 builder.Services.Configure<VnPayConfig>(vnpayConfig);
 
+// Add Theory Exam config
+var theoryExamConfig = builder.Configuration.GetSection("TheoryExamSettings");
+builder.Services.Configure<TheoryExamConfig>(theoryExamConfig); 
+
 // Add Authentication
 var secretKey = builder.Configuration.GetValue<string>("AppSettings:SecretKey");
 var secretKeyBytes = Encoding.UTF8.GetBytes(secretKey);
