@@ -1,4 +1,4 @@
-﻿USE MASTER 
+﻿﻿USE MASTER 
 GO 
 DROP DATABASE IF EXISTS DriverLicenseLearningSupport
 GO
@@ -146,8 +146,7 @@ CREATE TABLE [dbo].Vehicle(
 )
 GO
 CREATE TABLE [dbo].Slot(
-	
-_id INT PRIMARY KEY identity(1,1),
+	slot_id INT PRIMARY KEY identity(1,1),
 	slot_name NVARCHAR(100),
 	duration INT,
 	time TIME(7),

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection.Emit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -634,7 +635,7 @@ namespace DriverLicenseLearningSupport.Entities
                     .WithMany(p => p.Members)
                     .HasForeignKey(d => d.LicenseFormId)
                     .HasConstraintName("FK_Member_LicenseRegisterFormId");
-                
+
             });
 
             modelBuilder.Entity<PaymentType>(entity =>

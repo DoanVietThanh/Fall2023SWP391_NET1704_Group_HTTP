@@ -63,7 +63,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 tagModels.Add(createdTag);
             }
 
-            blog.Tags = tagModels;
+            blog.Tags = tagModels.ToList();
             var createdBlog = await _blogService.CreateAsync(blog);
             
 
@@ -89,12 +89,29 @@ namespace DriverLicenseLearningSupport.Controllers
 
 
 
-        //[HttpGet]
-        //[Route("/blog")]
-        //public async Task<IActionResult> GetAllBlog() 
-        //{
-        //    var blogs = await _blogService.GetAllAsync();
-        //}
+        [HttpGet]
+        [Route("/blog")]
+        public async Task<IActionResult> GetAllBlog()
+        {
+            var blogs = await _blogService.GetAllAsync();
+            if (blogs is null) 
+            {
+                return BadRequest(new ErrorResponse
+                {
+                    Message = "Không có blog",
+                    StatusCode = StatusCodes.Status400BadRequest
+                });
+            }
+            else 
+            {
+                return Ok(new BaseResponse()
+                {
+                    Data = blogs,
+                    StatusCode = StatusCodes.Status200OK,
+                    Message ="Tải blog thành công"
+                });
+            }
+        }
 
     }
 }
