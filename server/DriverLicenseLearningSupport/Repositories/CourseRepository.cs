@@ -5,6 +5,7 @@ using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Repositories.Impl;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Immutable;
 using System.Net;
 
 namespace DriverLicenseLearningSupport.Repositories
@@ -138,7 +139,8 @@ namespace DriverLicenseLearningSupport.Repositories
                                                         CurriculumDesc = c.CurriculumDesc,
                                                         CurriculumDetail = c.CurriculumDetail
                                                     }).ToList(),
-                                                    Mentors = x.Mentors
+                                                    Mentors = x.Mentors,
+                                                    LicenseTypeId = x.LicenseTypeId
                                                 }).ToListAsync();
             foreach (var c in courses)
             {
@@ -311,10 +313,42 @@ namespace DriverLicenseLearningSupport.Repositories
         {
             // get course by id
             var courseEntity = await _context.Courses.Where(x => x.CourseId == id.ToString())
+                                                     .Include(x => x.Mentors)
+                                                     .Include(x => x.CoursePackages)
+                                                     .Include(x => x.FeedBacks)
+                                                     .Include(x => x.WeekdaySchedules)
+                                                     .Include(x => x.Mentors)
                                                      .FirstOrDefaultAsync();
+
+            // remove schedule
+            foreach(var ws in courseEntity.WeekdaySchedules)
+            {
+                // get all weekday teaching schedule 
+                var schedule = await _context.WeekdaySchedules.Where(x => x.WeekdayScheduleId == ws.WeekdayScheduleId)
+                    .Include(x => x.TeachingSchedules)
+                    .FirstOrDefaultAsync();
+
+                // get all rollcall book for each teaching schedule
+                foreach(var ts in schedule.TeachingSchedules)
+                {
+                    var teachingSchedule = await _context.TeachingSchedules.Where(x => x.TeachingScheduleId 
+                        == ts.TeachingScheduleId)
+                        .Include(x => x.RollCallBooks)
+                        .FirstOrDefaultAsync();
+
+                    // remove teaching schedule
+                    _context.TeachingSchedules.Remove(teachingSchedule);
+                }
+                // save changes remove teaching schedules
+                await _context.SaveChangesAsync();
+            }
+
+            // remove range week schedule
+            _context.WeekdaySchedules.RemoveRange(courseEntity.WeekdaySchedules);
 
             if(courseEntity is not null) 
             {
+                courseEntity.Mentors.Clear();
                 // remove <- change status
                 _context.Courses.Remove(courseEntity);
                 //courseEntity.IsActive = false;
@@ -323,10 +357,21 @@ namespace DriverLicenseLearningSupport.Repositories
             }
             return false;
         }
-        //public Task<bool> DeletePackageAsync(Guid id)
-        //{
-        //    var coursePackage = _context.CoursePackages
-        //}
+        public async Task<bool> DeletePackageAsync(Guid id)
+        {
+            var coursePackage = await _context.CoursePackages.Where(x => x.CoursePackageId == id.ToString())
+                .Include(x => x.TeachingSchedules)
+                .FirstOrDefaultAsync();   
+
+            if (coursePackage is null) return false;
+
+            if (coursePackage.TeachingSchedules.Count() > 0) return false;
+
+            //remove course package
+            _context.CoursePackages.Remove(coursePackage);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
         public async Task<bool> HideCourseAsync(Guid id)
         {
             // get course by id

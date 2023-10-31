@@ -8,6 +8,7 @@ import Loading from './../../components/Loading';
 
 import ScheduleMentor from './components/ScheduleMentor';
 import SearchInput from '../../components/SearchInput';
+import { toastError } from '../../components/Toastify';
 
 const WeekScheduleMentor = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -17,14 +18,14 @@ const WeekScheduleMentor = () => {
   useEffect(() => {
     async function getDataCourse() {
       try {
-        const resListCourse = await axiosClient.get(
-          `/staffs/mentors/${accountInfo.staffId}/courses`
-        );
+        const resListCourse = await axiosClient
+          .get(`/staffs/mentors/${accountInfo.staffId}/courses`)
+          .catch((error) => toastError(error?.response?.data?.message));
         console.log('resListCourse: ', resListCourse);
         setListCourse(resListCourse?.data?.data);
         setIsLoading(false);
       } catch (error) {
-        throw new Error(error);
+        // toastError(error?.response?.data.message);
       }
     }
     getDataCourse();

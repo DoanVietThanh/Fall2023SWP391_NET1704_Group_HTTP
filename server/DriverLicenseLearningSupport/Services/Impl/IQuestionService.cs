@@ -10,6 +10,7 @@ namespace DriverLicenseLearningSupport.Services.Impl
         Task<IEnumerable<QuestionModel>> GetAllAsync();
         Task<IEnumerable<QuestionModel>> GetAllByLicenseId(int licenseId);
         Task<QuestionModel> GetByIdAsync(int questionIs);
+        Task<List<QuestionModel>> GetAllInExam(int theoryExamId);
         Task<bool> DeleteQuestionAsync(int questionId);
         Task<QuestionModel> UpdateStatusQuestionAsync(int questionId, bool status);
         Task<QuestionModel> UpdateQuestionAsync(QuestionModel updatedModel, int questionId);

@@ -31,9 +31,9 @@ namespace DriverLicenseLearningSupport.Payloads.Request
         [Required(ErrorMessage = "Vui lòng nhập Thành Phố")]
         public string City { get; set; }
 
-        // License Type
-        [Required(ErrorMessage = "Vui lòng chọn loại bằng lái")]
-        public int LicenseTypeId { get; set; }
+        //// License Type
+        //[Required(ErrorMessage = "Vui lòng chọn loại bằng lái")]
+        //public int LicenseTypeId { get; set; }
     }
 
     public static class RegisterRequestExtension
@@ -58,7 +58,7 @@ namespace DriverLicenseLearningSupport.Payloads.Request
                 DateBirth = DateTime.ParseExact(reqObj.DateBirth, formatDate,
                 CultureInfo.InvariantCulture),
                 Phone = reqObj.Phone,
-                LicenseTypeId = reqObj.LicenseTypeId
+                //LicenseTypeId = reqObj.LicenseTypeId
             };
         }
 

@@ -40,7 +40,25 @@ namespace DriverLicenseLearningSupport.Repositories
 
         public async Task<IEnumerable<ExamHistoryModel>> GetAllByMemberIdAsysn(string memberId)
         {
-            var MyHistories = await _context.ExamHistories.Where(x => x.MemberId.Equals(memberId)).ToListAsync();
+            var MyHistories = await _context.ExamHistories.Where(x => x.MemberId.Equals(memberId))
+                .Select(x => new ExamHistory { 
+                    ExamHistoryId = x.ExamHistoryId,
+                    MemberId = x.MemberId,
+                    TotalGrade = x.TotalGrade,
+                    TotalRightAnswer = x.TotalRightAnswer,
+                    TotalQuestion = x.TotalQuestion,
+                    TotalTime = x.TotalTime,
+                    WrongParalysisQuestion = x.WrongParalysisQuestion,
+                    IsPassed = x.IsPassed,
+                    Date = x.Date,
+                    TheoryExam = new TheoryExam { 
+                        TheoryExamId = x.TheoryExam.TheoryExamId,
+                        LicenseType = x.TheoryExam.LicenseType
+                    }
+                })
+                .ToListAsync();
+
+
             return _mapper.Map<IEnumerable<ExamHistoryModel>>(MyHistories);
         }
 

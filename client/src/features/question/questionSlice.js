@@ -68,7 +68,7 @@ export const questionSlice = createSlice({
         state.isError = false;
         state.isSuccess = true;
         state.message = 'success';
-        state.listQuestions = action?.payload;
+        state.listQuestions = [...action?.payload];
       })
       .addCase(createQuestion.pending, (state, action) => {
         state.isLoading = true;

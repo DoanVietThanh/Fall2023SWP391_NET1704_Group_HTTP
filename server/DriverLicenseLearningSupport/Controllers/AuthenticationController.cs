@@ -90,7 +90,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 return Unauthorized(new BaseResponse
                 {
                     StatusCode = StatusCodes.Status401Unauthorized,
-                    Message = "Wrong username or password!",
+                    Message = "Sai tài khoản hoặc mật khẩu",
                 });
 
             //get account info by role
@@ -113,12 +113,23 @@ namespace DriverLicenseLearningSupport.Controllers
             return Ok(new BaseResponse
             {
                 StatusCode = StatusCodes.Status200OK,
-                Message = "Login Success",
+                Message = "Đăng nhập thành công",
                 Data = new
                 {
                     Token = token,
                     AccountInfo = accountInfo
                 }
+            });
+        }
+
+        [HttpGet]
+        [Route("authentication/test")]
+        public async Task<IActionResult> Test(string password)
+        {
+            return Ok(new
+            {
+                Encrypt = PasswordHelper.ConvertToEncrypt(password),
+                //Decrypt = PasswordHelper.ConvertToDecrypt(password)
             });
         }
 
@@ -145,7 +156,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     new BaseResponse()
                     {
                         StatusCode = StatusCodes.Status403Forbidden,
-                        Message = "Email already exist!"
+                        Message = "Username đăng nhập đã tồn tại"
                     });
             }
 
@@ -190,7 +201,7 @@ namespace DriverLicenseLearningSupport.Controllers
             return Ok(new BaseResponse
             {
                 StatusCode = StatusCodes.Status200OK,
-                Message = "Register Success",
+                Message = "Đăng ký thành công",
                 Data = new
                 {
                     Account = account,
@@ -212,7 +223,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     new BaseResponse()
                     {
                         StatusCode = StatusCodes.Status403Forbidden,
-                        Message = "Email already exist!"
+                        Message = "Username đăng nhập đã tồn tại"
                     });
             }
 
@@ -236,7 +247,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
             return Ok(new BaseResponse { 
                 StatusCode = StatusCodes.Status200OK,
-                Message = "Create staff account succesfully",
+                Message = "Tạo mới thành công",
             });
         }
 
@@ -252,19 +263,19 @@ namespace DriverLicenseLearningSupport.Controllers
                 //var forgotPasswordLink = Url.Action("ResetPassword", "Authentication", new { passwordResetToken, email = account.Email }, Request.Scheme);
                 var forgotPasswordLink = Url.Action("ResetPassword", "Authentication",
                     values: new { passwordResetToken, email = account.Email }, Request.Scheme, host: "localhost:3000");
-                var message = new EmailMessage(new string[] { account.Email! }, "Forgot Password Link", forgotPasswordLink!);
+                var message = new EmailMessage(new string[] { account.Email! }, "Quên Mật Khẩu", forgotPasswordLink!);
                 _emailService.SendEmail(message);
 
                 return Ok(new BaseResponse
                 {
                     StatusCode = StatusCodes.Status200OK,
-                    Message = $"Password change request has been sent to Email {account.Email}. Please see email and access link"
+                    Message = $"Yêu cầu thay đổi mật khẩu được được gửi đến email {account.Email}"
                 });
             }
             return BadRequest(new BaseResponse
             {
                 StatusCode = StatusCodes.Status400BadRequest,
-                Message = "Unable to send email, please try again!"
+                Message = "Không thể gửi email, xin thử lại!"
             });
         }
 
@@ -286,11 +297,11 @@ namespace DriverLicenseLearningSupport.Controllers
                 return Ok(new BaseResponse
                 {
                     StatusCode = StatusCodes.Status200OK,
-                    Message = "Password changed successfully"
+                    Message = "Thay đổi mật khẩu thành công"
                 });
             }
             return StatusCode(StatusCodes.Status400BadRequest,
-                new BaseResponse { Message = "Password change failed." });
+                new BaseResponse { Message = "Thay đổi mật khẩu thất bại." });
         }
 
         [HttpGet]
@@ -299,7 +310,7 @@ namespace DriverLicenseLearningSupport.Controllers
         {
             return Ok(new BaseResponse { 
                 StatusCode=StatusCodes.Status200OK,
-                Message = "Logout succesfully"
+                Message = "Đăng xuất thành công"
             });
         }
     }

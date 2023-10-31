@@ -35,16 +35,16 @@ const InstructorSchedule = () => {
   useEffect(() => {
     async function getDataCourse() {
       try {
-        const response = await axiosClient.get(
-          `/staffs/mentors/${idInstructor}/schedule?courseId=${idCourse}`
-        );
+        const response = await axiosClient
+          .get(`/staffs/mentors/${idInstructor}/schedule?courseId=${idCourse}`)
+          .catch((error) => toastError(error?.response?.data?.message));
         console.log('response: ', response);
         setIsLoading(false);
         setMentorId(idInstructor);
         setDataWeek(response?.data);
         setCurrentWeek(response?.data.data?.weekdays.weekdayScheduleId);
       } catch (error) {
-        throw new Error(error);
+        toastError(error?.response?.data.message);
       }
     }
     getDataCourse();
@@ -78,10 +78,12 @@ const InstructorSchedule = () => {
     try {
       async function submitForm() {
         //setIsLoading(true);
-        const response = await axiosClient.post(`/members/schedule`, {
-          memberId: user?.accountInfo.memberId,
-          teachingScheduleId: idSchedule,
-        });
+        const response = await axiosClient
+          .post(`/members/schedule`, {
+            memberId: user?.accountInfo.memberId,
+            teachingScheduleId: idSchedule,
+          })
+          .catch((error) => toastError(error?.response?.data?.message));
         if (response?.data.statusCode === 200) {
           setIsLoading(!isLoading);
           setOpenRegister(false);
@@ -91,7 +93,7 @@ const InstructorSchedule = () => {
       }
       submitForm();
     } catch (error) {
-      throw new Error(error);
+      // toastError(error?.response?.data.message);
     }
   };
 

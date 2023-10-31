@@ -17,7 +17,7 @@ namespace DriverLicenseLearningSupport.Entities
         public string VehicleLicensePlate { get; set; }
         public DateTime? RegisterDate { get; set; }
         public int? VehicleTypeId { get; set; }
-        public string VehicleImage { get; set; }
+        public string? VehicleImage { get; set; }
         public bool IsActive { get; set; }
 
         public virtual VehicleType VehicleType { get; set; }

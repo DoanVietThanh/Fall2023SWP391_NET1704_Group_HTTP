@@ -39,11 +39,9 @@ const CountdownTimer = ({ minutes = 0, seconds = 0 }) => {
   return (
     <div>
       <div className='border p-4 rounded-full'>
-        <span className='text-[20px] font-medium'>{`${formattedMinutes} : ${formattedSeconds}`}</span>
-        <br />
-        {dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss')}
-        <br />
-        <span>Thời gian đã làm: {minutes - timeRemaining.minutes}</span>
+        <p className='text-[20px] font-medium text-center'>{`${formattedMinutes} : ${formattedSeconds}`}</p>
+        {/* <div>{dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss')}</div> */}
+        <div>Thời gian đã làm: {minutes - timeRemaining.minutes} phút</div>
       </div>
     </div>
   );

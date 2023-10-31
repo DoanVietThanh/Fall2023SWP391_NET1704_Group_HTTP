@@ -62,7 +62,14 @@ let schema = yup.object().shape({
     .required('Nhập city'),
 });
 
-const DialogEditUser = ({ open, setOpen, userId, loading, setLoading }) => {
+const DialogEditUser = ({
+  open,
+  setOpen,
+  userId,
+  loading,
+  setLoading,
+  getAllUsers,
+}) => {
   const [user, setUser] = useState();
   const [listType, setListType] = useState([]);
   const [selectType, setSelectType] = useState();
@@ -140,8 +147,11 @@ const DialogEditUser = ({ open, setOpen, userId, loading, setLoading }) => {
     );
     toastSuccess(response?.data?.data);
     setLoading(!loading);
+    setOpen(false);
+    getAllUsers();
     console.log('response: ', response);
   };
+
   return (
     <div>
       {availableValue && user && (

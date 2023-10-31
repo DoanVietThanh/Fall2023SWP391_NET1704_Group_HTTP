@@ -1,23 +1,27 @@
+import Select from '@mui/material/Select';
 import * as dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import Select from '@mui/material/Select';
 import { toastError } from '../../../components/Toastify';
 import axiosClient from '../../../utils/axiosClient';
 
-import MenuItem from '@mui/material/MenuItem';
-import Accordion from '@mui/material/Accordion';
-import InputLabel from '@mui/material/InputLabel';
-import Typography from '@mui/material/Typography';
-import FormControl from '@mui/material/FormControl';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Button, Dialog } from '@mui/material';
+import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
-import { Button, Dialog, DialogActions } from '@mui/material';
-import { AiOutlineCheckCircle, AiOutlineCloseCircle } from 'react-icons/ai';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Typography from '@mui/material/Typography';
+import DialogCheckAttendance from './DialogCheckAttendance';
+import { AiFillPlusCircle, AiOutlinePlusCircle } from 'react-icons/ai';
+import { BsDashLg } from 'react-icons/bs';
+import DialogRegisterSchedule from './DialogRegisterSchedule';
 
 const ScheduleMentor = ({ itemCourse, courseId }) => {
   const { user } = useSelector((state) => state.auth);
+  const { accountInfo } = useSelector((state) => state.auth.user);
   const [dataWeek, setDataWeek] = useState();
   const [idSchedule, setIdSchedule] = useState();
   const [slotName, setSlotName] = useState('');
@@ -25,30 +29,32 @@ const ScheduleMentor = ({ itemCourse, courseId }) => {
   const [mentorId, setMentorId] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
+  const [openRegisterSchedule, setOpenRegisterSchedule] = useState(false);
   const [openRegister, setOpenRegister] = useState(false);
-  const { accountInfo } = useSelector((state) => state.auth.user);
+  const [teachingScheduleId, setTeachingScheduleId] = useState(null);
+  const [rollCallBookId, setRollCallBookId] = useState(0);
+  const [slotSchedules, setSlotSchedules] = useState();
 
   useEffect(() => {
     async function getDataCourse() {
       try {
-        const response = await axiosClient.get(
-          `/staffs/mentors/${accountInfo.staffId}/schedule?courseId=${courseId}`
-        );
+        const response = await axiosClient
+          .get(
+            `/staffs/mentors/${accountInfo.staffId}/schedule?courseId=${courseId}`
+          )
+          .catch((error) => toastError(error?.response?.data?.message));
         console.log('response: ', response);
+
         setIsLoading(false);
         setMentorId(accountInfo.staffId);
         setDataWeek(response?.data);
         setCurrentWeek(response?.data.data?.weekdays.weekdayScheduleId);
       } catch (error) {
-        throw new Error(error);
+        // toastError(error?.response?.data.message);
       }
     }
     getDataCourse();
   }, [isLoading]);
-
-  const handleClickOpen = () => setOpen(true);
-
-  const handleClose = () => setOpen(false);
 
   const handleCloseRegister = () => setOpenRegister(false);
 
@@ -68,11 +74,12 @@ const ScheduleMentor = ({ itemCourse, courseId }) => {
   const handleSubmitSchedule = () => {
     try {
       async function submitForm() {
-        //setIsLoading(true);
-        const response = await axiosClient.post(`/members/schedule`, {
-          memberId: user?.accountInfo.memberId,
-          teachingScheduleId: idSchedule,
-        });
+        const response = await axiosClient
+          .post(`/members/schedule`, {
+            memberId: user?.accountInfo.memberId,
+            teachingScheduleId: idSchedule,
+          })
+          .catch((error) => toastError(error?.response?.data?.message));
         if (response?.data.statusCode === 200) {
           setIsLoading(!isLoading);
           setOpenRegister(false);
@@ -82,7 +89,7 @@ const ScheduleMentor = ({ itemCourse, courseId }) => {
       }
       submitForm();
     } catch (error) {
-      throw new Error(error);
+      // toastError(error?.response?.data.message);
     }
   };
 
@@ -98,6 +105,17 @@ const ScheduleMentor = ({ itemCourse, courseId }) => {
         </AccordionSummary>
         <AccordionDetails>
           <div className=''>
+            <div className='flex justify-end mb-4'>
+              <div
+                className='bg-blue-400 cursor-pointer flex items-center p-2 rounded-lg gap-2'
+                onClick={() => {
+                  setOpenRegisterSchedule(true);
+                }}
+              >
+                <AiFillPlusCircle size={24} className='text-white' />
+                <p className='font-semibold text-white'>Đăng kí lịch</p>
+              </div>
+            </div>
             <table className='w-full border-2 border-black'>
               <thead>
                 <tr>
@@ -196,26 +214,45 @@ const ScheduleMentor = ({ itemCourse, courseId }) => {
               <tbody>
                 {dataWeek?.data?.slotSchedules?.map((item, index) => (
                   <tr key={index}>
-                    <td>{item.slotName}</td>
+                    <td>
+                      <div className='font-semibold'>{item.slotName}</div>
+                      <h1 className='mb-4 text-white bg-green-600 rounded-lg p-2'>
+                        {item.slotDesc}
+                      </h1>
+                    </td>
                     {item?.teachingSchedules.map((itemDate, indexItemDate) => (
                       <td key={indexItemDate}>
                         {itemDate ? (
                           <div className='text-center'>
-                            <p className='font-bold text-blue-800 text-[14px]'>
+                            <p className='font-bold text-blue-800 text-[16px]'>
                               {dataWeek?.data.course.courseTitle}
                             </p>
-                            <div className='bg-green-500 text-white w-auto rounded-lg mx-6 text-[14px]'>
-                              {item.slotDesc}
-                            </div>
+                            {itemDate?.coursePackage?.coursePackageDesc && (
+                              <p className='font-bold text-grey font-bold bg-yellow-400 rounded-lg p-2 text-[16px]'>
+                                {itemDate?.coursePackage?.coursePackageDesc}
+                              </p>
+                            )}
+
                             <button
-                              onClick={handleClickOpen}
+                              onClick={() => {
+                                setOpen(true);
+                                setRollCallBookId(
+                                  itemDate?.rollCallBooks[0]?.rollCallBookId
+                                );
+                                setTeachingScheduleId(
+                                  itemDate?.teachingScheduleId
+                                );
+                                setSlotSchedules(item);
+                              }}
                               className='px-2 text-black bg-gray-200 mt-2 rounded-lg hover:bg-blue-400 hover:text-white'
                             >
                               Xem chi tiết
                             </button>
                           </div>
                         ) : (
-                          <div></div>
+                          <div className='font-bold text-[24px] flex justify-center'>
+                            <BsDashLg />
+                          </div>
                         )}
                       </td>
                     ))}
@@ -225,6 +262,27 @@ const ScheduleMentor = ({ itemCourse, courseId }) => {
             </table>
           </div>
         </AccordionDetails>
+        <div className='border p-4 mt-4'>
+          <div className='font-bold'>Chú thích: </div>
+          <p className='flex items-center mt-4'>
+            <AiOutlinePlusCircle size={24} className='text-green-700' />
+            <span> : Ấn để đăng kí buổi học</span>
+          </p>
+          <p className='flex items-center mt-4'>
+            <BsDashLg size={24} className='text-black' />
+            <span> : Chưa có lịch</span>
+          </p>
+          <div className='mt-4 flex items-center gap-4'>
+            <div className='rounded bg-yellow-400 h-[20px] w-[20px]'></div>
+            <span>Ngày dạy đã có học viên đăng kí</span>
+          </div>
+          <ul className='list-disc ml-6 flex flex-col gap-4 mt-4'>
+            <li>
+              Tổng giờ yêu cầu: {dataWeek?.data?.course?.totalHoursRequired}
+            </li>
+            <li>Tổng km yêu cầu: {dataWeek?.data?.course?.totalKmRequired}</li>
+          </ul>
+        </div>
       </Accordion>
       <div>
         <Dialog
@@ -274,86 +332,23 @@ const ScheduleMentor = ({ itemCourse, courseId }) => {
             </div>
           </div>
         </Dialog>
-        <Dialog
-          open={open}
-          onClose={handleClose}
-          aria-labelledby='alert-dialog-title'
-          aria-describedby='alert-dialog-description'
-        >
-          <div className='flex gap-10 p-6'>
-            <div>
-              <h2 className='font-bold my-4 text-center font-bold text-[24px]'>
-                Chi tiết Lịch học
-              </h2>
-              <div className='flex flex-col gap-4'>
-                <div className='flex gap-4'>
-                  <div>Date:</div>
-                  <div>
-                    {dayjs(dataWeek?.data?.weekdays?.monday).format(
-                      'DD/MM/YYYY'
-                    )}
-                  </div>
-                </div>
-                <div className='flex gap-4'>
-                  <div>Tiết học:</div>
-                  <div> {slotName} </div>
-                </div>
-                <div className='flex gap-4'>
-                  <div>Giảng viên:</div>
-                  <div>Thanh Đoàn</div>
-                </div>
-                <div className='flex gap-4'>
-                  <div>Khóa học:</div>
-                  <div>Bằng lái B2 </div>
-                </div>
-                <div className='flex gap-4'>
-                  <div>Tổng buổi học:</div>
-                  <div>12</div>
-                </div>
-                <div className='flex gap-4'>
-                  <div>Điểm danh:</div>
-                  <div className='text-green-700 flex justify-center items-center gap-8'>
-                    <span>
-                      <AiOutlineCheckCircle size={20} />
-                    </span>
-                    <span className='text-red-800'>
-                      <AiOutlineCloseCircle size={20} />
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            <div>
-              <h2 className='font-bold my-4 text-center font-bold text-[24px]'>
-                Phương tiện
-              </h2>
-              <div className='flex flex-col gap-4'>
-                <div className='flex gap-4'>
-                  <div>Tên xe:</div>
-                  <div>Rand Rover</div>
-                </div>
-                <div className='flex gap-4'>
-                  <div>Biển số:</div>
-                  <div>51F-891.12</div>
-                </div>
-                <div className='w-full'>
-                  <img
-                    src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Land_Rover_Range_Rover_Autobiography_2016.jpg/1200px-Land_Rover_Range_Rover_Autobiography_2016.jpg'
-                    alt='transport'
-                    className='w-[300px]'
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <DialogActions>
-            <Button onClick={handleClose}>Thoát</Button>
-            {/* <Button onClick={handleClose} autoFocus>
-            Đồng ý
-          </Button> */}
-          </DialogActions>
-        </Dialog>
+        <DialogCheckAttendance
+          open={open}
+          setOpen={setOpen}
+          rollCallBookId={rollCallBookId}
+          teachingScheduleId={teachingScheduleId}
+          dataWeek={dataWeek}
+          course={dataWeek?.data?.course}
+          slotSchedules={slotSchedules}
+        />
+
+        <DialogRegisterSchedule
+          openRegisterSchedule={openRegisterSchedule}
+          setOpenRegisterSchedule={setOpenRegisterSchedule}
+          itemCourse={itemCourse}
+          courseId={courseId}
+        />
       </div>
     </div>
   );

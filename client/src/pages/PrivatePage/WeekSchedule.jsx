@@ -1,25 +1,22 @@
-import { Box } from '@mui/material';
+import { Box, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
 import * as dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
-import {
-  AiOutlineCheckCircle,
-  AiOutlineCloseCircle,
-  AiOutlinePlusCircle,
-} from 'react-icons/ai';
+import { AiFillCloseCircle, AiOutlinePlusCircle } from 'react-icons/ai';
 
+import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import { BsDashLg } from 'react-icons/bs';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import SideBar from '../../components/SideBar';
-import axiosClient from './../../utils/axiosClient';
-import { toastError } from '../../components/Toastify';
+import { toastError, toastSuccess } from '../../components/Toastify';
 import Loading from './../../components/Loading';
+import axiosClient from './../../utils/axiosClient';
+import DialogDetailSchedule from './components/DialogDetailSchedule';
 
 const WeekSchedule = () => {
   const navigate = useNavigate();
@@ -32,25 +29,55 @@ const WeekSchedule = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [openRegister, setOpenRegister] = useState(false);
+  const [openCancel, setOpenCancel] = useState(false);
+  const [dialogDetail, setDialogDetail] = useState();
+
+  const [teachingScheduleId, setTeachingScheduleId] = useState(null);
+  const [rollCallBookId, setRollCallBookId] = useState(0);
+  const [slotSchedules, setSlotSchedules] = useState();
+  const [messageCancel, setMessageCancel] = useState('');
+  const [cancelRckId, setCancelRckId] = useState(0);
 
   useEffect(() => {
     async function getDataCourse() {
       try {
-        const response = await axiosClient.get(
-          `/members/${user.accountInfo.memberId}/schedule`
-        );
+        const response = await axiosClient
+          .get(`/members/${user.accountInfo.memberId}/schedule`)
+          .catch((error) => toastError(error?.response?.data?.message));
+        console.log('response: ', response);
         setIsLoading(false);
         setMentorId(response?.data.data.mentor.staffId);
         setDataWeek(response?.data);
         setCurrentWeek(response?.data.data?.weekdays.weekdayScheduleId);
       } catch (error) {
-        throw new Error(error);
+        // toastError(error?.response?.data.message);
       }
     }
     getDataCourse();
   }, [isLoading]);
 
-  const handleClickOpen = () => setOpen(true);
+  const getInitDataCourse = async () => {
+    try {
+      const response = await axiosClient
+        .get(`/members/${user.accountInfo.memberId}/schedule`)
+        .catch((error) => toastError(error?.response?.data?.message));
+      console.log('response: ', response);
+      setIsLoading(false);
+      setMentorId(response?.data.data.mentor.staffId);
+      setDataWeek(response?.data);
+      setCurrentWeek(response?.data.data?.weekdays.weekdayScheduleId);
+    } catch (error) {
+      // toastError(error?.response?.data.message);
+    }
+  };
+
+  const handleClickOpen = async (teachingScheduleId) => {
+    const dataTeachingSchedule = await axiosClient.get(
+      `/teaching-schedules/${teachingScheduleId}`
+    );
+    setDialogDetail(dataTeachingSchedule?.data);
+    setOpen(true);
+  };
 
   const handleClose = () => setOpen(false);
 
@@ -77,25 +104,49 @@ const WeekSchedule = () => {
     try {
       async function submitForm() {
         //setIsLoading(true);
-        const response = await axiosClient.post(`/members/schedule`, {
-          memberId: user?.accountInfo.memberId,
-          teachingScheduleId: idSchedule,
-        });
+        const response = await axiosClient
+          .post(`/members/schedule`, {
+            memberId: user?.accountInfo.memberId,
+            teachingScheduleId: idSchedule,
+          })
+          .catch((e) => {
+            console.log(e);
+            toastError(e.response.data.message);
+            setOpenRegister(false);
+          });
         if (response?.data.statusCode === 200) {
           setIsLoading(!isLoading);
           setOpenRegister(false);
-        } else {
-          toastError('Ngày học đã đăng kí');
+          toastSuccess(response.data.message);
         }
       }
       submitForm();
     } catch (error) {
-      throw new Error(error);
+      console.log(error);
     }
   };
 
-  //console.log('dataWeek: ', dataWeek);
+  const handleCancel = async (e) => {
+    e.preventDefault();
+    await axiosClient
+      .put(
+        `/rollcallbooks/${cancelRckId}/cancel?cancelMessage=${messageCancel}`
+      )
+      .then((res) => {
+        console.log(res);
+        toastSuccess(res?.data?.message);
+        setOpenCancel(false);
+        getInitDataCourse();
+        // navigate('/week-schedule');
+        // window.location.reload();
+      })
+      .catch((error) => toastError(error?.response?.data.message));
+  };
 
+  // console.log('dataWeek: ', dataWeek);
+  // console.log(dayjs(new Date()).format('YYYY-MM-DDTHH:MM:SS'));
+  console.log('cancelRckId: ', cancelRckId);
+  console.log('messageCancel: ', messageCancel);
   return (
     <div className='flex'>
       <SideBar />
@@ -106,13 +157,17 @@ const WeekSchedule = () => {
         <>
           {dataWeek && (
             <>
-              <Box component='main' sx={{ flexGrow: 1, p: 3 }}>
-                <div className='h-[80vh] w-full rounded overflow-y-auto mt-[64px]'>
+              <Box
+                component='main'
+                sx={{ flexGrow: 1, p: 3 }}
+                className='overflow-y-auto'
+              >
+                <div className='w-full rounded overflow-y-auto mt-[64px] overflow-y-auto'>
                   <div>
                     <h1 className='font-bold text-[30px] uppercase mb-4'>
                       Lịch học theo tuần
                     </h1>
-                    <div className=' min-h-[70vh]'>
+                    <div className=''>
                       <table className='w-full border-2 border-black'>
                         <thead>
                           <tr>
@@ -211,7 +266,14 @@ const WeekSchedule = () => {
                         <tbody>
                           {dataWeek?.data?.slotSchedules?.map((item, index) => (
                             <tr key={index}>
-                              <td>{item.slotName}</td>
+                              <td>
+                                <div className='font-semibold'>
+                                  {item.slotName}
+                                </div>
+                                <h1 className='mb-4 text-white bg-green-600 rounded-lg p-2'>
+                                  {item.slotDesc}
+                                </h1>
+                              </td>
                               {item?.teachingSchedules.map(
                                 (itemDate, indexItemDate) => (
                                   <td key={indexItemDate}>
@@ -234,31 +296,100 @@ const WeekSchedule = () => {
                                         ) : itemDate.rollCallBooks[0]
                                             .memberId ===
                                           user.accountInfo.memberId ? (
-                                          <div className='text-center'>
-                                            <p className='font-bold text-blue-800 text-[14px]'>
+                                          <div className='text-center font-semibold'>
+                                            <p className='font-bold text-blue-800 text-[16px]'>
                                               {
                                                 dataWeek?.data.course
                                                   .courseTitle
                                               }
                                             </p>
-                                            <div className='bg-green-500 text-white w-auto rounded-lg mx-6 text-[14px]'>
-                                              {item.slotDesc}
-                                            </div>
+                                            {itemDate?.coursePackage
+                                              ?.coursePackageDesc && (
+                                              <p className='font-bold text-grey font-bold bg-yellow-400 rounded-lg p-2 text-[16px]'>
+                                                {
+                                                  itemDate?.coursePackage
+                                                    ?.coursePackageDesc
+                                                }
+                                              </p>
+                                            )}
                                             <button
-                                              onClick={handleClickOpen}
+                                              onClick={() => {
+                                                handleClickOpen(
+                                                  itemDate?.teachingScheduleId
+                                                );
+                                                setRollCallBookId(
+                                                  itemDate?.rollCallBooks[0]
+                                                    ?.rollCallBookId
+                                                );
+                                                setTeachingScheduleId(
+                                                  itemDate?.teachingScheduleId
+                                                );
+                                                setSlotSchedules(item);
+                                              }}
                                               className='px-2 text-black bg-gray-200 mt-2 rounded-lg hover:bg-blue-400 hover:text-white'
                                             >
                                               Xem chi tiết
                                             </button>
+                                            {dataWeek?.data
+                                              ?.registeredSession &&
+                                              dataWeek?.data
+                                                ?.packageTotalSession && (
+                                                <div className='mt-4 text-red-600 w-auto rounded-lg mx-6 text-[14px]'>
+                                                  {`Đã đăng kí ${dataWeek?.data?.registeredSession} / ${dataWeek?.data?.packageTotalSession} buổi`}
+                                                </div>
+                                              )}
+
+                                            {itemDate?.teachingDate >
+                                              dayjs(new Date()).format(
+                                                'YYYY-MM-DDTHH:MM:SS'
+                                              ) &&
+                                              itemDate?.rollCallBooks[0]
+                                                .isAbsence && (
+                                                <div
+                                                  onClick={() => {
+                                                    console.log(
+                                                      'itemDate?.teachingScheduleId: ',
+                                                      itemDate?.teachingScheduleId
+                                                    );
+                                                    setCancelRckId(
+                                                      itemDate?.rollCallBooks[0]
+                                                        ?.rollCallBookId
+                                                    );
+                                                  }}
+                                                  className='flex items-center justify-center gap-4 '
+                                                >
+                                                  {itemDate?.rollCallBooks[0]
+                                                    .cancelMessage ? (
+                                                    <div className='text-center text-green-700'>
+                                                      Đang chờ hủy lịch
+                                                    </div>
+                                                  ) : (
+                                                    <div
+                                                      className='cursor-pointer flex items-center justify-center gap-4'
+                                                      onClick={() =>
+                                                        setOpenCancel(true)
+                                                      }
+                                                    >
+                                                      Hủy{' '}
+                                                      <AiFillCloseCircle
+                                                        size={20}
+                                                        className='text-red-400'
+                                                      />
+                                                    </div>
+                                                  )}
+                                                </div>
+                                              )}
                                           </div>
                                         ) : (
-                                          <div className='text-red-700'>
-                                            Hết chỗ 1/1
+                                          <div className='font-bold text-[24px] flex justify-center'>
+                                            {/* Hết chỗ 1/1 */} <BsDashLg />
                                           </div>
                                         )}
                                       </div>
                                     ) : (
-                                      <div></div>
+                                      <div className='font-bold text-[24px] flex justify-center'>
+                                        <BsDashLg />
+                                      </div>
                                     )}
                                   </td>
                                 )
@@ -270,7 +401,30 @@ const WeekSchedule = () => {
                     </div>
                   </div>
                 </div>
+
+                <div className='border p-4 mt-4'>
+                  <div className='font-bold'>Chú thích: </div>
+
+                  <p className='flex items-center mt-4'>
+                    <AiOutlinePlusCircle size={24} className='text-green-700' />
+                    <span> : Ấn để đăng kí buổi học</span>
+                  </p>
+                  <p className='flex items-center mt-4'>
+                    <BsDashLg size={24} className='text-black' />
+                    <span> : Chưa có lịch</span>
+                  </p>
+                  <ul className='list-disc ml-6 flex flex-col gap-4 mt-4'>
+                    <li>
+                      Tổng giờ yêu cầu:{' '}
+                      {dataWeek?.data?.course?.totalHoursRequired}
+                    </li>
+                    <li>
+                      Tổng km yêu cầu: {dataWeek?.data?.course?.totalKmRequired}
+                    </li>
+                  </ul>
+                </div>
               </Box>
+
               <Dialog
                 open={openRegister}
                 onClose={handleCloseRegister}
@@ -318,86 +472,51 @@ const WeekSchedule = () => {
                   </div>
                 </div>
               </Dialog>
+
               <Dialog
-                open={open}
-                onClose={handleClose}
+                open={openCancel}
+                onClose={() => setOpenCancel(false)}
                 aria-labelledby='alert-dialog-title'
                 aria-describedby='alert-dialog-description'
               >
-                <div className='flex gap-10 p-6'>
-                  <div>
-                    <h2 className='font-bold my-4 text-center font-bold text-[24px]'>
-                      Chi tiết Lịch học
-                    </h2>
-                    <div className='flex flex-col gap-4'>
-                      <div className='flex gap-4'>
-                        <div>Date:</div>
-                        <div>
-                          {dayjs(dataWeek?.data?.weekdays?.monday).format(
-                            'DD/MM/YYYY'
-                          )}
-                        </div>
-                      </div>
-                      <div className='flex gap-4'>
-                        <div>Tiết học:</div>
-                        <div> {slotName} </div>
-                      </div>
-                      <div className='flex gap-4'>
-                        <div>Giảng viên:</div>
-                        <div>Thanh Đoàn</div>
-                      </div>
-                      <div className='flex gap-4'>
-                        <div>Khóa học:</div>
-                        <div>Bằng lái B2 </div>
-                      </div>
-                      <div className='flex gap-4'>
-                        <div>Tổng buổi học:</div>
-                        <div>12</div>
-                      </div>
-                      <div className='flex gap-4'>
-                        <div>Điểm danh:</div>
-                        <div className='text-green-700 flex justify-center items-center gap-8'>
-                          <span>
-                            <AiOutlineCheckCircle size={20} />
-                          </span>
-                          <span className='text-red-800'>
-                            <AiOutlineCloseCircle size={20} />
-                          </span>
-                        </div>
-                      </div>
+                <div className='p-8'>
+                  <form action='' className='w-full my-4'>
+                    <div>
+                      <TextField
+                        id='outlined-basic'
+                        label='Lý do hủy'
+                        variant='outlined'
+                        required={true}
+                        className='w-full my-4'
+                        value={messageCancel}
+                        onChange={(e) => setMessageCancel(e.target.value)}
+                      />
                     </div>
-                  </div>
-
-                  <div>
-                    <h2 className='font-bold my-4 text-center font-bold text-[24px]'>
-                      Phương tiện
-                    </h2>
-                    <div className='flex flex-col gap-4'>
-                      <div className='flex gap-4'>
-                        <div>Tên xe:</div>
-                        <div>Rand Rover</div>
-                      </div>
-                      <div className='flex gap-4'>
-                        <div>Biển số:</div>
-                        <div>51F-891.12</div>
-                      </div>
-                      <div className='w-full'>
-                        <img
-                          src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Land_Rover_Range_Rover_Autobiography_2016.jpg/1200px-Land_Rover_Range_Rover_Autobiography_2016.jpg'
-                          alt='transport'
-                          className='w-[300px]'
-                        />
-                      </div>
+                    <div className='flex justify-between gap-8 mt-6'>
+                      <Button onClick={() => setOpenCancel(false)}>
+                        Thoát
+                      </Button>
+                      <button
+                        className='btn'
+                        type='submit'
+                        onClick={handleCancel}
+                      >
+                        Xác nhận Hủy
+                      </button>
                     </div>
-                  </div>
+                  </form>
                 </div>
-                <DialogActions>
-                  <Button onClick={handleClose}>Thoát</Button>
-                  {/* <Button onClick={handleClose} autoFocus>
-            Đồng ý
-          </Button> */}
-                </DialogActions>
               </Dialog>
+
+              <DialogDetailSchedule
+                open={open}
+                setOpen={setOpen}
+                rollCallBookId={rollCallBookId}
+                teachingScheduleId={teachingScheduleId}
+                dataWeek={dataWeek}
+                course={dataWeek?.data?.course}
+                slotSchedules={slotSchedules}
+              />
             </>
           )}
         </>

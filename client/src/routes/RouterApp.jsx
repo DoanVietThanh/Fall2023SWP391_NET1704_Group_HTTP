@@ -36,6 +36,11 @@ import TestTheory from '../pages/TheoryPage/TestTheory';
 import TheoryPage from '../pages/TheoryPage/TheoryPage';
 import ErrorPage from './../pages/ErrorPage/ErrorPage';
 
+import ManageAwaitSchedule from '../pages/PrivatePage/ManageAwaitSchedule';
+
+import ApproveSchedule from '../pages/PrivatePage/ApproveSchedule';
+import ManageDenySchedule from '../pages/PrivatePage/ManageDenySchedule';
+
 const RouterApp = () => {
   const router = createBrowserRouter([
     { path: '/', element: <HomePage /> },
@@ -59,7 +64,14 @@ const RouterApp = () => {
     { path: '/manage-question', element: <ManageQuestion /> },
     { path: '/manage-banktest', element: <ManageBankTest /> },
     { path: '/manage-user', element: <ManageUser /> },
+
     { path: '/dashboard', element: <DashBoard /> },
+    { path: '/manage-await-schedule', element: <ManageAwaitSchedule /> },
+    { path: '/manage-deny-schedule', element: <ManageDenySchedule /> },
+    {
+      path: '/manage-await-schedule/:idMentor',
+      element: <ApproveSchedule />,
+    },
 
     { path: '/course', element: <CoursePage /> },
     { path: '/course/detail/:idCourse', element: <DetailCourse /> },
@@ -67,8 +79,8 @@ const RouterApp = () => {
     // { path: '/test2', element: <Payment /> },
 
     { path: '/document', element: <DocumentPage /> },
-    { path: '/document/cauhoidiemliet', element: <CauHoiDiemLietPage />},
-    { path: '/document/toanbocauhoi', element: <ToanBoCauHoiPage />},
+    { path: '/document/cauhoidiemliet', element: <CauHoiDiemLietPage /> },
+    { path: '/document/toanbocauhoi', element: <ToanBoCauHoiPage /> },
 
     { path: '/theory', element: <TheoryPage /> },
     { path: '/theory/test/:theoryExamId', element: <TestTheory /> },

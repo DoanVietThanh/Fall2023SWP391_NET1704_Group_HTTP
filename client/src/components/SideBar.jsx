@@ -21,9 +21,11 @@ import {
   BsPerson,
   BsPeople,
   BsBarChartLine,
-} from "react-icons/bs";
-import { useLocation, useNavigate, Link } from "react-router-dom";
-import { logout } from "../features/auth/authSlice";
+} from 'react-icons/bs';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { logout } from '../features/auth/authSlice';
+import { Button, Menu, MenuItem } from '@mui/material';
+
 
 const drawerWidth = 240;
 
@@ -90,6 +92,30 @@ const listNavbarManage = [
     title: "Thống kê hệ thống",
     icon: <BsBarChartLine size={20} />,
     navigate: "/dashboard",
+  },
+  {
+    id: 8,
+    title: 'Quản lí lịch chờ',
+    icon: <BsEnvelopePaper size={20} />,
+    navigate: '/manage-await-schedule',
+  },
+  {
+    id: 9,
+    title: 'Quản lí lịch hủy',
+    icon: <BsEnvelopePaper size={20} />,
+    navigate: '/manage-deny-schedule',
+  },
+  {
+    id: 8,
+    title: 'Quản lí lịch chờ',
+    icon: <BsEnvelopePaper size={20} />,
+    navigate: '/manage-await-schedule',
+  },
+  {
+    id: 9,
+    title: 'Quản lí lịch hủy',
+    icon: <BsEnvelopePaper size={20} />,
+    navigate: '/manage-deny-schedule',
   },
 ];
 
@@ -164,9 +190,15 @@ export default function SideBar() {
   const theme = useTheme();
   const { accountInfo } = useSelector((state) => state.auth.user);
   const [open, setOpen] = useState(localStorage.getItem('showNav') || false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const openControl = Boolean(anchorEl);
 
   const { user, isLoading } = useSelector((state) => state.auth);
   const location = useLocation();
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
   const handleLogout = () => {
     dispatch(logout());
@@ -205,17 +237,49 @@ export default function SideBar() {
             </div>
             <div className='flex-x gap-2'>
               <div>
-                <img
-                  src='/img/avtThanh.jpg'
-                  alt='avt'
-                  className='h-[40px] w-[40px] object-cover rounded-full'
-                />
+                <Button
+                  id='basic-button'
+                  aria-controls={openControl ? 'basic-menu' : undefined}
+                  aria-haspopup='true'
+                  aria-expanded={openControl ? 'true' : undefined}
+                  onClick={handleClick}
+                >
+                  <div className='flex justify-center items-center'>
+                    <div className='flex justify-center items-center'>
+                      <img
+                        src='/img/avtThanh.jpg'
+                        alt='Avatar'
+                        className='rounded-full w-[36px] h-[36px] object-cover'
+                      />
+                    </div>
+                    <h2 className='text-white text-[16px] pl-2'>
+                      {`${user.accountInfo?.firstName} ${user.accountInfo?.lastName}`}
+                    </h2>
+                  </div>
+                </Button>
+                <Menu
+                  id='basic-menu'
+                  anchorEl={anchorEl}
+                  open={openControl}
+                  onClose={() => setAnchorEl(null)}
+                  MenuListProps={{
+                    'aria-labelledby': 'basic-button',
+                  }}
+                >
+                  <MenuItem onClick={() => setAnchorEl(null)}>
+                    <Link to={`/profile`}>Cá nhân</Link>
+                  </MenuItem>
+                  <MenuItem onClick={() => setAnchorEl(null)}>
+                    Tài khoản
+                  </MenuItem>
+                  <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
+                </Menu>
               </div>
-              <p>Thanh Đoàn</p>
             </div>
           </div>
         </Toolbar>
       </AppBar>
+
       <Drawer variant='permanent' open={open}>
         <DrawerHeader>
           <div className='flex justify-between items-center w-full'>

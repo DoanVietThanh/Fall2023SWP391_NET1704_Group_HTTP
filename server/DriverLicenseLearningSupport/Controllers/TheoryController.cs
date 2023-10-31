@@ -28,11 +28,13 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly IMemoryCache _memoryCache;
         private readonly AppSettings _appSettings;
         private readonly ITheoryExamService _theoryExamService;
+        private readonly TheoryExamConfig _theoryExamSettings;
 
         public TheoryController(IImageService imageService, IQuestionService questionService
             , IAnswerService answerService, ILicenseTypeService licenseTypeService
             , IMemoryCache memoryCache, IOptionsMonitor<AppSettings> monitor,
-            ITheoryExamService theoryExamService)
+            ITheoryExamService theoryExamService,
+            IOptionsMonitor<TheoryExamConfig> monitor1)
         {
             _imageService = imageService;
             _questionService = questionService;
@@ -41,11 +43,13 @@ namespace DriverLicenseLearningSupport.Controllers
             _memoryCache = memoryCache;
             _appSettings = monitor.CurrentValue;
             _theoryExamService = theoryExamService;
+            _theoryExamSettings = monitor1.CurrentValue;
         }
 
 
         [HttpGet]
         [Route("theory/add-question")]
+         // [Authorize(Roles = "Staff,Admin")]
         public async Task<IActionResult> LicenseFormRegister()
         {
             var licenseTypes = await _licenseTypeService.GetAllAsync();
@@ -53,13 +57,14 @@ namespace DriverLicenseLearningSupport.Controllers
             if (licenseTypes is null) return StatusCode(StatusCodes.Status500InternalServerError, new BaseResponse
             {
                 StatusCode = StatusCodes.Status500InternalServerError,
-                Message = "Something went wrong"
+                Message = "Đã xảy ra lỗi"
             });
 
             return Ok(new BaseResponse
             {
                 StatusCode = StatusCodes.Status200OK,
-                Data = licenseTypes
+                Data = licenseTypes,
+                Message = "Thành công"
             });
         }
 
@@ -76,14 +81,30 @@ namespace DriverLicenseLearningSupport.Controllers
                     Message = "Câu hỏi đã trong đề thi, không thể xóa"
                 });
             }
+            var currentQuestion = await _questionService.GetByIdAsync(reqObj.QuestionID);
+            
+            int licenseID = currentQuestion.LicenseTypeId;
+            if (await _questionService.CheckExistedQuestion(reqObj.QuestionAnswerDesc, currentQuestion.LicenseTypeId))
+            {
+                return BadRequest(new ErrorResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Không được tạo trùng câu hỏi"
+                });
+            }
+
+
             var questionToUpdate = reqObj.toQuestionModel();
 
+
             var updatedQuestion = await _questionService.UpdateQuestionAsync(questionToUpdate, reqObj.QuestionID);
+            
 
             if (updatedQuestion is null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+            
             foreach (AnswerModel answer in reqObj.Answers)
             {
                 var updatedAnswer = await _answerService.UpdateAnswerAsync(answer.QuestionAnswerId, answer);
@@ -92,9 +113,10 @@ namespace DriverLicenseLearningSupport.Controllers
                     return StatusCode(StatusCodes.Status500InternalServerError);
                 }
             }
+
             return Ok(new BaseResponse() {
                 StatusCode = StatusCodes.Status200OK,
-                Message = "Cap nhat thanh cong"
+                Message = "Cập nhật thành công"
             });
 
 
@@ -107,7 +129,6 @@ namespace DriverLicenseLearningSupport.Controllers
         public async Task<IActionResult> AddQuestion([FromForm] NewQuestionAddRequest reqObj)
         {
 
-
             // generate model
             var questionModel = reqObj.ToQuestionModel();
 
@@ -115,11 +136,13 @@ namespace DriverLicenseLearningSupport.Controllers
             QuestionValidator questionValidator = new QuestionValidator();
             var checkquestionModel = await questionValidator.ValidateAsync(questionModel);
             if (!checkquestionModel.IsValid)
-            {
+            {       
                 return BadRequest(new ErrorResponse
                 {
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Errors = checkquestionModel
+                    Errors = checkquestionModel,
+                    Message = "Điền lại form"
+                    
                 });
             }
             if (await _questionService.CheckExistedQuestion(questionModel.QuestionAnswerDesc, questionModel.LicenseTypeId))
@@ -232,23 +255,32 @@ namespace DriverLicenseLearningSupport.Controllers
             QuestionModel question = await _questionService.GetByIdAsync(answer.QuestionId);
 
             //check if the question is able to edit
-            if (question.isActive == false)
+            if (question.IsActive == false)
             {
                 return BadRequest(new ErrorResponse() {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = "Câu hỏi đã nằm trong đề thi và không được chỉnh sửa"
                 });
             }
+            
 
             bool isSucess = await _answerService.DeleteAnswerAsync(answerId);
             if (!isSucess)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+            else if (question.QuestionAnswers.Count < 2) 
+            {
+                return Ok(new BaseResponse()
+                {
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = "vui lòng tạo thêm câu trả lời"
+                });
+            }
             return Ok(new BaseResponse()
             {
                 StatusCode = StatusCodes.Status200OK,
-                Message = "Delete answer succesfully"
+                Message = "Xóa thành công"
             });
         }
 
@@ -276,9 +308,89 @@ namespace DriverLicenseLearningSupport.Controllers
             });
         }
 
+        [HttpGet]
+        [Route("theory/question-bank/{licenseId:int}")]
+        public async Task<IActionResult> GetQuestionBankWithLicenseId([FromRoute] int licenseId)
+        {
+
+            TheoryExamCreateRequirementModel createRule = null!;
+            var licenseType = await _licenseTypeService.GetAsync(licenseId);
+            if (licenseType.LicenseTypeDesc.Equals("A1"))
+            {
+                createRule = _theoryExamSettings.CreateRules[0];
+            }
+            else if (licenseType.LicenseTypeDesc.Equals("A2"))
+            {
+                createRule = _theoryExamSettings.CreateRules[1];
+            }
+            else if (licenseType.LicenseTypeDesc.Equals("B1"))
+            {
+                createRule = _theoryExamSettings.CreateRules[2];
+            }
+            else if (licenseType.LicenseTypeDesc.Equals("B2"))
+            {
+                createRule = _theoryExamSettings.CreateRules[3];
+            }
+
+            var questions = await _questionService.GetAllByLicenseId(licenseId);
+            var questionWithAnswersModel = new List<QuestionWithAnswersModel>();
+            if (questions is null || questions.Count() == 0)
+            {
+                return NotFound(new ErrorResponse()
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = "Không tìm thấy câu hỏi theo loại đề này"
+                });
+            }
+
+            foreach (QuestionModel qm in questions)
+            {
+                qm.LicenseType = await _licenseTypeService.GetAsync(qm.LicenseTypeId);
+            }
+
+            //get answers for each question
+            foreach (QuestionModel question in questions)
+            {
+                var answers = await _answerService.GetAllByQuestionId(question.QuestionId);
+                if (answers is null)
+                {
+                    return BadRequest(new ErrorResponse()
+                    {
+                        StatusCode = StatusCodes.Status400BadRequest,
+                        Message = "Something was wrong"
+                    });
+                }
+                questionWithAnswersModel.Add(new QuestionWithAnswersModel
+                {
+                    question = question,
+                    answers = answers
+                });
+            }
+
+
+            //not found suitable question with answer
+            if (questionWithAnswersModel is null)
+            {
+                return BadRequest(new ErrorResponse()
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Not found any suitable question-answers pair"
+                });
+            }
+            return Ok(new BaseResponse()
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Data = new
+                {
+                    QuestionWithAnswer = questionWithAnswersModel,
+                    CreateRule = createRule
+                }
+            });
+        }
+
         [HttpDelete]
         [Route("theory/{questionId:int}/delete-question")]
-        [Authorize(Roles = "Admin,Staff")]
+        // [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> DeleteQuestion([FromRoute] int questionId)
         {
             
@@ -291,7 +403,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 return NotFound(new ErrorResponse()
                 {
                     StatusCode = StatusCodes.Status404NotFound,
-                    Message = "Can not found the matched question"
+                    Message = "Không tìm thấy câu hỏi"
                 });
             }
             // duyet isActive con tai trong de nao khac k
@@ -315,7 +427,6 @@ namespace DriverLicenseLearningSupport.Controllers
                 Message = "Delete Question Successfully"
             });
         }
-        
 
         [HttpGet]
         [Route("theory/{page:int}")]
@@ -461,6 +572,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 StatusCode = StatusCodes.Status200OK,
                 Data = theoryExams
             });
+
         }
 
     }

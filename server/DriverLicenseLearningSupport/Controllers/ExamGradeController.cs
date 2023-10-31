@@ -50,61 +50,96 @@ namespace DriverLicenseLearningSupport.Controllers
             bool isWrongParalysisQuesion = false;
             bool isPassed = true;
             DateTime startedDate = DateTime.ParseExact(reqObj.StartedDate, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
-            var models = reqObj.ToListExamGradeModel();
+            Dictionary<int, string> rawSelectedAnswer = new Dictionary<int, string>();
 
-            //lay memberid neu co
+            //lấy member dựa trên mail
             var member = await _memberService.GetByEmailAsync(reqObj.Email);
 
+
+            //Lưu lại selectedAnswer và nội dung câu hỏi trả về
+            foreach (SelectedAnswerModel sam in reqObj.SelectedAnswers)
+            {
+                rawSelectedAnswer.Add(sam.QuestionId, sam.SelectedAnswer);
+            }
+
+
+            //Lấy ra các câu hỏi không được
+            var QuestionInTest = await _questionService.GetAllInExam(reqObj.TheoryExamId);
+            var QuestionIDInTest = QuestionInTest.Select(x => x.QuestionId).ToList();
+
+            List<int> QuestionNotSelected = QuestionIDInTest.Except(rawSelectedAnswer.Keys).ToList();
+
+            List<ExamGradeModel> emptyAnswerExamGrades = new List<ExamGradeModel>();
+            foreach (int id in QuestionNotSelected)
+            {
+                ExamGradeModel emptyAnswerExamGrade = new ExamGradeModel();
+                emptyAnswerExamGrade.QuestionId = id;
+                emptyAnswerExamGrade.Email = reqObj.Email;
+                if (member != null)
+                {
+                    emptyAnswerExamGrade.MemberId = member.MemberId;
+                }
+                emptyAnswerExamGrade.StartedDate = startedDate;
+                emptyAnswerExamGrade.TheoryExamId = reqObj.TheoryExamId;
+                emptyAnswerExamGrade.Point = 0;
+                emptyAnswerExamGrade.SelectedAnswerId = -1;
+                var createdModel = await _examGradeService.CreateAsync(emptyAnswerExamGrade);
+                if (createdModel != null)
+                {
+                    emptyAnswerExamGrades.Add(createdModel);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+            }
+
+            var models = reqObj.ToListExamGradeModel();
 
             //lay de thi
             var theoryExam = await _theoryExamService.GetByIdAsync(models[0].TheoryExamId);
             //lay tong so cau hoi, so cau dung yeu cau
-            totalQuesiton = Convert.ToInt32(theoryExam.TotalQuestion);
+            //totalQuesiton = Convert.ToInt32(theoryExam.TotalQuestion);
             int requiredRightAnswer = Convert.ToInt32(theoryExam.TotalAnswerRequired);
 
             List<ExamGradeModel> listResult = new List<ExamGradeModel>();
             foreach (ExamGradeModel examGradeModel in models)
             {
-                // get selected answer model
-                //var reqModel = reqObj.SelectedAnswers.Where(x => x.QuestionId == examGradeModel.QuestionId).FirstOrDefault(); 
-                //b2.so sánh với id của selected answerid -> gắn model -> có được answer Detail
-                //b3. từ answer detail lấy được 
-                
-                ////var selectAnswerModel = await _answerService.GetByAnswerIdAsync(reqModel.SelectedAnswerId);
-
-                //// set select answer id 
-                //examGradeModel.SelectedAnswerId = selectAnswerModel.QuestionAnswerId;
-
-                // get question by id
+                // Get question by ID from examgrade
                 QuestionModel question = await _questionService.GetByIdAsync(examGradeModel.QuestionId);
 
                 //get all answer of the question 
                 var answers = await _answerService.GetAllByQuestionId(examGradeModel.QuestionId);
 
                 var theRightAnswerModel = answers.Where(x => x.IsTrue == true)
-                    .Select(x => new AnswerModel() 
+                    .Select(x => new AnswerModel()
                     {
-                        QuestionAnswerId = x.QuestionAnswerId,
-                        Answer = x.Answer
+                        QuestionAnswerId = x.QuestionAnswerId
                     }
                     ).FirstOrDefault();
-                var selectedAnswerModel = answers.Where(x => x.QuestionAnswerId == examGradeModel.SelectedAnswerId)
-                    .FirstOrDefault();
-                if (selectedAnswerModel is null) 
-                {
-                    selectedAnswerModel = new AnswerModel()
-                    {
-                        QuestionAnswerId = 0
-                    };
-                }
-                    
-                
 
+                // lấy selected answerModel dưới dạng 0,1,2,3 để đi so sánh
+                var selectedAnswerModel = answers.Where(x => x.Answer.Equals(rawSelectedAnswer[examGradeModel.QuestionId]))
+                    .Select(x => new AnswerModel()
+                    {
+                        QuestionAnswerId = x.QuestionAnswerId
+                    }).FirstOrDefault();
+                if (selectedAnswerModel is null)
+                {
+                    selectedAnswerModel = new AnswerModel();
+                    selectedAnswerModel.QuestionAnswerId = -1;
+                }
+
+                //examGradeModel.SelectedAnswerId = selectedAnswerModel.QuestionAnswerId;
                 //var theRightAnswerId = await _answerService.GetRightAnswerByDesc(reqObj);
 
                 // set member id
-                examGradeModel.MemberId = member.MemberId;
-                if (theRightAnswerModel.QuestionAnswerId == examGradeModel.SelectedAnswerId)
+                if (member is not null)
+
+                {
+                    examGradeModel.MemberId = member.MemberId;
+                }
+                if (theRightAnswerModel.QuestionAnswerId == selectedAnswerModel.QuestionAnswerId)
                 {
                     examGradeModel.Point = 1;
                     countRightAnswers++;
@@ -119,24 +154,28 @@ namespace DriverLicenseLearningSupport.Controllers
                     examGradeModel.Point = 0;
                 }
 
-
+                var selectedAnswer = await _answerService.GetByQuestionIdAndAnswerDesc(question.QuestionId
+                    , rawSelectedAnswer[examGradeModel.QuestionId]);
+                if (selectedAnswer is null)
+                {
+                    examGradeModel.SelectedAnswerId = selectedAnswerModel.QuestionAnswerId;
+                }
+                else
+                {
+                    examGradeModel.SelectedAnswerId = selectedAnswer.QuestionAnswerId;
+                }
                 var date = startedDate.ToString(_appSettings.DateTimeFormat);
                 startedDate = DateTime.ParseExact(date, _appSettings.DateTimeFormat, CultureInfo.InvariantCulture);
                 examGradeModel.StartedDate = startedDate;
 
                 //right answer với id là 0,1,2,3 -> lấy nội dung và questionid để gán lại id dưới db
-                var answer = await _answerService.GetByQuestionIdAndAnswerDesc(examGradeModel.QuestionId,theRightAnswerModel.Answer);
+                var answer = await _answerService.GetByQuestionIdAndAnswerDesc(examGradeModel.QuestionId, theRightAnswerModel.Answer);
                 // gán lại vào db, bảng examGrade selectedanswerId tương ứng ở dưới db
-                examGradeModel.SelectedAnswerId = answer.QuestionAnswerId; 
+
+
 
                 var createdExamGradeModel = await _examGradeService.CreateAsync(examGradeModel);
-
-                //var startedDateFormat = Convert.ToDateTime(createdExamGradeModel.StartedDate).ToString("dd-MM-yyyy HH:mm:ss");
-
                 createdExamGradeModel.StartedDate = startedDate;
-
-                //createdExamGradeModel.MemberId = member.MemberId;
-
                 listResult.Add(createdExamGradeModel);
             }
             if (listResult is null)
@@ -153,59 +192,39 @@ namespace DriverLicenseLearningSupport.Controllers
             }
 
             //sinh history
-            var HistoryModel = new ExamHistoryModel()
+            if (member is not null)
             {
-                MemberId = member.MemberId,
-                TheoryExamId = reqObj.TheoryExamId,
-                TotalQuestion = totalQuesiton,
-                TotalRightAnswer = countRightAnswers,
-                IsPassed = isPassed,
-                WrongParalysisQuestion = isWrongParalysisQuesion,
-                TotalTime = reqObj.TotalTime,
-                Date = startedDate
-            };
-            var createdHistoryModel = await _examHistoryService.CreateAsync(HistoryModel);
-            if (createdHistoryModel is null)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-            /*
-            return new ObjectResult(new
-            {
-                ListGrade = listResult,
-                TotalQuestion = totalQuesiton,
-                TotalRightAnswer = countRightAnswers,
-                IsPassed = isPassed,
-                HistoryModel = createdHistoryModel
-
+                var HistoryModel = new ExamHistoryModel()
+                {
+                    MemberId = member.MemberId,
+                    TheoryExamId = reqObj.TheoryExamId,
+                    TotalQuestion = totalQuesiton,
+                    TotalRightAnswer = countRightAnswers,
+                    IsPassed = isPassed,
+                    WrongParalysisQuestion = isWrongParalysisQuesion,
+                    TotalTime = reqObj.TotalTime,
+                    Date = startedDate
+                };
+                var createdHistoryModel = await _examHistoryService.CreateAsync(HistoryModel);
+                if (createdHistoryModel is null)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
                 }
-            })
-            { StatusCode = StatusCodes.Status201Created };*/
-
-            return Ok(new BaseResponse { 
+            }
+            return Ok(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status200OK,
-                Message = "Submit theory test successfully!"
+                Message = "Nộp bài thành công!"
             });
 
-            //return Ok(new BaseResponse() { 
-            //    StatusCode = StatusCodes.Status200OK,
-            //    Data = new
-            //    {
-            //        ListGrade = listResult,
-            //        TotalQuestion = totalQuesiton,
-            //        TotalRightAnswer = countRightAnswers
-
-            //    },
-
-            //    Message ="Thành công"
-            //});
-
         }
+
+
 
         //api get all history của member đó -> có nút review -> theory/review (review Detail)
         [HttpGet]
         [Route("theory/history/{id:Guid}")]
-        [Authorize(Roles = "Member")]
+        //[Authorize(Roles = "Member")]
         public async Task<IActionResult> GetAllHistoryOfMember([FromRoute] Guid id)
         {
             MemberModel memberModel = await _memberService.GetAsync(id);
@@ -217,7 +236,16 @@ namespace DriverLicenseLearningSupport.Controllers
                     Message = "Lỗi xuất rì viu"
                 });
             }
+
+            var theoryExams = await _theoryExamService.GetAllAsync();
+            var theoryExamIds = theoryExams.Select(x => x.TheoryExamId).ToList();
             var Histories = await _examHistoryService.GetAllByMemberIdAsysn(memberModel.MemberId);
+
+            foreach(var history in Histories)
+            {
+                var index = theoryExamIds.IndexOf(history.TheoryExam.TheoryExamId);
+                history.TheoryExamDesc = $"Đề {index + 1}";
+            }
 
             if (Histories is null)
             {
@@ -250,9 +278,10 @@ namespace DriverLicenseLearningSupport.Controllers
                     Message = "Lỗi rì viu"
                 });
             }
-            //var startedDate = joinDate.ToString(_appSettings.DateFormat);
+            var joinDate = DateTime.ParseExact(reqObj.JoinDate,
+                _appSettings.DateTimeFormat, CultureInfo.InvariantCulture);
             List<ExamGradeModel> examGrades = await _examGradeService.GetAllByTheoryExamIdandEmailAsync(reqObj.Email
-                , reqObj.MockTestId, reqObj.JoinDate);
+                , reqObj.MockTestId, joinDate);
             //lay toan bo cau hoi va dap an trong de thi
 
 
@@ -261,12 +290,19 @@ namespace DriverLicenseLearningSupport.Controllers
                 var selectedAnswer = await _answerService.GetByAnswerIdAsync(eg.SelectedAnswerId);
                 QuestionModel question = await _questionService.GetByIdAsync(eg.QuestionId);
                 IEnumerable<AnswerModel> answers = await _answerService.GetAllByQuestionId(eg.QuestionId);
-                foreach (AnswerModel answer in answers) 
+                if(selectedAnswer is null)
                 {
-                    if (answer.Answer.Equals(selectedAnswer.Answer)) 
+                    eg.SelectedAnswerId = -1;
+                }
+                else
+                {
+                    foreach (AnswerModel answer in answers)
                     {
-                        eg.SelectedAnswerId = answer.QuestionAnswerId; 
-                        break;
+                        if (answer.Answer.Equals(selectedAnswer.Answer))
+                        {
+                            eg.SelectedAnswerId = answer.QuestionAnswerId;
+                            break;
+                        }
                     }
                 }
                 question.QuestionAnswers = answers.ToList();
@@ -276,7 +312,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
 
             ExamHistoryModel history = await _examHistoryService.GetHistoryDetailAsync(memberModel.MemberId
-                , reqObj.MockTestId, reqObj.JoinDate);
+                , reqObj.MockTestId, joinDate);
             {
                 if (history is null)
                 {

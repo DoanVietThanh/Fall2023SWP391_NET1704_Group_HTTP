@@ -24,11 +24,18 @@ namespace DriverLicenseLearningSupport.Controllers
             {
                 return Ok(new BaseResponse { 
                     StatusCode =  StatusCodes.Status200OK,
-                    Message = "Delete feedback success"
+                    Message = "Xóa feedback thành công"
                 });
             }
 
-            return StatusCode(StatusCodes.Status500InternalServerError);
+            return new ObjectResult(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status500InternalServerError,
+                Message = $"Xóa feedback thất bại"
+            })
+            {
+                StatusCode = StatusCodes.Status500InternalServerError
+            };
         }
     }
 }

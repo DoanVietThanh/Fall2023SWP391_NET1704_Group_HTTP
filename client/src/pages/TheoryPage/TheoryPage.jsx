@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
-import BackgroundSlider from '../../components/BackgroundSlider';
-import theme from '../../theme';
-import { Link } from 'react-router-dom';
-import axiosClient from '../../utils/axiosClient';
 import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import BackgroundSlider from '../../components/BackgroundSlider';
+import Footer from '../../components/Footer';
+import Header from '../../components/Header';
+import theme from '../../theme';
 const TheoryPage = () => {
   const url =
     'https://themeholy.com/wordpress/edura/wp-content/uploads/2023/07/breadcumb-bg.png';
@@ -16,31 +15,32 @@ const TheoryPage = () => {
 
   useEffect(() => {
     async function fetchData() {
-      try {
-        const fetchListTypeTest = await axiosClient.get(
-          '/theory-exam/add-question'
-        );
-        const fetchInfoTypeTest = await axiosClient.get(
-          '/theory/license-type/1'
-        );
-        setListTypeTest(fetchListTypeTest?.data?.data);
-        setInfoTypeTest(fetchInfoTypeTest?.data?.data);
-      } catch (error) {
-        throw Error(error);
-      }
+      const fetchListTypeTest = await axios
+        .get('/theory/add-question')
+        // .then((res) => console.log(res))
+        //.catch((error) => toastError(error?.response?.data?.message));
+        .catch((error) => console.log(error));
+      console.log('fetchListTypeTest: ', fetchListTypeTest);
+
+      const fetchInfoTypeTest = await axios
+        .get('/theory/license-type/1')
+        //.catch((error) => toastError(error?.response?.data?.message));
+        .catch((error) => console.log(error));
+      setListTypeTest(fetchListTypeTest?.data?.data);
+      setInfoTypeTest(fetchInfoTypeTest?.data?.data);
     }
     fetchData();
   }, []);
 
   async function selectInfoTypeLicense(id) {
-    const fetchInfoTypeTest = await axiosClient.get(
-      `/theory/license-type/${id}`
-    );
+    const fetchInfoTypeTest = await axios.get(`/theory/license-type/${id}`);
+    console.log('fetchInfoTypeTest: ', fetchInfoTypeTest);
     setInfoTypeTest(fetchInfoTypeTest?.data?.data);
   }
 
   console.log('infoTypeTest: ', infoTypeTest);
-
+  console.log('listTypeTest: ', listTypeTest);
+  // licenseTypeDesc
   return (
     <div>
       <Header />
@@ -48,7 +48,7 @@ const TheoryPage = () => {
       <div className='flex flex-col justify-center border p-6 m-6 gap-8'>
         <div className='center gap-8'>
           {listTypeTest &&
-            listTypeTest?.licenseTypes?.map((item, index) => (
+            listTypeTest?.map((item, index) => (
               <div
                 onClick={() => selectInfoTypeLicense(item.licenseTypeId)}
                 key={item.licenseTypeDesc}
@@ -150,3 +150,53 @@ const TheoryPage = () => {
 };
 
 export default TheoryPage;
+
+// {
+//   "statusCode": 200,
+//   "message": null,
+//   "data": {
+//       "theoryExamId": 6,
+//       "totalQuestion": 25,
+//       "totalTime": 15,
+//       "totalAnswerRequired": 21,
+//       "licenseTypeId": 2,
+//       "questions": [
+//           {
+//               "questionId": 1,
+//               "questionAnswerDesc": "Khái niệm “phương tiện giao thông thô sơ đường bộ” được hiểu như thế nào là đúng?",
+//               "isParalysis": true,
+//               "image": null,
+//               "isActive": null,
+//               "licenseTypeId": 0,
+//               "licenseType": {
+//                   "licenseTypeId": 2,
+//                   "licenseTypeDesc": "A1"
+//               },
+//               "questionAnswers": [
+//                   {
+//                       "questionAnswerId": 0,
+//                       "answer": "G?m xe d?p (k? c? xe d?p máy, xe d?p di?n), xe xích lô, xe lan dùng cho ngu?i khuy?t t?t, xe súc v?t kéo và các lo?i xe tuong t?.",
+//                       "isTrue": true,
+//                       "questionId": 0
+//                   },
+//                   {
+//                       "questionAnswerId": 1,
+//                       "answer": "G?m xe d?p (k? c? xe d?p máy, xe d?p di?n), xe g?n máy, xe co gi?i dùng cho ngu?i khuy?t t?t và xe máy chuyên dùng.",
+//                       "isTrue": false,
+//                       "questionId": 0
+//                   },
+//                   {
+//                       "questionAnswerId": 2,
+//                       "answer": "G?m xe ô tô, máy kéo, ro moóc ho?c so mi ro moóc du?c kéo b?i xe ô tô, máy kéo.",
+//                       "isTrue": false,
+//                       "questionId": 0
+//                   }
+//               ]
+//           },
+//       ]
+//     }
+//   }
+
+// console.log(Array.from({ length: 10 }, (_, index) => 0));
+// console.log([...Array(10)].map(() => 0));
+// console.log(new Array(10).fill(0));

@@ -10,6 +10,6 @@
         public string? City { get; set; } = null!;
         public int? RoleId { get; set; } = null!;
         public int? JobTitleId { get; set; } = null!;
-        public int? LicenseTypeId { get; set; } = null!;
+        //public int? LicenseTypeId { get; set; } = null!;
     }
 }

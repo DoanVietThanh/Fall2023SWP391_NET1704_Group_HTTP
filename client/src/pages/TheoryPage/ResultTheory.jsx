@@ -29,20 +29,19 @@ const ResultTheory = () => {
   useEffect(() => {
     async function getReview() {
       try {
-        const response = await axiosClient.post(
-          `${url_Service}/theory/review`,
-          {
+        const response = await axiosClient
+          .post(`/theory/review`, {
             email,
             mockTestId,
             joinDate: localStorage.getItem('startedDate'),
-          }
-        );
+          })
+          .catch((error) => toastError(error?.response?.data?.message));
         if (response.data.statusCode === 200) {
           setExamResult(response.data.data);
         }
         console.log('getReview: ', response);
       } catch (error) {
-        toastError('Review thất bại');
+        // toastError('Review thất bại');
       }
     }
     getReview();
@@ -185,6 +184,11 @@ const ResultTheory = () => {
                           . {itemChoice?.answer}
                         </div>
                       )
+                    )}
+                    {itemQuestion?.selectedAnswerId < 0 && (
+                      <h1 className='text-red-400 text-center'>
+                        Câu này chưa được chọn
+                      </h1>
                     )}
                     <div className='font-medium p-2 bg-yellow-400 flex-x gap-2'>
                       <AiOutlineArrowRight />

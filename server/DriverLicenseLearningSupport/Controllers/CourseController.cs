@@ -81,7 +81,7 @@ namespace DriverLicenseLearningSupport.Controllers
             {
                 return NotFound(new BaseResponse {
                     StatusCode = StatusCodes.Status404NotFound,
-                    Message = $"Not found any license types"
+                    Message = $"Không tìm thấy loại bằng lái nào"
                 });
             }
 
@@ -129,7 +129,11 @@ namespace DriverLicenseLearningSupport.Controllers
             if (createdCourse is null) { return StatusCode(StatusCodes.Status500InternalServerError); }
 
             // response data
-            return new ObjectResult(createdCourse) { StatusCode = StatusCodes.Status201Created };
+            return new ObjectResult(new BaseResponse { 
+                StatusCode = StatusCodes.Status201Created,
+                Message = "Thêm mới khóa học thành công",
+                Data = createdCourse
+            }) { StatusCode = StatusCodes.Status201Created };
         }
 
         [HttpPost]
@@ -166,13 +170,23 @@ namespace DriverLicenseLearningSupport.Controllers
             // response
             if(createdPackage is not null)
             {
-                return new ObjectResult(createdPackage)
+                return new ObjectResult(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status201Created,
+                    Message = "Thêm mới gói thành công",
+                    Data = createdPackage
+                })
                 {
                     StatusCode = StatusCodes.Status201Created
                 };
             }
 
-            return StatusCode(StatusCodes.Status500InternalServerError);
+            return new ObjectResult(new BaseResponse {
+                StatusCode = StatusCodes.Status500InternalServerError,
+                Message = "Thêm gói thất bại"
+            }) {
+                StatusCode = StatusCodes.Status500InternalServerError
+            };
         }
 
         [HttpPost]
@@ -186,7 +200,7 @@ namespace DriverLicenseLearningSupport.Controllers
             if (mentor is null) return NotFound(new BaseResponse
             {
                 StatusCode = StatusCodes.Status404NotFound,
-                Message = $"Not found any mentor match id {mentorId}"
+                Message = $"Không tìm thấy giảng viên"
             });
 
             // get course by id
@@ -195,7 +209,7 @@ namespace DriverLicenseLearningSupport.Controllers
             if (course is null) return NotFound(new BaseResponse
             {
                 StatusCode = StatusCodes.Status404NotFound,
-                Message = $"Not found any course match id {courseId}"
+                Message = $"Không tìm thấy khóa học có"
             });
 
             // already taught this course
@@ -205,7 +219,8 @@ namespace DriverLicenseLearningSupport.Controllers
                 return BadRequest(new BaseResponse
                 {
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = $"Mentor {mentorId} already taught course {courseId}"
+                    Message = $"Giảng viên {mentor.FirstName} {mentor.LastName} " +
+                    $"đã dạy khóa học này"
                 });
             }
 
@@ -217,7 +232,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 return Ok(new BaseResponse
                 {
                     StatusCode = StatusCodes.Status200OK,
-                    Message = $"Add mentor {mentorId} to course {courseId} succesfully"
+                    Message = $"Đăng ký dạy thành công"
                 });
             }
 
@@ -243,13 +258,13 @@ namespace DriverLicenseLearningSupport.Controllers
             return Ok(new BaseResponse
             {
                 StatusCode = StatusCodes.Status200OK,
-                Message = "Add course curriculum sucessfully"
+                Message = "Thêm chương trình giảng dạy thành công"
             });
         }
 
         [HttpGet]
         [Route("courses/packages/reservation")]
-        [Authorize(Roles = "Admin,Staff")]
+        //[Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> CoursePackageReservation()
         {
             // get all payment type
@@ -265,7 +280,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpPost]
         [Route("courses/packages/reservation")]
-        [Authorize(Roles = "Admin,Staff")]
+        //[Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> CoursePackageReservation([FromBody] CoursePackageReservationRequest reqObj)
         {
             // check exist member
@@ -274,7 +289,7 @@ namespace DriverLicenseLearningSupport.Controllers
             {
                 return NotFound(new BaseResponse {
                     StatusCode = StatusCodes.Status404NotFound,
-                    Message = $"Not found any member match id {reqObj.MemberId}"
+                    Message = $"Không tìm thấy thành viên"
                 });
             }
             // check member already reservation
@@ -287,9 +302,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
                 return BadRequest(new BaseResponse {
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = $"Member '{member.FirstName} {member.LastName}' already " +
-                    $"reservation in Course '{course.CourseTitle}'," +
-                    $" Member just learn one course only"
+                    Message = $"Thành viên {member.FirstName} {member.LastName} đã đăng ký khóa học"
                 });
             }
             // check exist mentor 
@@ -299,7 +312,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 return NotFound(new BaseResponse
                 {
                     StatusCode = StatusCodes.Status404NotFound,
-                    Message = $"Not found any mentor match id {reqObj.MentorId}"
+                    Message = $"Không tìm thấy giảng viên"
                 });
             }
             else
@@ -387,7 +400,7 @@ namespace DriverLicenseLearningSupport.Controllers
             var course = await _courseService.GetAsync(id);
             if (course is null) return NotFound(new BaseResponse {
                 StatusCode = StatusCodes.Status404NotFound,
-                Message = $"Not found any course match id {id}"
+                Message = $"Không tìm thấy khóa học"
             });
 
             // get course total member
@@ -430,7 +443,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 return BadRequest(new BaseResponse
                 {
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = $"Not found any package match id {id}"
+                    Message = $"Không tìm thấy gói"
                 });
             }
 
@@ -449,7 +462,7 @@ namespace DriverLicenseLearningSupport.Controllers
             if (courses is null) return NotFound(new BaseResponse
             {
                 StatusCode = StatusCodes.Status404NotFound,
-                Message = $"Not found any course"
+                Message = $"Không tìm thấy bất kì khóa học nào"
             });
 
             return Ok(new BaseResponse
@@ -471,7 +484,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 return BadRequest(new BaseResponse
                 {
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = $"Not found course {id}"
+                    Message = $"Không tìm thấy khóa học"
                 });
             }
 
@@ -483,7 +496,7 @@ namespace DriverLicenseLearningSupport.Controllers
             {
                 return BadRequest(new BaseResponse { 
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = $"Not found any member in course {id}"
+                    Message = $"Không tìm thấy học viên"
                 });
             }
 
@@ -503,7 +516,7 @@ namespace DriverLicenseLearningSupport.Controllers
             {
                 return NotFound(new BaseResponse {
                     StatusCode = StatusCodes.Status404NotFound,
-                    Message = "Not found any hidden courses"
+                    Message = "Không tìm thấy khóa học bị ẩn"
                 });
             }
 
@@ -525,7 +538,7 @@ namespace DriverLicenseLearningSupport.Controllers
             {
                 return BadRequest(new BaseResponse { 
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = $"Not found any course package {id}"
+                    Message = $"Không tìm thấy gói"
                 });
             }
             // generate model
@@ -546,40 +559,47 @@ namespace DriverLicenseLearningSupport.Controllers
             if (isSucess) return Ok(new BaseResponse
             {
                 StatusCode = StatusCodes.Status200OK,
-                Message = "Update course package successfully"
+                Message = "Thay đổi gói khóa học thành công"
             });
 
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
-        //[HttpDelete]
-        //[Route("courses/packages/{id:Guid}")]
-        //public async Task<IActionResult> DeleteCoursePackage([FromRoute] Guid id) 
-        //{
-        //    var coursePackage = await _courseService.GetPackageAsync(id);
-        //    if(coursePackage is null)
-        //    {
-        //        return BadRequest(new BaseResponse
-        //        {
-        //            StatusCode = StatusCodes.Status400BadRequest,
-        //            Message = $"Not found any package match id {id}"
-        //        });
-        //    }
+        [HttpDelete]
+        [Route("courses/packages/{id:Guid}")]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> DeleteCoursePackage([FromRoute] Guid id)
+        {
+            var coursePackage = await _courseService.GetPackageAsync(id);
+            if (coursePackage is null)
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Không tìm thấy gói học"
+                });
+            }
 
-        //    // delete async
-        //    bool isSucess = await _courseService.DeletePackageAsync(id);
+            // delete async
+            bool isSucess = await _courseService.DeletePackageAsync(id);
 
-        //    if (isSucess)
-        //    {
-        //        return Ok(new BaseResponse
-        //        {
-        //            StatusCode = StatusCodes.Status200OK,
-        //            Message = $"Delete course package {id} success"
-        //        });
-        //    }
-
-        //    return StatusCode(StatusCodes.Status500InternalServerError);
-        //}
+            if (isSucess)
+            {
+                return Ok(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = $"Xóa gói thành công"
+                });
+            }
+            else
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Xóa gói thất bại, hiện gói đang có lịch"
+                });
+            }
+        }
 
         [HttpPut]
         [Route("courses/curriculum/{id:int}")]
@@ -597,7 +617,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 if (course.IsActive == true) return new ObjectResult(new BaseResponse
                 {
                     StatusCode = StatusCodes.Status405MethodNotAllowed,
-                    Message = $"Hidden course is required before update course curriculum"
+                    Message = "Vui lòng ẩn khóa học trước khi thay đổi chương trình giảng dạy"
                 })
                 {
                     StatusCode = StatusCodes.Status405MethodNotAllowed
@@ -609,7 +629,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 return NotFound(new BaseResponse
                 {
                     StatusCode = StatusCodes.Status404NotFound,
-                    Message = $"Not found any course match id {reqObj.CourseId}"
+                    Message = $"Không tìm thấy khóa học"
                 });
             }
             else if (!existCurriculum) 
@@ -617,7 +637,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 return NotFound(new BaseResponse
                 {
                     StatusCode = StatusCodes.Status404NotFound,
-                    Message = $"Not found any curriculum match id {id} of course {reqObj.CourseId}"
+                    Message = $"Không tìm thấy chương trình giảng dạy"
                 });
             }
 
@@ -630,12 +650,12 @@ namespace DriverLicenseLearningSupport.Controllers
             // 404 Not Found <- not found curriculum in course 
             if (!isSucess) return BadRequest(new BaseResponse{ 
                 StatusCode = StatusCodes.Status404NotFound,
-                Message = $"Not found curriculum id {id} in course id {reqObj.CourseId}"
+                Message = $"Không tìm thấy chương trình giảng dạy"
             });
             // 200 OK <- success
             return Ok(new BaseResponse { 
                 StatusCode = StatusCodes.Status200OK,
-                Message = "Update course curriculum successfully"
+                Message = "Thay đổi chương trình giảng dạy thành công"
             });
         }
 
@@ -648,7 +668,7 @@ namespace DriverLicenseLearningSupport.Controllers
             var hiddenCourse = await _courseService.GetHiddenCourseAsync(id);
             if (hiddenCourse is null) return new ObjectResult(new BaseResponse { 
                 StatusCode = StatusCodes.Status405MethodNotAllowed,
-                Message = $"Hidden course is required before update course"
+                Message = $"Vui lòng ẩn khóa học trước khi thay đổi"
             }) 
             {
                 StatusCode = StatusCodes.Status405MethodNotAllowed
@@ -679,7 +699,7 @@ namespace DriverLicenseLearningSupport.Controllers
             // update sucess
             return Ok(new BaseResponse { 
                 StatusCode = StatusCodes.Status200OK,
-                Message = $"Update course id {id} successfully"
+                Message = $"Thay đổi khóa học thành công"
             });
         }
 
@@ -692,7 +712,7 @@ namespace DriverLicenseLearningSupport.Controllers
             var course = await _courseService.GetHiddenCourseAsync(id);
             if (course is not null) return BadRequest(new BaseResponse { 
                 StatusCode = StatusCodes.Status404NotFound,
-                Message = $"This course is already hidden"
+                Message = $"Khóa học này đã được ẩn"
             });
 
             var isSucess = await _courseService.HideCourseAsync(id);
@@ -704,7 +724,7 @@ namespace DriverLicenseLearningSupport.Controllers
             return Ok(new BaseResponse
             {
                 StatusCode = StatusCodes.Status200OK,
-                Message = $"Hide course id {id} succesfully"
+                Message = $"Ẩn khóa học thành công"
             });
         }
 
@@ -719,7 +739,7 @@ namespace DriverLicenseLearningSupport.Controllers
             if (course is null) return NotFound(new BaseResponse
             {
                 StatusCode = StatusCodes.Status404NotFound,
-                Message = $"Not found any hidden course match id {id}"
+                Message = $"Không tìm thấy khóa học"
             });
 
             // unhide course <- found
@@ -729,7 +749,7 @@ namespace DriverLicenseLearningSupport.Controllers
             // 200 Ok <- success
             return Ok(new BaseResponse { 
                 StatusCode = StatusCodes.Status200OK,
-                Message = $"Unhide course id {id} succesfully"
+                Message = $"Hủy ẩn khóa học thành công"
             });
         }
 
@@ -742,15 +762,20 @@ namespace DriverLicenseLearningSupport.Controllers
 
             if (!isSucess) 
             {
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return new ObjectResult(new BaseResponse {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Message = "Xóa khóa học thất bại"
+                })
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError
+                };
             }
 
             return Ok(new BaseResponse { 
                 StatusCode = StatusCodes.Status200OK,
-                Message = $"Delete course id {id} succesfully"
+                Message = $"Xóa khóa học thành công"
             });
         }
-
 
         /// <summary>
         /// Slot management
@@ -776,7 +801,11 @@ namespace DriverLicenseLearningSupport.Controllers
 
             if(createdSlot is not null)
             {
-                return new ObjectResult(createdSlot) { StatusCode = StatusCodes.Status201Created };
+                return new ObjectResult(new BaseResponse { 
+                    StatusCode = StatusCodes.Status201Created,
+                    Message = "Thêm thành công",
+                    Data = createdSlot
+                }) { StatusCode = StatusCodes.Status201Created };
             }
 
             return StatusCode(StatusCodes.Status500InternalServerError);
@@ -792,7 +821,7 @@ namespace DriverLicenseLearningSupport.Controllers
             {
                 return BadRequest(new BaseResponse { 
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = "Not found anys slots"
+                    Message = "Không tìm thấy slot học nào"
                 });
             }
 
@@ -801,6 +830,112 @@ namespace DriverLicenseLearningSupport.Controllers
                 StatusCode = StatusCodes.Status400BadRequest,
                 Data = slots
             });
+        }
+        
+        
+        [HttpGet]
+        [Route("courses/slot/{id:int}")]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> GetSlotById([FromRoute] int id)
+        {
+            // get slot by id
+            var slot = await _slotService.GetAsync(id);
+
+            if(slot is null)
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Không tìm thấy slot học"
+                });
+            }
+
+            return Ok(new BaseResponse { 
+                StatusCode = StatusCodes.Status200OK,
+                Data = slot 
+            });
+        }
+
+        [HttpPut]
+        [Route("courses/slot/{id:int}")]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> UpdateSlot([FromRoute] int id,
+            [FromBody] SlotUpdateRequest reqObj)
+        {
+            // get slot by id 
+            var slot = await _slotService.GetAsync(id);
+
+            if (slot is null)
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Không tìm thấy slot học"
+                });
+            }
+
+            // generate slot model
+            var slotModel = reqObj.ToSlotModel();
+            var time = TimeSpan.Parse(slot.Time.ToString());
+            // generate slot desc
+            var startTime = time.ToString(@"hh\:mm");
+            var endTime = time.Add(TimeSpan.FromHours(2)).ToString(@"hh\:mm");
+            // set slot desc
+            slotModel.SlotDesc = $"{startTime} - {endTime}";
+
+            var isSucess = await _slotService.UpdateAsync(id, slotModel);
+
+            if (isSucess)
+            {
+                return Ok(new BaseResponse { 
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = "Sửa slot học thành công"
+                });
+            }
+
+            return new ObjectResult(new BaseResponse {
+                StatusCode = StatusCodes.Status500InternalServerError,
+                Message = "Xảy ra lỗi"
+            }) 
+            {
+                StatusCode = StatusCodes.Status500InternalServerError
+            };
+        }
+
+
+        [HttpDelete]
+        [Route("courses/slot/{id:int}")]
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> DeleteSlot([FromRoute] int id)
+        {
+            // get slot by id 
+            var slot = await _slotService.GetAsync(id);
+            if(slot is null)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Không tìm thấy slot học"
+                });
+            }
+
+            // delete slot by id
+            bool isSucess = await _slotService.DeleteAsync(id);
+            if (isSucess)
+            {
+                return Ok(new BaseResponse { 
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = "Xóa thành công"
+                });
+            }
+
+            return new ObjectResult(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status500InternalServerError,
+                Message = "Xảy ra lỗi"
+            })
+            {
+                StatusCode = StatusCodes.Status500InternalServerError
+            };
         }
     }
 }
