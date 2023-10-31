@@ -42,7 +42,7 @@ const Header = () => {
     {
       id: 1,
       title: 'Trang chủ',
-      link: '/',
+      link: '/home',
     },
     {
       id: 2,
@@ -66,9 +66,14 @@ const Header = () => {
     },
     {
       id: 6,
+      title: 'Thi thử mô phỏng',
+      link: '/simulationSituation',
+    },
+    {
+      id: 7,
       title: 'Bài đăng',
       link: '/blog',
-    },
+    }
   ];
 
   return (
@@ -144,7 +149,7 @@ const Header = () => {
         </div>
       </div>
 
-      <div className='flex justify-between items-center p-8 bg-white rounded-tl-[50px]'>
+      <div className='flex justify-between items-center p-4 bg-white rounded-tl-[50px]'>
         <div>
           <img
             className='h-[80px] object-contain'
@@ -153,15 +158,16 @@ const Header = () => {
           />
         </div>
 
-        <div className='flex gap-16 text-[20px] font-medium uppercase'>
+        <div className='flex gap-10 text-[20px] font-medium uppercase'>
           {listNavigate.map((item, index) =>
             //kiem tra duong dan
-            currentLocation.startsWith(item.link) ? (
-              <Link to={item.link} className='curNav'>
+            (currentLocation.startsWith(item.link)) 
+            ? (
+              <Link to={item.link} className='curNav' key={index}>
                 {item.title}
               </Link>
             ) : (
-              <Link to={item.link} className='headerBar'>
+              <Link to={item.link} className='headerBar' key={index}>
                 {item.title}
               </Link>
             )
