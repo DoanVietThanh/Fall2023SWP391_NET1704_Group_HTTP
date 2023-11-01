@@ -17,8 +17,8 @@ import Loading from '../../components/Loading';
 const IntructorDetail = () => {
   const url_server = process.env.REACT_APP_SERVER_API;
   const url =
-    'https://themeholy.com/wordpress/edura/wp-content/uploads/2023/07/breadcumb-bg.png';
-  const breadcrumbs = 'Instructor Detail';
+    '/img/backgroundSlide.png';
+  const breadcrumbs = 'Thông tin giảng viên';
 
   const { idInstructor } = useParams();
   const [instructor, setInstructor] = useState();

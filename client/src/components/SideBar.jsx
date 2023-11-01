@@ -21,6 +21,8 @@ import {
   BsPerson,
   BsPeople,
   BsBarChartLine,
+  BsFilePost,
+  BsFillFilePostFill,
 } from 'react-icons/bs';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { logout } from '../features/auth/authSlice';
@@ -54,68 +56,62 @@ const listNavbarManage = [
   {
     id: 1,
     title: "Thông tin cá nhân",
-    icon: <BsPerson size={20} />,
+    icon: <BsPerson size={24} />,
     navigate: "/profile",
   },
   {
     id: 2,
     title: "Quản lí người dùng",
-    icon: <BsPeople size={20} />,
+    icon: <BsPeople size={24} />,
     navigate: "/manage-user",
   },
   {
     id: 3,
     title: "Lịch dạy theo tuần",
-    icon: <BsCalendarEvent size={20} />,
+    icon: <BsCalendarEvent size={24} />,
     navigate: "/week-schedule-mentor",
   },
   {
     id: 4,
     title: "Lịch sử kiểm tra",
-    icon: <BsClockHistory size={20} />,
+    icon: <BsClockHistory size={24} />,
     navigate: "/history-test",
   },
   {
     id: 5,
     title: "Quản lí câu hỏi",
-    icon: <AiOutlineQuestionCircle size={20} />,
+    icon: <AiOutlineQuestionCircle size={24} />,
     navigate: "/manage-question",
   },
   {
     id: 6,
     title: "Quản lí đề thi",
-    icon: <BsEnvelopePaper size={20} />,
+    icon: <BsEnvelopePaper size={24} />,
     navigate: "/manage-banktest",
   },
   {
     id: 7,
-    title: "Thống kê hệ thống",
-    icon: <BsBarChartLine size={20} />,
+    title: "Quản lí bài đăng",
+    icon: <BsFillFilePostFill size={24} />,
+    navigate: "/manage-blog",
+  },
+  {
+    id: 8,
+    title: 'Quản lí lịch chờ',
+    icon: <BsEnvelopePaper size={24} />,
+    navigate: '/manage-await-schedule',
+  },
+  {
+    id: 9,
+    title: 'Quản lí lịch hủy',
+    icon: <BsEnvelopePaper size={24} />,
+    navigate: '/manage-deny-schedule',
+  },
+  {
+    id: 10,
+    title: "Thống kê",
+    icon: <BsBarChartLine size={24} />,
     navigate: "/dashboard",
-  },
-  {
-    id: 8,
-    title: 'Quản lí lịch chờ',
-    icon: <BsEnvelopePaper size={20} />,
-    navigate: '/manage-await-schedule',
-  },
-  {
-    id: 9,
-    title: 'Quản lí lịch hủy',
-    icon: <BsEnvelopePaper size={20} />,
-    navigate: '/manage-deny-schedule',
-  },
-  {
-    id: 8,
-    title: 'Quản lí lịch chờ',
-    icon: <BsEnvelopePaper size={20} />,
-    navigate: '/manage-await-schedule',
-  },
-  {
-    id: 9,
-    title: 'Quản lí lịch hủy',
-    icon: <BsEnvelopePaper size={20} />,
-    navigate: '/manage-deny-schedule',
   },
 ];
 

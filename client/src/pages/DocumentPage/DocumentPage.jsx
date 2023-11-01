@@ -6,8 +6,8 @@ import { Link } from "react-router-dom";
 
 const DocumentPage = () => {
   const url =
-    "https://themeholy.com/wordpress/edura/wp-content/uploads/2023/07/breadcumb-bg.png";
-  const breadcrumbs = "Document";
+    "/img/backgroundSlide.png";
+  const breadcrumbs = "Tài liệu lý thuyết";
   return (
     <div>
       <Header />
@@ -27,14 +27,14 @@ const DocumentPage = () => {
             Lý thuyết bằng lái A1
           </div>
           <div className="flex flex-col gap-5 ">
-            <Link to={"/document/toanbocauhoi"}>
+            <Link to={"/document/all-question"}>
               <div className="ml-10 pb-3 border-b-2 border-gray-200 mr-10 flex flex-col ">
                 <div className="font-semibold text-md">Toàn bộ câu hỏi</div>
                 <div className="text-md text-gray-500">200 câu</div>
               </div>
             </Link>
 
-            <Link to={"/document/cauhoidiemliet"}>
+            <Link to={"/document/important-question"}>
               <div className="ml-10 pb-3 border-b-2 border-gray-200 mr-10 flex flex-col ">
                 <div className="font-semibold text-md">Câu hỏi điểm liệt</div>
                 <div className="text-md text-gray-500">20 câu</div>

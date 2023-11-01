@@ -14,7 +14,7 @@ import { MdOutlineTraffic } from "react-icons/md";
 import { BiSolidRightArrow } from "react-icons/bi";
 const AboutUsPage = () => {
   const url =
-    "https://themeholy.com/wordpress/edura/wp-content/uploads/2023/07/breadcumb-bg.png";
+    "/img/backgroundSlide.png";
   const breadcrumbs = "About Us";
   return (
     <div>
@@ -22,88 +22,78 @@ const AboutUsPage = () => {
       <BackgroundSlider url={url} breadcrumbs={breadcrumbs} />
       <div className="flex flex-col">
         <div className="flex flex-col mx-20">
-          <div className="flex justify-between items-center ">
+          <div className="flex justify-between items-end">
             <div className="flex flex-col gap-5 w-[50%]">
-              <div className="text-xl font-md text-gray-400 italic ">
-                Who are we
+              <div className="text-4xl font-bold w-[70%] border-b-2 border-gray-400 pb-4 pt-10">
+                Vì sao nên chọn chúng tôi ?
               </div>
-              <div className="text-4xl font-bold w-[50%] border-b-2 border-gray-400 pb-3">
-                Why Choose Us
-              </div>
-
-              <div className="leading-8 text-md font-md text-gray-500">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Incidunt aperiam unde beatae explicabo deleniti perferendis eum
-                voluptatum a earum, dolore quaerat cumque dolor atque sint esse,
-                perspiciatis alias! Magni a dolorum sapiente. Cum quos
-                voluptatibus dolorem. Omnis aspernatur repellendus quo.
-              </div>
-              <div className="list flex">
-                <div className="w-[50%]">
-                  <ul>
-                    <li>
-                      <AiFillCheckCircle size={24} className="text-blue-500" />
-                      <span className="font-medium ">Tay lái an toàn</span>
-                    </li>
-                    <li>
-                      <AiFillCheckCircle size={24} className="text-blue-500" />
-                      <span className="font-medium ">Tuân thủ quy định</span>
-                    </li>
-                    <li>
-                      <AiFillCheckCircle size={24} className="text-blue-500" />
-                      <span className="font-medium ">
-                        Phương tiện tiêu chuẩn
-                      </span>
-                    </li>
-                  </ul>
+              <div className="flex flex-col gap-4 pb-6 text-lg text-gray-600">
+                <div className="leading-8">
+                  Trang web của chúng tôi được tạo ra với mục tiêu làm cho hành
+                  trình này trở nên dễ dàng và thú vị hơn bao giờ hết. Chúng tôi
+                  tự hào giới thiệu một nguồn tài liệu đa dạng và phong phú về
+                  luật giao thông, quy tắc an toàn khi lái xe, và kiến thức cần
+                  thiết cho kỳ thi bằng lái xe. Dù bạn là người mới học lái xe
+                  hoặc bạn cần cập nhật kiến thức sau một thời gian dài, trang
+                  web của chúng tôi có những tài liệu phù hợp cho bạn.
                 </div>
-                <div className="w-[50%]">
-                  <ul>
-                    <li>
-                      <AiFillCheckCircle size={24} className="text-blue-500" />
-                      <span className="font-medium ">Luật giao thông</span>
-                    </li>
-                    <li>
-                      <AiFillCheckCircle size={24} className="text-blue-500" />
-                      <span className="font-medium ">
-                        Người hướng dẫn kinh nghiệm
-                      </span>
-                    </li>
-                    <li>
-                      <AiFillCheckCircle size={24} className="text-blue-500" />
-                      <span className="font-medium ">Khóa học tốt nhất</span>
-                    </li>
-                  </ul>
+                <div className="leading-8">
+                  Chúng tôi không chỉ cung cấp các kiến thức cơ bản về luật giao
+                  thông và quy tắc lái xe, mà còn giúp bạn hiểu rõ về cách áp
+                  dụng chúng trong thực tế khi lái xe. Chúng tôi cung cấp bài
+                  kiểm tra mẫu để bạn tự đánh giá trình độ và sẵn sàng cho kỳ
+                  thi.
+                </div>
+                <div className="leading-8">
+                  Chúng tôi cam kết cung cấp cho bạn thông tin chính xác và cập
+                  nhật, đồng thời hỗ trợ bạn vượt qua mọi thách thức trong việc
+                  đạt được mục tiêu sở hữu bằng lái xe một cách an toàn và thành
+                  công.
+                </div>
+                <div className="leading-8 ">
+                  Hãy bắt đầu hành trình của bạn với trang web của chúng tôi
+                  ngay hôm nay. Chúng tôi luôn sẵn sàng hỗ trợ bạn trong việc
+                  biến giấc mơ sở hữu bằng lái xe thành hiện thực.
+                </div>
+                <div>
+                  <div>Chân thành,</div>
+                  <div className="text-gray-900 font-medium">HTTP GROUP</div>
                 </div>
               </div>
             </div>
 
-            <img src="/img/aboutus.png" className="w-[50%]" alt="About Us" />
+            <div className="w-[50%]">
+              <img
+                src="/img/aboutus.png"
+                className="w-full object-cover"
+                alt="About Us"
+              />
+            </div>
           </div>
 
           <div className="flex">
             <div className="flex gap-3 w-[25%] p-8 items-center center bg-blue-600/100">
               <PiSteeringWheel size={36} color="white" />
               <div className="center uppercase text-xl text-white font-semibold  ">
-                Comfort vehicle
+                Phương tiện hiện đại
               </div>
             </div>
             <div className="flex gap-3 w-[25%] p-8 items-center center bg-blue-600/90">
               <BsPostcard size={36} color="white" />
               <div className="center uppercase text-xl text-white font-semibold  ">
-                License tranining
+                Cam kết đào tạo
               </div>
             </div>
             <div className="flex gap-3 w-[25%] p-8 items-center center bg-blue-600/80">
               <BsSpeedometer2 size={36} color="white" />
               <div className="center uppercase text-xl text-white font-semibold  ">
-                Flexible schedule
+                Lịch trình linh hoạt
               </div>
             </div>
             <div className="flex gap-3 w-[25%] p-8 items-center center bg-blue-600/70">
               <FaRegNewspaper size={36} color="white" />
               <div className="center uppercase text-xl text-white font-semibold  ">
-                Driving practice
+                Thực hành an toàn
               </div>
             </div>
           </div>
@@ -122,12 +112,12 @@ const AboutUsPage = () => {
                   <MdOutlineTraffic size={44} />
                 </div>
                 <div className="uppercase text-white text-lg font-semibold border-b-2 border-white pb-2 ">
-                  traffic rule
+                  luật giao thông
                 </div>
               </div>
               <div className="font-light text-md text-gray-300 pl-16">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur
-                ea, quidem maxime ipsum illo autem laboriosam
+                Trang web cung cấp kiến thức về quy tắc giao thông, biển báo, và
+                an toàn đường, giúp người học hiểu rõ và tuân thủ đúng luật.
               </div>
             </div>
 
@@ -137,12 +127,12 @@ const AboutUsPage = () => {
                   <BsFillPersonCheckFill size={44} />
                 </div>
                 <div className="uppercase text-white text-lg font-semibold border-b-2 border-white pb-2 ">
-                  Right mentor
+                  Giảng viên tận tâm
                 </div>
               </div>
               <div className="font-light text-md text-gray-300 pl-16">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur
-                ea, quidem maxime ipsum illo autem laboriosam
+                Giảng viên chuyên nghiệp với sự tận tâm, sẵn sàng giải đáp mọi
+                thắc mắc, hỗ trợ học viên trong quá trình học.
               </div>
             </div>
 
@@ -152,12 +142,12 @@ const AboutUsPage = () => {
                   <AiFillCar size={44} />
                 </div>
                 <div className="uppercase text-white text-lg font-semibold border-b-2 border-white pb-2 ">
-                  Safe vehicle
+                  phương tiện an toàn
                 </div>
               </div>
               <div className="font-light text-md text-gray-300 pl-16">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur
-                ea, quidem maxime ipsum illo autem laboriosam
+                Phương tiện được bảo trì định kỳ, đảm bảo an toàn và hiệu quả
+                cho việc học lái.
               </div>
             </div>
           </div>
@@ -169,86 +159,53 @@ const AboutUsPage = () => {
         </div>
 
         <div className="flex m-20 gap-28">
-          <div className="w-[50%] flex flex-col gap-5">
-            <div className="border-b-4 border-gray-300 pb-3 w-[60%] font-semibold text-3xl text-gray-700  ">
-              Đánh giá của học viên
-            </div>
-            <div className="flex gap-5 mt-10 items-center">
-              <img
-                src="https://scontent.fsgn5-6.fna.fbcdn.net/v/t1.6435-9/123116045_772985256617271_6289105269278104549_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=ad2b24&_nc_ohc=laebF5sIFUUAX8VFESQ&_nc_ht=scontent.fsgn5-6.fna&oh=00_AfBOKBYLyQ6D7SQRwsFXimrfuUuKrPYLyfKst_XNlTvmIw&oe=65353413"
-                alt="memberpPic"
-                className="rounded-full w-[120px] h-[120px]"
-              />
-              <div className="">
-                <div className="text-xl font-semibold text-gray-700">
-                  Quang Huy
-                </div>
-                <div className="text-lg font-light text-gray-500">
-                  1 tháng 10, 2023 7:39pm
-                </div>
-              </div>
-            </div>
-            <div className="flex gap-1 items-center">
-              <div className="text-xl text-gray-800">Đánh giá:</div>
-              <AiFillStar size={22} color="#1976D2" />
-              <AiFillStar size={22} color="#1976D2" />
-              <AiFillStar size={22} color="#1976D2" />
-              <AiFillStar size={22} color="#1976D2" />
-              <AiFillStar size={22} color="#1976D2" />
-            </div>
-            <div className="text-lg text-gray-800">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-              Asperiores ad dicta error distinctio, dolorem magnam delectus
-              consequatur doloribus cum natus quisquam necessitatibus in nemo
-              corrupti molestiae excepturi illum ullam laborum.
-            </div>
-            <div></div>
-          </div>
-          <div className="w-[50%] ">
+          <div className="w-[60%] ">
             <div className="border-b-4 border-gray-300 pb-3 w-[60%] font-semibold text-3xl text-gray-700">
-              Co the ban chua biet
+              Có thể bạn chưa biết
             </div>
             <div className="flex flex-col gap-5 mt-10">
-            <div className="flex justify-between items-center border-2 border-gray-400 p-2">
-              <div className="w-[85%]">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Impedit
+              <div className="flex justify-between items-center text-lg border-2 border-gray-400 p-2">
+                <div className="w-[85%]">
+                  Trang web của chúng tôi sẽ cung cấp lịch thi và thông tin về
+                  việc đăng ký kỳ thi B1, giúp bạn dễ dàng quản lý thời gian và
+                  lên lịch thi phù hợp.
+                </div>
+                <div className="pr-5">
+                  <BiSolidRightArrow />
+                </div>
               </div>
-              <div className="pr-5">
-              <BiSolidRightArrow />
-              </div>
-            </div>
-            
-            <div className="flex justify-between items-center border-2 border-gray-400 p-2">
-              <div className="w-[85%]">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Impedit
-              </div>
-              <div className="pr-5">
-              <BiSolidRightArrow />
-              </div>
-            </div>
 
-            <div className="flex justify-between items-center border-2 border-gray-400 p-2">
-              <div className="w-[85%]">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Impedit
+              <div className="flex justify-between items-center text-lg border-2 border-gray-400 p-2">
+                <div className="w-[85%]">
+                  Trang web của chúng tôi sẽ cung cấp thông tin về những thay
+                  đổi mới nhất về quy tắc giao thông và luật pháp liên quan đến
+                  B1, giúp bạn cập nhật kiến thức hiện tại.
+                </div>
+                <div className="pr-5">
+                  <BiSolidRightArrow />
+                </div>
               </div>
-              <div className="pr-5">
-              <BiSolidRightArrow />
-              </div>
-            </div>
 
-            <div className="flex justify-between items-center border-2 border-gray-400 p-2">
-              <div className="w-[85%]">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Impedit
+              <div className="flex justify-between items-center text-lg border-2 border-gray-400 p-2">
+                <div className="w-[85%]">
+                  Chúng tôi sẽ cung cấp tài liệu tham khảo, bao gồm các đề thi
+                  mẫu và bài tập thực hành, giúp bạn chuẩn bị tốt cho kỳ thi B1.
+                </div>
+                <div className="pr-5">
+                  <BiSolidRightArrow />
+                </div>
               </div>
-              <div className="pr-5">
-              <BiSolidRightArrow />
-              </div>
-            </div>
 
+              <div className="flex justify-between items-center text-lg border-2 border-gray-400 p-2">
+                <div className="w-[85%]">
+                  Chúng tôi sẽ giúp bạn hiểu rõ các điểm kiểm tra lý thuyết cần
+                  nắm về luật giao thông và biển báo, giúp bạn tự tin hơn trong
+                  kỳ thi B1.
+                </div>
+                <div className="pr-5">
+                  <BiSolidRightArrow />
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -1,5 +1,4 @@
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import TextField from "@mui/material/TextField";
 import axios from "axios";
@@ -86,9 +85,9 @@ const EditProfileForm = () => {
 
   return (
     <div>
-      <button className="btn" onClick={handleClickOpen}>
+      {/* <button className="btn" onClick={handleClickOpen}>
         Chỉnh sửa
-      </button>
+      </button> */}
       <Dialog open={open} onClose={handleClose}>
         <div className="py-4 px-8 flex flex-col gap-4">
           <div className="dialogTit">Chỉnh sửa thông tin cá nhân</div>

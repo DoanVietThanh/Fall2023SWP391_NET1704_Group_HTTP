@@ -4,7 +4,7 @@ import Footer from "../../components/Footer";
 import BackgroundSlider from "../../components/BackgroundSlider";
 import { Link, useLocation } from "react-router-dom";
 
-const CauHoiDiemLietPage = () => {
+const AllQuestionPage = () => {
   const listQuestion = [
     {
       id: "1",
@@ -92,21 +92,21 @@ const CauHoiDiemLietPage = () => {
   ];
   const listTypeQuestion = [
     {
-      link: "/document/toanbocauhoi",
+      link: "/document/all-question",
       type: "Toàn bộ câu hỏi",
       num: "200",
     },
 
     {
-      link: "/document/cauhoidiemliet",
+      link: "/document/important-question",
       type: "Câu điểm liệt",
       num: "20",
     },
   ];
   const location = useLocation().pathname;
   const url =
-    "https://themeholy.com/wordpress/edura/wp-content/uploads/2023/07/breadcumb-bg.png";
-  const breadcrumbs = "Document";
+    "/img/backgroundSlide.png";
+  const breadcrumbs = "Tài liệu lý thuyết";
   const [hienDapAn, setHienDapAn] = useState({});
   const handleHienDapAn = ([id]) =>
     setHienDapAn((prev) => ({
@@ -155,13 +155,13 @@ const CauHoiDiemLietPage = () => {
         </div>
         <div className="w-[80%] bg-gray-100 py-20">
           <h2 className="font-semibold text-3xl pl-32 pb-10">
-            Câu hỏi điểm liệt
+            Toàn bộ câu hỏi
           </h2>
           <div className="flex flex-col gap-10">
             {listQuestion.map((question, index) => (
               <div className="mx-32 p-8 rounded-md border border-gray-200 bg-white ">
                 <div className="pb-3 text-xl">
-                  <span className="font-semibold text-blue-500">Câu {question.id}</span>: {question.question}
+                <span className="font-semibold text-blue-500">Câu {question.id}</span>: {question.question}
                 </div>
                 <div className="pl-14 flex flex-col gap-2">
                   <ul style={{ listStyleType: "upper-alpha" }}>
@@ -197,4 +197,4 @@ const CauHoiDiemLietPage = () => {
   );
 };
 
-export default CauHoiDiemLietPage;
+export default AllQuestionPage;

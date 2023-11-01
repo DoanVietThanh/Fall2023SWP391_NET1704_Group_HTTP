@@ -13,8 +13,8 @@ import { BsPerson } from "react-icons/bs";
 import { Link } from "react-router-dom";
 const BlogPage = () => {
   const url =
-    "https://themeholy.com/wordpress/edura/wp-content/uploads/2023/07/breadcumb-bg.png";
-  const breadcrumbs = "Blogs";
+    "/img/backgroundSlide.png";
+  const breadcrumbs = "Bài đăng";
   const listBlog = [
     {
       id: "1",

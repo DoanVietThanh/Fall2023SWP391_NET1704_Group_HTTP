@@ -1,10 +1,11 @@
 import { Box } from "@mui/material";
 import * as dayjs from "dayjs";
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import SideBar from "../../components/SideBar";
-import DialogEditUser from './components/DialogEditUser';
+import DialogEditUser from "./components/DialogEditUser";
 const Profile = () => {
+  const [openEditProfile, setOpenEditProfile] = useState(false);
   const { user, isLoading } = useSelector((state) => state.auth);
   const accInfo = user.accountInfo;
   return (
@@ -51,25 +52,36 @@ const Profile = () => {
                 </span>
                 <span className="text-[20px] font-normal">{accInfo.phone}</span>
               </div>
-              <div className="flex-x gap-4">
+              {/* <div className="flex-x gap-4">
                 <span className="text-[20px] font-semibold">
                   Loại bằng lái:
                 </span>
                 <span className="text-[20px] font-normal">
                   {accInfo.licenseType.licenseTypeDesc}
                 </span>
-              </div>
+              </div> */}
               <div className="flex-x gap-4">
                 <span className="text-[20px] font-semibold">Địa chỉ:</span>
                 <span className="text-[20px] font-normal">{`${accInfo.address.street}, ${accInfo.address.district}, ${accInfo.address.city}`}</span>
               </div>
             </div>
-            <div className="flex justify-end w-full">
-              <DialogEditUser />
+            {/* button edit profile */}
+            <div>
+              <button
+                className="p-2 bg-blue-600 text-white rounded-lg "
+                onClick={() => setOpenEditProfile(true)}
+              >
+                Tạo mới
+              </button>
             </div>
+            {openEditProfile && (
+              <DialogEditUser
+                open={openEditProfile}
+                setOpen={setOpenEditProfile}
+              />
+            )}
           </div>
         </div>
-        
       </Box>
     </div>
   );

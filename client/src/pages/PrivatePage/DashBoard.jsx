@@ -34,20 +34,20 @@ const DashBoard = () => {
     },
   ];
 
-  const registerSta = [
-    {
-      id: 1,
-      title: "Số lượng đăng kí",
-      quantity: "20",
-      icon: <AiOutlineUsergroupAdd />,
-    },
-    {
-      id: 2,
-      title: "Doanh thu",
-      quantity: "12",
-      icon: <AiOutlineMoneyCollect />,
-    },
-  ];
+  // const registerSta = [
+  //   {
+  //     id: 1,
+  //     title: "Số lượng đăng kí",
+  //     quantity: "20",
+  //     icon: <AiOutlineUsergroupAdd />,
+  //   },
+  //   {
+  //     id: 2,
+  //     title: "Doanh thu",
+  //     quantity: "12 VND",
+  //     icon: <AiOutlineMoneyCollect />,
+  //   },
+  // ];
 
   // Dữ liệu cho biểu đồ (ví dụ: điểm số theo thời gian)
   const dataLine = {
@@ -346,7 +346,7 @@ const DashBoard = () => {
                     {item.title}
                   </div>
                   <div className={`text-4xl font-semibold text-blue-500`}>
-                    {item.quantity}
+                    {item.quantity} 
                   </div>
                 </div>
               </div>
@@ -377,6 +377,40 @@ const DashBoard = () => {
               Tổng số lượng đăng kí và doanh thu
             </h1>
             <div className="flex p-5">
+                <div
+                  className="w-[50%] flex gap-20 p-5 items-center justify-center flex-item"
+                >
+                  <div className="text-gray-700 bg-blue-100 text-4xl p-5 rounded-full">
+                  <AiOutlineUsergroupAdd />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <div className="text-xl uppercase font-semibold">
+                    Số lượng đăng kí
+                    </div>
+                    <div className={`text-5xl font-semibold text-blue-500`}>
+                      39
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  className="w-[50%] flex gap-20 p-5 items-center justify-center flex-item"
+                >
+                  <div className="text-gray-700 bg-blue-100 text-4xl p-5 rounded-full">
+                  <AiOutlineMoneyCollect />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <div className="text-xl uppercase font-semibold">
+                     Doanh thu
+                    </div>
+                    <div className={`text-5xl font-semibold text-blue-500`}>
+                      20VND
+                    </div>
+                  </div>
+                </div>
+            </div>
+
+            {/* <div className="flex p-5">
               {registerSta.map((item, index) => (
                 <div
                   className="w-full flex gap-20 p-5 items-center justify-center flex-item"
@@ -390,12 +424,13 @@ const DashBoard = () => {
                       {item.title}
                     </div>
                     <div className={`text-5xl font-semibold text-blue-500`}>
-                      {item.quantity}
+                      {item.quantity} VND
                     </div>
                   </div>
                 </div>
               ))}
-            </div>
+            </div> */}
+
             {/* bar */}
             <div className="p-6 bg-white border-gray-500 rounded-md mt-10">
               <h1 className="font-semibold text-lg mb-5">
