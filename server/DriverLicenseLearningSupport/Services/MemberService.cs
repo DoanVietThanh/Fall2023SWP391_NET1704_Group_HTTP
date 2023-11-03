@@ -73,10 +73,10 @@ namespace DriverLicenseLearningSupport.Services
             if(member is not null ) 
             {
                 //member.LicenseType = await _licenseTypeService.GetAsync(Convert.ToInt32(member.LicenseTypeId));
-                member.Address = await _addressService.GetAsync(Guid.Parse(member.AddressId));
-                member.EmailNavigation = await _accountService.GetByEmailAsync(member.Email);
-                member.EmailNavigation.Password = null!;
-                member.AvatarImage = await _imageService.GetPreSignedURL(Guid.Parse(member.AvatarImage));
+                //member.Address = await _addressService.GetAsync(Guid.Parse(member.AddressId));
+                //member.EmailNavigation = await _accountService.GetByEmailAsync(member.Email);
+                //member.EmailNavigation.Password = null!;
+                //member.AvatarImage = await _imageService.GetPreSignedURL(Guid.Parse(member.AvatarImage));
             }
             return member;
         }

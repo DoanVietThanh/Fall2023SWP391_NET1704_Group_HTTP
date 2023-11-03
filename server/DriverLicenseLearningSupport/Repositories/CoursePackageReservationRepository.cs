@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Validation;
 using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Repositories.Impl;
@@ -26,6 +27,26 @@ namespace DriverLicenseLearningSupport.Repositories
             if (!isSucess) return null;
 
             return _mapper.Map<CoursePackageReservationModel>(courseReservation);
+        }
+
+        public async Task<IEnumerable<CoursePackageReservationModel>> GetAllAsync()
+        {
+            var reservations = await _context.CoursePackageReservations
+                                             .Select(x => new CoursePackageReservation { 
+                                                CoursePackageId = x.CoursePackageId,
+                                                CoursePackageReservationId = x.CoursePackageReservationId,
+                                                CreateDate = x.CreateDate,
+                                                MemberId = x.MemberId,
+                                                Member = x.Member,
+                                                PaymentAmmount = x.PaymentAmmount,
+                                                PaymentTypeId = x.PaymentTypeId,
+                                                PaymentType = x.PaymentType,
+                                                ReservationStatus = x.ReservationStatus,    
+                                                StaffId = x.StaffId,
+                                                Staff = x.Staff
+                                             })
+                                             .ToListAsync();
+            return _mapper.Map<IEnumerable<CoursePackageReservationModel>>(reservations);   
         }
 
         public async Task<IEnumerable<CoursePackageReservationModel>> GetAllByCourseIdAsync(Guid courseId)

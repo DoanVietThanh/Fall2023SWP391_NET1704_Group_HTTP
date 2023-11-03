@@ -613,5 +613,12 @@ namespace DriverLicenseLearningSupport.Repositories
             }
             return await _context.SaveChangesAsync() > 0;
         }
+
+        public async Task<IEnumerable<TeachingScheduleModel>> GetAllWeekdayScheduleAsync(int weekDayScheduleId)
+        {
+            var schedules = await _context.TeachingSchedules.Where(x => x.WeekdayScheduleId == weekDayScheduleId)
+                                                            .ToListAsync();
+            return _mapper.Map<IEnumerable<TeachingScheduleModel>>(schedules);
+        }
     }
 }

@@ -12,6 +12,9 @@ namespace DriverLicenseLearningSupport.Models
         public DateTime? CreateDate { get; set; }
         public int? RegisterFormStatusId { get; set; }
         public int? LicenseTypeId { get; set; }
+        public string Gender { get; set; }
+        public string? PermanentAddress { get; set; }
+        public string? IdentityNumber { get; set; }
 
         public virtual LicenseTypeModel LicenseType { get; set; }
         public virtual LicenseRegisterFormStatusModel RegisterFormStatus { get; set; }

@@ -269,7 +269,11 @@ namespace DriverLicenseLearningSupport.Controllers
         //[Authorize(Roles = "Member")]
         public async Task<IActionResult> ReviewDetailedMockTest([FromBody] ReviewExamRequest reqObj)
         {
+            // get member email
             MemberModel memberModel = await _memberService.GetByEmailAsync(reqObj.Email);
+            // get staff email
+            // get exam grade 
+
             if (memberModel is null)
             {
                 return BadRequest(new ErrorResponse()

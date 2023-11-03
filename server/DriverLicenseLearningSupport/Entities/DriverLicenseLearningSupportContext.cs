@@ -542,6 +542,18 @@ namespace DriverLicenseLearningSupport.Entities
 
                 entity.Property(e => e.RegisterFormStatusId).HasColumnName("register_form_status_id");
 
+                entity.Property(e => e.Gender)
+                      .HasMaxLength(10)
+                      .HasColumnName("gender");
+
+                entity.Property(e => e.PermanentAddress)
+                      .HasMaxLength(200)
+                      .HasColumnName("permanent_address");
+
+                entity.Property(e => e.IdentityNumber)
+                      .HasMaxLength(15)
+                      .HasColumnName("identity_number");
+
                 entity.HasOne(d => d.LicenseType)
                     .WithMany(p => p.LicenseRegisterForms)
                     .HasForeignKey(d => d.LicenseTypeId)

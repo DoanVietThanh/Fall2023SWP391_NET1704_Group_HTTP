@@ -1,4 +1,4 @@
-﻿﻿USE MASTER 
+﻿USE MASTER 
 GO 
 DROP DATABASE IF EXISTS DriverLicenseLearningSupport
 GO
@@ -146,6 +146,7 @@ CREATE TABLE [dbo].Vehicle(
 )
 GO
 CREATE TABLE [dbo].Slot(
+	
 	slot_id INT PRIMARY KEY identity(1,1),
 	slot_name NVARCHAR(100),
 	duration INT,
@@ -213,6 +214,9 @@ CREATE TABLE [dbo].License_Register_Form(
 	health_certification_image NVARCHAR(100),
 	create_date DATETIME,
 	register_form_status_id INT,
+	gender NVARCHAR(10),
+	permanent_address NVARCHAR(200),
+	identity_number NVARCHAR(15),
 	license_type_id INT
 )
 GO
@@ -466,7 +470,7 @@ VALUES (N'Quản trị hệ thống'), (N'Quản lí nhân sự'), (N'Người h
 INSERT INTO [dbo].License_Type(license_type_desc)
 VALUES (N'A1'),(N'A2'),(N'B1'),(N'B1.1'),(N'B2')
 INSERT INTO [dbo].License_Register_Form_Status(register_form_status_desc)
-VALUES (N'Chưa duyệt'), (N'Đã duyệt')
+VALUES (N'Chưa duyệt'), (N'Đã duyệt'), (N'Đã hủy')
 INSERT INTO [dbo].Reservation_Status(reservation_status_desc)
 VALUES (N'Chưa thanh toán'), (N'Đã thanh toán')
 INSERT INTO [dbo].Payment_Type(payment_type_desc)
@@ -476,19 +480,19 @@ VALUES (N'Xe số sàn', 3), (N'Xe số tự động', 4)
 INSERT INTO [dbo].Vehicle(vehicle_name, register_date, vehicle_image, vehicle_license_plate, is_active, vehicle_type_id)
 VALUES 
 (N'Toyota Innova', CAST(('2019/02/04') AS DATE),
- N'177e8d01-583e-47f6-9220-29ecbdd266b1',
+ N'04d6fe8c-6347-415e-9cb5-ad837de30f12',
  N'51F-922.87',
  1, 2),
  (N'Mistubishi', CAST(('2017/09/21') AS DATE),
- N'c15f8bc7-995a-474b-8e83-79580f9b847d',
+ N'11f98cbb-7103-4880-8b52-18a4bc67057c',
  N'51F-225.94',
  1, 2),
  (N'KIA K3', CAST(('2022/07/09') AS DATE),
- N'21941eb0-55e1-4e22-8e79-9767a6ac9f21',
+ N'7d9d38f9-4172-460c-8291-c362c96688f1',
  N'51F-881.91',
  1, 2),
  (N'Suzuki', CAST(('2022/04/22') AS DATE),
- N'4cd46add-1d3a-4b20-8414-f14f2052efce',
+ N'a6b9291e-759b-4dd6-a2e9-e11113464ba3',
  N'51F-114.72',
  1, 2)
 INSERT INTO [dbo].Slot(slot_name, slot_desc, duration, time)
@@ -500,22 +504,178 @@ GO
 -- Courses
 INSERT INTO [dbo].Course(course_id, course_desc, course_title, start_date, total_hours_required, total_km_required, total_month, license_type_id, is_active)
 VALUES 
-(N'd7418bc8-dfff-4fab-888b-8eb9a42a68cb',
+(N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e',
  N'waiting',
  N'Khóa học bằng lái B1',
  CAST(N'2023/10/30' AS DATE),
  14,714,3,3,1)
+INSERT INTO [dbo].Weekday_Schedule(monday, tuesday, wednesday, thursday, friday, saturday, sunday, course_id, weekday_schedule_desc)
+VALUES 
+(
+CAST('2023-10-30 00:00:00.000' AS DATE),
+CAST('2023-10-31 00:00:00.000' AS DATE),
+CAST('2023-11-01 00:00:00.000' AS DATE),
+CAST('2023-11-02 00:00:00.000' AS DATE),
+CAST('2023-11-03 00:00:00.000' AS DATE),
+CAST('2023-11-04 00:00:00.000' AS DATE),
+CAST('2023-11-05 00:00:00.000' AS DATE),
+N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e',
+N'30/10 To 05/11'
+),
+(
+CAST('2023-11-06 00:00:00.000' AS DATE),
+CAST('2023-11-07 00:00:00.000' AS DATE),
+CAST('2023-11-08 00:00:00.000' AS DATE),
+CAST('2023-11-09 00:00:00.000' AS DATE),
+CAST('2023-11-10 00:00:00.000' AS DATE),
+CAST('2023-11-11 00:00:00.000' AS DATE),
+CAST('2023-11-12 00:00:00.000' AS DATE),
+N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e',
+N'06/11 To 12/11'
+),
+(
+CAST('2023-11-13 00:00:00.000' AS DATE),
+CAST('2023-11-14 00:00:00.000' AS DATE),
+CAST('2023-11-15 00:00:00.000' AS DATE),
+CAST('2023-11-16 00:00:00.000' AS DATE),
+CAST('2023-11-17 00:00:00.000' AS DATE),
+CAST('2023-11-18 00:00:00.000' AS DATE),
+CAST('2023-11-19 00:00:00.000' AS DATE),
+N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e',
+N'13/11 To 19/11'
+),
+(
+CAST('2023-11-20 00:00:00.000' AS DATE),
+CAST('2023-11-21 00:00:00.000' AS DATE),
+CAST('2023-11-22 00:00:00.000' AS DATE),
+CAST('2023-11-23 00:00:00.000' AS DATE),
+CAST('2023-11-24 00:00:00.000' AS DATE),
+CAST('2023-11-25 00:00:00.000' AS DATE),
+CAST('2023-11-26 00:00:00.000' AS DATE),
+N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e',
+N'20/11 To 26/11'
+),
+(
+CAST('2023-11-27 00:00:00.000' AS DATE),
+CAST('2023-11-28 00:00:00.000' AS DATE),
+CAST('2023-11-29 00:00:00.000' AS DATE),
+CAST('2023-11-30 00:00:00.000' AS DATE),
+CAST('2023-12-01 00:00:00.000' AS DATE),
+CAST('2023-12-02 00:00:00.000' AS DATE),
+CAST('2023-12-03 00:00:00.000' AS DATE),
+N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e',
+N'27/11 To 03/12'
+),
+(
+CAST('2023-12-04 00:00:00.000' AS DATE),
+CAST('2023-12-05 00:00:00.000' AS DATE),
+CAST('2023-12-06 00:00:00.000' AS DATE),
+CAST('2023-12-07 00:00:00.000' AS DATE),
+CAST('2023-12-08 00:00:00.000' AS DATE),
+CAST('2023-12-09 00:00:00.000' AS DATE),
+CAST('2023-12-10 00:00:00.000' AS DATE),
+N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e',
+N'04/12 To 10/12'
+),
+(
+CAST('2023-12-11 00:00:00.000' AS DATE),
+CAST('2023-12-12 00:00:00.000' AS DATE),
+CAST('2023-12-13 00:00:00.000' AS DATE),
+CAST('2023-12-14 00:00:00.000' AS DATE),
+CAST('2023-12-15 00:00:00.000' AS DATE),
+CAST('2023-12-16 00:00:00.000' AS DATE),
+CAST('2023-12-17 00:00:00.000' AS DATE),
+N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e',
+N'11/12 To 17/12'
+),
+(
+CAST('2023-12-18 00:00:00.000' AS DATE),
+CAST('2023-12-19 00:00:00.000' AS DATE),
+CAST('2023-12-20 00:00:00.000' AS DATE),
+CAST('2023-12-21 00:00:00.000' AS DATE),
+CAST('2023-12-22 00:00:00.000' AS DATE),
+CAST('2023-12-23 00:00:00.000' AS DATE),
+CAST('2023-12-24 00:00:00.000' AS DATE),
+N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e',
+N'18/12 To 24/12'
+),
+(
+CAST('2023-12-25 00:00:00.000' AS DATE),
+CAST('2023-12-26 00:00:00.000' AS DATE),
+CAST('2023-12-27 00:00:00.000' AS DATE),
+CAST('2023-12-28 00:00:00.000' AS DATE),
+CAST('2023-12-29 00:00:00.000' AS DATE),
+CAST('2023-12-30 00:00:00.000' AS DATE),
+CAST('2023-12-31 00:00:00.000' AS DATE),
+N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e',
+N'25/12 To 31/12'
+),
+(
+CAST('2023-01-01 00:00:00.000' AS DATE),
+CAST('2023-01-02 00:00:00.000' AS DATE),
+CAST('2023-01-03 00:00:00.000' AS DATE),
+CAST('2023-01-04 00:00:00.000' AS DATE),
+CAST('2023-01-05 00:00:00.000' AS DATE),
+CAST('2023-01-06 00:00:00.000' AS DATE),
+CAST('2023-01-07 00:00:00.000' AS DATE),
+N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e',
+N'01/01 To 07/01'
+),
+(
+CAST('2023-01-08 00:00:00.000' AS DATE),
+CAST('2023-01-09 00:00:00.000' AS DATE),
+CAST('2023-01-10 00:00:00.000' AS DATE),
+CAST('2023-01-11 00:00:00.000' AS DATE),
+CAST('2023-01-12 00:00:00.000' AS DATE),
+CAST('2023-01-13 00:00:00.000' AS DATE),
+CAST('2023-01-14 00:00:00.000' AS DATE),
+N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e',
+N'08/01 To 14/01'
+),
+(
+CAST('2023-01-15 00:00:00.000' AS DATE),
+CAST('2023-01-16 00:00:00.000' AS DATE),
+CAST('2023-01-17 00:00:00.000' AS DATE),
+CAST('2023-01-18 00:00:00.000' AS DATE),
+CAST('2023-01-19 00:00:00.000' AS DATE),
+CAST('2023-01-20 00:00:00.000' AS DATE),
+CAST('2023-01-21 00:00:00.000' AS DATE),
+N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e',
+N'15/01 To 21/01'
+),
+(
+CAST('2023-01-22 00:00:00.000' AS DATE),
+CAST('2023-01-23 00:00:00.000' AS DATE),
+CAST('2023-01-24 00:00:00.000' AS DATE),
+CAST('2023-01-25 00:00:00.000' AS DATE),
+CAST('2023-01-26 00:00:00.000' AS DATE),
+CAST('2023-01-27 00:00:00.000' AS DATE),
+CAST('2023-01-28 00:00:00.000' AS DATE),
+N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e',
+N'22/01 To 28/01'
+),
+(
+CAST('2023-01-29 00:00:00.000' AS DATE),
+CAST('2023-01-30 00:00:00.000' AS DATE),
+CAST('2023-01-31 00:00:00.000' AS DATE),
+CAST('2023-01-01 00:00:00.000' AS DATE),
+CAST('2023-01-02 00:00:00.000' AS DATE),
+CAST('2023-01-03 00:00:00.000' AS DATE),
+CAST('2023-01-04 00:00:00.000' AS DATE),
+N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e',
+N'29/01 To 04/01'
+)
 INSERT INTO [dbo].Course_Package(course_package_id, course_package_desc, course_id, cost, age_required,session_hour,total_session)
 VALUES
-(N'bad43c7a-6a3f-4f97-8d18-2e73261b6373',
+(N'069af18a-54b3-4de7-bac2-27d778431cc3',
  N'Học bằng lái B1 cơ bản',
- N'd7418bc8-dfff-4fab-888b-8eb9a42a68cb',
+ N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e',
  14500000,18,2,6)
 INSERT INTO [dbo].Course_Package(course_package_id, course_package_desc, course_id, cost, age_required)
 VALUES
-(N'451f4044-f4f8-4c7c-b86d-a78cc384592e',
+(N'825e8a00-ae5a-404e-994b-ebef5028e1ab',
  N'Học bằng lái B1 bổ túc',
- N'd7418bc8-dfff-4fab-888b-8eb9a42a68cb',
+ N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e',
  4200000,18)
 GO
 -- Curriculum
@@ -536,16 +696,16 @@ GO
 -- Courses - Curriculum
 INSERT INTO [dbo].Course_Curriculum(course_id, curriculum_id)
 VALUES
-(N'd7418bc8-dfff-4fab-888b-8eb9a42a68cb', 1),
-(N'd7418bc8-dfff-4fab-888b-8eb9a42a68cb', 2),
-(N'd7418bc8-dfff-4fab-888b-8eb9a42a68cb', 3),
-(N'd7418bc8-dfff-4fab-888b-8eb9a42a68cb', 4),
-(N'd7418bc8-dfff-4fab-888b-8eb9a42a68cb', 5),
-(N'd7418bc8-dfff-4fab-888b-8eb9a42a68cb', 7),
-(N'd7418bc8-dfff-4fab-888b-8eb9a42a68cb', 8),
-(N'd7418bc8-dfff-4fab-888b-8eb9a42a68cb', 9),
-(N'd7418bc8-dfff-4fab-888b-8eb9a42a68cb', 10),
-(N'd7418bc8-dfff-4fab-888b-8eb9a42a68cb', 11)
+(N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e', 1),
+(N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e', 2),
+(N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e', 3),
+(N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e', 4),
+(N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e', 5),
+(N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e', 7),
+(N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e', 8),
+(N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e', 9),
+(N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e', 10),
+(N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e', 11)
 GO
 -- Mentors Account
 INSERT INTO [dbo].Account(email, password, role_id, is_active)
@@ -555,59 +715,59 @@ VALUES (N'mentor@gmail.com', N'QE1lbnRvcjEyMw==', 3, 1), --@Mentor123
 (N'quocvy@gmail.com', N'QE1lbnRvcjEyMw==', 3, 1)
 INSERT INTO [dbo].Address(address_id, street, district, city)
 VALUES 
-(N'25d67090-e1ac-46ec-8de0-e6f5595b1527',
+(N'3556e356-346e-4983-aac2-9aba16b6156e',
  N'Phan Văn Long', N'Quận 2', N'TP.Hồ Chí Minh'),
- (N'1579b127-3e12-459d-b026-f7c945e63999',
+ (N'4740c596-6e0f-4ec9-a268-25fc9f2cb09f',
  N'Điện Biên Phủ', N'Bình Thạnh', N'TP.Hồ Chí Minh'),
- (N'ed6847e0-c17e-495e-a919-405cf84132d7',
+ (N'd353b40e-ca0f-4ac7-a4a2-395cc02d00ad',
  N'Cách Mạng Tháng 8', N'Quận 10', N'TP.Hồ Chí Minh'),
- (N'1a52170f-ea5c-40fb-b01e-6fd215876eb2',
+ (N'aa70b171-43ca-4dfc-af9b-b9e243ba6bcf',
  N'Nguyễn Thái Sơn', N'Gò Vấp', N'TP.Hồ Chí Minh')
 GO
 INSERT INTO [dbo].Staff(staff_id, first_name, last_name, avatar_image,
 date_birth, email, phone, address_id, self_description,
 job_title_id, is_active)
 VALUES
-(N'd6c3be59-0431-4b29-ac39-147411620efa',
+(N'c5708f3c-daf1-444e-bed7-240c2ed6ad50',
  N'Mentor',N'',
- N'ab7375ed-741d-46c5-9723-b83735305b8b',
+ N'https://img.freepik.com/premium-vector/man-avatar-profiel-op-ronde-pictogram_24640-14044.jpg?w=2000',
  CAST(N'1995/02/10' AS DATE),
  N'mentor@gmail.com',
  N'0777155780',
- N'25d67090-e1ac-46ec-8de0-e6f5595b1527',
+ N'3556e356-346e-4983-aac2-9aba16b6156e',
  N'<p>Giới thiệu bản th&acirc;n l&agrave; việc tr&igrave;nh b&agrave;y th&ocirc;ng tin cơ bản về bản th&acirc;n m&igrave;nh cho người kh&aacute;c để họ hiểu th&ecirc;m về ch&uacute;ng ta, đến từ đ&acirc;u v&agrave; một số th&ocirc;ng tin quan trọng về cuộc sống v&agrave; sở th&iacute;ch của c&aacute; nh&acirc;n. Mục đ&iacute;ch ch&iacute;nh của việc giới thiệu bản th&acirc;n l&agrave; tạo ra một sự kết nối ban đầu, thiết lập mối quan hệ hoặc bắt đầu một cuộc tr&ograve; chuyện. Th&ocirc;ng qua việc giới thiệu, người kh&aacute;c c&oacute; cơ hội biết về bản th&acirc;n m&igrave;nh, c&oacute; thể tạo ra một cơ sở cho giao tiếp v&agrave; tương t&aacute;c tiếp theo.</p>
  <p>Th&ocirc;ng tin trong việc giới thiệu bản th&acirc;n thường bao gồm t&ecirc;n, tuổi, nơi sống, nghề nghiệp hoặc tr&igrave;nh độ học vấn v&agrave; những sở th&iacute;ch hoặc đặc điểm c&aacute; nh&acirc;n m&agrave; m&igrave;nh muốn người kh&aacute;c biết. Việc n&agrave;y c&oacute; thể diễn ra trong nhiều t&igrave;nh huống, chẳng hạn như trong cuộc phỏng vấn việc l&agrave;m, trong một tập trung x&atilde; hội, hoặc khi ch&uacute;ng ta mới quen biết ai đ&oacute;.</p>
  <p>Để giới thiệu bản th&acirc;n hiệu quả cần phải truyền đạt th&ocirc;ng tin một c&aacute;ch r&otilde; r&agrave;ng v&agrave; tự tin, tạo ấn tượng t&iacute;ch cực v&agrave; tạo điều kiện tốt cho mối quan hệ v&agrave; giao tiếp tiếp theo.</p>',
  3,1),
- (N'd1e604ac-795f-4a25-ace6-2494c8738d8f',
+ (N'9f2db427-5a6f-4313-98f8-35287820f903',
  N'Đinh Xuân',N'Quý',
- N'533efd1b-68cb-45c5-97d6-ef1cc233351b',
+ N'https://img.freepik.com/premium-vector/man-avatar-profiel-op-ronde-pictogram_24640-14046.jpg?w=2000',
  CAST(N'2000/09/08' AS DATE),
  N'dinhxuanquy@gmail.com',
  N'0982816456',
- N'1579b127-3e12-459d-b026-f7c945e63999',
+ N'4740c596-6e0f-4ec9-a268-25fc9f2cb09f',
  N'<p>Giới thiệu bản th&acirc;n l&agrave; việc tr&igrave;nh b&agrave;y th&ocirc;ng tin cơ bản về bản th&acirc;n m&igrave;nh cho người kh&aacute;c để họ hiểu th&ecirc;m về ch&uacute;ng ta, đến từ đ&acirc;u v&agrave; một số th&ocirc;ng tin quan trọng về cuộc sống v&agrave; sở th&iacute;ch của c&aacute; nh&acirc;n. Mục đ&iacute;ch ch&iacute;nh của việc giới thiệu bản th&acirc;n l&agrave; tạo ra một sự kết nối ban đầu, thiết lập mối quan hệ hoặc bắt đầu một cuộc tr&ograve; chuyện. Th&ocirc;ng qua việc giới thiệu, người kh&aacute;c c&oacute; cơ hội biết về bản th&acirc;n m&igrave;nh, c&oacute; thể tạo ra một cơ sở cho giao tiếp v&agrave; tương t&aacute;c tiếp theo.</p>
  <p>Th&ocirc;ng tin trong việc giới thiệu bản th&acirc;n thường bao gồm t&ecirc;n, tuổi, nơi sống, nghề nghiệp hoặc tr&igrave;nh độ học vấn v&agrave; những sở th&iacute;ch hoặc đặc điểm c&aacute; nh&acirc;n m&agrave; m&igrave;nh muốn người kh&aacute;c biết. Việc n&agrave;y c&oacute; thể diễn ra trong nhiều t&igrave;nh huống, chẳng hạn như trong cuộc phỏng vấn việc l&agrave;m, trong một tập trung x&atilde; hội, hoặc khi ch&uacute;ng ta mới quen biết ai đ&oacute;.</p>
  <p>Để giới thiệu bản th&acirc;n hiệu quả cần phải truyền đạt th&ocirc;ng tin một c&aacute;ch r&otilde; r&agrave;ng v&agrave; tự tin, tạo ấn tượng t&iacute;ch cực v&agrave; tạo điều kiện tốt cho mối quan hệ v&agrave; giao tiếp tiếp theo.</p>',
  3,1),
- (N'7f811ec6-6b14-43aa-96b3-5b9084f91558',
+ (N'4af99375-1b6e-40c1-83cb-a291574d31ed',
  N'Đào Thanh',N'Minh',
- N'ed6847e0-c17e-495e-a919-405cf84132d7',
+ N'https://cdn.iconscout.com/icon/free/png-256/free-avatar-370-456322.png?f=webp',
  CAST(N'1985/03/01' AS DATE),
- N'dinhxuanquy@gmail.com',
+ N'daothanhminh@gmail.com',
  N'0982816456',
- N'ed6847e0-c17e-495e-a919-405cf84132d7',
+ N'd353b40e-ca0f-4ac7-a4a2-395cc02d00ad',
  N'<p>Giới thiệu bản th&acirc;n l&agrave; việc tr&igrave;nh b&agrave;y th&ocirc;ng tin cơ bản về bản th&acirc;n m&igrave;nh cho người kh&aacute;c để họ hiểu th&ecirc;m về ch&uacute;ng ta, đến từ đ&acirc;u v&agrave; một số th&ocirc;ng tin quan trọng về cuộc sống v&agrave; sở th&iacute;ch của c&aacute; nh&acirc;n. Mục đ&iacute;ch ch&iacute;nh của việc giới thiệu bản th&acirc;n l&agrave; tạo ra một sự kết nối ban đầu, thiết lập mối quan hệ hoặc bắt đầu một cuộc tr&ograve; chuyện. Th&ocirc;ng qua việc giới thiệu, người kh&aacute;c c&oacute; cơ hội biết về bản th&acirc;n m&igrave;nh, c&oacute; thể tạo ra một cơ sở cho giao tiếp v&agrave; tương t&aacute;c tiếp theo.</p>
  <p>Th&ocirc;ng tin trong việc giới thiệu bản th&acirc;n thường bao gồm t&ecirc;n, tuổi, nơi sống, nghề nghiệp hoặc tr&igrave;nh độ học vấn v&agrave; những sở th&iacute;ch hoặc đặc điểm c&aacute; nh&acirc;n m&agrave; m&igrave;nh muốn người kh&aacute;c biết. Việc n&agrave;y c&oacute; thể diễn ra trong nhiều t&igrave;nh huống, chẳng hạn như trong cuộc phỏng vấn việc l&agrave;m, trong một tập trung x&atilde; hội, hoặc khi ch&uacute;ng ta mới quen biết ai đ&oacute;.</p>
  <p>Để giới thiệu bản th&acirc;n hiệu quả cần phải truyền đạt th&ocirc;ng tin một c&aacute;ch r&otilde; r&agrave;ng v&agrave; tự tin, tạo ấn tượng t&iacute;ch cực v&agrave; tạo điều kiện tốt cho mối quan hệ v&agrave; giao tiếp tiếp theo.</p>',
  3,1),
- (N'952f4b72-cd50-4c4f-b74c-faa3e44c721b',
+ (N'ecc62d4f-cb38-4fd5-ac46-f998d4940146',
  N'Quốc',N'Vỹ',
- N'a7e46ba5-9c52-4dd4-902c-0b14a2ba82d3',
+ N'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpaMoHpU5LhCtxzrDShIo_ZLuwTe1JojPc2A&usqp=CAU',
  CAST(N'1987/07/16' AS DATE),
  N'quocvy@gmail.com',
  N'0918456982',
- N'1a52170f-ea5c-40fb-b01e-6fd215876eb2',
+ N'aa70b171-43ca-4dfc-af9b-b9e243ba6bcf',
  N'<p>Giới thiệu bản th&acirc;n l&agrave; việc tr&igrave;nh b&agrave;y th&ocirc;ng tin cơ bản về bản th&acirc;n m&igrave;nh cho người kh&aacute;c để họ hiểu th&ecirc;m về ch&uacute;ng ta, đến từ đ&acirc;u v&agrave; một số th&ocirc;ng tin quan trọng về cuộc sống v&agrave; sở th&iacute;ch của c&aacute; nh&acirc;n. Mục đ&iacute;ch ch&iacute;nh của việc giới thiệu bản th&acirc;n l&agrave; tạo ra một sự kết nối ban đầu, thiết lập mối quan hệ hoặc bắt đầu một cuộc tr&ograve; chuyện. Th&ocirc;ng qua việc giới thiệu, người kh&aacute;c c&oacute; cơ hội biết về bản th&acirc;n m&igrave;nh, c&oacute; thể tạo ra một cơ sở cho giao tiếp v&agrave; tương t&aacute;c tiếp theo.</p>
  <p>Th&ocirc;ng tin trong việc giới thiệu bản th&acirc;n thường bao gồm t&ecirc;n, tuổi, nơi sống, nghề nghiệp hoặc tr&igrave;nh độ học vấn v&agrave; những sở th&iacute;ch hoặc đặc điểm c&aacute; nh&acirc;n m&agrave; m&igrave;nh muốn người kh&aacute;c biết. Việc n&agrave;y c&oacute; thể diễn ra trong nhiều t&igrave;nh huống, chẳng hạn như trong cuộc phỏng vấn việc l&agrave;m, trong một tập trung x&atilde; hội, hoặc khi ch&uacute;ng ta mới quen biết ai đ&oacute;.</p>
  <p>Để giới thiệu bản th&acirc;n hiệu quả cần phải truyền đạt th&ocirc;ng tin một c&aacute;ch r&otilde; r&agrave;ng v&agrave; tự tin, tạo ấn tượng t&iacute;ch cực v&agrave; tạo điều kiện tốt cho mối quan hệ v&agrave; giao tiếp tiếp theo.</p>',
@@ -615,10 +775,10 @@ VALUES
 -- Mentors - Course
 INSERT INTO [dbo].Course_Mentor(course_id, mentor_id)
 VALUES 
-(N'd7418bc8-dfff-4fab-888b-8eb9a42a68cb', N'd6c3be59-0431-4b29-ac39-147411620efa'),
-(N'd7418bc8-dfff-4fab-888b-8eb9a42a68cb', N'd1e604ac-795f-4a25-ace6-2494c8738d8f'),
-(N'd7418bc8-dfff-4fab-888b-8eb9a42a68cb', N'7f811ec6-6b14-43aa-96b3-5b9084f91558'),
-(N'd7418bc8-dfff-4fab-888b-8eb9a42a68cb', N'952f4b72-cd50-4c4f-b74c-faa3e44c721b')
+(N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e', N'c5708f3c-daf1-444e-bed7-240c2ed6ad50'),
+(N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e', N'9f2db427-5a6f-4313-98f8-35287820f903'),
+(N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e', N'4af99375-1b6e-40c1-83cb-a291574d31ed'),
+(N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e', N'ecc62d4f-cb38-4fd5-ac46-f998d4940146')
 GO
 -- Member - Account
 INSERT INTO [dbo].Account(email, password, role_id, is_active)
@@ -630,79 +790,79 @@ GO
 -- Members - Address
 INSERT INTO [dbo].Address(address_id, street, district, city)
 VALUES 
-(N'fe2ded0a-1d5b-4e9c-8f21-fbb0ee41e89a',
+(N'b5a7d95d-8e29-4294-a36f-19b1962f7abf',
  N'Hồ Văn Huê', N'Quận Bình Tân', N'TP.Hồ Chí Minh'),
-(N'307f3fe9-23c1-481b-a664-2b6b7a9327e4',
+(N'3e9e776e-6e58-4e9c-a0ab-9705452b1f85',
  N'Sư Vạn Hạnh', N'Quận 10', N'TP.Hồ Chí Minh'),
-(N'84f2ee6a-aeb1-472e-aa89-a0515aab8b2e',
+(N'0bd6b79b-2bb6-4b8b-aae6-452dc2977e2a',
  N'Xô Viết Nghệ Tĩnh', N'Quận Phú Nhuận', N'TP.Hồ Chí Minh'),
-(N'927053a1-73f0-43d5-9078-4fdf98c7c81d',
+(N'85ae5335-4044-4acf-b54a-a01a46608f56',
  N'Trường Sa', N'Quận Phú Nhuận', N'TP.Hồ Chí Minh')
 GO
 -- Members
 INSERT INTO [dbo].Member(member_id, first_name, last_name,
 avatar_image, date_birth, email, phone, address_id,license_form_id,is_active)
 VALUES 
-(N'b49fea44-0cda-4492-9004-e1d698b2cc4c',
+(N'6f391bb6-e5ad-4bb4-b890-cfb37723f65e',
  N'Đinh Tiến', N'Thành',
- N'00db96ec-bfee-4a3e-b069-b66611025327',
+ N'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpaMoHpU5LhCtxzrDShIo_ZLuwTe1JojPc2A&usqp=CAU',
  CAST(('2003/02/10') AS DATE),
  N'dinhtienthanh@gmail.com',
  N'0972657271',
- N'fe2ded0a-1d5b-4e9c-8f21-fbb0ee41e89a',
+ N'b5a7d95d-8e29-4294-a36f-19b1962f7abf',
  NULL,1),
- (N'7ff5e0ef-95f9-4052-a2dd-77210cf6ea9e',
+ (N'3d9b7556-97d2-4192-8e83-cfe243c8ad15',
  N'Đào Gia', N'Bảo',
- N'3e80b09c-50b2-49c4-9621-ba7cd70e3cb8',
+ N'https://www.svgrepo.com/show/382106/male-avatar-boy-face-man-user-9.svg',
  CAST(('2000/09/27') AS DATE),
  N'daogiabao@gmail.com',
  N'0767822919',
- N'307f3fe9-23c1-481b-a664-2b6b7a9327e4',
+ N'3e9e776e-6e58-4e9c-a0ab-9705452b1f85',
  NULL,1),
- (N'abec46a5-9eb1-45d7-bd8d-46a3060ec2d1',
+ (N'1b4edcbd-6eb4-432f-8671-208b5ee9b9c5',
  N'Trương Gia', N'Thành',
- N'3ddaf01f-2c3b-4e34-80ce-c02d6e5a30f9',
+ N'https://avatars.githubusercontent.com/u/56773306?v=4',
  CAST(('1999/08/22') AS DATE),
  N'truonggiathanh@gmail.com',
  N'0972657271',
- N'84f2ee6a-aeb1-472e-aa89-a0515aab8b2e',
+ N'0bd6b79b-2bb6-4b8b-aae6-452dc2977e2a',
  NULL,1),
- (N'bfab96a3-156e-49cc-9395-cca0f8a246a9',
+ (N'f5c63634-1858-4ad5-8d0e-38c73f8ef8a8',
  N'Member', N'',
- N'64849bee-8fa5-4749-9061-ce36b581c2aa',
+ N'https://i.pinimg.com/550x/93/d3/e3/93d3e31639a4d07613de9dccdc8bd5e8.jpg',
  CAST(('1992/06/12') AS DATE),
  N'member@gmail.com',
  N'098277155',
- N'927053a1-73f0-43d5-9078-4fdf98c7c81d',
+ N'85ae5335-4044-4acf-b54a-a01a46608f56',
  NULL,1)
 GO
 -- Member - CoursePackageReservation
 INSERT INTO [dbo].Course_Package_Reservation(course_package_reservation_id,course_package_id, create_date, member_id, staff_id,
 payment_ammount, payment_type_id, reservation_status_id)
 VALUES
-(N'5dc61d27-b8db-4e12-8da8-bce5061e7afc',
- N'451f4044-f4f8-4c7c-b86d-a78cc384592e',
+(N'0343c03c-0d01-4ae9-83ab-8e08ce599646',
+ N'069af18a-54b3-4de7-bac2-27d778431cc3',
  CAST(('2023/11/15') AS DATE),
- N'b49fea44-0cda-4492-9004-e1d698b2cc4c',
- N'd6c3be59-0431-4b29-ac39-147411620efa',
+ N'f5c63634-1858-4ad5-8d0e-38c73f8ef8a8',
+ N'c5708f3c-daf1-444e-bed7-240c2ed6ad50',
  14500000, 3, 2),
- (N'0e55508a-175b-4068-b723-a80f8117ad1f',
- N'451f4044-f4f8-4c7c-b86d-a78cc384592e',
+ (N'638d59a5-2ab7-4e85-9ae2-aecdbc5b8a60',
+ N'069af18a-54b3-4de7-bac2-27d778431cc3',
  CAST(('2023/12/02') AS DATE),
- N'7ff5e0ef-95f9-4052-a2dd-77210cf6ea9e',
- N'd6c3be59-0431-4b29-ac39-147411620efa',
+ N'1b4edcbd-6eb4-432f-8671-208b5ee9b9c5',
+ N'c5708f3c-daf1-444e-bed7-240c2ed6ad50',
  14500000, 3, 2),
- (N'f82380d7-9fab-4758-aebb-8032fce04a4c',
- N'bad43c7a-6a3f-4f97-8d18-2e73261b6373',
+ (N'921330ce-43a2-44b8-bfd4-059655468092',
+ N'825e8a00-ae5a-404e-994b-ebef5028e1ab',
  CAST(('2023/12/25') AS DATE),
- N'abec46a5-9eb1-45d7-bd8d-46a3060ec2d1',
- N'd1e604ac-795f-4a25-ace6-2494c8738d8f',
+ N'6f391bb6-e5ad-4bb4-b890-cfb37723f65e',
+ N'9f2db427-5a6f-4313-98f8-35287820f903',
  4200000, 3, 2),
- (N'eef5b697-f9ff-4661-b0c5-430a274439da',
- N'bad43c7a-6a3f-4f97-8d18-2e73261b6373',
+ (N'dd2cb8c2-d65e-49ba-8c08-185bcfcca57a',
+ N'825e8a00-ae5a-404e-994b-ebef5028e1ab',
  CAST(('2023/11/05') AS DATE),
- N'bfab96a3-156e-49cc-9395-cca0f8a246a9',
- N'952f4b72-cd50-4c4f-b74c-faa3e44c721b',
+ N'3d9b7556-97d2-4192-8e83-cfe243c8ad15',
+ N'4af99375-1b6e-40c1-83cb-a291574d31ed',
  4200000, 3, 2)
 GO
 -- Questions
