@@ -95,7 +95,11 @@ namespace DriverLicenseLearningSupport.Repositories
         {
             // get member by id
             var memberEntity = await _context.Members.Where(x => x.MemberId == id.ToString() && x.IsActive == true)
+                                                     .Include(x => x.LicenseForm)
+                                                     .Include(x => x.Address)
+                                                     .Include(x => x.EmailNavigation)
                                                      .FirstOrDefaultAsync();
+            memberEntity.EmailNavigation.Password = null!;
             // map to model and return
             return _mapper.Map<MemberModel>(memberEntity);
         }

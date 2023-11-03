@@ -1,4 +1,6 @@
-﻿using DriverLicenseLearningSupport.Models;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using DriverLicenseLearningSupport.Models;
+using System.Runtime.CompilerServices;
 
 namespace DriverLicenseLearningSupport.Utils
 {
@@ -100,6 +102,7 @@ namespace DriverLicenseLearningSupport.Utils
             // generate week schedule from frist day to prev
             for(int i = firstDay - 1; i >= 1; --i)
             {
+                // if first start date is 30 || 31
                 if(firstDayOfMonth.Day == 30 || 
                     firstDayOfMonth.Day == 31)
                 {
@@ -108,12 +111,25 @@ namespace DriverLicenseLearningSupport.Utils
                         // get prev days by timespan value
                         firstDayOfMonth.Subtract(TimeSpan.FromDays(i)).Day));
                 }
-                else
+                else // start date < 30
                 {
-                    // add date before first month's day to complete weekday schedule
-                    dates.Add(new DateTime(firstDayOfMonth.Year, firstDayOfMonth.Month,
-                        // get prev days by timespan value
-                        firstDayOfMonth.Subtract(TimeSpan.FromDays(i)).Day));
+                    var substractDate = firstDayOfMonth.Subtract(TimeSpan.FromDays(i)).Day;
+
+                    // substract date 30 || 31
+                    if(substractDate == 30 || substractDate == 31)
+                    {
+                        // add date before first month's day to complete weekday schedule
+                        dates.Add(new DateTime(firstDayOfMonth.Year, firstDayOfMonth.Month - 1,
+                            // get prev days by timespan value
+                            firstDayOfMonth.Subtract(TimeSpan.FromDays(i)).Day));
+                    }
+                    else // substract date < 30
+                    {
+                        // add date before first month's day to complete weekday schedule
+                        dates.Add(new DateTime(firstDayOfMonth.Year, firstDayOfMonth.Month,
+                            // get prev days by timespan value
+                            firstDayOfMonth.Subtract(TimeSpan.FromDays(i)).Day));
+                    }
                 }
 
             }
@@ -182,6 +198,116 @@ namespace DriverLicenseLearningSupport.Utils
             { weekday.Monday, weekday.Tuesday, weekday.Wednesday,
                 weekday.Thursday, weekday.Friday, weekday.Saturday, weekday.Sunday};
             return dates;
+        }
+
+        public static List<double> GenerateMonthlyIncome(List<CoursePackageReservationModel> reservations)
+        {
+            var januaryIncome = reservations.Where(x => Convert.ToDateTime(x.CreateDate).Month == 1)
+                .Select(x => x.PaymentAmmount).Sum();
+            var februaryIncome = reservations.Where(x => Convert.ToDateTime(x.CreateDate).Month == 2)
+                .Select(x => x.PaymentAmmount).Sum();
+            var marchIncome =reservations.Where(x => Convert.ToDateTime(x.CreateDate).Month == 3)
+                .Select(x => x.PaymentAmmount).Sum();
+            var aprilIncome =reservations.Where(x => Convert.ToDateTime(x.CreateDate).Month == 4)
+                .Select(x => x.PaymentAmmount).Sum();
+            var mayIncome =reservations.Where(x => Convert.ToDateTime(x.CreateDate).Month == 5)
+                .Select(x => x.PaymentAmmount).Sum();
+            var juneIncome =reservations.Where(x => Convert.ToDateTime(x.CreateDate).Month == 6)
+                .Select(x => x.PaymentAmmount).Sum();
+            var julyIncome =reservations.Where(x => Convert.ToDateTime(x.CreateDate).Month == 7)
+                .Select(x => x.PaymentAmmount).Sum();
+            var augustIncome =reservations.Where(x => Convert.ToDateTime(x.CreateDate).Month == 8)
+                .Select(x => x.PaymentAmmount).Sum();
+            var septemberIncome =reservations.Where(x => Convert.ToDateTime(x.CreateDate).Month == 9)
+                .Select(x => x.PaymentAmmount).Sum();
+            var octoberIncome =reservations.Where(x => Convert.ToDateTime(x.CreateDate).Month == 10)
+                .Select(x => x.PaymentAmmount).Sum();
+            var novemberIncome =reservations.Where(x => Convert.ToDateTime(x.CreateDate).Month == 11)
+                .Select(x => x.PaymentAmmount).Sum();
+            var decemberIncome = reservations.Where(x => Convert.ToDateTime(x.CreateDate).Month == 12)
+                .Select(x => x.PaymentAmmount).Sum();
+
+            return new List<Double>()
+            {
+                Convert.ToDouble(januaryIncome),
+                Convert.ToDouble(februaryIncome),
+                Convert.ToDouble(marchIncome),
+                Convert.ToDouble(aprilIncome),
+                Convert.ToDouble(mayIncome),
+                Convert.ToDouble(juneIncome),
+                Convert.ToDouble(julyIncome),
+                Convert.ToDouble(augustIncome),
+                Convert.ToDouble(septemberIncome),
+                Convert.ToDouble(octoberIncome),
+                Convert.ToDouble(novemberIncome),
+                Convert.ToDouble(decemberIncome)
+            };
+        }
+
+        public static List<int> GenerateWeeklySlots(List<TeachingScheduleModel> schedules)
+        {
+            var totalInMonday = 0;
+            var totalInTuesday = 0;
+            var totalInWednesday = 0;
+            var totalInThursday = 0;
+            var totalInFriday = 0;
+            var totalInSaturday = 0;
+            var totalInSunday = 0;
+
+            foreach(var schedule in schedules)
+            {
+                // schedule in monday
+                if ((int)schedule.TeachingDate.DayOfWeek == 1)
+                {
+                    ++totalInMonday;
+                }
+                // schedule in tuesday
+                else if ((int)schedule.TeachingDate.DayOfWeek == 2)
+                {
+                    ++totalInTuesday;
+                }
+                // schedule in wednesday
+                else if ((int)schedule.TeachingDate.DayOfWeek == 3)
+                {
+                    ++totalInWednesday;
+                }
+                // schedule in thursday
+                else if ((int)schedule.TeachingDate.DayOfWeek == 4)
+                {
+                    ++totalInThursday;
+                }
+                // schedule in friday
+                else if ((int)schedule.TeachingDate.DayOfWeek == 5)
+                {
+                    ++totalInFriday;
+                }
+                // schedule in saturday
+                else if ((int)schedule.TeachingDate.DayOfWeek == 6)
+                {
+                    ++totalInSaturday;
+                }
+                // schedule in sunday
+                else
+                {
+                    ++totalInSunday;
+                }
+            }
+
+            return new List<int> 
+            { totalInMonday, totalInTuesday, totalInWednesday,
+                totalInThursday, totalInFriday, totalInSaturday, totalInSunday };
+        }
+
+        public static List<int> MultipleWeeklySlots(List<int> prevList, List<TeachingScheduleModel> weekdaySlots)
+        {
+            var nextList = GenerateWeeklySlots(weekdaySlots);
+
+            for(int i=0 ; i<prevList.Count; i++)
+            {
+                prevList[i] += nextList[i];
+            }
+
+            return prevList;
         }
     }
 }

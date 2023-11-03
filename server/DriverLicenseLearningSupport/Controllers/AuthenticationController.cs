@@ -20,6 +20,7 @@ using System;
 using static System.Collections.Specialized.BitVector32;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Caching.Memory;
+using System.Text.Json;
 
 namespace DriverLicenseLearningSupport.Controllers
 {
@@ -41,6 +42,7 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly IJobTitleService _jobTitleService;
         private readonly IRoleService _roleService;
         private readonly IMemoryCache _cache;
+        private readonly AppSettingsConfig _appSettingsConfig;
         private readonly AppSettings _appSettings;
 
         public AuthenticationController(IAccountService accountService,
@@ -51,7 +53,8 @@ namespace DriverLicenseLearningSupport.Controllers
             IJobTitleService jobTitleService,
             IRoleService roleService,
             IMemoryCache cache,
-            IOptionsMonitor<AppSettings> monitor)
+            IOptionsMonitor<AppSettings> monitor,
+            IOptionsMonitor<AppSettingsConfig> monitor1)
         {
             _accountService = accountService;
             _memberService = memberService;
@@ -61,6 +64,7 @@ namespace DriverLicenseLearningSupport.Controllers
             _jobTitleService = jobTitleService;
             _roleService = roleService;
             _cache = cache;
+            _appSettingsConfig = monitor1.CurrentValue;
             _appSettings = monitor.CurrentValue;
         }
 
@@ -93,6 +97,16 @@ namespace DriverLicenseLearningSupport.Controllers
                     Message = "Sai tài khoản hoặc mật khẩu",
                 });
 
+            if(account.IsActive == false) // not allow to access 
+            {
+                // return Unauthorized 
+                return Unauthorized(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status401Unauthorized,
+                    Message = "Tài khoản đã bị cấm truy cập vào hệ thống",
+                });
+            }
+
             //get account info by role
             Object accountInfo;
             if (account.Role.Name.Equals("Member"))
@@ -119,17 +133,6 @@ namespace DriverLicenseLearningSupport.Controllers
                     Token = token,
                     AccountInfo = accountInfo
                 }
-            });
-        }
-
-        [HttpGet]
-        [Route("authentication/test")]
-        public async Task<IActionResult> Test(string password)
-        {
-            return Ok(new
-            {
-                Encrypt = PasswordHelper.ConvertToEncrypt(password),
-                //Decrypt = PasswordHelper.ConvertToDecrypt(password)
             });
         }
 
@@ -171,6 +174,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 Errors = accountValidateResult
             });
 
+
             // generate address
             var address = reqObj.ToAddressModel();
             var addressId = Guid.NewGuid().ToString();
@@ -184,6 +188,18 @@ namespace DriverLicenseLearningSupport.Controllers
             member.Address = address;
             member.IsActive = true;
             member.AvatarImage = _appSettings.DefaultAvatar;
+
+            // validate birthdate
+            var currDate = DateTime.ParseExact(DateTime.Now.ToString(_appSettings.DateFormat), 
+                _appSettings.DateFormat, CultureInfo.InvariantCulture);
+            var birthdate = member.DateBirth;
+            if(birthdate >= currDate)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Ngày sinh không hợp lệ"
+                });
+            }
 
             // create member
             await _memberService.CreateAsync(member);

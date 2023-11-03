@@ -518,8 +518,9 @@ namespace DriverLicenseLearningSupport.Controllers
                 });
             }
             course.Mentors = null!;
-            course.FeedBacks = null;
-            course.Curricula = null;
+            course.FeedBacks = null!;
+            course.Curricula = null!;
+            course.CoursePackages = null!;
 
             // generate current date time 
             var currDate = DateTime.ParseExact(DateTime.Now.ToString("yyyy-MM-dd"),
@@ -640,9 +641,10 @@ namespace DriverLicenseLearningSupport.Controllers
             }
             // get course by id 
             var course = await _courseService.GetAsync(Guid.Parse(weekday.CourseId));
-            course.Mentors = null;
-            course.FeedBacks = null;
-            course.Curricula = null;
+            course.Mentors = null!;
+            course.FeedBacks = null!;
+            course.Curricula = null!;
+            course.CoursePackages = null!;
 
             // count total teaching schedule
             var totalSchedule = listOfSlotSchedule.Select(x => x.TeachingSchedules.Count)
@@ -922,6 +924,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     course.Mentors = null;
                     course.FeedBacks = null;
                     course.Curricula = null;
+                    course.CoursePackages = null!;
 
                     // count total teaching schedule
                     var totalSchedule = listOfSlotSchedule.Select(x => x.TeachingSchedules.Count)
@@ -1015,6 +1018,7 @@ namespace DriverLicenseLearningSupport.Controllers
         {
             // get mentor by id
             var mentor = await _staffService.GetAsync(Guid.Parse(reqObj.MentorId));
+            mentor.FeedBacks = null;
             if (mentor is null)
             {
                 return BadRequest(new BaseResponse
@@ -1026,6 +1030,11 @@ namespace DriverLicenseLearningSupport.Controllers
             
             // get course by id
             var course = await _courseService.GetAsync(Guid.Parse(reqObj.CourseId));
+            // set null collection
+            course.Mentors = null;
+            course.FeedBacks = null;
+            course.Curricula = null;
+            course.CoursePackages = null!;
             if (course is null)
             {
                 return BadRequest(new BaseResponse
@@ -1338,7 +1347,7 @@ namespace DriverLicenseLearningSupport.Controllers
         [HttpPost]
         [Route("staffs/import-excel")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> ImportToExcel([FromForm] IFormFile file,
+        public async Task<IActionResult> ImportToExcel(IFormFile file,
             [FromForm] int jobTitleId)
         {
             // validate excel file
@@ -1360,7 +1369,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 var stream = file.OpenReadStream();
 
                 // pass file stream to excel package
-                using (var xlPackage = new ExcelPackage(stream))
+                using (var xlPackage = new OfficeOpenXml.ExcelPackage(stream))
                 {
                     // get first worksheet of package
                     var worksheet = xlPackage.Workbook.Worksheets.First();
@@ -1511,7 +1520,7 @@ namespace DriverLicenseLearningSupport.Controllers
             var stream = new MemoryStream();
 
             // create excel package
-            using (var xlPackage = new ExcelPackage(stream))
+            using (var xlPackage = new OfficeOpenXml.ExcelPackage(stream))
             {
                 // define a worksheet
                 var worksheet = xlPackage.Workbook.Worksheets.Add("Staffs");
@@ -1558,7 +1567,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
                 }
                 // properties
-                xlPackage.Workbook.Properties.Title = "Staff List";
+                xlPackage.Workbook.Properties.Title = "Danh sách nhân viên";
                 xlPackage.Workbook.Properties.Author = "Admin";
                 await xlPackage.SaveAsync();
 

@@ -110,6 +110,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 });
             }
 
+
             // create course 
             var createdCourse = await _courseService.CreateAsync(courseModel);
 

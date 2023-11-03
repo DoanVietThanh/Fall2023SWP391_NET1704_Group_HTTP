@@ -19,6 +19,15 @@ namespace DriverLicenseLearningSupport.Payloads.Request
         public Guid MemberId { get; set; }
         [Required(ErrorMessage = "License Type Id is required")]
         public int LicenseTypeId { get; set; }
+
+        [Required(ErrorMessage = "Gender is required")]
+        public string Gender { get; set; }
+        
+        [Required(ErrorMessage = "Permanent Address is required")]
+        public string PermanentAddress { get; set; }
+       
+        [Required(ErrorMessage = "Identity Number is required")]
+        public string IdentityNumber { get; set; }
     }
 
     public static class LicenseRegisterFormRequestExtension 
@@ -30,7 +39,10 @@ namespace DriverLicenseLearningSupport.Payloads.Request
                 LicenseFormDesc = $"Tạo ngày {DateTime.Now}",
                 LicenseTypeId = reqObj.LicenseTypeId,
                 // default form status
-                RegisterFormStatusId = 1
+                RegisterFormStatusId = 1,
+                PermanentAddress = reqObj.PermanentAddress,
+                IdentityNumber = reqObj.IdentityNumber,
+                Gender = reqObj.Gender
             };
         }
     }

@@ -57,9 +57,19 @@ namespace DriverLicenseLearningSupport.Repositories
         }
         public async Task<LicenseRegisterFormModel> GetByMemberId(Guid memberId)
         {
-            var lfEntity = await _context.LicenseRegisterForms.Include(x => x.Members.Where(x => x.MemberId == memberId.ToString()))
-                                                                .FirstOrDefaultAsync();
+            // get member by id 
+            var member = await _context.Members.Where(x => x.MemberId == memberId.ToString())
+                                               .FirstOrDefaultAsync();
+            
+            
+            var lfEntity = await _context.LicenseRegisterForms.Where(x => x.LicenseFormId == member.LicenseFormId)
+                                                             .FirstOrDefaultAsync();             
+
             return _mapper.Map<LicenseRegisterFormModel>(lfEntity);
+        }
+                return _mapper.Map<LicenseRegisterFormModel>(lfEntity);
+            }
+            return null;
         }
         public async Task<bool> ApproveAsync(int licenseRegisterId)
         {

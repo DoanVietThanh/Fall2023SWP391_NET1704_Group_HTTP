@@ -113,5 +113,10 @@ namespace DriverLicenseLearningSupport.Services
         {
             return await _vehicleRepo.GetAllAsync();
         }
+
+        public async Task<VehicleTypeModel> GetVehicleTypeByDescAsync(string vehicleTypeDesc)
+        {
+            return await _vehicleRepo.GetVehicleTypeByDescAsync(vehicleTypeDesc);
+        }
     }
 }

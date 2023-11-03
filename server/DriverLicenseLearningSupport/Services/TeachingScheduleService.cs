@@ -127,5 +127,10 @@ namespace DriverLicenseLearningSupport.Services
         {
             return await _teachingScheduleRepo.DenyMentorAwaitSchedule(mentorId);
         }
+
+        public async Task<IEnumerable<TeachingScheduleModel>> GetAllWeekdayScheduleAsync(int weekDayScheduleId)
+        {
+            return await _teachingScheduleRepo.GetAllWeekdayScheduleAsync(weekDayScheduleId);
+        }
     }
 }

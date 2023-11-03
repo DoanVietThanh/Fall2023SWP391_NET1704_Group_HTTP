@@ -8,6 +8,7 @@ namespace DriverLicenseLearningSupport.Services.Impl
         Task<CoursePackageReservationModel> CreateAsync(CoursePackageReservationModel courseReservation);
         Task<CoursePackageReservationModel> GetByMemberAsync(Guid memberId);
         Task<IEnumerable<CoursePackageReservationModel>> GetAllByCourseIdAsync(Guid courseId);
+        Task<IEnumerable<CoursePackageReservationModel>> GetAllAsync();
         Task<IEnumerable<MemberModel>> GetAllMemberInCourseAsync(Guid courseId);
         Task<int> GetTotalMemberByMentorIdAsync(Guid mentorId);
         Task<bool> UpdatePaymentStatusAsync(Guid id, double paymentAmmount);

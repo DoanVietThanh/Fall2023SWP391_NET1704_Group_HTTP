@@ -24,6 +24,11 @@ namespace DriverLicenseLearningSupport.Services
             return await _courseReservationRepo.CreateAsync(courseReservationEntity);
         }
 
+        public async Task<IEnumerable<CoursePackageReservationModel>> GetAllAsync()
+        {
+            return await _courseReservationRepo.GetAllAsync();
+        }
+
         public async Task<IEnumerable<CoursePackageReservationModel>> GetAllByCourseIdAsync(Guid courseId)
         {
             return await _courseReservationRepo.GetAllByCourseIdAsync(courseId);

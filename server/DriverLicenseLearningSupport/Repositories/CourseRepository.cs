@@ -202,7 +202,18 @@ namespace DriverLicenseLearningSupport.Repositories
         }
         public async Task<IEnumerable<CourseModel>> GetAllAsync()
         {
-            var courses = await _context.Courses.ToListAsync();
+            var courses = await _context.Courses.Select(x => new Course { 
+                CourseId = x.CourseId,
+                CourseTitle = x.CourseTitle,
+                CourseDesc = x.CourseDesc,
+                TotalMonth = x.TotalMonth,
+                TotalKmRequired = x.TotalKmRequired,
+                TotalHoursRequired = x.TotalHoursRequired,
+                StartDate = x.StartDate,
+                IsActive = x.IsActive,
+                LicenseTypeId = x.LicenseTypeId,
+                CoursePackages = x.CoursePackages
+            }).ToListAsync();
             return _mapper.Map<IEnumerable<CourseModel>>(courses);
         }
         public async Task<IEnumerable<CourseModel>> GetAllMentorCourseAsync(Guid mentorId)
