@@ -7,13 +7,13 @@ namespace DriverLicenseLearningSupport.Payloads.Request
 {
     public class LicenseRegisterFormRequest
     {
-        [Required(ErrorMessage = "Image is required")]
-        public IFormFile Image { get; set; } = null!;
+        //[Required(ErrorMessage = "Image is required")]
+        public IFormFile? Image { get; set; } = null!;
 
-        [Required(ErrorMessage = "Identity Image is required")]
-        public IFormFile IdentityImage { get; set; } = null!;
-        [Required(ErrorMessage = "Health certification Image is required")]
-        public IFormFile HealthCertificationImage { get; set; } = null!;
+        //[Required(ErrorMessage = "Identity Image is required")]
+        public IFormFile? IdentityImage { get; set; } = null!;
+        //[Required(ErrorMessage = "Health certification Image is required")]
+        public IFormFile? HealthCertificationImage { get; set; } = null!;
 
         [Required(ErrorMessage = "Member Id is required")]
         public Guid MemberId { get; set; }
@@ -29,6 +29,7 @@ namespace DriverLicenseLearningSupport.Payloads.Request
                 CreateDate = DateTime.Now,
                 LicenseFormDesc = $"Tạo ngày {DateTime.Now}",
                 LicenseTypeId = reqObj.LicenseTypeId,
+                // default form status
                 RegisterFormStatusId = 1
             };
         }

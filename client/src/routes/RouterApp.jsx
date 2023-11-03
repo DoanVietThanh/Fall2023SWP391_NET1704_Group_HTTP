@@ -14,8 +14,9 @@ import CauHoiDiemLietPage from '../pages/DocumentPage/CauHoiDiemLietPage';
 import DocumentPage from '../pages/DocumentPage/DocumentPage';
 import ToanBoCauHoiPage from '../pages/DocumentPage/ToanBoCauHoiPage';
 import HomePage from '../pages/HomePage/HomePage';
-import InstructorSchedule from '../pages/InstructorSchedule/InstructorSchedule';
+
 import IntructorDetail from '../pages/IntructorPage/IntructorDetail';
+import InstructorSchedule from './../pages/IntructorPage/InstructorSchedule';
 import IntructorPage from '../pages/IntructorPage/IntructorPage';
 import ForgotPassword from '../pages/LoginPage/ForgotPassword';
 import LoginPage from '../pages/LoginPage/LoginPage';
@@ -60,7 +61,6 @@ const RouterApp = () => {
     { path: '/profile', element: <Profile /> },
     { path: '/week-schedule', element: <WeekSchedule /> },
     { path: '/history-test', element: <HistoryTest /> },
-    { path: '/history-test', element: <HistoryTest /> },
     { path: '/week-schedule-mentor', element: <WeekScheduleMentor /> },
     { path: '/manage-question', element: <ManageQuestion /> },
     { path: '/manage-banktest', element: <ManageBankTest /> },
@@ -86,7 +86,10 @@ const RouterApp = () => {
 
     { path: '/theory', element: <TheoryPage /> },
     { path: '/theory/test/:theoryExamId', element: <TestTheory /> },
-    { path: '/theory/result/:mockTestId', element: <ResultTheory /> },
+    {
+      path: '/theory/result/:email/:mockTestId/:startedDate',
+      element: <ResultTheory />,
+    },
 
     { path: '/simulationSituation', element: <SimulationSituation /> },
 

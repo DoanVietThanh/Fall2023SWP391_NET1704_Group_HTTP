@@ -2,7 +2,15 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import React, { useEffect, useState } from 'react';
 
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { Box, DialogActions, Menu, MenuItem, TextField } from '@mui/material';
+import {
+  Box,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Menu,
+  MenuItem,
+  TextField,
+} from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from 'react-icons/ai';
@@ -14,6 +22,8 @@ import axiosClient from '../../utils/axiosClient';
 import axiosForm from '../../utils/axiosForm';
 import axiosUrlencoded from '../../utils/axiosUrlencoded';
 import Loading from './../../components/Loading';
+
+import dayjs from 'dayjs';
 
 const ManageQuestion = () => {
   const columns = [
@@ -73,6 +83,7 @@ const ManageQuestion = () => {
   const [listLisenceType, setListLisenceType] = useState([]);
   const [openFormQuestion, setOpenFormQuestion] = useState(false);
   const [openConfirmDelete, setOpenConfirmDelete] = useState(false);
+  const [openCreateTest, setOpenCreateTest] = useState(false);
   const [listAnswer, setListAnswer] = useState(1);
   const [previewImg, setPreviewImg] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -82,6 +93,9 @@ const ManageQuestion = () => {
   const [createRule, setCreateRule] = useState();
   const [selectedTypeLicense, setSelectedTypeLicense] = useState();
   const [deleteQuestionID, setDeleteQuestionID] = useState();
+  const [isMockTest, setIsMockTest] = useState(false);
+  const [dateTest, setDateTest] = useState(dayjs().format('YYYY-MM-DDTHH:mm'));
+
   const initialFormData = {
     imageLink: '',
     questionAnswerDesc: '',
@@ -89,6 +103,10 @@ const ManageQuestion = () => {
     answers: [],
     LicenseTypeId: 1,
     rightAnswer: '',
+    // IsMockTest: false,
+    // StartDate: null,
+    // Hour: null,
+    // Minute: null,
   };
   const [formData, setFormData] = useState(initialFormData);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -240,36 +258,23 @@ const ManageQuestion = () => {
   };
 
   const handleSubmitCreateTest = async () => {
-    console.log({
-      questionIds: selection,
-      TotalQuestion: createRule?.totalQuestion,
-      TotalTime: createRule?.totalTime,
-      TotalAnswerRequired: createRule?.totalAnswerRequired,
-    });
-
-    console.log(
-      JSON.stringify({
-        questionIds: selection,
-        TotalQuestion: createRule?.totalQuestion,
-        TotalTime: createRule?.totalTime,
-        TotalAnswerRequired: createRule?.totalAnswerRequired,
-      })
-    );
-
     await axiosUrlencoded
       .post(`/theory-exam/add-question`, {
         questionIds: selection,
         TotalQuestion: createRule?.totalQuestion,
         TotalTime: createRule?.totalTime,
         TotalAnswerRequired: createRule?.totalAnswerRequired,
+        IsMockTest: isMockTest,
+        StartDate: dayjs(dateTest).format('YYYY-MM-DD'),
+        Hour: dayjs(dateTest).format('HH'),
+        Minute: dayjs(dateTest).format('MM'),
       })
       .then((res) => {
         console.log('Res: ', res);
         toastSuccess(res?.data?.message);
         setSelection([]);
+        setOpenCreateTest(false);
         getListQuestion();
-        // setSelectedTypeLicense(null)
-        // window.location.reload();
       })
       .catch((error) => toastError(error?.response?.data?.message));
   };
@@ -287,7 +292,14 @@ const ManageQuestion = () => {
       .catch((error) => toastError(error?.response?.data?.message));
   };
 
-  // console.log('selection: ', selection);
+  const handleCloseCreateTest = () => {
+    setOpenCreateTest(false);
+    setDateTest(dayjs().format('YYYY-MM-DDTHH:mm'));
+    setIsMockTest(false);
+  };
+
+  console.log('selection: ', selection);
+  console.log('isMockTest: ', isMockTest);
 
   return (
     <div className='flex'>
@@ -356,7 +368,10 @@ const ManageQuestion = () => {
 
                   <button
                     className='btn'
-                    onClick={() => handleSubmitCreateTest()}
+                    onClick={() => {
+                      // handleSubmitCreateTest();
+                      setOpenCreateTest(true);
+                    }}
                   >
                     Tạo đề thi
                   </button>
@@ -605,6 +620,89 @@ const ManageQuestion = () => {
                     </Button>
                   </DialogActions>
                 </div>
+              </Dialog>
+
+              <Dialog
+                open={openCreateTest}
+                onClose={handleCloseCreateTest}
+                aria-labelledby='alert-dialog-title'
+                aria-describedby='alert-dialog-description'
+                fullWidth
+                maxWidth='sm'
+              >
+                <DialogTitle id='alert-dialog-title'>
+                  <div className='bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-center text-white font-bold text-[24px]'>
+                    Tạo Đề Thi
+                  </div>
+                </DialogTitle>
+                <DialogContent>
+                  <div className='flex flex-col gap-4 text-[20px]'>
+                    <div>
+                      Số câu đã chọn
+                      {createRule?.totalQuestion && (
+                        <span className='font-bold'>{` ${selection.length}/${createRule?.totalQuestion}`}</span>
+                      )}
+                      :
+                      <div>
+                        {selection.length == 0 ? (
+                          <div className='p-4 border text-center text-red-700'>
+                            Chưa chọn câu hỏi
+                          </div>
+                        ) : (
+                          <div className='p-4 border grid grid-cols-10 gap-4'>
+                            {selection?.map((item, index) => (
+                              <div>{item}</div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className='flex justify-start gap-4 items-center'>
+                      <label htmlFor='isMockTest' className='cursor-pointer'>
+                        Xác nhận Mock Test:
+                      </label>
+                      <input
+                        type='checkbox'
+                        name=''
+                        checked={isMockTest}
+                        onChange={() => setIsMockTest(!isMockTest)}
+                        id='isMockTest'
+                        className='p-2 w-[20px] h-[20px] cursor-pointer'
+                        size={20}
+                      />
+                    </div>
+                    {isMockTest && (
+                      <div className='flex gap-4 justify-start'>
+                        <label htmlFor='dateTest'>Chọn ngày kiểm tra</label>
+                        <input
+                          type='datetime-local'
+                          id='dateTest'
+                          value={dateTest}
+                          defaultValue={dayjs().format('YYYY-MM-DDTHH:mm')}
+                          onChange={(e) => {
+                            setDateTest(e.target.value);
+                            console.log(e.target.value);
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </DialogContent>
+                <DialogActions>
+                  <button
+                    className='btn-cancel'
+                    onClick={handleCloseCreateTest}
+                  >
+                    Hủy
+                  </button>
+                  <button
+                    className='btn'
+                    onClick={() => handleSubmitCreateTest()}
+                    autoFocus
+                  >
+                    Tạo mới
+                  </button>
+                </DialogActions>
               </Dialog>
             </div>
           </div>

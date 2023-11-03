@@ -72,20 +72,21 @@ namespace DriverLicenseLearningSupport.Repositories
                                                         }
                                                     },
                                                     LicenseFormId = x.LicenseFormId,
-                                                    LicenseForm = new LicenseRegisterForm
+                                                    /*LicenseForm = new LicenseRegisterForm
                                                     {
                                                         LicenseFormId = x.LicenseForm.LicenseFormId,
                                                         LicenseFormDesc = x.LicenseForm.LicenseFormDesc,
                                                         CreateDate = x.LicenseForm.CreateDate,
                                                         Image = x.LicenseForm.Image,
-                                                        IdentityCardImage = x.LicenseForm.IdentityCardImage,
+                                                        IdentityCardImage = x.
+                                                    LicenseForm.IdentityCardImage,
                                                         HealthCertificationImage = x.LicenseForm.HealthCertificationImage,
                                                         RegisterFormStatus = new LicenseRegisterFormStatus
                                                         {
                                                             RegisterFormStatusId = x.LicenseForm.RegisterFormStatus.RegisterFormStatusId,
                                                             RegisterFormStatusDesc = x.LicenseForm.RegisterFormStatus.RegisterFormStatusDesc
                                                         }
-                                                    }
+                                                    }*/
                                                 }).FirstOrDefaultAsync();
             // map to model and return
             return _mapper.Map<MemberModel>(memberEntity);

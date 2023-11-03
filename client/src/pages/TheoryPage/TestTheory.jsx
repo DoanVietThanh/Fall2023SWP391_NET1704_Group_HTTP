@@ -2,7 +2,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { AiOutlineArrowLeft } from 'react-icons/ai';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import CountdownTimer from './CountdownTimer';
@@ -10,6 +10,7 @@ import axiosClient from '../../utils/axiosClient';
 import { useSelector } from 'react-redux';
 import * as dayjs from 'dayjs';
 import { toastError, toastSuccess } from '../../components/Toastify';
+import axios from 'axios';
 
 // console.log(Array.from({ length: 10 }, (_, index) => 0));
 // console.log([...Array(10)].map(() => 0));
@@ -18,9 +19,12 @@ import { toastError, toastSuccess } from '../../components/Toastify';
 const TestTheory = () => {
   const navigate = useNavigate();
   const { theoryExamId } = useParams();
-  const { memberId, email } = useSelector(
-    (state) => state.auth.user.accountInfo
-  );
+  // const { email } = useSelector((state) => state?.auth?.user?.accountInfo);
+
+  const email =
+    useSelector((state) => state?.auth?.user?.accountInfo?.email) ||
+    'ehioqwehqwoehioqweho@gmail.com';
+
   const currentDate = new Date();
   const [startedDate, setStartedDate] = useState('');
   const [open, setOpen] = useState(false);
@@ -31,7 +35,7 @@ const TestTheory = () => {
 
   useEffect(() => {
     async function fetchData() {
-      await axiosClient
+      await axios
         .get(`/theory-exam/${theoryExamId}`)
         .then((response) => {
           setLicenseDesc(
@@ -65,7 +69,6 @@ const TestTheory = () => {
     const indexAnswer = newAnswerList.findIndex(
       (itemAnswer) => itemAnswer.questionId === indexQuestion
     );
-    // console.log('indexAnswer: ', indexAnswer);
     newAnswerList[indexAnswer] = {
       questionId: indexQuestion,
       selectAnswer: indexOption,
@@ -73,7 +76,7 @@ const TestTheory = () => {
     setAnswerList(newAnswerList);
   };
 
-  const handleSubmit = async (id) => {
+  const handleSubmit = useCallback(async (id) => {
     console.log(
       JSON.stringify({
         email,
@@ -83,7 +86,7 @@ const TestTheory = () => {
         selectedAnswers: answerList,
       })
     );
-    await axiosClient
+    await axios
       .post(`/theory/submit`, {
         email,
         theoryExamId,
@@ -94,13 +97,13 @@ const TestTheory = () => {
       .then((res) => {
         console.log('res: ', res);
         toastSuccess(res?.data?.message);
-        navigate(`/theory/result/${id}`);
+        navigate(`/theory/result/${email}/${id}/${startedDate}`);
       })
       .catch((error) => {
         console.log('error: ', error);
         toastError(error?.response?.data?.message);
       });
-  };
+  });
 
   console.log('answerList: ', answerList);
   console.log('questionList: ', questionList);

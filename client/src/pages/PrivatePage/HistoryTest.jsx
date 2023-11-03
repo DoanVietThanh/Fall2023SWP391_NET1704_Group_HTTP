@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import SideBar from '../../components/SideBar';
 import { toastError } from '../../components/Toastify';
 import axiosClient from '../../utils/axiosClient';
+import Loading from '../../components/Loading';
 
 const HistoryTest = () => {
   const { memberId, email } = useSelector(
@@ -32,7 +33,7 @@ const HistoryTest = () => {
       headerName: 'Giờ làm bài',
       width: 160,
       renderCell: (params) => (
-        <div>{dayjs(params?.row?.date).format('HH:mm')}</div>
+        <div>{dayjs(params?.row?.date).format('HH:mm:ss')}</div>
       ),
     },
     { field: 'typeLisence', headerName: 'Loại bằng lái', width: 160 },
@@ -87,19 +88,27 @@ const HistoryTest = () => {
             size={24}
             className='text-gray-400 cursor-pointer'
             onClick={async () => {
+              const joinDate = dayjs(params.row.date)
+                .format('YYYY-MM-DD')
+                .concat(' '.concat(dayjs(params.row.date).format('HH:mm:ss')));
+              console.log(
+                JSON.stringify({
+                  email,
+                  mockTestId: params.row.idTheoryExam,
+                  joinDate,
+                })
+              );
               await axiosClient
                 .post(`/theory/review`, {
                   email,
                   mockTestId: params.row.idTheoryExam,
-                  joinDate: dayjs(params.row.date)
-                    .format('YYYY-MM-DD')
-                    .concat(
-                      ' '.concat(dayjs(params.row.date).format('HH:mm:ss'))
-                    ),
+                  joinDate,
                 })
                 .then((res) => {
                   console.log(res);
-                  navigate(`/theory/result/${params.row.idTheoryExam}`);
+                  navigate(
+                    `/theory/result/${email}/${params.row.idTheoryExam}/${joinDate}`
+                  );
                 })
                 .catch((error) => toastError(error?.response?.data?.message));
             }}
@@ -145,18 +154,20 @@ const HistoryTest = () => {
       <Box component='main' sx={{ flexGrow: 1, p: 3 }}>
         <div className='h-[80vh] w-full rounded overflow-y-auto mt-[64px]'>
           <div className='w-full'>
-            {listHistoryTest && (
+            {listHistoryTest ? (
               <DataGrid
                 rows={listHistoryTest}
                 columns={columns}
                 initialState={{
                   pagination: {
-                    paginationModel: { page: 0, pageSize: 5 },
+                    paginationModel: { page: 0, pageSize: 10 },
                   },
                 }}
-                pageSizeOptions={[5, 10]}
+                pageSizeOptions={[5, 10, 20, 50]}
                 // checkboxSelection
               />
+            ) : (
+              <Loading />
             )}
           </div>
         </div>

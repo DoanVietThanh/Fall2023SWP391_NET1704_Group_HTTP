@@ -1,63 +1,43 @@
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from 'react-icons/ai';
-import { useSelector } from 'react-redux';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import theme from '../../theme';
 import axiosClient from '../../utils/axiosClient';
 import { toastError } from './../../components/Toastify';
 import RightAnswer from './components/RightAnswer';
+import axios from 'axios';
 // console.log(Array.from({ length: 10 }, (_, index) => 0));
 // console.log([...Array(10)].map(() => 0));
 // console.log(new Array(10).fill(0));
 
 const ResultTheory = () => {
-  const navigate = useNavigate();
-  const url_Service = process.env.REACT_APP_SERVER_API;
-  const { memberId, email } = useSelector(
-    (state) => state.auth.user.accountInfo
-  );
-  const { mockTestId } = useParams();
-  const currentDate = new Date();
-  const [open, setOpen] = useState(false);
+  const { email, mockTestId, startedDate } = useParams();
   const [examResult, setExamResult] = useState([]);
-  const [answerList, setAnswerList] = useState(
-    new Array(examResult?.history?.totalQuestion).fill(0)
-  );
+  const navigate = useNavigate();
   const charOption = ['A', 'B', 'C', 'D', 'E'];
-
   useEffect(() => {
     async function getReview() {
-      try {
-        const response = await axiosClient
-          .post(`/theory/review`, {
-            email,
-            mockTestId,
-            joinDate: localStorage.getItem('startedDate'),
-          })
-          .catch((error) => toastError(error?.response?.data?.message));
-        if (response.data.statusCode === 200) {
-          setExamResult(response.data.data);
-        }
-        console.log('getReview: ', response);
-      } catch (error) {
-        // toastError('Review thất bại');
-      }
+      const response = await axios
+        .post(`/theory/review`, {
+          email,
+          mockTestId,
+          joinDate: startedDate,
+        })
+        .then((res) => {
+          console.log(res);
+
+          setExamResult(res?.data?.data);
+        })
+        .catch((error) => {
+          navigate('/theory');
+          toastError(error?.response?.data?.message);
+        });
     }
     getReview();
   }, []);
 
-  const selectAnswer = (indexQuestion, char) => {
-    const newAnswerList = [...answerList];
-    newAnswerList[indexQuestion] = char;
-    setAnswerList(newAnswerList);
-  };
-
-  const handleSubmit = (id) => {
-    navigate(`/theory/result/${id}`);
-  };
-
-  console.log('examResult?.examResult: ', examResult?.examResult);
+  console.log('examResult: ', examResult);
 
   return (
     <div className='flex gap-1 bg-gray-200 h-[100vh] w-[100vw]'>

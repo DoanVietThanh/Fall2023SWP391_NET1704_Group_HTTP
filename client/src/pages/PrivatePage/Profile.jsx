@@ -1,9 +1,9 @@
-import { Box } from '@mui/material';
-import * as dayjs from 'dayjs';
 import React from 'react';
-import { useSelector } from 'react-redux';
+import * as dayjs from 'dayjs';
+import { Box } from '@mui/material';
 import SideBar from '../../components/SideBar';
-import DialogEditUser from './components/DialogEditUser';
+import { useSelector } from 'react-redux';
+
 const Profile = () => {
   const { user, isLoading } = useSelector((state) => state.auth);
   const accInfo = user.accountInfo;
@@ -49,25 +49,23 @@ const Profile = () => {
                 <span className='text-[20px] font-semibold'>
                   Số điện thoại:
                 </span>
-                <span className='text-[20px] font-normal'>
-                  {accInfo?.phone}
-                </span>
+                <span className='text-[20px] font-normal'>{accInfo.phone}</span>
               </div>
               {/* <div className='flex-x gap-4'>
                 <span className='text-[20px] font-semibold'>
                   Loại bằng lái:
                 </span>
                 <span className='text-[20px] font-normal'>
-                  {accInfo?.licenseType.licenseTypeDesc}
+                  {accInfo.licenseType.licenseTypeDesc}
                 </span>
               </div> */}
               <div className='flex-x gap-4'>
                 <span className='text-[20px] font-semibold'>Địa chỉ:</span>
-                <span className='text-[20px] font-normal'>{`${accInfo?.address.street}, ${accInfo?.address.district}, ${accInfo?.address.city}`}</span>
+                <span className='text-[20px] font-normal'>{`${accInfo.address.street}, ${accInfo.address.district}, ${accInfo.address.city}`}</span>
               </div>
             </div>
             <div className='flex justify-end w-full'>
-              <DialogEditUser />
+              <button className='btn mt-4'>Chỉnh sửa</button>
             </div>
           </div>
         </div>

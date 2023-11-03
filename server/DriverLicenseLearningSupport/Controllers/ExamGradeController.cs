@@ -1,4 +1,6 @@
-﻿using DriverLicenseLearningSupport.Entities;
+﻿using DocumentFormat.OpenXml.ExtendedProperties;
+using DocumentFormat.OpenXml.Spreadsheet;
+using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Models.Config;
 using DriverLicenseLearningSupport.Payloads.Request;
@@ -6,6 +8,7 @@ using DriverLicenseLearningSupport.Payloads.Response;
 using DriverLicenseLearningSupport.Repositories.Impl;
 using DriverLicenseLearningSupport.Services;
 using DriverLicenseLearningSupport.Services.Impl;
+using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -24,10 +27,12 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly IQuestionService _questionService;
         private readonly IMemberService _memberService;
         private readonly AppSettings _appSettings;
+        private readonly IStaffService _staffService;
 
         public ExamGradeController(IExamGradeService examGradeService, IAnswerService answerService
             , ITheoryExamService theoryExamService, IExamHistoryService examHistoryService
-            , IQuestionService questionService, IMemberService memberService, IOptionsMonitor<AppSettings> monitor)
+            , IQuestionService questionService, IMemberService memberService, IOptionsMonitor<AppSettings> monitor
+            , IStaffService staffService)
         {
             _examGradeService = examGradeService;
             _answerService = answerService;
@@ -36,6 +41,7 @@ namespace DriverLicenseLearningSupport.Controllers
             _questionService = questionService;
             _memberService = memberService;
             _appSettings = monitor.CurrentValue;
+            _staffService = staffService;
         }
 
         [HttpPost]
@@ -55,7 +61,7 @@ namespace DriverLicenseLearningSupport.Controllers
             //Lưu lại selectedAnswer và nội dung câu hỏi trả về
             foreach (SelectedAnswerModel sam in reqObj.SelectedAnswers)
             {
-                rawSelectedAnswer.Add(sam.QuestionId, sam.SelectedAnswer);
+                rawSelectedAnswer.Add(sam.QuestionId, sam.SelectAnswer);
             }
 
             var models = reqObj.ToListExamGradeModel();
@@ -144,16 +150,20 @@ namespace DriverLicenseLearningSupport.Controllers
                 }
                 var date = startedDate.ToString(_appSettings.DateTimeFormat);
                 startedDate = DateTime.ParseExact(date, _appSettings.DateTimeFormat, CultureInfo.InvariantCulture);
-                examGradeModel.StartedDate = startedDate;
+                examGradeModel.StartDate = startedDate;
 
                 //right answer với id là 0,1,2,3 -> lấy nội dung và questionid để gán lại id dưới db
                 var answer = await _answerService.GetByQuestionIdAndAnswerDesc(examGradeModel.QuestionId, theRightAnswerModel.Answer);
                 // gán lại vào db, bảng examGrade selectedanswerId tương ứng ở dưới db
 
                 var createdExamGradeModel = await _examGradeService.CreateAsync(examGradeModel);
-                createdExamGradeModel.StartedDate = startedDate;
+                createdExamGradeModel.StartDate = startedDate;
                 listResult.Add(createdExamGradeModel);
             }
+
+
+
+
             if (listResult is null)
             {
                 return BadRequest(new ErrorResponse
@@ -162,6 +172,30 @@ namespace DriverLicenseLearningSupport.Controllers
                     Errors = "lỗi tải"
                 });
             }
+
+            //foreach (ExamGradeModel eg in listResult)
+            //{
+            //    var selectedAnswer = await _answerService.GetByAnswerIdAsync(eg.SelectedAnswerId);
+            //    QuestionModel question = await _questionService.GetByIdAsync(eg.QuestionId);
+            //    IEnumerable<AnswerModel> answers = await _answerService.GetAllByQuestionId(eg.QuestionId);
+            //    if (selectedAnswer is null)
+            //    {
+            //        eg.SelectedAnswerId = -1;
+            //    }
+            //    else
+            //    {
+            //        foreach (AnswerModel answer in answers)
+            //        {
+            //            if (answer.Answer.Equals(selectedAnswer.Answer))
+            //            {
+            //                eg.SelectedAnswerId = answer.QuestionAnswerId;
+            //                break;
+            //            }
+            //        }
+            //    }
+            //    question.QuestionAnswers = answers.ToList();
+            //    eg.Question = question;
+            //}
             if (isWrongParalysisQuesion is true || countRightAnswers < requiredRightAnswer)
             {
                 isPassed = false;
@@ -217,7 +251,7 @@ namespace DriverLicenseLearningSupport.Controllers
             var theoryExamIds = theoryExams.Select(x => x.TheoryExamId).ToList();
             var Histories = await _examHistoryService.GetAllByMemberIdAsysn(memberModel.MemberId);
 
-            foreach(var history in Histories)
+            foreach (var history in Histories)
             {
                 var index = theoryExamIds.IndexOf(history.TheoryExam.TheoryExamId);
                 history.TheoryExamDesc = $"Đề {index + 1}";
@@ -242,31 +276,48 @@ namespace DriverLicenseLearningSupport.Controllers
         //api cho việc đã ấn review
         [HttpPost]
         [Route("theory/review")]
-        //[Authorize(Roles = "Member")]
+        //[Authorize(Roles = "Member,Staff")]
         public async Task<IActionResult> ReviewDetailedMockTest([FromBody] ReviewExamRequest reqObj)
         {
+            bool isPassed = true;
             MemberModel memberModel = await _memberService.GetByEmailAsync(reqObj.Email);
-            if (memberModel is null)
-            {
-                return BadRequest(new ErrorResponse()
-                {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = "Lỗi rì viu"
-                });
-            }
+            StaffModel staffModel = await _staffService.GetByEmailAsync(reqObj.Email);
+
             var joinDate = DateTime.ParseExact(reqObj.JoinDate,
                 _appSettings.DateTimeFormat, CultureInfo.InvariantCulture);
             List<ExamGradeModel> examGrades = await _examGradeService.GetAllByTheoryExamIdandEmailAsync(reqObj.Email
                 , reqObj.MockTestId, joinDate);
+            var totalQuestion = examGrades.Count();
+            double grade = 0;
             //lay toan bo cau hoi va dap an trong de thi
+            if (examGrades is null || examGrades.Count() == 0)
+            {
+               if(memberModel is null)
+               {
+                    return BadRequest(new ErrorResponse
+                    {
+                        StatusCode = StatusCodes.Status400BadRequest,
+                        Message = "Bạn cần đăng nhập để được xem lại lịch sử"
+                    });
+               }
 
-
+                return BadRequest(new ErrorResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Không tìm thấy lịch sử thi"
+                });
+            }
+            var theoryExam = await _theoryExamService.GetByIdAsync(examGrades[0].TheoryExamId);
+            int totalAnswerRequired = theoryExam.TotalAnswerRequired.Value;
+            // cần TotalQuestion = totalQuesiton,
+            //TotalRightAnswer = countRightAnswers,
+            //IsPassed = isPassed
             foreach (ExamGradeModel eg in examGrades)
             {
                 var selectedAnswer = await _answerService.GetByAnswerIdAsync(eg.SelectedAnswerId);
                 QuestionModel question = await _questionService.GetByIdAsync(eg.QuestionId);
                 IEnumerable<AnswerModel> answers = await _answerService.GetAllByQuestionId(eg.QuestionId);
-                if(selectedAnswer is null)
+                if (selectedAnswer is null)
                 {
                     eg.SelectedAnswerId = -1;
                 }
@@ -281,42 +332,98 @@ namespace DriverLicenseLearningSupport.Controllers
                         }
                     }
                 }
+                if (eg.Point.Value == 0 && question.IsParalysis == true)
+                {
+                    isPassed = false;
+                }
                 question.QuestionAnswers = answers.ToList();
                 eg.Question = question;
+                grade += eg.Point.Value;
             }
-
-
-
-            ExamHistoryModel history = await _examHistoryService.GetHistoryDetailAsync(memberModel.MemberId
-                , reqObj.MockTestId, joinDate);
+            if (grade < totalAnswerRequired)
             {
+                isPassed = false;
+            }
+            if (memberModel is not null)
+            {
+                ExamHistoryModel history = await _examHistoryService.GetHistoryDetailAsync(memberModel.MemberId
+                    , reqObj.MockTestId, joinDate);
+
                 if (history is null)
                 {
-                    return NotFound(new ErrorResponse()
+                    return BadRequest(new ErrorResponse()
                     {
-                        StatusCode = StatusCodes.Status404NotFound,
-                        Message = "không thấy lịch sử thi"
+                        StatusCode = StatusCodes.Status400BadRequest,
+                        Message = "Không tìm thấy lịch sử thi"
                     });
                 }
+                else
+                {
+                    return Ok(new BaseResponse()
+                    {
+                        StatusCode = StatusCodes.Status200OK,
+                        Data = new
+                        {
+                            ExamResult = examGrades,
+                            History = history
+                        }
+                    });
+                }
+            }
+            else
+            {
+                var resultExam = examGrades;
+                foreach (var eg in examGrades) 
+                {
+                    bool isSuccess = await _examGradeService.DeleteAsync(eg.ExamGradeId);
+                    if (!isSuccess) 
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError, new BaseResponse
+                        {
+                            StatusCode = StatusCodes.Status500InternalServerError,
+                            Message = "Đã xảy ra lỗi"
+                        });
+                    }
+                }
+                /*
+                MemberId = member.MemberId,
+                    TheoryExamId = reqObj.TheoryExamId,
+                    TotalQuestion = totalQuesiton,
+                    TotalRightAnswer = countRightAnswers,
+                    IsPassed = isPassed,
+                    WrongParalysisQuestion = isWrongParalysisQuesion,
+                    TotalTime = reqObj.TotalTime,
+                    Date = startedDate*/
+
+                var HistoryModel = new ExamHistoryModel()
+                {
+                    TheoryExamId = theoryExam.TheoryExamId,
+                    IsPassed = isPassed,
+                    TotalRightAnswer = Convert.ToInt32(grade),
+                    TotalQuestion = totalAnswerRequired,
+                    Date = joinDate
+                };
 
                 return Ok(new BaseResponse()
                 {
                     StatusCode = StatusCodes.Status200OK,
                     Data = new
                     {
-                        ExamResult = examGrades,
-                        History = history
+                        ExamResult = resultExam,
+                        History = HistoryModel
                     }
                 });
             }
 
-            //api filter (theo giờ phút và ngày thi) , TheoryExamId ,
-            //, int Hours, int Minutes
-            // 2023-10-05T23:15:0
-            //TimeSpan ts = new TimeSpan(Hours ,Minutes, 0); // 
-            // DateTime dt = get from DB -> Date, Time
-            // dt.ToSring(_appSetign.DateFormat)
-            // dt.toString("HH:mm:ss").equal(ts.toString())
         }
+
+        //api filter (theo giờ phút và ngày thi) , TheoryExamId ,
+        //, int Hours, int Minutes
+        // 2023-10-05T23:15:0
+        //TimeSpan ts = new TimeSpan(Hours ,Minutes, 0); // 
+        // DateTime dt = get from DB -> Date, Time
+        // dt.ToSring(_appSetign.DateFormat)
+        // dt.toString("HH:mm:ss").equal(ts.toString())
+
     }
 }

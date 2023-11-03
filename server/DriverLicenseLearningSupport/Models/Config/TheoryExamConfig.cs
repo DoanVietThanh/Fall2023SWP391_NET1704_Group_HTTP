@@ -7,5 +7,6 @@
             CreateRules = new List<TheoryExamCreateRequirementModel>();
         }
         public List<TheoryExamCreateRequirementModel> CreateRules { get; set; }
+
     }
 }
