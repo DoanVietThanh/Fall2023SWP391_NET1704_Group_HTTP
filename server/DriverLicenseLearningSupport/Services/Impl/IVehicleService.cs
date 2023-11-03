@@ -13,6 +13,7 @@ namespace DriverLicenseLearningSupport.Services.Impl
         Task<VehicleModel> GetVehicleInDateScheduleAsync(DateTime teachingDate, int vehicleTypeId);
         Task<VehicleModel> GetVehicleByVehicleTypeAsync(int vehicleTypeId);
         Task<VehicleTypeModel> GetVehicleTypeByLicenseTypeAsync(int licenseTypeId);
+        Task<VehicleTypeModel> GetVehicleTypeByDescAsync(string vehicleTypeDesc); 
         Task<bool> UpdateActiveStatusAsync(int vehicleId);
         Task<bool> UpdateAsync(int vehicleId, VehicleModel vehicle);
         Task<bool> DeleteAsync(int vehicleId);

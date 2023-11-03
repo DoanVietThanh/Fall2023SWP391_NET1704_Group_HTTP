@@ -73,5 +73,37 @@ namespace DriverLicenseLearningSupport.Repositories
             // save changes and return
             return await _context.SaveChangesAsync() > 0 ? true : false;
         }
+
+        public async Task<IEnumerable<AccountModel>> GetAllAsync()
+        {
+            var accounts = await _context.Accounts
+                .Include(x => x.Role)
+                .ToListAsync();
+            return _mapper.Map<IEnumerable<AccountModel>>(accounts);
+        }
+
+        public async Task<bool> BanAccountAsync(string email)
+        {
+            var account = await _context.Accounts.Where(x => x.Email.Equals(email))
+                                                 .FirstOrDefaultAsync();
+            if(account is not null)
+            {
+                account.IsActive = false;
+            }
+
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> UnBanAccountAsync(string email)
+        {
+            var account = await _context.Accounts.Where(x => x.Email.Equals(email))
+                                                 .FirstOrDefaultAsync();
+            if (account is not null)
+            {
+                account.IsActive = true;
+            }
+
+            return await _context.SaveChangesAsync() > 0;
+        }
     }
 }

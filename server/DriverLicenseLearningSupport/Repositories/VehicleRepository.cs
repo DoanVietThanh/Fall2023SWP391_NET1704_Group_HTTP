@@ -31,6 +31,7 @@ namespace DriverLicenseLearningSupport.Repositories
         {
             var vehicles = await _context.Vehicles.Where(x => x.IsActive == true
                                                            && x.VehicleTypeId == vehicleTypeId)
+                                                  .Include(x => x.VehicleType)
                                                   .ToListAsync();
             return _mapper.Map<IEnumerable<VehicleModel>>(vehicles);
         }
@@ -38,6 +39,7 @@ namespace DriverLicenseLearningSupport.Repositories
         {
             var vehicles = await _context.Vehicles.Where(x => x.IsActive == false
                                                            && x.VehicleTypeId == vehicleTypeId)
+                                                  .Include(x => x.VehicleType)
                                                   .ToListAsync();
             return _mapper.Map<IEnumerable<VehicleModel>>(vehicles);
         }
@@ -130,7 +132,15 @@ namespace DriverLicenseLearningSupport.Repositories
 
         public async Task<IEnumerable<VehicleModel>> GetAllAsync()
         {
-            return _mapper.Map<IEnumerable<VehicleModel>>(await _context.Vehicles.ToListAsync());
+            return _mapper.Map<IEnumerable<VehicleModel>>(await _context.Vehicles.Include(x => x.VehicleType).ToListAsync());
+        }
+
+        public async Task<VehicleTypeModel> GetVehicleTypeByDescAsync(string vehicleTypeDesc)
+        {
+            var vehicleType = await _context.VehicleTypes.Where(x => 
+                x.VehicleTypeDesc.Equals(vehicleTypeDesc)).FirstOrDefaultAsync();
+
+            return _mapper.Map<VehicleTypeModel>(vehicleType);
         }
     }
 }

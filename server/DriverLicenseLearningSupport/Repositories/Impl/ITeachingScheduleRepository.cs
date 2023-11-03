@@ -17,6 +17,7 @@ namespace DriverLicenseLearningSupport.Repositories.Impl
         Task<IEnumerable<TeachingScheduleModel>> GetBySlotAndWeekDayScheduleOfMemberAsync(int slotId, int weekDayScheduleId, Guid mentorId, Guid memberId);
         Task<IEnumerable<TeachingScheduleModel>> GetAllByTeachingDateAsync(DateTime date);
         Task<IEnumerable<TeachingScheduleModel>> GetAllAwaitScheduleByMentorAsync(int slotId, int weekDayScheduleId, Guid mentorId);
+        Task<IEnumerable<TeachingScheduleModel>> GetAllWeekdayScheduleAsync(int weekDayScheduleId);
         Task<IEnumerable<TeachingScheduleModel>> GetAllAwaitScheduleMentor();
         Task<TeachingScheduleModel> GetByMentorIdAndTeachingDateAsync(int weekdayScheduleId, Guid mentorId, DateTime date, int slotId);
         Task<TeachingScheduleModel> GetByFilterAsync(TeachingScheduleFilter filters);

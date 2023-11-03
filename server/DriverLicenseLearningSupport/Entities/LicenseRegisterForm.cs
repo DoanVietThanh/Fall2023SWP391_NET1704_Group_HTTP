@@ -19,6 +19,12 @@ namespace DriverLicenseLearningSupport.Entities
         public int? RegisterFormStatusId { get; set; }
         public int? LicenseTypeId { get; set; }
 
+        // new fields
+        public string Gender { get; set; }
+        public string? PermanentAddress { get; set; }
+        public string? IdentityNumber { get; set; }
+
+
         public virtual LicenseType LicenseType { get; set; }
         public virtual LicenseRegisterFormStatus RegisterFormStatus { get; set; }
         public virtual ICollection<Member> Members { get; set; }

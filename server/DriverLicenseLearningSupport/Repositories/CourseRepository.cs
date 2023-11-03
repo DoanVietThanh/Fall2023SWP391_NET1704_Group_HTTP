@@ -202,7 +202,18 @@ namespace DriverLicenseLearningSupport.Repositories
         }
         public async Task<IEnumerable<CourseModel>> GetAllAsync()
         {
-            var courses = await _context.Courses.Where(x => x.IsActive == true).ToListAsync();
+            var courses = await _context.Courses.Select(x => new Course { 
+                CourseId = x.CourseId,
+                CourseTitle = x.CourseTitle,
+                CourseDesc = x.CourseDesc,
+                TotalMonth = x.TotalMonth,
+                TotalKmRequired = x.TotalKmRequired,
+                TotalHoursRequired = x.TotalHoursRequired,
+                StartDate = x.StartDate,
+                IsActive = x.IsActive,
+                LicenseTypeId = x.LicenseTypeId,
+                CoursePackages = x.CoursePackages
+            }).ToListAsync();
             return _mapper.Map<IEnumerable<CourseModel>>(courses);
         }
         public async Task<IEnumerable<CourseModel>> GetAllMentorCourseAsync(Guid mentorId)
@@ -312,43 +323,59 @@ namespace DriverLicenseLearningSupport.Repositories
         public async Task<bool> DeleteAsync(Guid id)
         {
             // get course by id
-            var courseEntity = await _context.Courses.Where(x => x.CourseId == id.ToString())
+            var courseEntity = await _context.Courses.Where(x => x.CourseId == id.ToString() 
+                                                        && x.IsActive == false)
                                                      .Include(x => x.Mentors)
                                                      .Include(x => x.CoursePackages)
+                                                     .Include(x => x.Curricula)
                                                      .Include(x => x.FeedBacks)
                                                      .Include(x => x.WeekdaySchedules)
-                                                     .Include(x => x.Mentors)
                                                      .FirstOrDefaultAsync();
 
-            // remove schedule
-            foreach(var ws in courseEntity.WeekdaySchedules)
+            if(courseEntity.CoursePackages.Count > 0)
             {
-                // get all weekday teaching schedule 
-                var schedule = await _context.WeekdaySchedules.Where(x => x.WeekdayScheduleId == ws.WeekdayScheduleId)
-                    .Include(x => x.TeachingSchedules)
-                    .FirstOrDefaultAsync();
-
-                // get all rollcall book for each teaching schedule
-                foreach(var ts in schedule.TeachingSchedules)
+                foreach (var cp in courseEntity.CoursePackages)
                 {
-                    var teachingSchedule = await _context.TeachingSchedules.Where(x => x.TeachingScheduleId 
-                        == ts.TeachingScheduleId)
-                        .Include(x => x.RollCallBooks)
-                        .FirstOrDefaultAsync();
+                    var reservation = await _context.CoursePackageReservations.Where(x => x.CoursePackageId
+                        == cp.CoursePackageId).Include(x => x.CoursePackage).ToListAsync();
 
-                    // remove teaching schedule
-                    _context.TeachingSchedules.Remove(teachingSchedule);
+                    _context.CoursePackageReservations.RemoveRange(reservation);
                 }
-                // save changes remove teaching schedules
                 await _context.SaveChangesAsync();
             }
 
-            // remove range week schedule
-            _context.WeekdaySchedules.RemoveRange(courseEntity.WeekdaySchedules);
-
-            if(courseEntity is not null) 
+            if(courseEntity.WeekdaySchedules.Count > 0)
             {
+                foreach (var ws in courseEntity.WeekdaySchedules)
+                {
+                    // get all weekday teaching schedule 
+                    var schedule = await _context.WeekdaySchedules.Where(x => x.WeekdayScheduleId == ws.WeekdayScheduleId)
+                        .Include(x => x.TeachingSchedules)
+                        .FirstOrDefaultAsync();
+
+                    // get all rollcall book for each teaching schedule
+                    foreach (var ts in schedule.TeachingSchedules)
+                    {
+                        var teachingSchedule = await _context.TeachingSchedules.Where(x => x.TeachingScheduleId
+                            == ts.TeachingScheduleId)
+                            .Include(x => x.RollCallBooks)
+                            .FirstOrDefaultAsync();
+
+                        // remove teaching schedule
+                        _context.TeachingSchedules.Remove(teachingSchedule);
+                    }
+                    // save changes remove teaching schedules
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            if (courseEntity is not null) 
+            {
+                courseEntity.WeekdaySchedules.Clear();
+                courseEntity.CoursePackages.Clear();
                 courseEntity.Mentors.Clear();
+                courseEntity.Curricula.Clear();
+                courseEntity.FeedBacks.Clear();
                 // remove <- change status
                 _context.Courses.Remove(courseEntity);
                 //courseEntity.IsActive = false;
@@ -371,7 +398,6 @@ namespace DriverLicenseLearningSupport.Repositories
             _context.CoursePackages.Remove(coursePackage);
             return await _context.SaveChangesAsync() > 0;
         }
-
         public async Task<bool> HideCourseAsync(Guid id)
         {
             // get course by id

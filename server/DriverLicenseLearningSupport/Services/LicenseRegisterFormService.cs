@@ -32,6 +32,11 @@ namespace DriverLicenseLearningSupport.Services
             return await _licenseRegisterFormRepo.CreateAsync(entity, memberId);
         }
 
+        public async Task<bool> DenyAsync(int licenseRegisterId)
+        {
+            return await _licenseRegisterFormRepo.DenyAsync(licenseRegisterId);
+        }
+
         public async Task<IEnumerable<LicenseRegisterFormModel>> GetAllAwaitAsync()
         {
             return await _licenseRegisterFormRepo.GetAllAwaitAsync();

@@ -48,6 +48,7 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly IWeekDayScheduleService _weekDayScheduleService;
         private readonly IRollCallBookService _rollCallBookService;
         private readonly ISlotService _slotService;
+        private readonly IEmailService _emailService;
         private readonly IMemoryCache _memoryCache;
         private readonly AppSettings _appSettings;
         // cache key
@@ -69,6 +70,7 @@ namespace DriverLicenseLearningSupport.Controllers
             IWeekDayScheduleService weekDayScheduleService,
             ISlotService slotService,
             IRollCallBookService rollCallBookService,
+            IEmailService emailService,
             IOptionsMonitor<AppSettings> monitor)
         {
             _memberService = memberService;
@@ -88,6 +90,7 @@ namespace DriverLicenseLearningSupport.Controllers
             _weekDayScheduleService = weekDayScheduleService;
             _rollCallBookService = rollCallBookService;
             _slotService = slotService;
+            _emailService = emailService;
             _appSettings = monitor.CurrentValue;
         }
 
@@ -163,6 +166,19 @@ namespace DriverLicenseLearningSupport.Controllers
             member.MemberId = memberId;
             member.Address = address;
             member.EmailNavigation = account;
+
+            // validate birthdate
+            var currDate = DateTime.ParseExact(DateTime.Now.ToString(_appSettings.DateFormat),
+                _appSettings.DateFormat, CultureInfo.InvariantCulture);
+            var birthdate = member.DateBirth;
+            if (birthdate >= currDate)
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Ngày sinh không hợp lệ"
+                });
+            }
 
             // add member
             member = await _memberService.CreateAsync(member);
@@ -442,7 +458,7 @@ namespace DriverLicenseLearningSupport.Controllers
             // Create stream contain file
             var stream = new MemoryStream();
 
-            using (var xlPackgage = new ExcelPackage(stream))
+            using (var xlPackgage = new OfficeOpenXml.ExcelPackage(stream))
             {
                 // Define a worksheet
                 var worksheet = xlPackgage.Workbook.Worksheets.Add("Members");
@@ -516,7 +532,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     var stream = file.OpenReadStream();
 
                     // Create excel package
-                    using (var xlPackage = new ExcelPackage(stream))
+                    using (var xlPackage = new OfficeOpenXml.ExcelPackage(stream))
                     {
                         // Get first worksheet from package
                         var worksheet = xlPackage.Workbook.Worksheets.FirstOrDefault();
@@ -681,13 +697,24 @@ namespace DriverLicenseLearningSupport.Controllers
                 });
             }
 
+            // check exist image file
+            if(reqObj.Image is null 
+                || reqObj.IdentityImage is null 
+                || reqObj.HealthCertificationImage is null)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Vui lòng thêm đầy đủ ảnh"
+                });
+            }
+
             // check already exist
             var existLicenseForm = await _licenseRegisterFormService.GetByMemberId(reqObj.MemberId);
             if(existLicenseForm is not null)
             {
                 return BadRequest(new BaseResponse { 
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = $"License register form are already exist. Please delete to create new or update"
+                    Message = $"Hồ sơ đăng ký dự thi đã tồn tại"
                 });
             }
 
@@ -791,7 +818,7 @@ namespace DriverLicenseLearningSupport.Controllers
             {
                 return BadRequest(new BaseResponse {
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = "Không tìm thấy hồ sơ cần duyệt"
+                    Message = "Hiện chưa có hồ sơ cần duyệt"
                 });
             }
 
@@ -807,7 +834,7 @@ namespace DriverLicenseLearningSupport.Controllers
         public async Task<IActionResult> LicenseFormRegisterApproval([FromRoute] int id) 
         {
             // get license form by member id
-            var lfRegister = await _memberService.GetByLicenseRegisterFormIdAsync(id);
+            var lfRegister = await _licenseRegisterFormService.GetAsync(id);
             // not found
             if (lfRegister is null) 
             {
@@ -817,11 +844,28 @@ namespace DriverLicenseLearningSupport.Controllers
                 });
             }
 
+            // get member
+            var member = await _memberService.GetByLicenseRegisterFormIdAsync(id);
+            if (member is null)
+            {
+                return NotFound(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = "Không tìm thấy học viên"
+                });
+            }
+
             // approve member license form register
             var isSucess = await _licenseRegisterFormService.ApproveAsync(id);
 
             if (isSucess) 
             {
+                // send email with deny message 
+                var emailMessage = new EmailMessage(new string[] { member.Email! }, "Đơn đăng ký hồ sơ thi",
+                    "Đơn đăng ký hồ sơ dự thi được duyệt thành công \n" + 
+                    "Vui Lòng xem lại tất cả thông tin, nếu sai xót xin liên hệ sớm nhất");
+                //_emailService.SendEmail(emailMessage);
+
                 return Ok(new BaseResponse { 
                     StatusCode = StatusCodes.Status200OK,
                     Message = $"Hồ sơ thi đã được chấp thuận"
@@ -832,6 +876,55 @@ namespace DriverLicenseLearningSupport.Controllers
                 StatusCode = StatusCodes.Status400BadRequest,
                 Message = $"Chấp thuận hồ sơ thất bại"
             });
+        }
+
+        [HttpPut]
+        [Route("members/license-form/{id:int}/deny")]
+        public async Task<IActionResult> LicenseFormRegisterDeny([FromRoute] int id,
+             string? message)
+        {
+            // get by id
+            var licenseForm = await _licenseRegisterFormService.GetAsync(id);
+            if(licenseForm is null)
+            {
+                return NotFound(new BaseResponse { 
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = "Không tìm thấy hồ sơ"
+                });
+            }
+
+            // get member
+            var member = await _memberService.GetByLicenseRegisterFormIdAsync(id);
+            if(member is null) 
+            {
+                return NotFound(new BaseResponse { 
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = "Không tìm thấy học viên"
+                });
+            }
+
+            // remove license form
+            bool isSucess = await _licenseRegisterFormService.DenyAsync(id);
+
+            if (isSucess)
+            {
+                // send email with deny message 
+                var emailMessage = new EmailMessage(new string[] { member.Email! }, "Đơn đăng ký hồ sơ dự thi đã bị từ chối",
+                    message);
+                //_emailService.SendEmail(emailMessage);
+                return Ok(new BaseResponse { 
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = "Từ chối hồ sơ thành công"
+                });
+            }
+
+            return new ObjectResult(new BaseResponse {
+                StatusCode = StatusCodes.Status500InternalServerError,
+                Message = "Từ chối hồ sơ thi thất bại"
+            }) 
+            {
+                StatusCode = StatusCodes.Status500InternalServerError
+            };
         }
 
         [HttpPost]
