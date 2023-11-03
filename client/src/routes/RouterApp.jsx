@@ -42,6 +42,7 @@ import ManageAwaitSchedule from '../pages/PrivatePage/ManageAwaitSchedule';
 import ApproveSchedule from '../pages/PrivatePage/ApproveSchedule';
 import ManageDenySchedule from '../pages/PrivatePage/ManageDenySchedule';
 import ManageCourse from '../pages/PrivatePage/ManageCourse/ManageCourse';
+import ManageStaff from '../pages/PrivatePage/ManageStaff/ManageStaff';
 
 const RouterApp = () => {
   const router = createBrowserRouter([
@@ -65,6 +66,7 @@ const RouterApp = () => {
     { path: '/manage-question', element: <ManageQuestion /> },
     { path: '/manage-banktest', element: <ManageBankTest /> },
     { path: '/manage-user', element: <ManageUser /> },
+    { path: '/manage-staff', element: <ManageStaff /> },
 
     { path: '/dashboard', element: <DashBoard /> },
     { path: '/manage-await-schedule', element: <ManageAwaitSchedule /> },

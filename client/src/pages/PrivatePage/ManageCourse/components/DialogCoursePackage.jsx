@@ -39,6 +39,8 @@ export default function DialogCoursePackage({
     getCoursePackages();
   }, []);
 
+  console.log('selectedIdCourse: ', selectedIdCourse);
+
   const getCoursePackages = async () => {
     await axiosClient
       .get(`/courses/${selectedIdCourse}`)

@@ -1,5 +1,5 @@
 import { DataGrid } from '@mui/x-data-grid';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { AiFillDelete } from 'react-icons/ai';
 import { BiHide, BiSolidEdit } from 'react-icons/bi';
 import { GrFormView } from 'react-icons/gr';
@@ -14,6 +14,7 @@ import { Menu, MenuItem } from '@mui/material';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import DialogCoursePackage from './components/DialogCoursePackage';
 import DialogCurriculum from './components/DialogCurriculum';
+import { Button } from '@mui/base';
 
 const ManageCourse = () => {
   const [listCourses, setListCourses] = useState([]);
@@ -22,12 +23,21 @@ const ManageCourse = () => {
   const [openCoursePackage, setOpenCoursePackage] = useState(false);
   const [openCurriculum, setOpenCurriculum] = useState(false);
 
-  const [selectedIdCourse, setSelectedIdCourse] = useState();
+  const [selectedIdCourse, setSelectedIdCourse] = useState('');
+  console.log(
+    '🚀 ~ file: ManageCourse.jsx:26 ~ ManageCourse ~ selectedIdCourse:',
+    selectedIdCourse
+  );
 
   const [anchorEl, setAnchorEl] = useState(null);
   const openMenu = Boolean(anchorEl);
-  const handleClick = (event) => setAnchorEl(event.currentTarget);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+    event.stopPropagation();
+  };
   const handleClose = () => setAnchorEl(null);
+
+  // const [test, setTest] = useState('');
 
   const columns = [
     { field: 'courseId', headerName: 'ID', width: 140 },
@@ -37,9 +47,9 @@ const ManageCourse = () => {
       field: 'startDate',
       headerName: 'startDate',
       width: 140,
-      renderCell: (params) => (
-        <div>{dayjs(params.row.startDate).format('DD/MM/YYYY')}</div>
-      ),
+      renderCell: (params, record) => {
+        return <div>{dayjs(params.row.startDate).format('DD/MM/YYYY')}</div>;
+      },
     },
     { field: 'isActive', headerName: 'isActive', width: 80 },
     {
@@ -47,7 +57,11 @@ const ManageCourse = () => {
       headerName: 'totalHoursRequired',
       width: 140,
     },
-    { field: 'totalKmRequired', headerName: 'totalKmRequired', width: 140 },
+    {
+      field: 'totalKmRequired',
+      headerName: 'totalKmRequired',
+      width: 140,
+    },
     { field: 'totalMonth', headerName: 'totalMonth', width: 140 },
     {
       field: 'licenseTypeId',
@@ -80,55 +94,54 @@ const ManageCourse = () => {
       field: 'edit',
       headerName: 'Chỉnh sửa',
       width: 130,
-      renderCell: (params) => (
-        <div className='flex gap-4 items-center'>
-          <BiSolidEdit size={20} className='text-yellow-700 cursor-pointer' />
-          <AiFillDelete
-            size={20}
-            className='text-red-700 cursor-pointer'
-            onClick={() => handleDeleteCourse(params.row.courseId)}
-          />
-          <div>
-            <BsThreeDotsVertical
-              id='basic-button'
-              aria-controls={openMenu ? 'basic-menu' : undefined}
-              aria-haspopup='true'
-              aria-expanded={openMenu ? 'true' : undefined}
-              onClick={handleClick}
-              size={20}
-              className='cursor-pointer'
-            />
-            <Menu
-              id='basic-menu'
-              anchorEl={anchorEl}
-              open={openMenu}
-              onClose={handleClose}
-              MenuListProps={{
-                'aria-labelledby': 'basic-button',
-              }}
-            >
-              <MenuItem
-                onClick={() => {
-                  setOpenCoursePackage(true);
+      renderCell: (params, record) => {
+        return (
+          <div className='flex gap-4 items-center'>
+            <BiSolidEdit size={20} className='text-yellow-700 cursor-pointer' />
+            <AiFillDelete size={20} className='text-red-700 cursor-pointer' />
+            <div>
+              <BsThreeDotsVertical
+                id='basic-button'
+                aria-controls={openMenu ? 'basic-menu' : undefined}
+                aria-haspopup='true'
+                aria-expanded={openMenu ? 'true' : undefined}
+                onClick={(event) => {
+                  setAnchorEl(event.currentTarget);
                   setSelectedIdCourse(params.row.courseId);
-                  handleClose();
+                }}
+                size={20}
+                className='cursor-pointer'
+              />
+              <Menu
+                id='basic-menu'
+                anchorEl={anchorEl}
+                open={openMenu}
+                onClose={handleClose}
+                MenuListProps={{
+                  'aria-labelledby': 'basic-button',
                 }}
               >
-                Quản lí Gói khóa học
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  setOpenCurriculum(true);
-                  setSelectedIdCourse(params.row.courseId);
-                  handleClose();
-                }}
-              >
-                Quản lí Chương trình
-              </MenuItem>
-            </Menu>
+                <MenuItem
+                  onClick={() => {
+                    setOpenCoursePackage(true);
+                    handleClose();
+                  }}
+                >
+                  Quản lí Gói khóa học
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setOpenCurriculum(true);
+                    handleClose();
+                  }}
+                >
+                  Quản lí Chương trình
+                </MenuItem>
+              </Menu>
+            </div>
           </div>
-        </div>
-      ),
+        );
+      },
     },
   ];
 
@@ -168,7 +181,6 @@ const ManageCourse = () => {
   };
 
   const handleDeleteCourse = async (idCourse) => {
-    console.log(123);
     await axiosClient
       .delete(`/courses/${idCourse}`)
       .then((res) => {
@@ -189,8 +201,7 @@ const ManageCourse = () => {
       .catch((error) => toastError(error?.response?.data?.message));
   };
 
-  console.log('listCourses', listCourses);
-
+  // console.log('test', test);
   return (
     <div className='flex'>
       <SideBar />
@@ -255,11 +266,3 @@ const ManageCourse = () => {
 };
 
 export default ManageCourse;
-
-// {
-//   "coursePackageDesc":"Học băng lái A1 cơ bản",
-//   "cost": 14500000,
-//   "totalSession": 6,
-//   "sessionHour": 2,
-//   "ageRequired": 18
-// }

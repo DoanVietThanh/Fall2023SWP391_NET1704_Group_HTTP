@@ -110,6 +110,12 @@ const listNavbarManage = [
     icon: <BsEnvelopePaper size={20} />,
     navigate: '/manage-course',
   },
+  {
+    id: 14,
+    title: 'Quản lí nhân viên',
+    icon: <BsEnvelopePaper size={20} />,
+    navigate: '/manage-staff',
+  },
 ];
 
 const openedMixin = (theme) => ({
