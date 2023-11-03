@@ -92,7 +92,7 @@ export default function DialogCoursePackage({
                   {coursePackage?.coursePackageDesc}
                 </h3>
                 <h3>
-                  <span className='font-semibold'>Tiểu tối thiểu:</span>{' '}
+                  <span className='font-semibold'>Tuổi tối thiểu:</span>{' '}
                   {coursePackage?.ageRequired}
                 </h3>
                 <h3>

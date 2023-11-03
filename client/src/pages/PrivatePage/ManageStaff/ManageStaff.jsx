@@ -140,11 +140,11 @@ const ManageStaff = () => {
                 columns={columns}
                 initialState={{
                   pagination: {
-                    paginationModel: { page: 0, pageSize: 5 },
+                    paginationModel: { page: 0, pageSize: 10 },
                   },
                 }}
                 getRowId={(row) => row.staffId}
-                pageSizeOptions={[5, 10, 20, 50, 100]}
+                pageSizeOptions={[10, 20, 50, 100]}
               />
             </>
           )}

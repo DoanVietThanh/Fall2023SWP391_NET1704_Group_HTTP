@@ -181,6 +181,15 @@ const TestTheory = () => {
                 <div className='flex gap-2 h-full mt-2 flex-1'>
                   <div className='flex-1 h-full'>
                     {itemQuestion.questionAnswerDesc}
+                    {itemQuestion.image && (
+                      <div className='flex justify-center'>
+                        <img
+                          src={itemQuestion.image}
+                          alt='img'
+                          className='w-[80%] p-4'
+                        />
+                      </div>
+                    )}
                   </div>
 
                   <div className='flex-1 h-full px-2'>

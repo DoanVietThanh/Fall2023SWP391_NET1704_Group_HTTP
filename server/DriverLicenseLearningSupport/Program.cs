@@ -44,7 +44,7 @@ builder.Services.Configure<VnPayConfig>(vnpayConfig);
 
 // Add Theory Exam config
 var theoryExamConfig = builder.Configuration.GetSection("TheoryExamSettings");
-builder.Services.Configure<TheoryExamConfig>(theoryExamConfig); 
+builder.Services.Configure<TheoryExamSettings>(theoryExamConfig); 
 
 // Add AppSettings Json config
 var appSettingsConfig = builder.Configuration

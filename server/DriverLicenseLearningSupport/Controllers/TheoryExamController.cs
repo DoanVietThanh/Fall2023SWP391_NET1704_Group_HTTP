@@ -26,12 +26,12 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly IAnswerService _answerService;
         private readonly IMemoryCache _memoryCache;
         private readonly AppSettings _appSettings;
-        private readonly TheoryExamConfig _theoryExamSettings;
+        private readonly TheoryExamSettings _theoryExamSettings;
 
         public TheoryExamController(ITheoryExamService theoryExamService, IAnswerService answerService,
             ILicenseTypeService licenseTypeService, IQuestionService questionService,
             IMemoryCache memoryCache, IOptionsMonitor<AppSettings> monitor,
-            IOptionsMonitor<TheoryExamConfig> monitor1)
+            IOptionsMonitor<TheoryExamSettings> monitor1)
         {
             _theoryExamService = theoryExamService;
             _licenseTypeService = licenseTypeService;
@@ -245,7 +245,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 return BadRequest(new ErrorResponse()
                 {
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = "Chưa có bộ đề nào"
+                    Message = "chưa có bộ đề nào"
                 });
             }
             else
@@ -253,7 +253,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 return Ok(new BaseResponse
                 {
                     StatusCode = StatusCodes.Status200OK,
-                    Message = "Tải thành công",
+                    Message = "tải thành công",
                     Data = theoryExams
                 });
             }

@@ -32,40 +32,31 @@ let schema = yup.object().shape({
     .string()
     .max(10, 'Firstname có nhiều nhất 10 kí tự')
     .matches('^[a-zA-Z ]+$', 'Không chứa số hay kí tự đặc biệt')
-    .required('Vui lòng nhập FirstName'),
+    .required('Vui lòng nhập họ'),
   lastName: yup
     .string()
     .max(10, 'Lastname có nhiều nhất 10 kí tự')
     .matches('^[a-zA-Z ]+$', 'Không chứa số hay kí tự đặc biệt')
-    .required('Vui lòng nhập  LastName'),
+    .required('Vui lòng nhập tên'),
   password: yup
     .string()
-    .min(8, 'Password có ít nhất 8 kí tự')
+    .min(8, 'Mật khẩu có ít nhất 8 kí tự')
     .matches(
       '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$',
-      'Password có chữ đầu ghi Hoa, có ít nhất 1 số'
+      'Mật khẩu có chữ đầu ghi Hoa, có ít nhất 1 số'
     )
-    .required('Vui lòng nhập Password'),
+    .required('Vui lòng nhập mật khẩu'),
   confirmPassword: yup
     .string()
-    .oneOf([yup.ref('password'), null], 'Passwords chưa trùng khớp'),
+    .oneOf([yup.ref('password'), null], 'Mật khẩu chưa trùng khớp'),
   phone: yup
     .string()
     .matches('^0[0-9]{9,11}$', 'Số điện thoại có độ dài 10-12')
     .required('Vui lòng nhập số điện thoại'),
   dateBirth: yup.string().required('Vui lòng nhập Ngày sinh'),
-  street: yup
-    .string()
-    .matches('^[a-zA-Z0-9 ]+$', 'Không chứa số hay kí tự đặc biệt')
-    .required('Vui lòng nhập tên đường'),
-  district: yup
-    .string()
-    .matches('^[a-zA-Z ]+$', 'Không chứa số hay kí tự đặc biệt')
-    .required('Vui lòng nhập tên quận'),
-  city: yup
-    .string()
-    .matches('^[a-zA-Z ]+$', 'Không chứa số hay kí tự đặc biệt')
-    .required('Vui lòng nhập tên thành phố'),
+  street: yup.string().required('Vui lòng nhập tên đường'),
+  district: yup.string().required('Vui lòng nhập tên quận'),
+  city: yup.string().required('Vui lòng nhập tên thành phố'),
   jobTitleId: yup.string().required('Vui lòng chọn Công việc'),
   selfDescription: yup.string().required('Vui lòng nhập Mô tả'),
   courseId: yup.string().required('Vui lòng chọn Khóa học'),

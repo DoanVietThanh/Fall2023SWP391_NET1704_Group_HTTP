@@ -18,6 +18,7 @@ import DialogCheckAttendance from './DialogCheckAttendance';
 import { AiFillPlusCircle, AiOutlinePlusCircle } from 'react-icons/ai';
 import { BsDashLg } from 'react-icons/bs';
 import DialogRegisterSchedule from './DialogRegisterSchedule';
+import DialogRegisterAllCourse from './DialogRegisterAllCourse';
 
 const ScheduleMentor = ({ itemCourse, courseId }) => {
   const { user } = useSelector((state) => state.auth);
@@ -34,6 +35,10 @@ const ScheduleMentor = ({ itemCourse, courseId }) => {
   const [teachingScheduleId, setTeachingScheduleId] = useState(null);
   const [rollCallBookId, setRollCallBookId] = useState(0);
   const [slotSchedules, setSlotSchedules] = useState();
+  const [countSchedule, setCountSchedule] = useState(0);
+  const [slots, setSlots] = useState();
+  const [weekdays, setWeekdays] = useState();
+  const [openRegisterAllCourse, setOpenRegisterAllCourse] = useState(false);
 
   useEffect(() => {
     async function getDataCourse() {
@@ -49,12 +54,40 @@ const ScheduleMentor = ({ itemCourse, courseId }) => {
         setMentorId(accountInfo.staffId);
         setDataWeek(response?.data);
         setCurrentWeek(response?.data.data?.weekdays.weekdayScheduleId);
+
+        await response?.data?.data?.slotSchedules?.map((slotWeek, index) => {
+          return slotWeek?.teachingSchedules?.map((item, idx) => {
+            console.log('item: ', item);
+            if (item != null) {
+              setCountSchedule(countSchedule + 1);
+            }
+          });
+        });
       } catch (error) {
         // toastError(error?.response?.data.message);
       }
     }
     getDataCourse();
   }, [isLoading]);
+
+  useEffect(() => {
+    async function checkCount() {
+      if (countSchedule == 0) {
+        await axiosClient
+          .get(`/staffs/mentors/${accountInfo.staffId}/schedule-register/range`)
+          .then((res) => {
+            setWeekdays(res?.data?.data?.weekdays);
+            setSlots(res?.data?.data?.slots);
+          })
+          .catch((error) => toastError(error?.response?.data?.message));
+      }
+    }
+    checkCount();
+  }, []);
+
+  console.log('weekdays: ', weekdays);
+  console.log('slots: ', slots);
+  console.log('countSchedule: ', countSchedule);
 
   const handleCloseRegister = () => setOpenRegister(false);
 
@@ -106,15 +139,29 @@ const ScheduleMentor = ({ itemCourse, courseId }) => {
         <AccordionDetails>
           <div className=''>
             <div className='flex justify-end mb-4'>
-              <div
-                className='bg-blue-400 cursor-pointer flex items-center p-2 rounded-lg gap-2'
-                onClick={() => {
-                  setOpenRegisterSchedule(true);
-                }}
-              >
-                <AiFillPlusCircle size={24} className='text-white' />
-                <p className='font-semibold text-white'>Đăng kí lịch</p>
-              </div>
+              {countSchedule > 0 ? (
+                <div
+                  className='bg-blue-400 cursor-pointer flex items-center p-2 rounded-lg gap-2'
+                  onClick={() => {
+                    setOpenRegisterSchedule(true);
+                  }}
+                >
+                  <AiFillPlusCircle size={24} className='text-white' />
+                  <p className='font-semibold text-white'>Đăng kí lịch</p>
+                </div>
+              ) : (
+                <div
+                  className='bg-blue-400 cursor-pointer flex items-center p-2 rounded-lg gap-2'
+                  onClick={() => {
+                    setOpenRegisterAllCourse(true);
+                  }}
+                >
+                  <AiFillPlusCircle size={24} className='text-white' />
+                  <p className='font-semibold text-white'>
+                    Đăng kí lịch cả khóa
+                  </p>
+                </div>
+              )}
             </div>
             <table className='w-full border-2 border-black'>
               <thead>
@@ -248,6 +295,11 @@ const ScheduleMentor = ({ itemCourse, courseId }) => {
                             >
                               Xem chi tiết
                             </button>
+                            {!itemDate?.isActive && (
+                              <div className='text-[16px] text-red-700 italic'>
+                                * Đang chờ duyệt
+                              </div>
+                            )}
                           </div>
                         ) : (
                           <div className='font-bold text-[24px] flex justify-center'>
@@ -348,7 +400,20 @@ const ScheduleMentor = ({ itemCourse, courseId }) => {
           setOpenRegisterSchedule={setOpenRegisterSchedule}
           itemCourse={itemCourse}
           courseId={courseId}
+          setDataWeek={setDataWeek}
         />
+
+        {slots && weekdays && mentorId && courseId && (
+          <DialogRegisterAllCourse
+            open={openRegisterAllCourse}
+            setOpen={setOpenRegisterAllCourse}
+            courseId={courseId}
+            mentorId={mentorId}
+            slots={slots}
+            weekdays={weekdays}
+            setDataWeek={setDataWeek}
+          />
+        )}
       </div>
     </div>
   );

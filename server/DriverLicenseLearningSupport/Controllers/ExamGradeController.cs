@@ -1,6 +1,4 @@
-﻿using DocumentFormat.OpenXml.ExtendedProperties;
-using DocumentFormat.OpenXml.Spreadsheet;
-using DriverLicenseLearningSupport.Entities;
+﻿using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Models.Config;
 using DriverLicenseLearningSupport.Payloads.Request;
@@ -8,7 +6,6 @@ using DriverLicenseLearningSupport.Payloads.Response;
 using DriverLicenseLearningSupport.Repositories.Impl;
 using DriverLicenseLearningSupport.Services;
 using DriverLicenseLearningSupport.Services.Impl;
-using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -28,11 +25,14 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly IMemberService _memberService;
         private readonly AppSettings _appSettings;
         private readonly IStaffService _staffService;
+        private readonly TheoryExamSettings _theoryConfig;
+        private readonly ILicenseTypeService _licenseTypeService;
 
         public ExamGradeController(IExamGradeService examGradeService, IAnswerService answerService
             , ITheoryExamService theoryExamService, IExamHistoryService examHistoryService
             , IQuestionService questionService, IMemberService memberService, IOptionsMonitor<AppSettings> monitor
-            , IStaffService staffService)
+            , IStaffService staffService, IOptionsMonitor<TheoryExamSettings>monitor1
+            , ILicenseTypeService licenseTypeService)
         {
             _examGradeService = examGradeService;
             _answerService = answerService;
@@ -42,6 +42,8 @@ namespace DriverLicenseLearningSupport.Controllers
             _memberService = memberService;
             _appSettings = monitor.CurrentValue;
             _staffService = staffService;
+            _theoryConfig = monitor1.CurrentValue;
+            _licenseTypeService = licenseTypeService;
         }
 
         [HttpPost]
@@ -221,10 +223,14 @@ namespace DriverLicenseLearningSupport.Controllers
                     return StatusCode(StatusCodes.Status500InternalServerError);
                 }
             }
+            
+
+
             return Ok(new BaseResponse
             {
                 StatusCode = StatusCodes.Status200OK,
-                Message = "Nộp bài thành công!"
+                Message = "Nộp bài thành công!",
+
             });
 
         }
@@ -290,21 +296,12 @@ namespace DriverLicenseLearningSupport.Controllers
             var totalQuestion = examGrades.Count();
             double grade = 0;
             //lay toan bo cau hoi va dap an trong de thi
-            if (examGrades is null || examGrades.Count() == 0)
+            if (examGrades is null)
             {
-               if(memberModel is null)
-               {
-                    return BadRequest(new ErrorResponse
-                    {
-                        StatusCode = StatusCodes.Status400BadRequest,
-                        Message = "Bạn cần đăng nhập để được xem lại lịch sử"
-                    });
-               }
-
                 return BadRequest(new ErrorResponse
                 {
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = "Không tìm thấy lịch sử thi"
+                    Message = "không tìm thấy lịch sử thi"
                 });
             }
             var theoryExam = await _theoryExamService.GetByIdAsync(examGrades[0].TheoryExamId);
@@ -354,7 +351,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     return BadRequest(new ErrorResponse()
                     {
                         StatusCode = StatusCodes.Status400BadRequest,
-                        Message = "Không tìm thấy lịch sử thi"
+                        Message = "không tìm thấy lịch sử thi"
                     });
                 }
                 else
@@ -385,32 +382,15 @@ namespace DriverLicenseLearningSupport.Controllers
                         });
                     }
                 }
-                /*
-                MemberId = member.MemberId,
-                    TheoryExamId = reqObj.TheoryExamId,
-                    TotalQuestion = totalQuesiton,
-                    TotalRightAnswer = countRightAnswers,
-                    IsPassed = isPassed,
-                    WrongParalysisQuestion = isWrongParalysisQuesion,
-                    TotalTime = reqObj.TotalTime,
-                    Date = startedDate*/
-
-                var HistoryModel = new ExamHistoryModel()
-                {
-                    TheoryExamId = theoryExam.TheoryExamId,
-                    IsPassed = isPassed,
-                    TotalRightAnswer = Convert.ToInt32(grade),
-                    TotalQuestion = totalAnswerRequired,
-                    Date = joinDate
-                };
-
                 return Ok(new BaseResponse()
                 {
                     StatusCode = StatusCodes.Status200OK,
                     Data = new
                     {
                         ExamResult = resultExam,
-                        History = HistoryModel
+                        IsPassed = isPassed,
+                        totalRightAnswer = grade,
+                        totalQuestion = totalAnswerRequired
                     }
                 });
             }

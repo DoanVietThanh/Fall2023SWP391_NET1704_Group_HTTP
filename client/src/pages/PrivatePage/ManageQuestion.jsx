@@ -258,6 +258,18 @@ const ManageQuestion = () => {
   };
 
   const handleSubmitCreateTest = async () => {
+    console.log(
+      JSON.stringify({
+        questionIds: selection,
+        TotalQuestion: createRule?.totalQuestion,
+        TotalTime: createRule?.totalTime,
+        TotalAnswerRequired: createRule?.totalAnswerRequired,
+        IsMockTest: isMockTest,
+        StartDate: dayjs(dateTest).format('YYYY-MM-DD'),
+        Hour: dayjs(dateTest).format('HH'),
+        Minute: dayjs(dateTest).format('MM'),
+      })
+    );
     await axiosUrlencoded
       .post(`/theory-exam/add-question`, {
         questionIds: selection,
