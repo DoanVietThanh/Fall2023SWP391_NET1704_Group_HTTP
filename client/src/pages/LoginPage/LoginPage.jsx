@@ -16,17 +16,17 @@ import { login } from '../../features/auth/authSlice';
 let schema = yup.object().shape({
   username: yup
     .string()
-    .min(10, 'Length should be more 10 chars')
-    .email('Email should be valid')
-    .required('Email is Required'),
-  password: yup
+    .min(10, 'Email có ít nhất 10 kí tự')
+    .email('Email phải hợp lệ')
+    .required('Yêu cầu nhập email'),
+    password: yup
     .string()
-    .min(8, 'Password có ít nhất 8 kí tự')
+    .min(8, 'Mật khẩu có ít nhất 8 kí tự')
     .matches(
       '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$',
-      'Password có chữ đầu ghi Hoa, có ít nhất 1 số'
+      'Mật khẩu có chữ đầu ghi Hoa, có ít nhất 1 số'
     )
-    .required('Password is Required'),
+    .required('Yêu cầu nhập mật khẩu'),
 });
 
 const LoginPage = () => {
@@ -68,8 +68,8 @@ const LoginPage = () => {
       <Header />
       <div className='center my-8'>
         <div className='border border-1 w-[40%] flex flex-col justify-center items-center p-8'>
-          <Typography variant='h4'>Sign In</Typography>
-          <p>Fill in the fields below to sign into your account.</p>
+          <Typography variant='h4'>Đăng nhập</Typography>
+          <p>Điền tài khoản và mật khẩu để đăng nhập</p>
           <form
             action=''
             onSubmit={formik.handleSubmit}
@@ -93,7 +93,7 @@ const LoginPage = () => {
               fullWidth
               onChange={formik.handleChange('password')}
               onBlur={formik.handleBlur('password')}
-              value={formik.values.password}
+              value={formik.values.password}gap-5
               type={showPassword ? 'text' : 'password'}
               InputProps={{
                 endAdornment: (
@@ -116,29 +116,30 @@ const LoginPage = () => {
             <div className='error text-red-900'>
               {formik.touched.password && formik.errors.password}
             </div>
-            <Stack direction={'row-reverse'}>
+            {/* tuong lai lam */}
+            {/* <Stack direction={'row-reverse'}>
               <FormControlLabel
                 control={<Checkbox />}
-                label='Remember Password'
+                label='Nhớ mật khẩu'
               />
-            </Stack>
-            <button className='btn'>Login</button>
+            </Stack> */}
+            <button className='btn'>Đăng nhập</button>
           </form>
 
           <div>
             <p className='font-medium capitalize'>
-              Don’t remember password ?{' '}
+              Quên mật khẩu?{' '}
               <Link to='/forgot-password' className='text-blue-400 py-2'>
-                Forgot Password Here
+                Lấy lại mật khẩu
               </Link>
             </p>
           </div>
 
           <div>
             <p className='font-medium capitalize'>
-              Don’t have an account ?{' '}
+              Chưa có tài khoản?{' '}
               <Link to='/register' className='text-blue-400'>
-                Sign up here
+                Đăng kí
               </Link>
             </p>
           </div>

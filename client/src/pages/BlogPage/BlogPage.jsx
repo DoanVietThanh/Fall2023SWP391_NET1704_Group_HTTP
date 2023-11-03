@@ -112,57 +112,6 @@ const BlogPage = () => {
 
           <div className="border drop-shadow-md rounded-lg p-10 mb-20">
             <div className="border-b-[4px] text-2xl font-bold pb-2 ">
-              Categories
-            </div>
-
-            <div className="flex justify-between text-lg text-blue-500 hover:text-blue-900 pt-5">
-              <div>
-                <div className="flex center gap-2 cursor-pointer">
-                  <BiBookBookmark /> Theory
-                </div>
-              </div>
-              <div>3</div>
-            </div>
-
-            <div className="flex justify-between text-lg text-blue-500 hover:text-blue-900 pt-5">
-              <div>
-                <div className="flex center gap-2 cursor-pointer">
-                  <BiBookBookmark /> GuildLine
-                </div>
-              </div>
-              <div>10</div>
-            </div>
-
-            <div className="flex justify-between text-lg text-blue-500 hover:text-blue-900 pt-5">
-              <div>
-                <div className="flex center gap-2 cursor-pointer">
-                  <BiBookBookmark /> License
-                </div>
-              </div>
-              <div>7</div>
-            </div>
-
-            <div className="flex justify-between text-lg text-blue-500 hover:text-blue-900 pt-5">
-              <div>
-                <div className="flex center gap-2 cursor-pointer">
-                  <BiBookBookmark /> Register
-                </div>
-              </div>
-              <div>21</div>
-            </div>
-
-            <div className="flex justify-between text-lg text-blue-500 hover:text-blue-900 pt-5">
-              <div>
-                <div className="flex center gap-2 cursor-pointer">
-                  <BiBookBookmark /> New Changes
-                </div>
-              </div>
-              <div>8</div>
-            </div>
-          </div>
-
-          <div className="border drop-shadow-md rounded-lg p-10 mb-20">
-            <div className="border-b-[4px] text-2xl font-bold pb-2 ">
               Bài đăng gần đây
             </div>
             {listBlog.map((lilBlog, index) => (

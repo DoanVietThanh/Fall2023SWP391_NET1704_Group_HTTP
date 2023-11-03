@@ -78,7 +78,11 @@ namespace DriverLicenseLearningSupport.Repositories
             return _mapper.Map<IEnumerable<QuestionModel>>(questionEntities);
         }
 
-   
+        public async Task<List<QuestionModel>> GetAllInExam(int theoryExamId)
+        {
+            var questionInExam = await _context.Questions.Where( x => x.TheoryExams.Any(te => te.TheoryExamId == theoryExamId)).ToListAsync();
+            return _mapper.Map <List<QuestionModel>>(questionInExam);
+        }
 
         public async Task<QuestionModel> GetByIdAsync(int questionId)
         {

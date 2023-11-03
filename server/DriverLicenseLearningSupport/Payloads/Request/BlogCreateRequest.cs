@@ -7,7 +7,7 @@ namespace DriverLicenseLearningSupport.Payloads.Request
 {
     public class BlogCreateRequest
     {
-        public string StaffId { get; set; }
+        public string? StaffId { get; set; }
         [Required(ErrorMessage ="Blog phải có content")]
         public string Content { get; set; }
 

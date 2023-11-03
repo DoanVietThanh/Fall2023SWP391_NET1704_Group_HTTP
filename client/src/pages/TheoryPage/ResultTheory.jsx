@@ -30,7 +30,7 @@ const ResultTheory = () => {
     async function getReview() {
       try {
         const response = await axiosClient
-          .post(`${url_Service}/theory/review`, {
+          .post(`/theory/review`, {
             email,
             mockTestId,
             joinDate: localStorage.getItem('startedDate'),
@@ -184,6 +184,11 @@ const ResultTheory = () => {
                           . {itemChoice?.answer}
                         </div>
                       )
+                    )}
+                    {itemQuestion?.selectedAnswerId < 0 && (
+                      <h1 className='text-red-400 text-center'>
+                        Câu này chưa được chọn
+                      </h1>
                     )}
                     <div className='font-medium p-2 bg-yellow-400 flex-x gap-2'>
                       <AiOutlineArrowRight />

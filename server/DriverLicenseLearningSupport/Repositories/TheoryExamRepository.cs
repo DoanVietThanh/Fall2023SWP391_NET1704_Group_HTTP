@@ -46,7 +46,10 @@ namespace DriverLicenseLearningSupport.Repositories
                 //theoryEntity.Questions.Add(list);
                 theoryExam.TheoryExamId = Convert.ToInt32(theoryEntity.TheoryExamId);
 
-                //List<Question> questions = new List<Question>();
+                // set null
+                theoryExam.LicenseType.Questions = new List<Question>();
+
+                List<Question> questions = new List<Question>();
 
                 foreach (var question in list)
                 {
@@ -91,25 +94,33 @@ namespace DriverLicenseLearningSupport.Repositories
         public async Task<bool> IsExamQuestion(int questionId)
         {
             //lay toan bo cau hoi cua moi de
-            var theoryEntites = await _context.TheoryExams.Select(x => new TheoryExam()
-            {
-                TheoryExamId = x.TheoryExamId,
-                LicenseTypeId = x.LicenseTypeId,
-                TotalAnswerRequired = x.TotalAnswerRequired,
-                TotalTime = x.TotalTime,
-                TotalQuestion = x.TotalQuestion,
-                Questions = x.Questions.Select(q => new Question()
+            /*    var theoryEntites = await _context.TheoryExams.Select(x => new TheoryExam()
                 {
-                    QuestionId = q.QuestionId
-                }).ToList()
-            }).ToListAsync();
+                    TheoryExamId = x.TheoryExamId,
+                    LicenseTypeId = x.LicenseTypeId,
+                    TotalAnswerRequired = x.TotalAnswerRequired,
+                    TotalTime = x.TotalTime,
+                    TotalQuestion = x.TotalQuestion,
+                    Questions = x.Questions.Select(q => new Question()
+                    {
+                        QuestionId = q.QuestionId
+                    }).ToList()
+                }).ToListAsync();
+            */
+            var theoryEntities = await _context.TheoryExams.Include(x => x.Questions).ToListAsync();
 
-            var question = theoryEntites.Select(x => x.Questions.Where(x => x.QuestionId == questionId).FirstOrDefault())
+            foreach(var tEntity in theoryEntities)
+            {
+                var quest = tEntity.Questions.Where(x => x.QuestionId == questionId).FirstOrDefault();
+                if (quest is not null) return true;
+            }
+
+            /*var question = theoryEntites.Select(x => x.Questions.Where(x => x.QuestionId == questionId).FirstOrDefault())
                                         .FirstOrDefault();
-            if (question is not null)
+            if (theoryEntity is not null)
             {
                 return true;
-            }
+            }*/
             return false;
         }
         public async Task<bool> HasHistory(int id)

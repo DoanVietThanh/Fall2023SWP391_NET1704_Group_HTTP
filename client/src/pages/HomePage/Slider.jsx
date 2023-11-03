@@ -49,10 +49,10 @@ const Slider = () => {
           </div>
           <div className="slider-content flex flex-col gap-8 justify-center">
             <h1 className="text-center font-extrabold text-[74px] tracking-wide leading-tight text-gray-800">
-              Driving License Learning
+              Hỗ trợ học thi
               <span className={`text-[${theme.color.mainColor}]`}>
                 {" "}
-                Support
+                bằng lái xa
               </span>
             </h1>
             <p className="font-semibold text-sky-900 text-[24px] pr-60 pt-5">

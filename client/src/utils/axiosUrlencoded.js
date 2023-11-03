@@ -1,14 +1,14 @@
 import axios from 'axios';
 
-const axiosForm = axios.create({
+const axiosUrlencoded = axios.create({
   baseURL: process.env.REACT_APP_SERVER_API,
   headers: {
-    'Content-Type': 'multipart/form-data',
+    'Content-Type': 'application/x-www-form-urlencoded',
   },
 });
 
 // Add a request interceptor
-axiosForm.interceptors.request.use(
+axiosUrlencoded.interceptors.request.use(
   function (config) {
     // Do something before request is sent
     let accessToken = localStorage.getItem('accessToken');
@@ -25,7 +25,7 @@ axiosForm.interceptors.request.use(
 );
 
 // Add a response interceptor
-axiosForm.interceptors.response.use(
+axiosUrlencoded.interceptors.response.use(
   function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
@@ -38,4 +38,4 @@ axiosForm.interceptors.response.use(
   }
 );
 
-export default axiosForm;
+export default axiosUrlencoded;

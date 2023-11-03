@@ -4,6 +4,6 @@
     {
         public string Email { get; set; }
         public int MockTestId { get; set; }
-        public DateTime JoinDate { get; set; }
+        public string JoinDate { get; set; }
     }
 }
