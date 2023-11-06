@@ -134,6 +134,12 @@ namespace DriverLicenseLearningSupport.Entities
                 entity.Property(e => e.StaffId)
                     .HasMaxLength(200)
                     .HasColumnName("staff_id");
+                entity.Property(e => e.Title)
+                      .HasColumnName("title")
+                      .HasMaxLength(200);
+                entity.Property(e => e.Image)
+                      .HasColumnName("image")
+                      .HasMaxLength(100);
 
                 entity.HasOne(d => d.Staff)
                     .WithMany(p => p.Blogs)
@@ -656,7 +662,7 @@ namespace DriverLicenseLearningSupport.Entities
                 entity.Property(e => e.QuestionId).HasColumnName("question_id");
 
                 entity.Property(e => e.Image)
-                    .HasMaxLength(100)
+                    .HasMaxLength(200)
                     .HasColumnName("image");
 
                 entity.Property(e => e.IsActive).HasColumnName("is_active");
@@ -904,6 +910,7 @@ namespace DriverLicenseLearningSupport.Entities
                     .WithMany(p => p.TheoryExams)
                     .HasForeignKey(d => d.LicenseTypeId)
                     .HasConstraintName("FK_PracticeExam_LicenseTypeId");
+
             });
 
             modelBuilder.Entity<Vehicle>(entity =>

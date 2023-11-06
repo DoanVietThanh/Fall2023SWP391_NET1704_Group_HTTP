@@ -150,3 +150,53 @@ const TheoryPage = () => {
 };
 
 export default TheoryPage;
+
+// {
+//   "statusCode": 200,
+//   "message": null,
+//   "data": {
+//       "theoryExamId": 6,
+//       "totalQuestion": 25,
+//       "totalTime": 15,
+//       "totalAnswerRequired": 21,
+//       "licenseTypeId": 2,
+//       "questions": [
+//           {
+//               "questionId": 1,
+//               "questionAnswerDesc": "Khái niệm “phương tiện giao thông thô sơ đường bộ” được hiểu như thế nào là đúng?",
+//               "isParalysis": true,
+//               "image": null,
+//               "isActive": null,
+//               "licenseTypeId": 0,
+//               "licenseType": {
+//                   "licenseTypeId": 2,
+//                   "licenseTypeDesc": "A1"
+//               },
+//               "questionAnswers": [
+//                   {
+//                       "questionAnswerId": 0,
+//                       "answer": "G?m xe d?p (k? c? xe d?p máy, xe d?p di?n), xe xích lô, xe lan dùng cho ngu?i khuy?t t?t, xe súc v?t kéo và các lo?i xe tuong t?.",
+//                       "isTrue": true,
+//                       "questionId": 0
+//                   },
+//                   {
+//                       "questionAnswerId": 1,
+//                       "answer": "G?m xe d?p (k? c? xe d?p máy, xe d?p di?n), xe g?n máy, xe co gi?i dùng cho ngu?i khuy?t t?t và xe máy chuyên dùng.",
+//                       "isTrue": false,
+//                       "questionId": 0
+//                   },
+//                   {
+//                       "questionAnswerId": 2,
+//                       "answer": "G?m xe ô tô, máy kéo, ro moóc ho?c so mi ro moóc du?c kéo b?i xe ô tô, máy kéo.",
+//                       "isTrue": false,
+//                       "questionId": 0
+//                   }
+//               ]
+//           },
+//       ]
+//     }
+//   }
+
+// console.log(Array.from({ length: 10 }, (_, index) => 0));
+// console.log([...Array(10)].map(() => 0));
+// console.log(new Array(10).fill(0));

@@ -22,9 +22,8 @@ import { toastError, toastSuccess } from '../../components/Toastify';
 let schema = yup.object().shape({
   username: yup
     .string()
-    .min(10, 'Length should be more 10 chars')
-    .email('Email should be valid')
-    .required('Email is Required'),
+    .email('Email không hợp lệ')
+    .required('Vui lòng nhập Email'),
   password: yup
     .string()
     .min(8, 'Password có ít nhất 8 kí tự')
@@ -32,7 +31,7 @@ let schema = yup.object().shape({
       '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$',
       'Password có chữ đầu ghi Hoa, có ít nhất 1 số'
     )
-    .required('Password is Required'),
+    .required('Vui lòng nhập Password'),
   confirmPassword: yup
     .string()
     .oneOf([yup.ref('password'), null], 'Passwords chưa trùng khớp'),
@@ -40,29 +39,29 @@ let schema = yup.object().shape({
     .string()
     .max(10, 'Firstname có nhiều nhất 10 kí tự')
     .matches('^[a-zA-Z ]+$', 'Không chứa số hay kí tự đặc biệt')
-    .required('Nhập FirstName'),
+    .required('Vui lòng nhập FirstName'),
   lastName: yup
     .string()
     .max(10, 'Lastname có nhiều nhất 10 kí tự')
     .matches('^[a-zA-Z ]+$', 'Không chứa số hay kí tự đặc biệt')
-    .required('Nhập LastName'),
+    .required('Vui lòng nhập  LastName'),
   phone: yup
     .string()
     .matches('^0[0-9]{9,11}$', 'Số điện thoại có độ dài 10-12')
-    .required('Nhập số điện thoại'),
-  dateBirth: yup.string().required('Nhập Date Of Birth'),
+    .required('Vui lòng nhập số điện thoại'),
+  dateBirth: yup.string().required('Vui lòng nhập Ngày sinh'),
   street: yup
     .string()
     .matches('^[a-zA-Z0-9 ]+$', 'Không chứa số hay kí tự đặc biệt')
-    .required('Nhập Street'),
+    .required('Vui lòng nhập tên đường'),
   district: yup
     .string()
     .matches('^[a-zA-Z ]+$', 'Không chứa số hay kí tự đặc biệt')
-    .required('Nhập district'),
+    .required('Vui lòng nhập tên quận'),
   city: yup
     .string()
     .matches('^[a-zA-Z ]+$', 'Không chứa số hay kí tự đặc biệt')
-    .required('Nhập city'),
+    .required('Vui lòng nhập tên thành phố'),
 });
 
 const RegisterPage = () => {

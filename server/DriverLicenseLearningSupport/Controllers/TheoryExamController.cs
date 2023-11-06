@@ -14,6 +14,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Vml.Spreadsheet;
 using DriverLicenseLearningSupport.Payloads.Request;
 using System.Reflection.Metadata.Ecma335;
+using System.Globalization;
 
 namespace DriverLicenseLearningSupport.Controllers
 {
@@ -25,10 +26,12 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly IAnswerService _answerService;
         private readonly IMemoryCache _memoryCache;
         private readonly AppSettings _appSettings;
+        private readonly TheoryExamSettings _theoryExamSettings;
 
         public TheoryExamController(ITheoryExamService theoryExamService, IAnswerService answerService,
             ILicenseTypeService licenseTypeService, IQuestionService questionService,
-            IMemoryCache memoryCache, IOptionsMonitor<AppSettings> monitor)
+            IMemoryCache memoryCache, IOptionsMonitor<AppSettings> monitor,
+            IOptionsMonitor<TheoryExamSettings> monitor1)
         {
             _theoryExamService = theoryExamService;
             _licenseTypeService = licenseTypeService;
@@ -36,6 +39,30 @@ namespace DriverLicenseLearningSupport.Controllers
             _answerService = answerService;
             _memoryCache = memoryCache;
             _appSettings = monitor.CurrentValue;
+            _theoryExamSettings = monitor1.CurrentValue;
+        }
+
+
+        [HttpGet]
+        [Route("theory-exam/add-question")]
+        //[Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> AddQuestionToExam()
+        {
+            var theoryCreateRules = _theoryExamSettings.CreateRules;
+            if (theoryCreateRules.Count() > 0)
+            {
+                return Ok(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status200OK,
+                    Data = theoryCreateRules
+                });
+            }
+
+            return BadRequest(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = "Vui lòng thêm các điều kiện để tạo đề thi"
+            });
         }
 
 
@@ -45,6 +72,11 @@ namespace DriverLicenseLearningSupport.Controllers
         public async Task<IActionResult> AddQuestionToExam([FromForm] TheoryAddRequest reqObj)
         {
             int currentLicenceId = 0;
+            DateTime startDate;
+            TimeSpan startTime;
+
+            
+
             List<QuestionModel> listQuestions = new List<QuestionModel>();
 
             foreach (int questionId in reqObj.QuestionIds)
@@ -70,16 +102,23 @@ namespace DriverLicenseLearningSupport.Controllers
             }
 
             TheoryExamModel mocktest = new TheoryExamModel();
-         
+
             mocktest.TotalTime = reqObj.TotalTime;
             mocktest.TotalQuestion = reqObj.TotalQuestion;
             mocktest.TotalAnswerRequired = reqObj.TotalAnswerRequired;
-            if (mocktest.TotalQuestion != reqObj.QuestionIds.Count())
+            if (mocktest.TotalQuestion > reqObj.QuestionIds.Count())
             {
                 return BadRequest(new ErrorResponse()
                 {
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = "Sai số lượng câu cần cho đề thi"
+                    Message = "Số câu hiện tại là "+ reqObj.QuestionIds.Count()+ "/"+reqObj.TotalQuestion+". Vui lòng thêm câu hỏi trước khi tạo đề!" 
+                });
+            }if (mocktest.TotalQuestion < reqObj.QuestionIds.Count())
+            {
+                return BadRequest(new ErrorResponse()
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Số câu hiện tại là " + reqObj.QuestionIds.Count() + "/" + reqObj.TotalQuestion + ". Vui lòng xóa bớt câu hỏi trước khi tạo đề! "
                 });
             }
             //set LicenseType to mock test
@@ -87,6 +126,28 @@ namespace DriverLicenseLearningSupport.Controllers
             //set list questions to the mock test
             mocktest.Questions = listQuestions;
             mocktest.IsMockExam = reqObj.IsMockTest;
+
+            if (reqObj.IsMockTest == true)
+            {
+                string stringDateNow = DateTime.Now.ToString("yyyy/MM/dd");
+                string stringTimeSpan = DateTime.Now.ToString("HH:mm:ss");
+                DateTime dateNow = DateTime.ParseExact(stringDateNow, "yyyy/MM/dd", CultureInfo.InvariantCulture);
+                TimeSpan timeSpanNow = TimeSpan.Parse(stringTimeSpan);
+                startDate = DateTime.ParseExact(reqObj.StartDate, _appSettings.DateFormat, CultureInfo.InvariantCulture);
+                startTime = TimeSpan.Parse(reqObj.Hour.ToString()+":"+reqObj.Minute.ToString());   
+                if (startDate < dateNow || (startDate == dateNow && startTime < timeSpanNow)) 
+                {
+                    return BadRequest(new ErrorResponse
+                    {
+                        StatusCode = StatusCodes.Status400BadRequest,
+                        Message = "Không tạo thời gian trước thời điểm hiện tại"
+                    });
+                }
+                startTime = new TimeSpan(reqObj.Hour, reqObj.Minute, 0);
+                mocktest.StartDate = startDate;
+                mocktest.StartTime = startTime;
+
+            }
 
             var result = await _theoryExamService.CreateAsync(mocktest);
             //set mock 
@@ -151,8 +212,8 @@ namespace DriverLicenseLearningSupport.Controllers
         //}
 
         // thoery-exam/license-type/id -> list thoery exam id
-        [HttpGet]        
-        
+        [HttpGet]
+
         [HttpGet]
         [Route("theory-exam/{theoryExamId:int}")]
         public async Task<IActionResult> GetQuestionByTheoryId([FromRoute] int theoryExamId)
@@ -166,13 +227,14 @@ namespace DriverLicenseLearningSupport.Controllers
                     Message = "không tìm thấy đề"
                 });
             }
-            
+
             return Ok(new BaseResponse()
             {
                 StatusCode = StatusCodes.Status200OK,
                 Data = theoryExam
             });
         }
+
         [HttpGet]
         [Route("theory-exam/licenseID/{licenseId:int}")]
         public async Task<IActionResult> GetTheoryExamByLicenseId([FromRoute] int licenseId)
@@ -197,6 +259,31 @@ namespace DriverLicenseLearningSupport.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("/mocktest")]
+        public async Task<IActionResult> GetAllMockTestAsync() 
+        {
+            var mocktests = await _theoryExamService.GetAllMockTest();
+            if (mocktests is null)
+            {
+                return NotFound(new ErrorResponse()
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = "Không có đề thi mẫu nào"
+                });
+            }
+            else 
+            {
+                return Ok(new BaseResponse()
+                {
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = "Tải đề thi mẫu thành công",
+                    Data = mocktests
+                }) ;
+            }
+        }   
+
+        
         [HttpDelete]
         [Route("theory-exam/{theoryID:int}")]
         public async Task<IActionResult> DeleteTheoryExam([FromRoute] int theoryID)
@@ -225,6 +312,6 @@ namespace DriverLicenseLearningSupport.Controllers
                 });
             }
         }
-
+       
     }
 }

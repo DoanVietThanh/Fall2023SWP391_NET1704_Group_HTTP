@@ -17,5 +17,6 @@ namespace DriverLicenseLearningSupport.Services.Impl
         Task<TheoryExamModel> GetByIdAsync(int id);
         Task<IEnumerable<TheoryExamModel>> GetByLicenseTypeIdAsync(int licenseTypeId);
         Task<bool> RemoveTheoryExam(int id);
+        Task<IEnumerable<TheoryExamModel>> GetAllMockTest();
     }
 }

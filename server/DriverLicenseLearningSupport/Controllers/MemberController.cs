@@ -442,7 +442,7 @@ namespace DriverLicenseLearningSupport.Controllers
             // Create stream contain file
             var stream = new MemoryStream();
 
-            using (var xlPackgage = new ExcelPackage(stream))
+            using (var xlPackgage = new OfficeOpenXml.ExcelPackage(stream))
             {
                 // Define a worksheet
                 var worksheet = xlPackgage.Workbook.Worksheets.Add("Members");
@@ -516,7 +516,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     var stream = file.OpenReadStream();
 
                     // Create excel package
-                    using (var xlPackage = new ExcelPackage(stream))
+                    using (var xlPackage = new OfficeOpenXml.ExcelPackage(stream))
                     {
                         // Get first worksheet from package
                         var worksheet = xlPackage.Workbook.Worksheets.FirstOrDefault();

@@ -8,5 +8,7 @@ namespace DriverLicenseLearningSupport.Repositories.Impl
         Task<ExamGradeModel> CreateAsync(ExamGrade entity);
 
         Task<List<ExamGradeModel>> GetAllByTheoryExamIdandEmailAsync(string Email, int TheoryExamId ,DateTime StartedDate);
+
+        Task<bool> DeleteAsync(int examGradeId);
     }
 }

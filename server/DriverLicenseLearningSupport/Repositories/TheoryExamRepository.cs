@@ -4,6 +4,7 @@ using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Repositories.Impl;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace DriverLicenseLearningSupport.Repositories
 {
@@ -46,7 +47,6 @@ namespace DriverLicenseLearningSupport.Repositories
                 //theoryEntity.Questions.Add(list);
                 theoryExam.TheoryExamId = Convert.ToInt32(theoryEntity.TheoryExamId);
 
-                //List<Question> questions = new List<Question>();
 
                 foreach (var question in list)
                 {
@@ -91,25 +91,33 @@ namespace DriverLicenseLearningSupport.Repositories
         public async Task<bool> IsExamQuestion(int questionId)
         {
             //lay toan bo cau hoi cua moi de
-            var theoryEntites = await _context.TheoryExams.Select(x => new TheoryExam()
-            {
-                TheoryExamId = x.TheoryExamId,
-                LicenseTypeId = x.LicenseTypeId,
-                TotalAnswerRequired = x.TotalAnswerRequired,
-                TotalTime = x.TotalTime,
-                TotalQuestion = x.TotalQuestion,
-                Questions = x.Questions.Select(q => new Question()
+            /*    var theoryEntites = await _context.TheoryExams.Select(x => new TheoryExam()
                 {
-                    QuestionId = q.QuestionId
-                }).ToList()
-            }).ToListAsync();
+                    TheoryExamId = x.TheoryExamId,
+                    LicenseTypeId = x.LicenseTypeId,
+                    TotalAnswerRequired = x.TotalAnswerRequired,
+                    TotalTime = x.TotalTime,
+                    TotalQuestion = x.TotalQuestion,
+                    Questions = x.Questions.Select(q => new Question()
+                    {
+                        QuestionId = q.QuestionId
+                    }).ToList()
+                }).ToListAsync();
+            */
+            var theoryEntities = await _context.TheoryExams.Include(x => x.Questions).ToListAsync();
 
-            var question = theoryEntites.Select(x => x.Questions.Where(x => x.QuestionId == questionId).FirstOrDefault())
+            foreach(var tEntity in theoryEntities)
+            {
+                var quest = tEntity.Questions.Where(x => x.QuestionId == questionId).FirstOrDefault();
+                if (quest is not null) return true;
+            }
+
+            /*var question = theoryEntites.Select(x => x.Questions.Where(x => x.QuestionId == questionId).FirstOrDefault())
                                         .FirstOrDefault();
-            if (question is not null)
+            if (theoryEntity is not null)
             {
                 return true;
-            }
+            }*/
             return false;
         }
         public async Task<bool> HasHistory(int id)
@@ -153,7 +161,7 @@ namespace DriverLicenseLearningSupport.Repositories
 
         public async Task<IEnumerable<TheoryExamModel>> GetByLicenseTypeIdAsync(int licenseTypeId)
         {
-            var theoryExams = await _context.TheoryExams.Where(te => te.LicenseTypeId == licenseTypeId)
+            var theoryExams = await _context.TheoryExams.Where(te => te.LicenseTypeId == licenseTypeId && te.IsMockExam == false)
                 .ToListAsync();
             if (theoryExams is null)
             {
@@ -162,8 +170,7 @@ namespace DriverLicenseLearningSupport.Repositories
             return _mapper.Map<IEnumerable<TheoryExamModel>>(theoryExams);
 
         }
-
-        
+  
         public async Task<bool> RemoveTheoryExam(int id)
         {
             // Retrieve the TheoryExam object by its ID
@@ -181,6 +188,16 @@ namespace DriverLicenseLearningSupport.Repositories
 
             _context.TheoryExams.Remove(theoryExam);
             return await _context.SaveChangesAsync() > 0 ? true : false;
+        }
+
+        public async Task<IEnumerable<TheoryExamModel>> GetAllMockTest()
+        {
+            string stringDateNow = DateTime.Now.ToString("yyyy/MM/dd");
+            string stringTimeSpan = DateTime.Now.ToString("HH:mm:ss"); 
+            DateTime dateNow = DateTime.ParseExact(stringDateNow, "yyyy/MM/dd", CultureInfo.InvariantCulture);
+            TimeSpan timeSpanNow = TimeSpan.Parse(stringTimeSpan);
+            var mocktests = await _context.TheoryExams.Where(mt => mt.IsMockExam == true && (mt.StartDate > dateNow) || (mt.StartDate == dateNow && mt.StartTime > timeSpanNow )).ToListAsync();
+            return _mapper.Map<IEnumerable<TheoryExamModel>>(mocktests);
         }
     }
 }
