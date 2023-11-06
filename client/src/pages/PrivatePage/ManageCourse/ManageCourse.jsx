@@ -41,7 +41,7 @@ const ManageCourse = () => {
 
   const columns = [
     { field: 'courseId', headerName: 'ID', width: 140 },
-    { field: 'courseTitle', headerName: 'courseTitle', width: 140 },
+    { field: 'courseTitle', headerName: 'courseTitle', width: 240 },
     { field: 'courseDesc', headerName: 'courseDesc', width: 140 },
     {
       field: 'startDate',
