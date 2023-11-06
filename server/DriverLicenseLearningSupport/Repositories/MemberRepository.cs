@@ -71,21 +71,7 @@ namespace DriverLicenseLearningSupport.Repositories
                                                             Name = x.EmailNavigation.Role.Name
                                                         }
                                                     },
-                                                    LicenseFormId = x.LicenseFormId,
-                                                    //LicenseForm = new LicenseRegisterForm
-                                                    //{
-                                                    //    LicenseFormId = x.LicenseForm.LicenseFormId,
-                                                    //    LicenseFormDesc = x.LicenseForm.LicenseFormDesc,
-                                                    //    CreateDate = x.LicenseForm.CreateDate,
-                                                    //    Image = x.LicenseForm.Image,
-                                                    //    IdentityCardImage = x.LicenseForm.IdentityCardImage,
-                                                    //    HealthCertificationImage = x.LicenseForm.HealthCertificationImage,
-                                                    //    RegisterFormStatus = new LicenseRegisterFormStatus
-                                                    //    {
-                                                    //        RegisterFormStatusId = x.LicenseForm.RegisterFormStatus.RegisterFormStatusId,
-                                                    //        RegisterFormStatusDesc = x.LicenseForm.RegisterFormStatus.RegisterFormStatusDesc
-                                                    //    }
-                                                    //}
+                                                    LicenseFormId = x.LicenseFormId
                                                 }).FirstOrDefaultAsync();
             // map to model and return
             return _mapper.Map<MemberModel>(memberEntity);
@@ -94,7 +80,11 @@ namespace DriverLicenseLearningSupport.Repositories
         {
             // get member by id
             var memberEntity = await _context.Members.Where(x => x.MemberId == id.ToString() && x.IsActive == true)
+                                                     .Include(x => x.LicenseForm)
+                                                     .Include(x => x.Address)
+                                                     .Include(x => x.EmailNavigation)
                                                      .FirstOrDefaultAsync();
+            memberEntity.EmailNavigation.Password = null!;
             // map to model and return
             return _mapper.Map<MemberModel>(memberEntity);
         }

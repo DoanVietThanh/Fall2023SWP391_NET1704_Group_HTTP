@@ -54,5 +54,20 @@ namespace DriverLicenseLearningSupport.Services
         {
             return await _accountRepository.DeleteAsync(email);
         }
+
+        public async Task<IEnumerable<AccountModel>> GetAllAsync()
+        {
+            return await _accountRepository.GetAllAsync();
+        }
+
+        public async Task<bool> BanAccountAsync(string email)
+        {
+            return await _accountRepository.BanAccountAsync(email);
+        }
+
+        public async Task<bool> UnBanAccountAsync(string email)
+        {
+            return await _accountRepository.UnBanAccountAsync(email);
+        }
     }
 }

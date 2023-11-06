@@ -49,6 +49,13 @@ var appSettingsConfig = builder.Configuration
     .Build();
 builder.Services.Configure<AppSettingsConfig>(appSettingsConfig);
 
+// Add AppSettings Json config
+var appSettingsConfig = builder.Configuration
+    .AddJsonFile("appsettings.json")
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .Build();
+builder.Services.Configure<AppSettingsConfig>(appSettingsConfig);
+
 // Add Authentication
 var secretKey = builder.Configuration.GetValue<string>("AppSettings:SecretKey");
 var secretKeyBytes = Encoding.UTF8.GetBytes(secretKey);

@@ -110,6 +110,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 });
             }
 
+
             // create course 
             var createdCourse = await _courseService.CreateAsync(courseModel);
 
@@ -758,6 +759,17 @@ namespace DriverLicenseLearningSupport.Controllers
         [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> DeleteCourse([FromRoute] Guid id) 
         {
+            // update course <-> hidden
+            var hiddenCourse = await _courseService.GetHiddenCourseAsync(id);
+            if (hiddenCourse is null) return new ObjectResult(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status405MethodNotAllowed,
+                Message = $"Vui lòng ẩn khóa học trước khi xóa"
+            })
+            {
+                StatusCode = StatusCodes.Status405MethodNotAllowed
+            };
+
             bool isSucess = await _courseService.DeleteAsync(id);
 
             if (!isSucess) 
@@ -775,6 +787,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 StatusCode = StatusCodes.Status200OK,
                 Message = $"Xóa khóa học thành công"
             });
+
         }
 
         /// <summary>

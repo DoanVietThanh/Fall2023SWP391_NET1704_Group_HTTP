@@ -57,19 +57,15 @@ namespace DriverLicenseLearningSupport.Repositories
         }
         public async Task<LicenseRegisterFormModel> GetByMemberId(Guid memberId)
         {
-            var lfEntities = await _context.LicenseRegisterForms.Include(x => x.Members)
-                                                                .ToListAsync();
+            // get member by id 
+            var member = await _context.Members.Where(x => x.MemberId == memberId.ToString())
+                                               .FirstOrDefaultAsync();
+            
+            
+            var lfEntity = await _context.LicenseRegisterForms.Where(x => x.LicenseFormId == member.LicenseFormId)
+                                                             .FirstOrDefaultAsync();             
 
-            var memberEntity = lfEntities.Select(x => x.Members.Where(x => x.MemberId == memberId.ToString())
-                                                               .FirstOrDefault())
-                                         .FirstOrDefault();
-            if(memberEntity is not null)
-            {
-                var lfEntity = await _context.LicenseRegisterForms.Where(x => x.LicenseFormId == memberEntity.LicenseFormId)
-                                    .FirstOrDefaultAsync();         
-                return _mapper.Map<LicenseRegisterFormModel>(lfEntity);
-            }
-            return null;
+            return _mapper.Map<LicenseRegisterFormModel>(lfEntity);
         }
         public async Task<bool> ApproveAsync(int licenseRegisterId)
         {
@@ -91,6 +87,20 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                 .ToListAsync();
 
             return _mapper.Map<IEnumerable<LicenseRegisterFormModel>>(awaitForms);
+        }
+
+        public async Task<bool> DenyAsync(int licenseRegisterId)
+        {
+            // get by id
+            var lfRegisterEntity = await _context.LicenseRegisterForms.Where(x => x.LicenseFormId == licenseRegisterId)
+                                                                .FirstOrDefaultAsync();
+            // not found
+            if (lfRegisterEntity is null) return false;
+
+            // approve <- change status
+            lfRegisterEntity.RegisterFormStatusId = 3;
+            // save changes
+            return await _context.SaveChangesAsync() > 0 ? true : false;
         }
     }
 }

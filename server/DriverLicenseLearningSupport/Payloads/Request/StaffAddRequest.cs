@@ -69,7 +69,7 @@ namespace DriverLicenseLearningSupport.Payloads.Request
                     FirstName = reqObj.FirstName,
                     LastName = reqObj.LastName,
                     DateBirth = DateTime.ParseExact(reqObj.DateBirth, formatDate,
-                CultureInfo.InvariantCulture),
+                            CultureInfo.InvariantCulture),
                     Phone = reqObj.Phone,
                     JobTitleId = reqObj.JobTitleId,
                     JobTitle = new JobTitleModel 

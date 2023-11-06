@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Presentation;
+using DocumentFormat.OpenXml.Spreadsheet;
 using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Models.Config;
@@ -178,6 +179,19 @@ namespace DriverLicenseLearningSupport.Controllers
             staff.Address = address;
             staff.IsActive = true;
             staff.AvatarImage = _appSettings.DefaultAvatar;
+
+            // validate birthdate
+            var currDate = DateTime.ParseExact(DateTime.Now.ToString(_appSettings.DateFormat),
+                _appSettings.DateFormat, CultureInfo.InvariantCulture);
+            var birthdate = staff.DateBirth;
+            if (birthdate >= currDate)
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Ngày sinh không hợp lệ"
+                });
+            }
 
             // is mentor 
             if (staff.JobTitle.JobTitleDesc.Equals("Mentor")) 
@@ -504,8 +518,9 @@ namespace DriverLicenseLearningSupport.Controllers
                 });
             }
             course.Mentors = null!;
-            course.FeedBacks = null;
-            course.Curricula = null;
+            course.FeedBacks = null!;
+            course.Curricula = null!;
+            course.CoursePackages = null!;
 
             // generate current date time 
             var currDate = DateTime.ParseExact(DateTime.Now.ToString("yyyy-MM-dd"),
@@ -626,9 +641,10 @@ namespace DriverLicenseLearningSupport.Controllers
             }
             // get course by id 
             var course = await _courseService.GetAsync(Guid.Parse(weekday.CourseId));
-            course.Mentors = null;
-            course.FeedBacks = null;
-            course.Curricula = null;
+            course.Mentors = null!;
+            course.FeedBacks = null!;
+            course.Curricula = null!;
+            course.CoursePackages = null!;
 
             // count total teaching schedule
             var totalSchedule = listOfSlotSchedule.Select(x => x.TeachingSchedules.Count)
@@ -908,6 +924,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     course.Mentors = null;
                     course.FeedBacks = null;
                     course.Curricula = null;
+                    course.CoursePackages = null!;
 
                     // count total teaching schedule
                     var totalSchedule = listOfSlotSchedule.Select(x => x.TeachingSchedules.Count)
@@ -1001,6 +1018,7 @@ namespace DriverLicenseLearningSupport.Controllers
         {
             // get mentor by id
             var mentor = await _staffService.GetAsync(Guid.Parse(reqObj.MentorId));
+            mentor.FeedBacks = null;
             if (mentor is null)
             {
                 return BadRequest(new BaseResponse
@@ -1012,6 +1030,11 @@ namespace DriverLicenseLearningSupport.Controllers
             
             // get course by id
             var course = await _courseService.GetAsync(Guid.Parse(reqObj.CourseId));
+            // set null collection
+            course.Mentors = null;
+            course.FeedBacks = null;
+            course.Curricula = null;
+            course.CoursePackages = null!;
             if (course is null)
             {
                 return BadRequest(new BaseResponse
@@ -1022,7 +1045,7 @@ namespace DriverLicenseLearningSupport.Controllers
             }
 
             // course
-            var courseMentor = await _courseService.GetByMentorIdAsync(Guid.Parse(reqObj.CourseId));
+            var courseMentor = await _courseService.GetByMentorIdAsync(Guid.Parse(reqObj.MentorId));
             if (courseMentor is null)
             {
                 return BadRequest(new BaseResponse
@@ -1324,7 +1347,7 @@ namespace DriverLicenseLearningSupport.Controllers
         [HttpPost]
         [Route("staffs/import-excel")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> ImportToExcel([FromForm] IFormFile file,
+        public async Task<IActionResult> ImportToExcel(IFormFile file,
             [FromForm] int jobTitleId)
         {
             // validate excel file
@@ -1544,7 +1567,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
                 }
                 // properties
-                xlPackage.Workbook.Properties.Title = "Staff List";
+                xlPackage.Workbook.Properties.Title = "Danh sách nhân viên";
                 xlPackage.Workbook.Properties.Author = "Admin";
                 await xlPackage.SaveAsync();
 
