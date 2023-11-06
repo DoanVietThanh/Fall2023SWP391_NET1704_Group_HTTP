@@ -84,7 +84,7 @@ namespace DriverLicenseLearningSupport.Repositories
                                                      .Include(x => x.Address)
                                                      .Include(x => x.EmailNavigation)
                                                      .FirstOrDefaultAsync();
-            memberEntity.EmailNavigation.Password = null!;
+            //memberEntity.EmailNavigation.Password = null!;
             // map to model and return
             return _mapper.Map<MemberModel>(memberEntity);
         }

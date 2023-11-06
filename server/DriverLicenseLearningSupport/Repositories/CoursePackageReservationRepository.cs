@@ -22,6 +22,8 @@ namespace DriverLicenseLearningSupport.Repositories
         public async Task<CoursePackageReservationModel> CreateAsync(CoursePackageReservation courseReservation)
         {
             await _context.CoursePackageReservations.AddAsync(courseReservation);
+            //var reservations = await _context.CoursePackageReservations.ToListAsync();
+            //reservations.Add(courseReservation);
             bool isSucess = await _context.SaveChangesAsync() > 0 ? true : false;
 
             if (!isSucess) return null;

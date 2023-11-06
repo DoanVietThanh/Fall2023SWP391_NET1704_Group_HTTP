@@ -84,5 +84,10 @@ namespace DriverLicenseLearningSupport.Services
         {
             return await _staffRepository.GetAllMentorAsync();
         }
+
+        public async Task<IEnumerable<StaffModel>> GetAllMentorNoCourse()
+        {
+            return await _staffRepository.GetAllMentorNoCourse();
+        }
     }
 }

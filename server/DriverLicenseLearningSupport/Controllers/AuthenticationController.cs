@@ -42,6 +42,7 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly IJobTitleService _jobTitleService;
         private readonly IRoleService _roleService;
         private readonly IMemoryCache _cache;
+        private readonly IImageService _imageService;
         private readonly AppSettingsConfig _appSettingsConfig;
         private readonly AppSettings _appSettings;
 
@@ -54,6 +55,7 @@ namespace DriverLicenseLearningSupport.Controllers
             IRoleService roleService,
             IMemoryCache cache,
             IOptionsMonitor<AppSettings> monitor,
+            IImageService imageService,
             IOptionsMonitor<AppSettingsConfig> monitor1)
         {
             _accountService = accountService;
@@ -64,9 +66,17 @@ namespace DriverLicenseLearningSupport.Controllers
             _jobTitleService = jobTitleService;
             _roleService = roleService;
             _cache = cache;
+            _imageService = imageService;
             _appSettingsConfig = monitor1.CurrentValue;
             _appSettings = monitor.CurrentValue;
         }
+
+        [HttpGet]
+        [Route("authentication/test")]
+        public async Task<IActionResult> DemoImage()
+        {
+            return Ok(_imageService.GetPreSignedURL(Guid.Parse("be668e07-1366-4c82-942c-68d93640d546")));
+        } 
 
         [HttpPost("authentication/login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest reqObj)

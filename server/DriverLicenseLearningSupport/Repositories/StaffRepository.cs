@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Office2010.Drawing;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DriverLicenseLearningSupport.Entities;
@@ -274,6 +275,14 @@ namespace DriverLicenseLearningSupport.Repositories
             // remove staff
             _context.Staffs.Remove(staffEntity);
             return await _context.SaveChangesAsync() > 0 ? true : false;
+        }
+
+        public async Task<IEnumerable<StaffModel>> GetAllMentorNoCourse()
+        {
+            var mentors = await _context.Staffs.Where(x => x.JobTitleId == 3
+                                                        && x.Courses.Count == 0)
+                                        .ToListAsync();
+            return _mapper.Map<IEnumerable<StaffModel>>(mentors);
         }
     }
 }

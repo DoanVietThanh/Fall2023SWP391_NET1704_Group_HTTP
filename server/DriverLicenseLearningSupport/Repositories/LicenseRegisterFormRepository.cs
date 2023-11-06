@@ -102,5 +102,32 @@ namespace DriverLicenseLearningSupport.Repositories
             // save changes
             return await _context.SaveChangesAsync() > 0 ? true : false;
         }
+
+        public async Task<bool> UpdateAsync(int licenseRegisterId, LicenseRegisterFormModel model)
+        {
+            // get by id
+            var lfRegisterEntity = await _context.LicenseRegisterForms.Where(x => x.LicenseFormId == licenseRegisterId)
+                                                                .FirstOrDefaultAsync();
+            // not found
+            if (lfRegisterEntity is null) return false;
+
+            // update fields
+            lfRegisterEntity.LicenseTypeId = model.LicenseTypeId;
+            lfRegisterEntity.PermanentAddress = model.PermanentAddress;
+            lfRegisterEntity.IdentityNumber = model.IdentityNumber;
+            lfRegisterEntity.Gender = model.Gender;
+            lfRegisterEntity.IdentityCardIssuedDate = model.IdentityCardIssuedDate;
+            lfRegisterEntity.IdentityCardIssuedBy = model.IdentityCardIssuedBy;
+            lfRegisterEntity.AvailableLicenseType = model.AvailableLicenseType;
+            
+            if(model.Image is not null) lfRegisterEntity.Image = model.Image;
+            if(model.IdentityCardImage is not null)
+                lfRegisterEntity.IdentityCardImage = model.IdentityCardImage;
+            if(model.HealthCertificationImage is not null)
+                lfRegisterEntity.HealthCertificationImage = model.HealthCertificationImage;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

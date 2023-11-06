@@ -79,7 +79,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 {
                     emptyAnswerExamGrade.MemberId = member.MemberId;
                 }
-                emptyAnswerExamGrade.StartedDate = startedDate;
+                emptyAnswerExamGrade.StartDate = startedDate;
                 emptyAnswerExamGrade.TheoryExamId = reqObj.TheoryExamId;
                 emptyAnswerExamGrade.Point = 0;
                 emptyAnswerExamGrade.SelectedAnswerId = -1;
@@ -166,7 +166,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 }
                 var date = startedDate.ToString(_appSettings.DateTimeFormat);
                 startedDate = DateTime.ParseExact(date, _appSettings.DateTimeFormat, CultureInfo.InvariantCulture);
-                examGradeModel.StartedDate = startedDate;
+                examGradeModel.StartDate = startedDate;
 
                 //right answer với id là 0,1,2,3 -> lấy nội dung và questionid để gán lại id dưới db
                 var answer = await _answerService.GetByQuestionIdAndAnswerDesc(examGradeModel.QuestionId, theRightAnswerModel.Answer);
@@ -175,7 +175,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
 
                 var createdExamGradeModel = await _examGradeService.CreateAsync(examGradeModel);
-                createdExamGradeModel.StartedDate = startedDate;
+                createdExamGradeModel.StartDate = startedDate;
                 listResult.Add(createdExamGradeModel);
             }
             if (listResult is null)

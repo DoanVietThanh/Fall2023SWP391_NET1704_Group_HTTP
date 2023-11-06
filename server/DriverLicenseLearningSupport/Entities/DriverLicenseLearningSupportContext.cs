@@ -320,8 +320,6 @@ namespace DriverLicenseLearningSupport.Entities
                     .HasMaxLength(200)
                     .HasColumnName("staff_id");
 
-                //entity.Property(e => e.VehicleId).HasColumnName("vehicle_id");
-
                 entity.HasOne(d => d.CoursePackage)
                     .WithMany(p => p.CoursePackageReservations)
                     .HasForeignKey(d => d.CoursePackageId)
@@ -350,11 +348,6 @@ namespace DriverLicenseLearningSupport.Entities
                     .HasForeignKey(d => d.StaffId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_CoursePackageReservation_StaffId");
-
-                //entity.HasOne(d => d.Vehicle)
-                //    .WithMany(p => p.CoursePackageReservations)
-                //    .HasForeignKey(d => d.VehicleId)
-                //    .HasConstraintName("FK_CoursePackageReservation_VehicleId");
             });
 
             modelBuilder.Entity<Curriculum>(entity =>
@@ -553,6 +546,18 @@ namespace DriverLicenseLearningSupport.Entities
                 entity.Property(e => e.IdentityNumber)
                       .HasMaxLength(15)
                       .HasColumnName("identity_number");
+
+                entity.Property(e => e.IdentityCardIssuedDate).HasColumnName("identity_card_issued_date");
+
+                entity.Property(e => e.LicenseTypeIssuedDate).HasColumnName("license_type_issued_date");
+
+                entity.Property(e => e.AvailableLicenseType)
+                      .HasMaxLength(20)
+                      .HasColumnName("available_license_type");
+
+                entity.Property(e => e.IdentityCardIssuedBy)
+                      .HasMaxLength(200)
+                      .HasColumnName("identity_card_issued_by");
 
                 entity.HasOne(d => d.LicenseType)
                     .WithMany(p => p.LicenseRegisterForms)

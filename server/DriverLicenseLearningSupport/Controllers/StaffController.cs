@@ -1030,11 +1030,6 @@ namespace DriverLicenseLearningSupport.Controllers
             
             // get course by id
             var course = await _courseService.GetAsync(Guid.Parse(reqObj.CourseId));
-            // set null collection
-            course.Mentors = null;
-            course.FeedBacks = null;
-            course.Curricula = null;
-            course.CoursePackages = null!;
             if (course is null)
             {
                 return BadRequest(new BaseResponse
@@ -1043,6 +1038,11 @@ namespace DriverLicenseLearningSupport.Controllers
                     Message = $"Không tìm thấy khóa học"
                 });
             }
+            // set null collection
+            course.Mentors = null;
+            course.FeedBacks = null;
+            course.Curricula = null;
+            course.CoursePackages = null!;
 
             // course
             var courseMentor = await _courseService.GetByMentorIdAsync(Guid.Parse(reqObj.MentorId));
