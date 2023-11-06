@@ -104,7 +104,7 @@ namespace DriverLicenseLearningSupport.Controllers
                         QuestionAnswerId = x.QuestionAnswerId
                     }
                     ).FirstOrDefault();
-
+ 
                 // lấy selected answerModel dưới dạng 0,1,2,3 để đi so sánh
                 var selectedAnswerModel = answers.Where(x => x.Answer.Equals(rawSelectedAnswer[examGradeModel.QuestionId]))
                     .Select(x => new AnswerModel()

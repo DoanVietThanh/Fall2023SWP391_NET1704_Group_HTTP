@@ -245,7 +245,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 return BadRequest(new ErrorResponse()
                 {
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = "Chưa có bộ đề nào"
+                    Message = "chưa có bộ đề nào"
                 });
             }
             else
@@ -253,7 +253,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 return Ok(new BaseResponse
                 {
                     StatusCode = StatusCodes.Status200OK,
-                    Message = "Tải thành công",
+                    Message = "tải thành công",
                     Data = theoryExams
                 });
             }

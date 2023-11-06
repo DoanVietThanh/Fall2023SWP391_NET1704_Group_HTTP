@@ -127,17 +127,19 @@ namespace DriverLicenseLearningSupport.Controllers
         {
             var vehicles = await _vehicleService.GetAllAsync();
 
-            if(vehicles.Count() == 0)
+            if (vehicles.Count() == 0)
             {
-                return Ok(new BaseResponse { 
-                    StatusCode = StatusCodes.Status200OK,
-                    Data = vehicles
+                return NotFound(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = "Không tìm thấy phương tiện"
                 });
             }
 
-            return NotFound(new BaseResponse { 
-                StatusCode = StatusCodes.Status404NotFound,
-                Message = "Không tìm thấy phương tiện"
+            return Ok(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Data = vehicles
             });
         }
 

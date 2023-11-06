@@ -11,6 +11,7 @@ const DialogRegisterSchedule = ({
   itemCourse,
   openRegisterSchedule,
   setOpenRegisterSchedule,
+  setDataWeek,
 }) => {
   const { user } = useSelector((state) => state.auth);
   const { accountInfo } = useSelector((state) => state.auth.user);
@@ -45,6 +46,10 @@ const DialogRegisterSchedule = ({
           mentorId: accountInfo?.staffId,
           courseId: courseId,
           slotId: selectedSlot,
+        })
+        .then((res) => {
+          console.log(res);
+          setDataWeek(res?.data);
         })
         .catch((error) => toastError(error?.response?.data?.message));
       console.log(res);

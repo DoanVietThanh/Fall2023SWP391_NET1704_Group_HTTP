@@ -42,6 +42,9 @@ builder.Services.Configure<CourseSettings>(courseSettings);
 var vnpayConfig = builder.Configuration.GetSection("VnPayConfig");
 builder.Services.Configure<VnPayConfig>(vnpayConfig);
 
+// Add Theory Exam config
+var theoryExamConfig = builder.Configuration.GetSection("TheoryExamSettings");
+builder.Services.Configure<TheoryExamSettings>(theoryExamConfig); 
 // Add AppSettings Json config
 var appSettingsConfig = builder.Configuration
     .AddJsonFile("appsettings.json")
@@ -49,12 +52,6 @@ var appSettingsConfig = builder.Configuration
     .Build();
 builder.Services.Configure<AppSettingsConfig>(appSettingsConfig);
 
-// Add AppSettings Json config
-var appSettingsConfig = builder.Configuration
-    .AddJsonFile("appsettings.json")
-    .SetBasePath(Directory.GetCurrentDirectory())
-    .Build();
-builder.Services.Configure<AppSettingsConfig>(appSettingsConfig);
 
 // Add Authentication
 var secretKey = builder.Configuration.GetValue<string>("AppSettings:SecretKey");

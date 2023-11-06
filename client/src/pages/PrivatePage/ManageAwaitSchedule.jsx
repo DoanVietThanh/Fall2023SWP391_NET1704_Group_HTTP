@@ -7,6 +7,7 @@ import axiosClient from '../../utils/axiosClient';
 
 import { GrFormView } from 'react-icons/gr';
 import { useNavigate } from 'react-router-dom';
+import { toastError } from '../../components/Toastify';
 const ManageAwaitSchedule = () => {
   const navigate = useNavigate();
   const [userId, setUserId] = useState();
@@ -63,9 +64,10 @@ const ManageAwaitSchedule = () => {
 
   useEffect(() => {
     async function getAllUsers() {
-      const res = await axiosClient.get(`/teaching-schedules/await`);
-      console.log(res?.data);
-      setListAwait(res?.data);
+      await axiosClient
+        .get(`/teaching-schedules/await`)
+        .then((res) => setListAwait(res?.data?.data))
+        .catch((error) => toastError(error?.response?.data?.message));
     }
     getAllUsers();
   }, []);

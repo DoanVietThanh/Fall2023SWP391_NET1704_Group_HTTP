@@ -29,6 +29,15 @@ const DialogReservation = ({
     getListTypePayment();
   }, []);
 
+  console.log(
+    JSON.stringify({
+      memberId,
+      mentorId: selectedMentor,
+      coursePackageId: selectedCoursePackage?.coursePackageId,
+      paymentTypeId: typePayment,
+    })
+  );
+
   const submitForm = (e) => {
     async function submitPayment() {
       await axiosClient

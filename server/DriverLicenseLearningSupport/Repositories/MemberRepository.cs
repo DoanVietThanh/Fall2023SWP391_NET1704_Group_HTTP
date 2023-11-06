@@ -71,7 +71,22 @@ namespace DriverLicenseLearningSupport.Repositories
                                                             Name = x.EmailNavigation.Role.Name
                                                         }
                                                     },
-                                                    LicenseFormId = x.LicenseFormId
+                                                    LicenseFormId = x.LicenseFormId,
+                                                    /*LicenseForm = new LicenseRegisterForm
+                                                    {
+                                                        LicenseFormId = x.LicenseForm.LicenseFormId,
+                                                        LicenseFormDesc = x.LicenseForm.LicenseFormDesc,
+                                                        CreateDate = x.LicenseForm.CreateDate,
+                                                        Image = x.LicenseForm.Image,
+                                                        IdentityCardImage = x.
+                                                    LicenseForm.IdentityCardImage,
+                                                        HealthCertificationImage = x.LicenseForm.HealthCertificationImage,
+                                                        RegisterFormStatus = new LicenseRegisterFormStatus
+                                                        {
+                                                            RegisterFormStatusId = x.LicenseForm.RegisterFormStatus.RegisterFormStatusId,
+                                                            RegisterFormStatusDesc = x.LicenseForm.RegisterFormStatus.RegisterFormStatusDesc
+                                                        }
+                                                    }*/
                                                 }).FirstOrDefaultAsync();
             // map to model and return
             return _mapper.Map<MemberModel>(memberEntity);
@@ -84,7 +99,7 @@ namespace DriverLicenseLearningSupport.Repositories
                                                      .Include(x => x.Address)
                                                      .Include(x => x.EmailNavigation)
                                                      .FirstOrDefaultAsync();
-            memberEntity.EmailNavigation.Password = null!;
+            //memberEntity.EmailNavigation.Password = null!;
             // map to model and return
             return _mapper.Map<MemberModel>(memberEntity);
         }

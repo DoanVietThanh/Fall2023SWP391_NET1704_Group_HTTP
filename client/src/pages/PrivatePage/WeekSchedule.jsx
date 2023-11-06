@@ -111,7 +111,7 @@ const WeekSchedule = () => {
           })
           .catch((e) => {
             console.log(e);
-            toastError(e.response.data.message);
+            toastError(e.response?.data?.message);
             setOpenRegister(false);
           });
         if (response?.data.statusCode === 200) {
