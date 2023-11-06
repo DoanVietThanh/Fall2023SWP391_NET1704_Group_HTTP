@@ -34,6 +34,11 @@ namespace DriverLicenseLearningSupport.Services
             return await _theoryExamRepository.GetAllAsync();
         }
 
+        public async Task<IEnumerable<TheoryExamModel>> GetAllMockTest()
+        {
+            return await _theoryExamRepository.GetAllMockTest();
+        }
+
         public async Task<TheoryExamModel> GetByIdAsync(int id)
         {
             var theoryExamModel =  await _theoryExamRepository.GetByIdAsync(id);

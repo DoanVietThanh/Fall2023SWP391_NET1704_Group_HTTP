@@ -293,7 +293,7 @@ namespace DriverLicenseLearningSupport.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("staffs/{id:Guid}")]
-        [Authorize(Roles = "Admin,Staff")]
+        //[Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> GetStaff([FromRoute] Guid id) 
         {
             // get staff by id
@@ -1315,7 +1315,7 @@ namespace DriverLicenseLearningSupport.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("staffs/import-excel")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> ImportExcel()
         {
             // get all jobtitle
@@ -1346,7 +1346,7 @@ namespace DriverLicenseLearningSupport.Controllers
         // import excel
         [HttpPost]
         [Route("staffs/import-excel")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> ImportToExcel(IFormFile file,
             [FromForm] int jobTitleId)
         {
@@ -1384,7 +1384,7 @@ namespace DriverLicenseLearningSupport.Controllers
                         var password = PasswordHelper.ConvertToEncrypt(worksheet.Cells[row, 2].Value.ToString());
                         var firstName = worksheet.Cells[row, 3].Value.ToString();
                         var lastName = worksheet.Cells[row, 4].Value.ToString();
-                        var dateBirth = DateTime.ParseExact(worksheet.Cells[row, 5].Value.ToString(),
+                        var dateBirth = DateTime.ParseExact(Convert.ToDateTime(worksheet.Cells[row, 5].Value).ToString("dd/MM/yyyy hh:mm:ss"),
                             "dd/MM/yyyy hh:mm:ss", CultureInfo.InvariantCulture);
                         var phone = "0" + worksheet.Cells[row, 6].Value.ToString();
                         var street = worksheet.Cells[row, 7].Value.ToString();

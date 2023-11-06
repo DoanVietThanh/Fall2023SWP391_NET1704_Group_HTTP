@@ -23,6 +23,11 @@ namespace DriverLicenseLearningSupport.Services
             return await _examGradeRepository.CreateAsync(examGradeEntity);
         }
 
+        public async Task<bool> DeleteAsync(int examGradeId)
+        {
+            return await _examGradeRepository.DeleteAsync(examGradeId); 
+        }
+
         public async Task<List<ExamGradeModel>> GetAllByTheoryExamIdandEmailAsync(string Email, int TheoryExamId, DateTime StartedDate)
         {
             return await _examGradeRepository.GetAllByTheoryExamIdandEmailAsync(Email, TheoryExamId,StartedDate) ;

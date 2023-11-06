@@ -127,7 +127,7 @@ namespace DriverLicenseLearningSupport.Controllers
         {
             var vehicles = await _vehicleService.GetAllAsync();
 
-            if(vehicles.Count() == 0)
+            if (vehicles.Count() == 0)
             {
                 return NotFound(new BaseResponse
                 {

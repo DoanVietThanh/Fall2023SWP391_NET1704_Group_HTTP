@@ -4,6 +4,7 @@ using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Repositories.Impl;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace DriverLicenseLearningSupport.Repositories
 {
@@ -46,10 +47,6 @@ namespace DriverLicenseLearningSupport.Repositories
                 //theoryEntity.Questions.Add(list);
                 theoryExam.TheoryExamId = Convert.ToInt32(theoryEntity.TheoryExamId);
 
-                // set null
-                theoryExam.LicenseType.Questions = new List<Question>();
-
-                List<Question> questions = new List<Question>();
 
                 foreach (var question in list)
                 {
@@ -164,7 +161,7 @@ namespace DriverLicenseLearningSupport.Repositories
 
         public async Task<IEnumerable<TheoryExamModel>> GetByLicenseTypeIdAsync(int licenseTypeId)
         {
-            var theoryExams = await _context.TheoryExams.Where(te => te.LicenseTypeId == licenseTypeId)
+            var theoryExams = await _context.TheoryExams.Where(te => te.LicenseTypeId == licenseTypeId && te.IsMockExam == false)
                 .ToListAsync();
             if (theoryExams is null)
             {
@@ -173,8 +170,7 @@ namespace DriverLicenseLearningSupport.Repositories
             return _mapper.Map<IEnumerable<TheoryExamModel>>(theoryExams);
 
         }
-
-        
+  
         public async Task<bool> RemoveTheoryExam(int id)
         {
             // Retrieve the TheoryExam object by its ID
@@ -192,6 +188,16 @@ namespace DriverLicenseLearningSupport.Repositories
 
             _context.TheoryExams.Remove(theoryExam);
             return await _context.SaveChangesAsync() > 0 ? true : false;
+        }
+
+        public async Task<IEnumerable<TheoryExamModel>> GetAllMockTest()
+        {
+            string stringDateNow = DateTime.Now.ToString("yyyy/MM/dd");
+            string stringTimeSpan = DateTime.Now.ToString("HH:mm:ss"); 
+            DateTime dateNow = DateTime.ParseExact(stringDateNow, "yyyy/MM/dd", CultureInfo.InvariantCulture);
+            TimeSpan timeSpanNow = TimeSpan.Parse(stringTimeSpan);
+            var mocktests = await _context.TheoryExams.Where(mt => mt.IsMockExam == true && (mt.StartDate > dateNow) || (mt.StartDate == dateNow && mt.StartTime > timeSpanNow )).ToListAsync();
+            return _mapper.Map<IEnumerable<TheoryExamModel>>(mocktests);
         }
     }
 }

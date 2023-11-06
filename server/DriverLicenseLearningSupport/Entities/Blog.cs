@@ -14,6 +14,8 @@ namespace DriverLicenseLearningSupport.Entities
         public int BlogId { get; set; }
         public string StaffId { get; set; }
         public string Content { get; set; }
+        public string Title { get; set; }
+        public string? Image { get; set; }
         public DateTime? CreateDate { get; set; }
         public DateTime? LastModifiedDate { get; set; }
 

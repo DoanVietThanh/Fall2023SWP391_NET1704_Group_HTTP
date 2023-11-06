@@ -44,9 +44,9 @@ namespace DriverLicenseLearningSupport.Repositories
         public async Task<LicenseRegisterFormModel> GetAsync(int licenseRegisterId)
         {
             var lfEntity = await _context.LicenseRegisterForms.Where(x => x.LicenseFormId == licenseRegisterId)
-                                    .FirstOrDefaultAsync();  
+                                    .FirstOrDefaultAsync();
             // get form status
-            if(lfEntity is not null)
+            if (lfEntity is not null)
             {
                 LicenseRegisterFormStatus? licenseRegisterFormStatus = await _context.LicenseRegisterFormStatuses
                                                                             .Where(x => x.RegisterFormStatusId == lfEntity.RegisterFormStatusId)
@@ -60,10 +60,10 @@ namespace DriverLicenseLearningSupport.Repositories
             // get member by id 
             var member = await _context.Members.Where(x => x.MemberId == memberId.ToString())
                                                .FirstOrDefaultAsync();
-            
-            
+
+
             var lfEntity = await _context.LicenseRegisterForms.Where(x => x.LicenseFormId == member.LicenseFormId)
-                                                             .FirstOrDefaultAsync();             
+                                                             .FirstOrDefaultAsync();
 
             return _mapper.Map<LicenseRegisterFormModel>(lfEntity);
         }

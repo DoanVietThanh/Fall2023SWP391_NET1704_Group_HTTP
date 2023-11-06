@@ -22,5 +22,20 @@ namespace DriverLicenseLearningSupport.Services
             var entity = _mapper.Map<Tag>(tag);
             return await _tagRepo.CreateAsync(entity);
         }
+
+        public async Task<bool> ExistTag(string name)
+        {
+            return await _tagRepo.ExistTag(name);
+        }
+
+        public async Task<IEnumerable<TagModel>> GetAllAsync()
+        {
+            return await _tagRepo.GetAllAsync();
+        }
+
+        public Task<TagModel> GetTagById(int id)
+        {
+            return _tagRepo.GetTagById(id);
+        }
     }
 }

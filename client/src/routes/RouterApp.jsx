@@ -14,8 +14,9 @@ import CauHoiDiemLietPage from '../pages/DocumentPage/CauHoiDiemLietPage';
 import DocumentPage from '../pages/DocumentPage/DocumentPage';
 import ToanBoCauHoiPage from '../pages/DocumentPage/ToanBoCauHoiPage';
 import HomePage from '../pages/HomePage/HomePage';
-import InstructorSchedule from '../pages/InstructorSchedule/InstructorSchedule';
+
 import IntructorDetail from '../pages/IntructorPage/IntructorDetail';
+import InstructorSchedule from './../pages/IntructorPage/InstructorSchedule';
 import IntructorPage from '../pages/IntructorPage/IntructorPage';
 import ForgotPassword from '../pages/LoginPage/ForgotPassword';
 import LoginPage from '../pages/LoginPage/LoginPage';
@@ -40,6 +41,8 @@ import ManageAwaitSchedule from '../pages/PrivatePage/ManageAwaitSchedule';
 
 import ApproveSchedule from '../pages/PrivatePage/ApproveSchedule';
 import ManageDenySchedule from '../pages/PrivatePage/ManageDenySchedule';
+import ManageCourse from '../pages/PrivatePage/ManageCourse/ManageCourse';
+import ManageStaff from '../pages/PrivatePage/ManageStaff/ManageStaff';
 
 const RouterApp = () => {
   const router = createBrowserRouter([
@@ -59,15 +62,16 @@ const RouterApp = () => {
     { path: '/profile', element: <Profile /> },
     { path: '/week-schedule', element: <WeekSchedule /> },
     { path: '/history-test', element: <HistoryTest /> },
-    { path: '/history-test', element: <HistoryTest /> },
     { path: '/week-schedule-mentor', element: <WeekScheduleMentor /> },
     { path: '/manage-question', element: <ManageQuestion /> },
     { path: '/manage-banktest', element: <ManageBankTest /> },
     { path: '/manage-user', element: <ManageUser /> },
+    { path: '/manage-staff', element: <ManageStaff /> },
 
     { path: '/dashboard', element: <DashBoard /> },
     { path: '/manage-await-schedule', element: <ManageAwaitSchedule /> },
     { path: '/manage-deny-schedule', element: <ManageDenySchedule /> },
+    { path: '/manage-course', element: <ManageCourse /> },
     {
       path: '/manage-await-schedule/:idMentor',
       element: <ApproveSchedule />,
@@ -84,7 +88,10 @@ const RouterApp = () => {
 
     { path: '/theory', element: <TheoryPage /> },
     { path: '/theory/test/:theoryExamId', element: <TestTheory /> },
-    { path: '/theory/result/:mockTestId', element: <ResultTheory /> },
+    {
+      path: '/theory/result/:email/:mockTestId/:startedDate',
+      element: <ResultTheory />,
+    },
 
     { path: '/simulationSituation', element: <SimulationSituation /> },
 

@@ -28,13 +28,13 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly IMemoryCache _memoryCache;
         private readonly AppSettings _appSettings;
         private readonly ITheoryExamService _theoryExamService;
-        private readonly TheoryExamConfig _theoryExamSettings;
+        private readonly TheoryExamSettings _theoryExamSettings;
 
         public TheoryController(IImageService imageService, IQuestionService questionService
             , IAnswerService answerService, ILicenseTypeService licenseTypeService
             , IMemoryCache memoryCache, IOptionsMonitor<AppSettings> monitor,
             ITheoryExamService theoryExamService,
-            IOptionsMonitor<TheoryExamConfig> monitor1)
+            IOptionsMonitor<TheoryExamSettings> monitor1)
         {
             _imageService = imageService;
             _questionService = questionService;
@@ -483,7 +483,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 questionWithAnswersModel = (IEnumerable<QuestionWithAnswersModel>)_memoryCache.Get(_appSettings.TheoryCacheKey);
             }
             //page size
-            int pageSize = _appSettings.TheoryPageSize;
+            int pageSize = _appSettings.PageSize;
             //paging
             var list = PaginatedList<QuestionWithAnswersModel>.CreateByIEnumerable(questionWithAnswersModel, page, pageSize);
 
@@ -493,7 +493,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     return BadRequest(new ErrorResponse()
                     {
                         StatusCode = StatusCodes.Status400BadRequest,
-                        Message = "Not found any suitable question-answers pair"
+                        Message = "Không tìm thấy câu hỏi"
                     });
             }
             return Ok(new BaseResponse()
