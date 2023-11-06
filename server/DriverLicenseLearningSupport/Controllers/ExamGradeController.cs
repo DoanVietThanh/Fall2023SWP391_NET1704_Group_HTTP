@@ -175,29 +175,6 @@ namespace DriverLicenseLearningSupport.Controllers
                 });
             }
 
-            //foreach (ExamGradeModel eg in listResult)
-            //{
-            //    var selectedAnswer = await _answerService.GetByAnswerIdAsync(eg.SelectedAnswerId);
-            //    QuestionModel question = await _questionService.GetByIdAsync(eg.QuestionId);
-            //    IEnumerable<AnswerModel> answers = await _answerService.GetAllByQuestionId(eg.QuestionId);
-            //    if (selectedAnswer is null)
-            //    {
-            //        eg.SelectedAnswerId = -1;
-            //    }
-            //    else
-            //    {
-            //        foreach (AnswerModel answer in answers)
-            //        {
-            //            if (answer.Answer.Equals(selectedAnswer.Answer))
-            //            {
-            //                eg.SelectedAnswerId = answer.QuestionAnswerId;
-            //                break;
-            //            }
-            //        }
-            //    }
-            //    question.QuestionAnswers = answers.ToList();
-            //    eg.Question = question;
-            //}
             if (isWrongParalysisQuesion is true || countRightAnswers < requiredRightAnswer)
             {
                 isPassed = false;

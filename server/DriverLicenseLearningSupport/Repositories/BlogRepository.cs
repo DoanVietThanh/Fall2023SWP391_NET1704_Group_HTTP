@@ -5,6 +5,7 @@ using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Repositories.Impl;
 using Microsoft.EntityFrameworkCore;
+using System.Web;
 
 namespace DriverLicenseLearningSupport.Repositories
 {
@@ -36,23 +37,46 @@ namespace DriverLicenseLearningSupport.Repositories
                 }
                 await _context.SaveChangesAsync();
             }
+            blog.Content = HttpUtility.HtmlDecode(blog.Content);
+            blog.Title = HttpUtility.HtmlDecode(blog.Title);
             return _mapper.Map<BlogModel>(blog);
-            //await _context.Blogs.AddAsync(blog);
-            //bool isSuccess = await _context.SaveChangesAsync() > 0 ? true : false;
-            //if(isSuccess) 
-            //{
-            //    var blogEntity = await _context.Blogs.OrderByDescending(x => x.BlogId).FirstOrDefaultAsync();
-            //    blog.BlogId = Convert.ToInt32(blogEntity.BlogId);
-            //}
-            //return _mapper.Map<BlogModel>(blog);
         }
 
+        public async Task<bool> DeleteBlogAsync(int blogId)
+        {
+            var blog = await _context.Blogs.Include(x => x.Comments)
+                                            .Include(x => x.Tags).FirstOrDefaultAsync(x => x.BlogId == blogId);
+            if (blog != null)
+            {
+                blog.Tags.Clear();
+                blog.Comments.Clear();
+                await _context.SaveChangesAsync();
+            }
 
+            _context.Blogs.Remove(blog);
+            return await _context.SaveChangesAsync() > 0 ? true : false;
+        }
 
         public async Task<IEnumerable<BlogModel>> GetAllAsync()
         {
             var Blogs = await _context.Blogs.Include(blog => blog.Comments)
                                             .Include(blog => blog.Tags).ToListAsync();
+            foreach (var blog in Blogs)
+            {
+                blog.Title = HttpUtility.HtmlDecode(blog.Title);
+                blog.Content = HttpUtility.HtmlDecode(blog.Content);
+            }
+            return _mapper.Map<IEnumerable<BlogModel>>(Blogs);
+        }
+
+        public async Task<IEnumerable<BlogModel>> GetAllBlogWithoutCmt()
+        {
+            var Blogs = await _context.Blogs.Include(blog => blog.Tags).ToListAsync();
+            foreach (var blog in Blogs)
+            {
+                blog.Title = HttpUtility.HtmlDecode(blog.Title);
+                blog.Content = HttpUtility.HtmlDecode(blog.Content);
+            }
 
             return _mapper.Map<IEnumerable<BlogModel>>(Blogs);
         }
@@ -61,14 +85,73 @@ namespace DriverLicenseLearningSupport.Repositories
         {
             var blogs = await _context.Blogs.Include(blog => blog.Tags)
                                             .Include(blog => blog.Comments).Where(x => x.BlogId == id).ToListAsync();
+            foreach (var blog in blogs)
+            {
+                blog.Title = HttpUtility.HtmlDecode(blog.Title);
+                blog.Content = HttpUtility.HtmlDecode(blog.Content);
+            }
             return _mapper.Map<IEnumerable<BlogModel>>(blogs);
         }
 
-        public async Task<IEnumerable<BlogModel>> GetBlogsByStaffId(string id)
+        public async Task<IEnumerable<BlogModel>> GetBlogsByStaffId(Guid id)
         {
             var blogs = await _context.Blogs.Include(blog => blog.Tags)
-                                            .Include(blog=>blog.Comments).Where(x => x.StaffId.Equals(id)).ToListAsync();
+                                            .Include(blog => blog.Comments).Where(x => x.StaffId.Equals(id)).ToListAsync();
+            foreach (var blog in blogs)
+            {
+                blog.Title = HttpUtility.HtmlDecode(blog.Title);
+                blog.Content = HttpUtility.HtmlDecode(blog.Content);
+            }
             return _mapper.Map<IEnumerable<BlogModel>>(blogs);
+        }
+
+        public async Task<IEnumerable<BlogModel>> SearchBlogByAuthorAsync(string author)
+        {
+            var blogs = await _context.Blogs.Include(x => (x.Staff.FirstName + " " + x.Staff.LastName).Contains(author)).ToListAsync();
+            foreach (var blog in blogs)
+            {
+                blog.Title = HttpUtility.HtmlDecode(blog.Title);
+                blog.Content = HttpUtility.HtmlDecode(blog.Content);
+            }
+            return _mapper.Map<IEnumerable<BlogModel>>(blogs);
+        }
+
+        public async Task<IEnumerable<BlogModel>> SearchBlogByNameAsync(string name)
+        {
+            var blogs = await _context.Blogs.Where(x => x.Title.Contains(name)).ToListAsync();
+            foreach (var blog in blogs)
+            {
+                blog.Title = HttpUtility.HtmlDecode(blog.Title);
+                blog.Content = HttpUtility.HtmlDecode(blog.Content);
+            }
+            return _mapper.Map<IEnumerable<BlogModel>>(blogs);
+        }
+
+        public async Task<IEnumerable<BlogModel>> SearchBlogByTagId(int tagId)
+        {
+            var blogs = await _context.Blogs.Include(x => x.Tags.Where(y => y.TagId == tagId)).ToListAsync();
+            if (blogs is null)
+            {
+                return null;
+            }
+            else
+            {
+                foreach (var blog in blogs)
+                {
+                    blog.Title = HttpUtility.HtmlDecode(blog.Title);
+                    blog.Content = HttpUtility.HtmlDecode(blog.Content);
+                }
+                return _mapper.Map<IEnumerable<BlogModel>>(blogs);
+            }
+        }
+
+        public async Task<bool> UpdateBlogAsync(BlogModel blog)
+        {
+            var blogToUpdate = await _context.Blogs.FirstOrDefaultAsync(x => x.BlogId == blog.BlogId);
+            blogToUpdate.Content = blog.Content;
+            blogToUpdate.LastModifiedDate = blog.LastModifiedDate;
+            blogToUpdate.Title = blog.Title;
+            return await _context.SaveChangesAsync() > 0 ? true : false;
         }
     }
 }

@@ -59,7 +59,7 @@ namespace DriverLicenseLearningSupport.Repositories
 
         public async Task<SimulationSituationModel> UpdateSimulaitonAsync(SimulationSituationModel model, int id)
         {
-            var entity = await _context.SimulationSituations.FirstOrDefaultAsync(x=> x.SimulationId == id);
+            var entity = await _context.SimulationSituations.FirstOrDefaultAsync(x => x.SimulationId == id);
             if (entity is null) { return null; }
             entity.TimeResult = model.TimeResult;
             entity.ImageResult = model.ImageResult;
