@@ -27,7 +27,7 @@ const IntructorDetail = () => {
       const res = await axiosClient.get(`${url_server}/staffs/${idInstructor}`);
       setInstructor(res?.data?.data);
       console.log(
-        '🚀 ~ file: IntructorDetail.jsx:28 ~ getInstructor ~ res:',
+        ' ~ file: IntructorDetail.jsx:28 ~ getInstructor ~ res:',
         res?.data
       );
     }

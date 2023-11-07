@@ -1,13 +1,16 @@
-import { Box } from "@mui/material";
-import * as dayjs from "dayjs";
 import React, { useState } from "react";
+import * as dayjs from "dayjs";
+import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
-import SideBar from "../../components/SideBar";
-import DialogEditUser from "./components/DialogEditUser";
+import SideBar from "../../../components/SideBar";
+import DialogEditProfile from "./components/DialogEditProfile";
+import DialogRegisterForm from "./components/DialogRegisterForm";
+
 const Profile = () => {
-  const [openEditProfile, setOpenEditProfile] = useState(false);
   const { user, isLoading } = useSelector((state) => state.auth);
   const accInfo = user.accountInfo;
+  const [openEditProfile, setOpenEditProfile] = useState(false);
+  const [openRegisterForm, setOpenRegisterForm] = useState(false);
   return (
     <div className="flex">
       <SideBar />
@@ -23,10 +26,10 @@ const Profile = () => {
               <img
                 src={`/img/avtThanh.jpg`}
                 alt="avt"
-                className="absolute bottom-[-50px] left-8 w-[100px] h-[100px] object-cover rounded-full"
+                className="absolute bottom-[-90px] left-16 w-[180px] h-[180px] object-cover rounded-full border-8 border-white"
               />
             </div>
-            <div className="grid grid-cols-2 gap-8 mt-8">
+            <div className="grid grid-cols-2 gap-8 mt-20 ml-16">
               <div className="flex-x gap-4 w-full">
                 <span className="text-[20px] font-semibold">Họ và tên:</span>
                 <span className="text-[20px] font-normal">
@@ -52,11 +55,11 @@ const Profile = () => {
                 </span>
                 <span className="text-[20px] font-normal">{accInfo.phone}</span>
               </div>
-              {/* <div className="flex-x gap-4">
-                <span className="text-[20px] font-semibold">
+              {/* <div className='flex-x gap-4'>
+                <span className='text-[20px] font-semibold'>
                   Loại bằng lái:
                 </span>
-                <span className="text-[20px] font-normal">
+                <span className='text-[20px] font-normal'>
                   {accInfo.licenseType.licenseTypeDesc}
                 </span>
               </div> */}
@@ -65,22 +68,15 @@ const Profile = () => {
                 <span className="text-[20px] font-normal">{`${accInfo.address.street}, ${accInfo.address.district}, ${accInfo.address.city}`}</span>
               </div>
             </div>
-            {/* button edit profile */}
-            <div>
-              <button
-                className="p-2 bg-blue-600 text-white rounded-lg "
-                onClick={() => setOpenEditProfile(true)}
-              >
-                Tạo mới
-              </button>
+            <div className="flex justify-end w-full gap-4 pr-4">
+              <button className="btn mt-4" onClick={() => setOpenEditProfile(true)}>Chỉnh sửa</button>
+              <button className="btn mt-4" onClick={() => setOpenRegisterForm(true)}>Tạo hồ sơ thi</button>
             </div>
-            {openEditProfile && (
-              <DialogEditUser
-                open={openEditProfile}
-                setOpen={setOpenEditProfile}
-              />
-            )}
           </div>
+              
+          <DialogEditProfile open={openEditProfile} setOpen={setOpenEditProfile}/>
+          <DialogRegisterForm open={openRegisterForm} setOpen={setOpenRegisterForm}/>
+        
         </div>
       </Box>
     </div>

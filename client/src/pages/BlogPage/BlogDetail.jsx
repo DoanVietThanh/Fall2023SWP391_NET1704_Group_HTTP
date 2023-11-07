@@ -10,11 +10,14 @@ import {
   AiOutlineEye,
 } from "react-icons/ai";
 import { BiBookBookmark, BiSearch } from "react-icons/bi";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 const BlogDetail = () => {
-  const url =
-    "/img/backgroundSlide.png";
+  const { blogId } = useParams();
+
+  console.log(blogId);
+
+  const url = "/img/backgroundSlide.png";
   const breadcrumbs = "Bài đăng chi tiết";
   const initListComment = [
     {
@@ -147,6 +150,7 @@ const BlogDetail = () => {
       link: "/blog/detail",
     },
   ];
+
   return (
     <div>
       <Header />

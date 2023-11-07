@@ -16,7 +16,7 @@ namespace DriverLicenseLearningSupport.Repositories
         private readonly AppSettings _appSettings;
 
         public ExamGradeRepository(DriverLicenseLearningSupportContext context,
-            IMapper mapper ,IOptionsMonitor<AppSettings> monitor) 
+            IMapper mapper, IOptionsMonitor<AppSettings> monitor)
         {
             _context = context;
             _mapper = mapper;
@@ -29,9 +29,16 @@ namespace DriverLicenseLearningSupport.Repositories
             return _mapper.Map<ExamGradeModel>(entity);
         }
 
+        public async Task<bool> DeleteAsync(int examGradeId)
+        {
+            var examGrade = await _context.ExamGrades.FirstOrDefaultAsync(x => x.ExamGradeId == examGradeId);
+            _context.ExamGrades.Remove(examGrade);
+            return await _context.SaveChangesAsync() > 0 ? true : false;
+        }
+
         public async Task<List<ExamGradeModel>> GetAllByTheoryExamIdandEmailAsync(string Email, int TheoryExamId, DateTime StartedDate)
         {
-            
+
             var ExamGrades = await _context.ExamGrades.Where(eg => eg.TheoryExamId == TheoryExamId &&
             eg.Email.Equals(Email)).ToListAsync();
             var formatedDate = StartedDate.ToString(_appSettings.DateTimeFormat);
@@ -40,6 +47,6 @@ namespace DriverLicenseLearningSupport.Repositories
             return _mapper.Map<List<ExamGradeModel>>(ExamGrades);
         }
 
-        
+
     }
 }

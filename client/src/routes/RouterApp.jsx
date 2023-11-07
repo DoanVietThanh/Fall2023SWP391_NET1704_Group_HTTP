@@ -130,7 +130,7 @@ import ManageAwaitSchedule from "../pages/PrivatePage/ManageAwaitSchedule";
 import ManageBankTest from "../pages/PrivatePage/ManageBankTest";
 import ManageQuestion from "../pages/PrivatePage/ManageQuestion";
 import ManageUser from "../pages/PrivatePage/ManageUser";
-import Profile from "../pages/PrivatePage/Profile";
+// import Profile from "../pages/PrivatePage/Profile";
 import WeekSchedule from "../pages/PrivatePage/WeekSchedule";
 import WeekScheduleMentor from "../pages/PrivatePage/WeekScheduleMentor";
 
@@ -145,6 +145,7 @@ import ManageDenySchedule from "../pages/PrivatePage/ManageDenySchedule";
 import InstructorSchedule from "./../pages/IntructorPage/InstructorSchedule";
 import DashBoard from "./../pages/PrivatePage/DashBoard";
 import SimulationSituation from "./../pages/SimulationSituationPage/SimulationSituation";
+import Profile from "../pages/PrivatePage/ProfilePage/Profile";
 
 const RouterApp = () => {
   const router = createBrowserRouter([
@@ -156,11 +157,12 @@ const RouterApp = () => {
     { path: "/authentication/reset-password", element: <ShowForgetPass /> },
     { path: "/instructor", element: <IntructorPage /> },
     { path: "/instructor/detail/:idInstructor", element: <IntructorDetail /> },
+    { path: "/instructor/detail", element: <IntructorDetail /> },
     {
       path: "/instructor/teaching-schedule/:idInstructor/:idCourse",
       element: <InstructorSchedule />,
     },
-    // { path: '/private-information', element: <PrivatePage /> },
+    // { path: '/private-information', element: <PrivatePage /> }
     { path: "/profile", element: <Profile /> },
     { path: "/week-schedule", element: <WeekSchedule /> },
     { path: "/history-test", element: <HistoryTest /> },
@@ -194,7 +196,7 @@ const RouterApp = () => {
     { path: "/simulationSituation", element: <SimulationSituation /> },
 
     { path: "/blog", element: <BlogPage /> },
-    { path: "/blog/detail", element: <BlogDetail /> },
+    { path: "/blog/:blogId", element: <BlogDetail /> },
     { path: "/contact", element: <ContactPage /> },
 
     //

@@ -1,9 +1,21 @@
 import dayjs from "dayjs";
-import React from "react";
+import React, { useState } from "react";
 import SideBar from "../../components/SideBar";
 import { DataGrid } from "@mui/x-data-grid";
+import CreateBlog from "./components/CreateBlog";
 
 const ManageBlog = () => {
+  const [showCreateBlog, setShowCreateBlog] = useState(false);
+  const [showManageBlog, setShowManageBlog] = useState(true);
+
+  const handleShowCreateBlog = () => {
+    setShowCreateBlog(true);
+    setShowManageBlog(false);
+  };
+  const handleShowManageBlog = () => {
+    setShowManageBlog(true);
+    setShowCreateBlog(false);
+  };
   const listBlog = [
     {
       blogId: 1,
@@ -84,57 +96,25 @@ const ManageBlog = () => {
   return (
     <div className="flex">
       <SideBar />
-      <div className="flex flex-col mt-[64px] h-[90vh] w-full border rounded overflow-y-auto p-4">
-        <div className="border flex justify-end ">
-          <button
-            className="p-2 bg-blue-600 text-white rounded-lg"
-            // onClick={() => setOpenCreateUser(true)}
-          >
-            Tạo mới
+      <div className="flex flex-col mt-[64px] h-[90vh] w-full overflow-y-auto mx-6">
+        <div className="flex gap-8 my-8">
+          <button className="btn" onClick={handleShowManageBlog}>
+            Bài đăng
+          </button>
+          <button className="btn" onClick={handleShowCreateBlog}>
+            Tạo bài đăng
           </button>
         </div>
-        <div style={{ height: 400, width: "100%" }}>
-          <DataGrid
-            rows={listBlog}
-            columns={columns}
-            getRowId={(row) => row.blogId}
-          />
-        </div>
-        {/* <div className='flex-1 w-[100%]'>
-          {listBlog && (
-            <>
-              <DataGrid
-                rows={listBlog}
-                columns={columns}
-                initialState={{
-                  pagination: {
-                    paginationModel: { page: 0, pageSize: 5 },
-                  },
-                }}
-                getRowId={(row) => row.blogId}
-                pageSizeOptions={[5, 10]}
-              />
-              {userId && (
-                <DialogEditUser
-                  open={openEditUser}
-                  setOpen={setOpenEditUser}
-                  userId={userId}
-                  setLoading={setLoading}
-                  loading={loading}
-                  getAllUsers={getAllUsers}
-                />
-              )}
-            </>
-          )}
-
-          {openCreateUser && (
-            <DialogCreateUser
-              open={openCreateUser}
-              setOpen={setOpenCreateUser}
-              getAllUsers={getAllUsers}
+        {showManageBlog && (
+          <div style={{ height: 400, width: "100%" }}>
+            <DataGrid
+              rows={listBlog}
+              columns={columns}
+              getRowId={(row) => row.blogId}
             />
-          )}
-        </div> */}
+          </div>
+        )}
+        {showCreateBlog && <CreateBlog />}
       </div>
     </div>
   );

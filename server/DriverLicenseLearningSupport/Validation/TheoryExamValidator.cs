@@ -8,19 +8,12 @@ namespace DriverLicenseLearningSupport.Validation
     {
         public TheoryExamValidator() 
         {
-            RuleFor(te => te.TotalQuestion)
-                .NotNull()
-                .NotEmpty()
-                .WithMessage("Please input TotalQuestion");
-            RuleFor(te => te.TotalTime)
-                .NotNull()
-                .NotEmpty()
-                .LessThanOrEqualTo(30)
-                .WithMessage("Exam Time must be less than 60 minutes");
-            RuleFor(te => te.TotalAnswerRequired)
+
+            RuleFor(te => te.StartTime)
                 .NotEmpty()
                 .NotNull()
-                .WithMessage("Please input TotalAnswerRequired");
+                .WithMessage("Yêu cầu điền thời gian bắt đầu thi");
+
         }
     }
 }

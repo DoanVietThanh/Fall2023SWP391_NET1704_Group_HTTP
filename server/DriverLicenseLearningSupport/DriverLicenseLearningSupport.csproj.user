@@ -2,5 +2,9 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <NameOfLastUsedPublishProfile>E:\SWP391\Project\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\Properties\PublishProfiles\FolderProfile12.pubxml</NameOfLastUsedPublishProfile>
+    <ActiveDebugProfile>DriverLicenseLearningSupport</ActiveDebugProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

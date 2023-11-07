@@ -8,6 +8,9 @@ namespace DriverLicenseLearningSupport.Services.Impl
         Task<bool> CreateAsync(AccountModel account);
         Task<bool> ResetPasswordAsync(string email, string newPassword);
         Task<AccountModel> GetByEmailAsync(string email);
+        Task<IEnumerable<AccountModel>> GetAllAsync();
         Task<bool> DeleteAsync(string email);
+        Task<bool> BanAccountAsync(string email);
+        Task<bool> UnBanAccountAsync(string email);
     }
 }

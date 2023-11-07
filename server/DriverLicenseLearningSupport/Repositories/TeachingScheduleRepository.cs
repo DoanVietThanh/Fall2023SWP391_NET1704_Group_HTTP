@@ -289,7 +289,8 @@ namespace DriverLicenseLearningSupport.Repositories
                                 Comment = x.Comment,
                                 Member = x.Member
                             }).ToList(),
-                    Staff = x.Staff
+                    Staff = x.Staff,
+                    IsActive = x.IsActive
                 });
 
             //// filters
@@ -344,7 +345,8 @@ namespace DriverLicenseLearningSupport.Repositories
                 }).ToList(),
                 WeekdayScheduleId = x.WeekdayScheduleId,
                 SlotId = x.SlotId,
-                StaffId = x.StaffId
+                StaffId = x.StaffId,
+                IsActive = x.IsActive
             }).ToListAsync();
             var existSchedule = teachingSchedules.Where(x => x.TeachingDate.ToString("dd/MM/yyyy").Equals(dateFormat) 
                                                           && x.SlotId == slotId
@@ -393,7 +395,7 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                         TotalSession = x.CoursePackage.TotalSession
                                                                    },
                                                                    Staff = x.Staff,
-
+                                                                   IsActive = x.IsActive,
                                                                    RollCallBooks = x.RollCallBooks
                                                                     .Select(
                                                                         x => new RollCallBook
@@ -447,6 +449,7 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                 TeachingScheduleId = x.TeachingScheduleId,
                                                                 TeachingDate = x.TeachingDate,
                                                                 Vehicle = x.Vehicle,
+                                                                IsActive = x.IsActive,
                                                                 RollCallBooks = x.RollCallBooks
                                                                 .Where(x => x.MemberId == memberId.ToString())
                                                                 .Select(
@@ -612,6 +615,13 @@ namespace DriverLicenseLearningSupport.Repositories
                 _context.TeachingSchedules.Remove(ts);
             }
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<IEnumerable<TeachingScheduleModel>> GetAllWeekdayScheduleAsync(int weekDayScheduleId)
+        {
+            var schedules = await _context.TeachingSchedules.Where(x => x.WeekdayScheduleId == weekDayScheduleId)
+                                                            .ToListAsync();
+            return _mapper.Map<IEnumerable<TeachingScheduleModel>>(schedules);
         }
     }
 }

@@ -1,69 +1,70 @@
-import React from "react";
-import Header from "./../../components/Header";
-import Footer from "./../../components/Footer";
-import BackgroundSlider from "../../components/BackgroundSlider";
-import theme from "./../../theme/index";
-import { BiBookBookmark, BiSearch } from "react-icons/bi";
+import axios from "axios";
+import * as dayjs from "dayjs";
+import React, { useEffect, useState } from "react";
 import {
+  AiOutlineArrowRight,
   AiOutlineCalendar,
   AiOutlineClockCircle,
-  AiOutlineArrowRight,
 } from "react-icons/ai";
-import { BsPerson } from "react-icons/bs";
+import { BiBookBookmark, BiSearch } from "react-icons/bi";
 import { Link } from "react-router-dom";
+import BackgroundSlider from "../../components/BackgroundSlider";
+import { toastError } from "../../components/Toastify";
+import Footer from "./../../components/Footer";
+import Header from "./../../components/Header";
+import theme from "./../../theme/index";
+import BlogList from "./BlogList";
+
 const BlogPage = () => {
-  const url =
-    "/img/backgroundSlide.png";
+  const url = "/img/backgroundSlide.png";
   const breadcrumbs = "Bài đăng";
-  const listBlog = [
-    {
-      id: "1",
-      img: "https://i.pinimg.com/564x/31/c0/45/31c0457faf9a23763b9c8e67ea6c02e8.jpg",
-      poster: "Thu Bui",
-      time: "August 26, 2023",
-      type: "Bằng lái",
-      title: "Tips pass bằng lái B1 dễ dàng",
-      content:
-        "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim, nisi, molestiae corrupti deserunt dolorum repellendus hic illo eveniet dolores assumenda esse velit placeat nihil. Esse cum adipisci voluptates similique quam",
-      link: "/blog/detail",
-    },
+  const urlService = process.env.REACT_APP_SERVER_API;
+  const [searchInput, setSearchInput] = useState('');
+  // const listBlog = [
+  //   {
+  //     id: "1",
+  //     img: "https://i.pinimg.com/564x/31/c0/45/31c0457faf9a23763b9c8e67ea6c02e8.jpg",
+  //     poster: "Thu Bui",
+  //     time: "August 26, 2023",
+  //     type: "Bằng lái",
+  //     title: "Tips pass bằng lái B1 dễ dàng",
+  //     content:
+  //       "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim, nisi, molestiae corrupti deserunt dolorum repellendus hic illo eveniet dolores assumenda esse velit placeat nihil. Esse cum adipisci voluptates similique quam",
+  //     link: "/blog/detail",
+  //   },
+  // ];
+  const [listBlog, setListBlog] = useState([]);
 
-    {
-      id: "2",
-      img: "https://i.pinimg.com/474x/ae/b3/46/aeb3462d44f97dc71b9d30af919f4f0b.jpg",
-      poster: "Thanh Doan",
-      time: "November 10, 2023",
-      type: "Lý thuyết",
-      title: "Đề thi lý thuyết của loại bằng lái B1",
-      content:
-        "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim, nisi, molestiae corrupti deserunt dolorum repellendus hic illo eveniet dolores assumenda esse velit placeat nihil. Esse cum adipisci voluptates similique quam",
-      link: "/blog/detail",
-    },
+  useEffect(() => {
+    async function getListBlog() {
+      await axios
+        .get(`${urlService}/blog`)
+        .then((res) => {
+          console.log("res: ", res);
+          setListBlog(res.data?.data);
+        })
+        .catch((error) => {
+          console.log("error: ", error);
+          toastError(error?.response?.data?.message);
+        });
+    }
+    getListBlog();
+  }, []);
 
-    {
-      id: "3",
-      img: "https://i.pinimg.com/474x/f0/3b/d3/f03bd36eeef9820661dbd0ad3efb2f31.jpg",
-      poster: "Phuoc Le",
-      time: "July 1, 2023",
-      type: "Bằng lái",
-      title: "Những thay đổi mới về hạng bằng lái A2",
-      content:
-        "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Enim, nisi, molestiae corrupti deserunt dolorum repellendus hic illo eveniet dolores assumenda esse velit placeat nihil. Esse cum adipisci voluptates similique quam",
-      link: "/blog/detail",
-    },
-  ];
+  console.log("listBlog: ", listBlog);
+
   return (
     <div>
       <Header />
       <BackgroundSlider url={url} breadcrumbs={breadcrumbs} />
-
       <div className="flex justify-center m-20">
-        <div className="flex flex-col gap-10 w-[70%]">
-          {listBlog.map((blog, index) => (
+        <div className="w-[70%]">
+          <BlogList/>
+          {/* {listBlog?.map((blog, index) => (
             <div className="border drop-shadow-md rounded-lg p-20 ">
               <div className="center pb-10">
                 <img
-                  src={blog.img}
+                  src={blog?.img}
                   alt="pic4"
                   className="rounded-lg w-[800px] h-[380px] "
                 />
@@ -72,24 +73,26 @@ const BlogPage = () => {
                 className={`flex text-lg pb-8 text-[${theme.color.mainColor}] `}
               >
                 <div className="flex items-center gap-3 pr-4">
-                  <BsPerson size={24} /> by {blog.poster}
+                  <BsPerson size={24} /> by {blog?.poster} 
                 </div>
                 <div className="flex items-center gap-3 border-l-[2px] px-4">
-                  <AiOutlineClockCircle size={24} /> {blog.time}
+                  <AiOutlineClockCircle size={24} /> {dayjs(blog?.createDate).format("DD/MM/YYYY")}
                 </div>
                 <div className="flex items-center gap-3 border-l-[2px] px-4">
-                  <BiBookBookmark size={24} /> {blog.type}
+                  <BiBookBookmark size={24} /> {blog?.tags?.map((tag, index) => (
+                    <span key={tag.tagId}>{tag.tagName}</span>
+                  ))}
                 </div>
               </div>
-              <div className="text-4xl font-bold pb-8">{blog.title}</div>
-              <div className="font-light text-lg pb-8">{blog.content}</div>
-              <Link to={blog.link}>
+              <div className="text-4xl font-bold pb-8">{blog?.title}</div>
+              <div className="font-light text-lg pb-8">{blog?.content}</div>
+              <Link to={`/blog/${blog?.blogId}`}>
                 <button className="btn flex items-center gap-2">
                   READ MORE <AiOutlineArrowRight />
                 </button>
               </Link>
             </div>
-          ))}
+          ))}  */}
         </div>
 
         <div className="w-[30%] ml-10">
@@ -101,6 +104,7 @@ const BlogPage = () => {
               <input
                 placeholder=" Nhập..."
                 className="rounded-l-lg bg-slate-100 outline-none pl-5"
+                value={searchInput}
               />
               <button
                 className={`center rounded-r-lg bg-[${theme.color.mainColor}] text-white font-bold w-[25%] p-3 hover:bg-blue-900`}
@@ -138,8 +142,8 @@ const BlogPage = () => {
             ))}
           </div>
         </div>
-      </div>
 
+      </div>
       <Footer />
     </div>
   );
