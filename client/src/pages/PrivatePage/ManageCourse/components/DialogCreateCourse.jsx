@@ -57,7 +57,7 @@ export default function DialogCreateCourse({ open, setOpen, getAllCourses }) {
         console.log('error: ', error);
         // setOpen(false);
         // setFormCreate([]);
-        toastError(JSON.stringify(error?.response?.data?.message));
+        toastError(error?.response?.data?.message);
       });
   };
 

@@ -460,7 +460,10 @@ const ManageQuestion = () => {
                         })
                       }
                     />
-
+                    
+                    <h1 className='font-bold capitalize py-4 text-blue-400'>
+                      Loại bằng lái
+                    </h1>
                     {listLisenceType && (
                       <select
                         className='my-4'
@@ -483,6 +486,9 @@ const ManageQuestion = () => {
                       </select>
                     )}
 
+                    <h1 className='font-bold capitalize py-4 text-blue-400'>
+                      Chọn hình ảnh <small class="text-red-500">(nếu có)</small>
+                    </h1>
                     <input
                       type='file'
                       name='imageLink'

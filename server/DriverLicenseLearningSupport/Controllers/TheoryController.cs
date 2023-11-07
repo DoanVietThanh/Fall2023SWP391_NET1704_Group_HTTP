@@ -231,7 +231,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     Question = createdQuestionModel,
                     Answers = createdAnswerModel,
                 },
-                Message = "Create successfully"
+                Message = "Tạo câu hỏi thành công"
             });
         }
 
@@ -357,7 +357,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     return BadRequest(new ErrorResponse()
                     {
                         StatusCode = StatusCodes.Status400BadRequest,
-                        Message = "Something was wrong"
+                        Message = "Xảy ra lỗi"
                     });
                 }
                 questionWithAnswersModel.Add(new QuestionWithAnswersModel
@@ -374,7 +374,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 return BadRequest(new ErrorResponse()
                 {
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = "Not found any suitable question-answers pair"
+                    Message = "Không tìm thấy câu hỏi thích hợp"
                 });
             }
             return Ok(new BaseResponse()
@@ -424,7 +424,7 @@ namespace DriverLicenseLearningSupport.Controllers
             return Ok(new BaseResponse
             {
                 StatusCode = StatusCodes.Status200OK,
-                Message = "Delete Question Successfully"
+                Message = "Xóa câu hỏi thành công"
             });
         }
 
@@ -455,7 +455,7 @@ namespace DriverLicenseLearningSupport.Controllers
                         return BadRequest(new ErrorResponse()
                         {
                             StatusCode = StatusCodes.Status400BadRequest,
-                            Message = "Something was wrong"
+                            Message = "Xảy ra lỗi"
                         });
                     }
                     result.Add(new QuestionWithAnswersModel
@@ -539,7 +539,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     return BadRequest(new ErrorResponse()
                     {
                         StatusCode = StatusCodes.Status400BadRequest,
-                        Message = "Something was wrong"
+                        Message = "Xảy ra lỗi"
                     });
                 }
                 result.Add(new QuestionWithAnswersModel

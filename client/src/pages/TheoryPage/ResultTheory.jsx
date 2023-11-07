@@ -76,7 +76,7 @@ const ResultTheory = () => {
               <p>
                 Số câu sai:{' '}
                 <span className='text-[20px] text-red-400'>
-                  {examResult?.history?.totalQuestion -
+                     {examResult?.history?.totalQuestion -
                     examResult?.history?.totalRightAnswer}
                 </span>
               </p>

@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import './App.scss';
+import './App.css';
 import Toast from './components/Toastify';
 import RouterApp from './routes/RouterApp';
 import Loading from './components/Loading';

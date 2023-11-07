@@ -287,7 +287,9 @@ CREATE TABLE [dbo].Blog(
 	staff_id NVARCHAR(200),
 	content NVARCHAR(MAX),
 	create_date DATETIME,
-	last_modified_date DATETIME
+	last_modified_date DATETIME,
+	title NVARCHAR(200),
+	image NVARCHAR(100),
 )
 GO
 CREATE TABLE [dbo].Tag(
@@ -962,7 +964,42 @@ khi tham gia giao thông không?',1,null,1,1),
 (N'Khi điều khiển xe mô tô hai bánh, xe mô tô ba bánh, xe gắn máy, những hành vi buông cả hai tay, đẩy xe khác, vật khác,
 sử dụng chân chống của xe quệt xuống đường khi xe đang chạy có được phép hay không?',1,null,1,1),
 (N'Khi điều khiển xe mô tô hai bánh, xe mô tô ba bánh,xe gắn máy, những hành vi nào không được phép?',1,null,1,1),
-(N'Người ngồi trên xe mô tô hai bánh, ba bánh, xe gắn máy khi tham gia giao thông có được mang, vác vật cồng kềnh hay không?',1,null,1,1)
+(N'Người ngồi trên xe mô tô hai bánh, ba bánh, xe gắn máy khi tham gia giao thông có được mang, vác vật cồng kềnh hay không?',1,null,1,1),
+
+(N'Khi động cơ ô tô đã khởi động, bảng đồng hồ xuất hiện ký hiệu như hình vẽ dưới đây, báo hiệu tình trạng như thế nào của xe ô tô?',0,
+'https://xeoto24.com/wp-content/uploads/2020/05/Canh-bao-he-thong-phanh-co-van-de.jpg',4,1),
+
+(N'Khi động cơ ô tô đã khởi động, bảng đồng hồ xuất hiện ký hiệu như hình vẽ dưới đây, báo hiệu tình trạng như thế nào của xe ô tô?',0,
+'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtt-y9trindGapToeGWvQ-_3OfJgukRAPdIg&usqp=CAU',4,1),
+(N'Khi động cơ ô tô đã khởi động, bảng đồng hồ xuất hiện ký hiệu như hình vẽ dưới đây, báo hiệu tình trạng như thế nào của xe ô tô?',0,
+'https://baohaauto.vn/wp-content/uploads/ky-hieu-tren-taplo-xe-o-to-7-1.jpg',4,1),
+(N'Khi động cơ ô tô đã khởi động, bảng đồng hồ xuất hiện ký hiệu như hình vẽ dưới đây, báo hiệu tình trạng như thế nào của xe ô tô?',0,
+'https://daotaolaixehcm.vn/wp-content/uploads/2020/06/Cau-238.jpg',4,1),
+(N'Khi động cơ ô tô đã khởi động, bảng đồng hồ xuất hiện ký hiệu như hình vẽ dưới đây, báo hiệu tình trạng như thế nào của xe ô tô?',0,
+'https://daotaolaixehcm.vn/wp-content/uploads/2020/06/Cau-239.jpg',4,1),
+(N'Trong các loại nhiên liệu dưới đây, loại nhiên liệu nào giảm thiểu ô nhiễm môi trường?',0,null,4,1),
+(N'Khi đã đỗ xe ô tô sát lề đường bên phải, người lái xe phải thực hiện các thao tác nào dưới đây khi mở cửa xuống xe để đảm bảo an toàn?',1,null,4,1),
+(N'Khi lái xe ô tô qua đường sắt không có rào chắn, không có người điều khiển giao thông,
+người lái xe phải xử lý như thế nào để đảm bảo an toàn?',0,null,4,1),
+(N'Khi lái xe ô tô qua đường sắt không có rào chắn, không có người điều khiển giao thông, người lái xe thực hiện thao tác:
+tạm dừng xe tại vị trí cách đường sắt tối thiểu 5 mét, hạ kính cửa, tắt các thiết bị âm thanh trên xe,
+quan sát và nếu không có tàu chạy qua thì về số thấp, tăng ga nhẹ để tránh động cơ chết máy cho xe vượt qua để đảm bảo
+an toàn là đúng hay không?',0,null,4,1),
+(N'Khi điều khiển ô tô có hộp số tự động đi trên đường trơn trượt, lầy lội hoặc xuống dốc cao và dài,
+người lái xe để cần số ở vị trí nào để đảm bảo an toàn?',1,null,4,1),
+
+(N'Khi động cơ ô tô đã khởi động, muốn điều chỉnh ghế của người lái, người lái xe phải để cần số ở vị trí nào?',0,null,4,1),
+(N'Khi điều khiển ô tô có hộp số tự động, người lái xe sử dụng chân như thế nào là đúng để bảo đản an toàn?',0,null,4,1),
+(N'Khi tầm nhìn bị hạn chế bởi sương mù hoặc mưa to, người lái xe phải thực hiện các thao tác nào?',1,null,4,1),
+(N'Khi đèn pha của xe đi ngược chiều gây chói mắt, làm giảm khả năng quan sát trên đường,
+người lái xe xử lý như thế nào để đảm bảo an toàn?',0,null,4,1),
+(N'Để đạt được hiệu quả phanh cao nhất, người lái xe mô tô phải sử dụng các kỹ năng như thế nào dưới đây?',0,null,4,1),
+(N'Khi lái xe ô tô trên mặt đường có nhiều “ổ gà”, người lái xe phải thực hiện thao tác như thế nào để đảm bảo an toàn?',0,null,4,1),
+(N'Khi điều khiển ô tô gặp mưa to hoặc sương mù, người lái xe phải làm gì để đảm bảo an toàn?',0,null,4,1),
+(N'Điều khiển xe ô tô trong trời mưa, người lái xe phải xử lý như thế nào để đảm bảo an toàn?',0,null,4,1),
+(N'Khi lùi xe, người lái xe phải xử lý như thế nào để bảo đảm an toàn giao thông?',0,null,4,1),
+(N'Điều khiển xe ô tô trong khu vực đông dân cư cần lưu ý điều gì dưới đây?',0,null,4,1)
+
 
 SET IDENTITY_INSERT [dbo].Question OFF;
 INSERT INTO [dbo].Question_Answer(answer,is_true,question_id)
@@ -1141,7 +1178,81 @@ sử dụng chân chống của xe quệt xuống đường khi xe đang chạy'
 (N'Được mang, vác tùy trường hợp cụ thể',0,50),
 (N'Không được mang, vác',1,50),
 (N'Được mang, vác tùy nhưng phải đảm bảo an toàn',0,50),
-(N'Được mang, vác tùy theo sức khỏe của bản thân',0,50)
+(N'Được mang, vác tùy theo sức khỏe của bản thân',0,50),
+(N'Phanh tay đang hãm hoặc thiếu dầu phanh',1,51),
+(N'Nhiệt độ nước làm mát quá mức cho phép',0,51),
+(N'Cửa xe đang mở',0,51),
+(N'Phanh tay đang hãm',0,52),
+(N'Thiếu dầu phanh',0,52),
+(N'Nhiệt độ nước làm mát tăng quá mức cho phép',0,52),
+(N'Dầu bôi trơn bị thiếu',1,52),
+(N'Cửa xe đóng chua chặt;hoặc có cửa xe chưa đóng',1,53),
+(N'Bộ nạp ắc quy gặp sự cố kỹ thuật',0,53),
+(N'Dầu bôi trơn bị thiếu',0,53),
+(N'Cả ý 2 và 3',0,53),
+(N'Thiếu dầu phanh, phanh tay đang hãm',0,54),
+(N'Hệ thống túi khí an toàn gặp sự cố',0,54),
+(N'Lái xe và người ngồi ghế trước chưa cài dây an toàn',1,54),
+(N'Cửa đóng chưa chặt, có cửa chưa đóng',0,54),
+(N'Báo hiệu thiếu dầu phanh',0,55),
+(N'Áp suất lốp không đủ',0,55),
+(N'Đang hãm phanh tay',0,55),
+(N'Sắp hết nhiên liệu',1,55),
+(N'Xăng và dầu diesel.',0,56),
+(N'Xăng sinh học và khí sinh học',1,56),
+(N'Cả ý 1 và ý 2',0,56),
+(N'Bảo dưỡng xe theo định kỳ và có kế hoạch lộ trình trước khi chạy xe',0,57),
+(N'Kiểm tra áp suất lốp theo quy định và chạy xe với tốc độ phù hợp
+với tình trạng mặt đường và mật độ giao thông trên đường',0,57),
+(N'Cả ý 1 và ý 2',1,57),
+(N'Quan sát tình hình giao thông phía trước và sau,
+mở hé cánh cửa, nếu đảm bảo an toàn thì mở cửa ở mức cần thiết để xuống xe ô tô.',1,58),
+(N'Mở cánh cửa và quan sát tình hình giao thông phía trước,
+nếu đảm bảo an toàn thì mở cửa ở mức cần thiết để xuống xe ô tô.',0,58),
+(N'Mở cánh cửa hết hành trình và nhanh chóng ra khỏi xe ô tô.',0,58),
+(N'Tạm dừng xe tại vị trí cách đường sắt tối thiểu 5 mét, hạ kính cửa,
+tắt các thiết bị âm thanh trên xe, quan sát,
+nếu không có tàu chạy qua, về số thấp, tăng ga nhẹ để tránh động cơ chết máy cho xe vượt qua.',1,59),
+(N'Tại vị trí cách đường sắt tối thiểu 5 mét quan sát phía trước, nếu tàu còn cách xa, tăng số cao,
+tăng ga để cho xe nhanh chóng vượt qua đường sắt.',0,59),
+(N'Không đúng',0,60),
+(N'Đúng',1,60),
+(N'Không cần thiết, vì nếu nhìn thấy tàu còn cách xa, người lái xe có thể tăng số cao,
+tăng ga để cho xe nhanh chóng vượt qua đường sắt.',0,60),
+(N'Về số thấp, kết hợp phanh chân để giảm tốc độ.',1,61),
+(N'Giữ nguyên tay số D, kết hợp phanh tay để giảm tốc độ.',0,61),
+(N'Về số N (số 0), kết hợp phanh chân để giảm tốc độ.',0,61),
+(N'Vị trí N hoặc vị trí P hoặc số 0.',1,62),
+(N'Vị trí D hoặc số 1.',0,62),
+(N'Vị trí R.',0,62),
+(N'Không sử dụng chân trái;
+chân phải điều khiển bàn đạp phanh và bàn đạp ga.',1,63),
+(N'Chân trái điều khiển bàn đạp phanh, chân phải điều khiển bàn đạp ga.',0,63),
+(N'Không sử dụng chân phải; chân trái điều khiển bàn đạp phanh và bàn đạp ga.',0,63),
+(N'Tăng tốc độ, chạy gần xe trước, nhìn đèn hậu để định hướng.',0,64),
+(N'Giảm tốc độ, chạy cách xa xe trước với khoảng cách an toàn,
+bật đèn sương mù và đèn chiếu gần.',1,64),
+(N'Tăng tốc độ, bật đèn pha vượt qua xe chạy trước.',0,64),
+(N'Giảm tốc độ, nếu cần thiết có thể dừng xe lại.',1,65),
+(N'Bật đèn pha chiếu xa và giữ nguyên tốc độ.',0,65),
+(N'Tăng tốc độ, bật đèn pha đối diện xe phía trước.',0,65),
+(N'Sử dụng phanh trước.',0,66),
+(N'Sử dụng phanh sau.',0,66),
+(N'Giảm hết ga; sử dụng đồng thời cả phanh sau và phanh trước.',1,66),
+(N'Giảm tốc độ, về số thấp và giữ đều ga.',1,67),
+(N'Tăng tốc độ cho xe lướt qua nhanh.',0,67),
+(N'Tăng tốc độ, đánh lái liên tục để tránh “ổ gà”.',0,67),
+(N'Bật đèn chiếu gần và đèn vàng, điều khiển gạt nước, điều khiển ô tô đi với tốc độ chậm để có thể quan sát được;
+tìm chỗ an toàn dừng xe, bật đèn dừng khẩn cấp báo hiệu cho các xe khác biết.',1,68),
+(N'Bật đèn chiếu xa và đèn vàng, điều khiển gạt nước, tăng tốc độ điều khiển ô tô qua khỏi khu vực mưa hoặc sương mù.
+Tăng tốc độ, bật đèn pha vượt qua xe chạy phía trước.',0,68),
+(N'Giảm tốc độ, tăng cường quan sát, không nên phanh gấp, không nên tăng ga hay đánh vô lăng đột ngột,
+bật đèn pha gần, mở chế độ gạt nước ở chế độ phù hợp để đảm bảo quan sát.',1,69),
+(N'Phanh gấp khi xe đi vào vũng nước và tăng ga ngay sau khi ra khỏi vũng nước.
+Bật đèn chiếu xa, tăng tốc độ điều khiển ô tô qua khỏi khu vực mưa.',0,69),
+(N'Quan sát bên trái, bên phải, phía sau xe, có tín hiệu cần thiết và lùi xe với tốc độ phù hợp.',1,70),
+(N'Quan sát phía trước xe và lùi xe với tốc độ nhanh.',0,70),
+(N'Quan sát bên trái và phía trước của xe và lùi xe với tốc độ nhanh.',0,70)
 GO
 INSERT INTO [dbo].Theory_Exam(total_question, total_time, total_answer_required, license_type_id)
 VALUES(25, 15, 24, 2)
@@ -1174,3 +1285,6 @@ VALUES
 	(23,1),
 	(24,1),
 	(25,1)
+
+INSERT INTO dbo.[Tag](tag_name)
+VALUES (N'Bảo dưỡng'),(N'Những cung đường'),(N'Dòng xe mới nhất'),(N'Kỹ thuật')

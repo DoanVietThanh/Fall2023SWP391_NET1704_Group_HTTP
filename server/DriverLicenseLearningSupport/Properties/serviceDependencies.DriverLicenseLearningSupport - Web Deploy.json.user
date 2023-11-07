@@ -1,8 +1,8 @@
 {
   "dependencies": {
     "apis1": {
-      "restored": true,
-      "restoreTime": "2023-09-18T10:58:32.4840587Z"
+      "restored": false,
+      "restoreTime": "2023-11-06T13:58:35.9721638Z"
     },
     "mssql1": {
       "restored": true,
@@ -10,6 +10,26 @@
     }
   },
   "parameters": {
+    "DriverLicenseLearningSupport.resourceGroupLocation": {
+      "Name": "DriverLicenseLearningSupport.resourceGroupLocation",
+      "Type": null,
+      "Value": "southeastasia"
+    },
+    "DriverLicenseLearningSupport.subscriptionId": {
+      "Name": "DriverLicenseLearningSupport.subscriptionId",
+      "Type": "subscription",
+      "Value": "5b179de2-b37c-466d-9e26-8a81235501b3"
+    },
+    "DriverLicenseLearningSupport.resourceName": {
+      "Name": "DriverLicenseLearningSupport.resourceName",
+      "Type": null,
+      "Value": "DriverLicenseLearningSupport"
+    },
+    "apis1.resourceGroupLocation": {
+      "Name": "apis1.resourceGroupLocation",
+      "Type": "location",
+      "Value": "southeastasia"
+    },
     "apis1.resourceGroupName": {
       "Name": "apis1.resourceGroupName",
       "Type": "resourceGroup",
@@ -19,6 +39,11 @@
       "Name": "apis1.subscriptionId",
       "Type": "subscription",
       "Value": "5b179de2-b37c-466d-9e26-8a81235501b3"
+    },
+    "DriverLicenseLearningSupport.resourceGroupName": {
+      "Name": "DriverLicenseLearningSupport.resourceGroupName",
+      "Type": "resourceGroup",
+      "Value": "DriverLicenseLearningSupport_group"
     }
   }
 }

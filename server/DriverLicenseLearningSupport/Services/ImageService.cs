@@ -15,7 +15,7 @@ namespace DriverLicenseLearningSupport.Services
     public class ImageService : IImageService
     {
         private readonly IAmazonS3 _s3;
-        private const string BucketName = "swp391-driverlicenselearningsupport";
+        private const string BucketName = "swp391.drivinglicenselearningsupport.com";
 
         public ImageService(IAmazonS3 s3)
         {
@@ -23,8 +23,8 @@ namespace DriverLicenseLearningSupport.Services
         }
         public async Task<PutObjectResponse> UploadImageAsync(Guid id, IFormFile file)
         {
-            var awsAccessKeyId = "AKIAREKH23Z6WA54BHXA";
-            var awsSecretAccessKey = "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";
+            var awsAccessKeyId = "AKIATS2U2A5XF2Q3Z3OJ";
+            var awsSecretAccessKey = "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";
             var awsCredentials = new Amazon.Runtime.BasicAWSCredentials(awsAccessKeyId, awsSecretAccessKey);
             var s3Config = new AmazonS3Config
             {
@@ -36,7 +36,7 @@ namespace DriverLicenseLearningSupport.Services
                 var putObjectRequest = new PutObjectRequest
                 {
                     BucketName = BucketName,
-                    Key = $"profile_images/{id}",
+                    Key = $"Images/{id}",
                     ContentType = file.ContentType,
                     InputStream = file.OpenReadStream(),
                     Metadata =
@@ -48,9 +48,7 @@ namespace DriverLicenseLearningSupport.Services
                 // response        
                 return await s3Client.PutObjectAsync(putObjectRequest);
             //return await _s3.PutObjectAsync(putObjectRequest);
-        }
-
-            return null;
+            }
         }
 
         public async Task<GetObjectResponse?> GetImageAsync(Guid id)
@@ -61,7 +59,7 @@ namespace DriverLicenseLearningSupport.Services
                 var getObjectRequest = new GetObjectRequest
                 {
                     BucketName = BucketName,
-                    Key = $"profile_images/{id}"
+                    Key = $"Images/{id}"
                 };
                 // response
                 return await _s3.GetObjectAsync(getObjectRequest);
@@ -74,8 +72,8 @@ namespace DriverLicenseLearningSupport.Services
 
         public async Task<string> GetPreSignedURL(Guid id)
         {
-            var awsAccessKeyId = "AKIAREKH23Z6WA54BHXA";
-            var awsSecretAccessKey = "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";
+            var awsAccessKeyId = "AKIATS2U2A5XF2Q3Z3OJ";
+            var awsSecretAccessKey = "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";
             var awsCredentials = new Amazon.Runtime.BasicAWSCredentials(awsAccessKeyId, awsSecretAccessKey);
 
             var s3Config = new AmazonS3Config
@@ -88,7 +86,7 @@ namespace DriverLicenseLearningSupport.Services
                 var request = new GetPreSignedUrlRequest
                 {
                     BucketName = BucketName,
-                    Key = $"profile_images/{id}",
+                    Key = $"Images/{id}",
                     Expires = DateTime.Now.AddDays(1),
                     Verb = HttpVerb.GET
                 };
@@ -104,7 +102,7 @@ namespace DriverLicenseLearningSupport.Services
                 var deleteObjectRequest = new DeleteObjectRequest
                 {
                     BucketName = BucketName,
-                    Key = $"profile_image/{id}"
+                    Key = $"Images/{id}"
                 };
                 // response
                 return await _s3.DeleteObjectAsync(deleteObjectRequest);

@@ -39,12 +39,10 @@ let schema = yup.object().shape({
   firstName: yup
     .string()
     .max(10, 'Tên có nhiều nhất 10 kí tự')
-    .matches('^[a-zA-Z ]+$', 'Không chứa số hay kí tự đặc biệt')
     .required('Nhập tên'),
   lastName: yup
     .string()
     .max(10, 'Họ có nhiều nhất 10 kí tự')
-    .matches('^[a-zA-Z ]+$', 'Không chứa số hay kí tự đặc biệt')
     .required('Nhập họ'),
   phone: yup
     .string()
@@ -53,15 +51,12 @@ let schema = yup.object().shape({
   dateBirth: yup.string().required('Nhập ngày sinh'),
   street: yup
     .string()
-    .matches('^[a-zA-Z0-9 ]+$', 'Không chứa số hay kí tự đặc biệt')
     .required('Nhập đường'),
   district: yup
     .string()
-    .matches('^[a-zA-Z ]+$', 'Không chứa số hay kí tự đặc biệt')
     .required('Nhập huyện/quận'),
   city: yup
     .string()
-    .matches('^[a-zA-Z ]+$', 'Không chứa số hay kí tự đặc biệt')
     .required('Nhập tỉnh/thành phố'),
 });
 
@@ -99,13 +94,17 @@ const RegisterPage = () => {
     },
     validationSchema: schema,
     onSubmit: async (values) => {
-      const result = await axios.post(`${baseServer}/authentication`, values);
-      if (result.data.statusCode === 200) {
-        toastSuccess(result.data.message);
+      const result = await axios.post(`${baseServer}/authentication`, values)
+      .then(res => {
+        toastSuccess(res?.data?.message);
         navigate('/login');
-      } else {
-        toastError('Đăng nhập thất bại');
-      }
+      }).catch((err) => toastError(err?.response?.data?.message));
+      // if (result.data.statusCode === 200) {
+      //   toastSuccess(result.data.message);
+      //   navigate('/login');
+      // } else {
+      //   toastError('Đăng nhập thất bại');
+      // }
       console.log('result: ', result);
     },
   });

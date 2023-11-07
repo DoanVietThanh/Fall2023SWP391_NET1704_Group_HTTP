@@ -23,7 +23,10 @@ namespace DriverLicenseLearningSupport.Entities
         public string Gender { get; set; }
         public string? PermanentAddress { get; set; }
         public string? IdentityNumber { get; set; }
-
+        public DateTime IdentityCardIssuedDate { get; set; }
+        public string IdentityCardIssuedBy { get; set; }
+        public DateTime LicenseTypeIssuedDate { get; set; }
+        public string AvailableLicenseType { get; set; }
 
         public virtual LicenseType LicenseType { get; set; }
         public virtual LicenseRegisterFormStatus RegisterFormStatus { get; set; }
