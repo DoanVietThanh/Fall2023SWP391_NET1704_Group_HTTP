@@ -49,12 +49,16 @@ const DialogRegisterSchedule = ({
         })
         .then((res) => {
           console.log(res);
+          toastSuccess('Đăng kí thành công');
           setDataWeek(res?.data);
         })
-        .catch((error) => toastError(error?.response?.data?.message));
+        .catch((error) =>{
+          console.log("ERROR", error);
+          toastError(error?.response?.data?.message);
+        });
       console.log(res);
       //   toastSuccess(res?.data?.data?.message);
-      toastSuccess('Đăng kí thành công');
+      
       setOpenRegisterSchedule(false);
     } catch (error) {
       console.log(error);

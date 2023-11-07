@@ -110,6 +110,24 @@ namespace DriverLicenseLearningSupport.Controllers
                 });
             }
 
+            // check valid date
+            if(DateTime.TryParse(courseModel.StartDate.ToString(), out var date))
+            {
+                var startDateFormat = DateTime.ParseExact(date.ToString(_appSettings.DateFormat),
+                    _appSettings.DateFormat, CultureInfo.InvariantCulture);
+                var currDateFormat = DateTime.ParseExact(DateTime.Now.ToString(_appSettings.DateFormat),
+                    _appSettings.DateFormat, CultureInfo.InvariantCulture);
+
+                if(startDateFormat < currDateFormat)
+                {
+                    return BadRequest(new BaseResponse()
+                    {
+                        StatusCode = StatusCodes.Status400BadRequest,
+                        Message = "Ngày khai giảng không hợp lệ, vui lòng chọn ngày tương lai"
+                    });
+                }
+            }
+            
 
             // create course 
             var createdCourse = await _courseService.CreateAsync(courseModel);
@@ -149,7 +167,7 @@ namespace DriverLicenseLearningSupport.Controllers
             {
                 return BadRequest(new BaseResponse { 
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = $"Not found any course match id {id}"
+                    Message = $"Không tìm thấy khóa học"
                 });
             }
             // generate package model
@@ -188,6 +206,38 @@ namespace DriverLicenseLearningSupport.Controllers
             }) {
                 StatusCode = StatusCodes.Status500InternalServerError
             };
+        }
+
+        // HttpGet courses/mentor/add -> list all mentor not teaching any course]
+        [HttpGet]
+        [Route("courses/mentor/add")]
+        public async Task<IActionResult> AddCourseMentor([FromRoute] Guid courseId)
+        {
+            // get course by id
+            var course = await _courseService.GetAsync(courseId);
+            if(course is null)
+            {
+                return NotFound(new BaseResponse() { 
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = "Không tìm thấy khóa học"
+                });
+            }
+
+            // get all mentors without teaching course
+            var mentors = await _staffService.GetAllMentorNoCourse();
+
+            if (mentors.Count() == 0)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Hiện các giảng viên đều đã có khóa học"
+                });
+            }
+
+            return Ok(new BaseResponse { 
+                StatusCode = StatusCodes.Status200OK,
+                Data = mentors
+            });
         }
 
         [HttpPost]
@@ -288,7 +338,8 @@ namespace DriverLicenseLearningSupport.Controllers
             var member = await _memberService.GetAsync(reqObj.MemberId);
             if (member is null)
             {
-                return NotFound(new BaseResponse {
+                return NotFound(new BaseResponse
+                {
                     StatusCode = StatusCodes.Status404NotFound,
                     Message = $"Không tìm thấy thành viên"
                 });
@@ -301,7 +352,8 @@ namespace DriverLicenseLearningSupport.Controllers
                 var course = await _courseService.GetAsync(
                     Guid.Parse(PackageReservation.CoursePackage.CourseId));
 
-                return BadRequest(new BaseResponse {
+                return BadRequest(new BaseResponse
+                {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = $"Thành viên {member.FirstName} {member.LastName} đã đăng ký khóa học"
                 });
@@ -320,9 +372,10 @@ namespace DriverLicenseLearningSupport.Controllers
             {
                 var totalMember = await _coursePackageReservationService.GetTotalMemberByMentorIdAsync(reqObj.MentorId);
 
-                if(totalMember >= _courseSettings.TotalMemberOfMentor)
+                if (totalMember >= _courseSettings.TotalMemberOfMentor)
                 {
-                    return BadRequest(new BaseResponse { 
+                    return BadRequest(new BaseResponse
+                    {
                         StatusCode = StatusCodes.Status400BadRequest,
                         Message = $"Số lượng học viên của giảng viên `{mentor.FirstName} {mentor.LastName}` " +
                         $"đã hết, vui lòng chọn giảng viên khác"
@@ -399,9 +452,10 @@ namespace DriverLicenseLearningSupport.Controllers
         public async Task<IActionResult> GetCourse([FromRoute] Guid id)
         {
             var course = await _courseService.GetAsync(id);
-            if (course is null) return NotFound(new BaseResponse {
+            if (course is null) return NotFound(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status404NotFound,
-                Message = $"Không tìm thấy khóa học"
+                //Message = $"Không tìm thấy khóa học"
             });
 
             // get course total member

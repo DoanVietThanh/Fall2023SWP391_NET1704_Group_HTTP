@@ -33,8 +33,7 @@ export default function DialogCoursePackage({
         .then((res) => {
           console.log(res);
           setCoursePackages(res?.data?.data?.course?.coursePackages);
-        })
-        .catch((error) => toastError(error?.response?.data?.message));
+        });
     }
     getCoursePackages();
   }, []);

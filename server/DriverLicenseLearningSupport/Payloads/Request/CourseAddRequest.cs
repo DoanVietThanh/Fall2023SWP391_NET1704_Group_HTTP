@@ -41,7 +41,7 @@ namespace DriverLicenseLearningSupport.Payloads.Request
                 TotalKmRequired = reqObj.TotalKmRequired,
                 StartDate = reqObj.StartDate,
                 LicenseTypeId = reqObj.LicenseTypeId,
-                IsActive = false
+                IsActive = true
             };
         }
     }

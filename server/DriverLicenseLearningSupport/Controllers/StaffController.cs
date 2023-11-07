@@ -811,6 +811,14 @@ namespace DriverLicenseLearningSupport.Controllers
         [Authorize(Roles = "Admin,Staff,Mentor")]
         public async Task<IActionResult> TeachingScheduleRegister([FromBody] TeachingScheduleRequest reqObj)
         {
+            if(!DateTime.TryParse(reqObj.TeachingDate.ToString(), out var date))
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Vui lòng chọn ngày đăng ký"
+                });
+            }
+            
             // get mentor teaching schedule exist
             var existSchedules = await _teachingScheduleService.GetAllByMentorIdAsync(
                 Guid.Parse(reqObj.MentorId));
@@ -1030,11 +1038,6 @@ namespace DriverLicenseLearningSupport.Controllers
             
             // get course by id
             var course = await _courseService.GetAsync(Guid.Parse(reqObj.CourseId));
-            // set null collection
-            course.Mentors = null;
-            course.FeedBacks = null;
-            course.Curricula = null;
-            course.CoursePackages = null!;
             if (course is null)
             {
                 return BadRequest(new BaseResponse
@@ -1043,6 +1046,11 @@ namespace DriverLicenseLearningSupport.Controllers
                     Message = $"Không tìm thấy khóa học"
                 });
             }
+            // set null collection
+            course.Mentors = null;
+            course.FeedBacks = null;
+            course.Curricula = null;
+            course.CoursePackages = null!;
 
             // course
             var courseMentor = await _courseService.GetByMentorIdAsync(Guid.Parse(reqObj.MentorId));

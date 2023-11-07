@@ -1,5 +1,6 @@
 ﻿using DriverLicenseLearningSupport.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 
 namespace DriverLicenseLearningSupport.Payloads.Request
 {
@@ -12,7 +13,7 @@ namespace DriverLicenseLearningSupport.Payloads.Request
         public IFormFile? Image { get; set; } = null!;
 
         // identity image
-        public IFormFile? IdentityImage { get; set; } = null!;
+        public IFormFile? IdentityCardImage { get; set; } = null!;
         
         // health certificate image
         public IFormFile? HealthCertificationImage { get; set; } = null!;
@@ -29,6 +30,14 @@ namespace DriverLicenseLearningSupport.Payloads.Request
 
         [Required(ErrorMessage = "Identity Number is required")]
         public string IdentityNumber { get; set; }
+        [Required(ErrorMessage = "ID card issued date is required")]
+        public string IdentityCardIssuedDate { get; set; }
+        [Required(ErrorMessage = "ID card issued by is required")]
+        public string IdentityCardIssuedBy { get; set; }
+        [Required(ErrorMessage = "License type issued date is required")]
+        public string LicenseTypeIssuedDate { get; set; }
+        [Required(ErrorMessage = "Available license type is required")]
+        public string AvailableLicenseType { get; set; }
     }
 
     public static class LicenseFormRegisterUpdateExtension
@@ -42,7 +51,13 @@ namespace DriverLicenseLearningSupport.Payloads.Request
                 LicenseTypeId = reqObj.LicenseTypeId,
                 Gender = reqObj.Gender,
                 PermanentAddress = reqObj.PermanentAddress,
-                IdentityNumber = reqObj.IdentityNumber
+                IdentityNumber = reqObj.IdentityNumber,
+                LicenseTypeIssuedDate = DateTime.ParseExact(reqObj.LicenseTypeIssuedDate,
+                    "yyyy-MM-dd", CultureInfo.InvariantCulture),
+                IdentityCardIssuedBy = reqObj.IdentityCardIssuedBy,
+                IdentityCardIssuedDate = DateTime.ParseExact(reqObj.IdentityCardIssuedDate,
+                    "yyyy-MM-dd", CultureInfo.InvariantCulture),
+                AvailableLicenseType = reqObj.AvailableLicenseType
             };
         }
     }

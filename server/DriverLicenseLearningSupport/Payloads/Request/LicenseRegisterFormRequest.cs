@@ -11,7 +11,7 @@ namespace DriverLicenseLearningSupport.Payloads.Request
         public IFormFile? Image { get; set; } = null!;
 
         //[Required(ErrorMessage = "Identity Image is required")]
-        public IFormFile? IdentityImage { get; set; } = null!;
+        public IFormFile? IdentityCardImage { get; set; } = null!;
         //[Required(ErrorMessage = "Health certification Image is required")]
         public IFormFile? HealthCertificationImage { get; set; } = null!;
 
@@ -28,6 +28,15 @@ namespace DriverLicenseLearningSupport.Payloads.Request
        
         [Required(ErrorMessage = "Identity Number is required")]
         public string IdentityNumber { get; set; }
+
+        [Required(ErrorMessage = "ID card issued date is required")]
+        public string IdentityCardIssuedDate { get; set; }
+        [Required(ErrorMessage = "ID card issued by is required")]
+        public string IdentityCardIssuedBy { get; set; }
+        [Required(ErrorMessage = "License type issued date is required")]
+        public string LicenseTypeIssuedDate { get; set; }
+        [Required(ErrorMessage = "Available license type is required")]
+        public string AvailableLicenseType { get; set; }
     }
 
     public static class LicenseRegisterFormRequestExtension 
@@ -42,7 +51,13 @@ namespace DriverLicenseLearningSupport.Payloads.Request
                 RegisterFormStatusId = 1,
                 PermanentAddress = reqObj.PermanentAddress,
                 IdentityNumber = reqObj.IdentityNumber,
-                Gender = reqObj.Gender
+                Gender = reqObj.Gender,
+                LicenseTypeIssuedDate = DateTime.ParseExact(reqObj.LicenseTypeIssuedDate, 
+                    "yyyy-MM-dd", CultureInfo.InvariantCulture),
+                IdentityCardIssuedBy = reqObj.IdentityCardIssuedBy,
+                IdentityCardIssuedDate = DateTime.ParseExact(reqObj.IdentityCardIssuedDate,
+                    "yyyy-MM-dd", CultureInfo.InvariantCulture),
+                AvailableLicenseType = reqObj.AvailableLicenseType
             };
         }
     }

@@ -226,7 +226,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 return BadRequest(new ErrorResponse()
                 {
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = "Lỗi xuất rì viu"
+                    Message = "Hiện chưa có lịch sử kiểm tra"
                 });
             }
 
@@ -245,7 +245,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 return NotFound(new ErrorResponse()
                 {
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = "chưa có lịch sử thi"
+                    Message = "Chưa có lịch sử thi"
                 });
             }
             return Ok(new BaseResponse()
@@ -278,7 +278,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 return BadRequest(new ErrorResponse
                 {
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = "không tìm thấy lịch sử thi"
+                    Message = "Không tìm thấy lịch sử thi"
                 });
             }
             var theoryExam = await _theoryExamService.GetByIdAsync(examGrades[0].TheoryExamId);
@@ -328,7 +328,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     return BadRequest(new ErrorResponse()
                     {
                         StatusCode = StatusCodes.Status400BadRequest,
-                        Message = "không tìm thấy lịch sử thi"
+                        Message = "Không tìm thấy lịch sử thi"
                     });
                 }
                 else
@@ -359,15 +359,19 @@ namespace DriverLicenseLearningSupport.Controllers
                         });
                     }
                 }
+
                 return Ok(new BaseResponse()
                 {
                     StatusCode = StatusCodes.Status200OK,
                     Data = new
                     {
                         ExamResult = resultExam,
-                        IsPassed = isPassed,
-                        totalRightAnswer = grade,
-                        totalQuestion = totalAnswerRequired
+                        History = new ExamHistoryModel()
+                        {
+                            IsPassed = isPassed,
+                            TotalRightAnswer = Convert.ToInt32(grade),
+                            TotalQuestion = totalAnswerRequired
+                        }
                     }
                 });
             }
