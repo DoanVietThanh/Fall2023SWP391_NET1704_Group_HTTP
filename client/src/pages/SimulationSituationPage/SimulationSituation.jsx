@@ -8,7 +8,7 @@ import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
 Chart.register(...registerables);
 const SimulationSituation = () => {
   const url =
-    "https://themeholy.com/wordpress/edura/wp-content/uploads/2023/07/breadcumb-bg.png";
+    "/img/backgroundSlide.png";
   const breadcrumbs = "Thi thử mô phỏng";
   const listChap = [
     {

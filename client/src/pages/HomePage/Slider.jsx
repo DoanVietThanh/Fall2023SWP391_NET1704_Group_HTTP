@@ -52,12 +52,11 @@ const Slider = () => {
               Hỗ trợ học thi
               <span className={`text-[${theme.color.mainColor}]`}>
                 {" "}
-                bằng lái xa
+                bằng lái xe
               </span>
             </h1>
-            <p className="font-semibold text-sky-900 text-[24px] pr-60 pt-5">
-              Lot E2a-7, Street D1, D. D1, Long Thanh My, Thu Duc City, Ho Chi
-              Minh City 700000
+            <p className="font-semibold text-sky-900 text-[24px] pr-52 pt-5">
+              Lot E2a-7, Đường D1, D. D1, Phường Long Thạnh Mỹ, Thành phố Thủ đức, Thành phố Hồ Chí Minh
             </p>
             <button className="btn w-[200px] flex items-center justify-center gap-4">
               Get Started <AiOutlineArrowRight size={20} />

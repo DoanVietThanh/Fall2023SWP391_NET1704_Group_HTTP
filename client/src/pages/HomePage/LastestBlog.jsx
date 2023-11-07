@@ -47,7 +47,7 @@ const LastestBlog = () => {
       <div className="my-8">
         <div className="flex items-center justify-between">
           <div className="text-4xl font-bold">BÀI ĐĂNG MỚI NHẤT</div>
-          <Link to={"/blogs"}>
+          <Link to={"/blog"}>
             <button className="btn flex items-center justify-center gap-2">
               Tất cả bài đăng <AiOutlineArrowRight size={20} />
             </button>

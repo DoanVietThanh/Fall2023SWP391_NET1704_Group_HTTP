@@ -1,26 +1,24 @@
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import TextField from "@mui/material/TextField";
 import axios from "axios";
 import { useFormik } from "formik";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 import * as yup from "yup";
-import { toastError, toastSuccess } from "../../components/Toastify";
+import { toastError, toastSuccess } from "../../../../components/Toastify";
 
-const EditProfileForm = () => {
+const DialogEditProfile = ({ open, setOpen }) => {
+  const { user, isLoading } = useSelector((state) => state.auth);
+  const accInfo = user.accountInfo;
   const baseServer = process.env.REACT_APP_SERVER_API;
-  const [lisenceType, setLisenceType] = useState([]);
-  const [selectType, setSelectType] = useState("1");
 
-  useEffect(() => {
-    async function fetchType() {
-      const response = await axios.get(`${baseServer}/authentication`);
-      setLisenceType(response.data.data);
-    }
-    fetchType();
-  }, []);
+  // useEffect(() => {
+  //   async function fetchType() {
+  //     const response = await axios.get(`${baseServer}/authentication`);
+  //   }
+  //   fetchType();
+  // }, []);
   const schema = yup.object().shape({
     firstName: yup
       .string()
@@ -53,14 +51,13 @@ const EditProfileForm = () => {
 
   const formik = useFormik({
     initialValues: {
-      firstName: "",
-      lastName: "",
-      dateBirth: "",
-      phone: "",
-      street: "",
-      district: "",
-      city: "",
-      licenseTypeId: selectType,
+      firstName: accInfo.firstName,
+      lastName: accInfo.lastName,
+      dateBirth: accInfo.dateBirth,
+      phone: accInfo.phone,
+      street: accInfo.address.street,
+      district: accInfo.address.district,
+      city: accInfo.address.city,
     },
     validationSchema: schema,
     onSubmit: async (values) => {
@@ -74,27 +71,19 @@ const EditProfileForm = () => {
       console.log("result: ", result);
     },
   });
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   return (
     <div>
-      <button className="btn" onClick={handleClickOpen}>
-        Chỉnh sửa
-      </button>
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        
+      >
         <div className="py-4 px-8 flex flex-col gap-4">
           <div className="dialogTit">Chỉnh sửa thông tin cá nhân</div>
           <div className="flex gap-4">
             {/* lastName */}
-            <div>
+            <div className="flex-1">
               <TextField
                 id="field"
                 label="Họ"
@@ -110,7 +99,7 @@ const EditProfileForm = () => {
               </div>
             </div>
             {/* firstName */}
-            <div>
+            <div className="flex-1">
               <TextField
                 id="field"
                 label="Tên"
@@ -161,28 +150,6 @@ const EditProfileForm = () => {
             </div>
           </div>
 
-          {/* Select Type  */}
-          <div>
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">
-                Lisence Type
-              </InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={formik.values.licenseTypeId}
-                label="License Type"
-                onChange={(event) => setSelectType(event.target.value)}
-              >
-                {lisenceType?.map((item) => (
-                  <MenuItem value={item.licenseTypeId} key={item.lisenceTypeId}>
-                    {item.licenseTypeDesc}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </div>
-
           {/* street */}
           <div>
             <TextField
@@ -231,10 +198,10 @@ const EditProfileForm = () => {
             </div>
           </div>
           <div className="flex gap-2 justify-end">
-            <button className="btnCancel" onClick={handleClose}>
+            <button className="btnCancel" onClick={() => setOpen(false)}>
               Hủy
             </button>
-            <button className="btn" onClick={handleClose}>
+            <button className="btn" onClick={() => setOpen(false)}>
               Hoàn tất
             </button>
           </div>
@@ -244,4 +211,4 @@ const EditProfileForm = () => {
   );
 };
 
-export default EditProfileForm;
+export default DialogEditProfile;
