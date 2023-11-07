@@ -1,19 +1,16 @@
 import axios from "axios";
-import * as dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 import {
-  AiOutlineArrowRight,
-  AiOutlineCalendar,
-  AiOutlineClockCircle,
+  AiOutlineCalendar
 } from "react-icons/ai";
-import { BiBookBookmark, BiSearch } from "react-icons/bi";
+import { BiSearch } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import BackgroundSlider from "../../components/BackgroundSlider";
-import { toastError } from "../../components/Toastify";
 import Footer from "./../../components/Footer";
 import Header from "./../../components/Header";
-import theme from "./../../theme/index";
-import BlogList from "./BlogList";
+import BlogList from './component/BlogList';
+import { toastError } from "../../components/Toastify";
+import theme from "../../theme";
 
 const BlogPage = () => {
   const url = "/img/backgroundSlide.png";

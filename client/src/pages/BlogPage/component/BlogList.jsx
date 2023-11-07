@@ -1,11 +1,11 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { toastError } from '../../components/Toastify';
-import theme from '../../theme';
 import { AiOutlineArrowRight, AiOutlineClockCircle } from 'react-icons/ai';
 import dayjs from 'dayjs';
 import { BiBookBookmark } from 'react-icons/bi';
 import { Link } from 'react-router-dom';
+import { toastError } from '../../../components/Toastify';
+import theme from '../../../theme';
 
 const BlogList = () => {
     const [listBlog, setListBlog] = useState([]);
