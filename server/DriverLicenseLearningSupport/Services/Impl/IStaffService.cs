@@ -12,6 +12,7 @@ namespace DriverLicenseLearningSupport.Services.Impl
         Task<IEnumerable<StaffModel>> GetAllMentorAsync();
         Task<IEnumerable<StaffModel>> GetAllAsync();
         Task<IEnumerable<StaffModel>> GetAllByFilterAsync(StaffFilter filters);
+        Task<IEnumerable<StaffModel>> GetAllMentorNoCourse();
         Task<bool> UpdateAsync(Guid id, StaffModel staff);
         Task<bool> DeleteAsync(Guid id);
     }

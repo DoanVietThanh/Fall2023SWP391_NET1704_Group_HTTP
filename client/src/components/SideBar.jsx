@@ -1,19 +1,19 @@
-import * as React from "react";
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import * as React from 'react';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import MenuIcon from "@mui/icons-material/Menu";
-import MuiAppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import CssBaseline from "@mui/material/CssBaseline";
-import MuiDrawer from "@mui/material/Drawer";
-import IconButton from "@mui/material/IconButton";
-import Toolbar from "@mui/material/Toolbar";
-import { styled, useTheme } from "@mui/material/styles";
-import { AiOutlineQuestionCircle } from "react-icons/ai";
-import { BiLogOut } from "react-icons/bi";
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import MenuIcon from '@mui/icons-material/Menu';
+import MuiAppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import CssBaseline from '@mui/material/CssBaseline';
+import MuiDrawer from '@mui/material/Drawer';
+import IconButton from '@mui/material/IconButton';
+import Toolbar from '@mui/material/Toolbar';
+import { styled, useTheme } from '@mui/material/styles';
+import { AiOutlineQuestionCircle } from 'react-icons/ai';
+import { BiLogOut } from 'react-icons/bi';
 import {
   BsCalendarEvent,
   BsClockHistory,
@@ -28,27 +28,26 @@ import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { logout } from '../features/auth/authSlice';
 import { Button, Menu, MenuItem } from '@mui/material';
 
-
 const drawerWidth = 240;
 
 const listNavbar = [
   {
     id: 1,
-    title: "Thông tin cá nhân",
+    title: 'Thông tin cá nhân',
     icon: <BsPerson size={20} />,
-    navigate: "/profile",
+    navigate: '/profile',
   },
   {
     id: 2,
-    title: "Lịch học theo tuần",
+    title: 'Lịch học theo tuần',
     icon: <BsCalendarEvent size={20} />,
-    navigate: "/week-schedule",
+    navigate: '/week-schedule',
   },
   {
     id: 3,
-    title: "Lịch sử kiểm tra",
+    title: 'Lịch sử kiểm tra',
     icon: <BsClockHistory size={20} />,
-    navigate: "/history-test",
+    navigate: '/history-test',
   },
 ];
 
@@ -113,6 +112,19 @@ const listNavbarManage = [
     icon: <BsBarChartLine size={24} />,
     navigate: "/dashboard",
   },
+  {
+    id: 13,
+    title: 'Quản lí khóa học',
+    icon: <BsEnvelopePaper size={20} />,
+    navigate: '/manage-course',
+  },
+  {
+    id: 14,
+    title: 'Quản lí nhân viên',
+    icon: <BsEnvelopePaper size={20} />,
+    navigate: '/manage-staff',
+  },
+  
 ];
 
 const openedMixin = (theme) => ({

@@ -11,6 +11,7 @@ const DialogRegisterSchedule = ({
   itemCourse,
   openRegisterSchedule,
   setOpenRegisterSchedule,
+  setDataWeek,
 }) => {
   const { user } = useSelector((state) => state.auth);
   const { accountInfo } = useSelector((state) => state.auth.user);
@@ -46,10 +47,18 @@ const DialogRegisterSchedule = ({
           courseId: courseId,
           slotId: selectedSlot,
         })
-        .catch((error) => toastError(error?.response?.data?.message));
+        .then((res) => {
+          console.log(res);
+          toastSuccess('Đăng kí thành công');
+          setDataWeek(res?.data);
+        })
+        .catch((error) =>{
+          console.log("ERROR", error);
+          toastError(error?.response?.data?.message);
+        });
       console.log(res);
       //   toastSuccess(res?.data?.data?.message);
-      toastSuccess('Đăng kí thành công');
+      
       setOpenRegisterSchedule(false);
     } catch (error) {
       console.log(error);

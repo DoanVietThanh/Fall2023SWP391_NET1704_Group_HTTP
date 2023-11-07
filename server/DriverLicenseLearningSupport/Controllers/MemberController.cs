@@ -14,6 +14,7 @@ using DriverLicenseLearningSupport.Services;
 using DriverLicenseLearningSupport.Services.Impl;
 using DriverLicenseLearningSupport.Utils;
 using DriverLicenseLearningSupport.Validation;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -352,7 +353,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpGet]
         [Route("members/{id:Guid}/update")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> UpdateMember([FromRoute] Guid id)
         {
             // get member by id
@@ -380,7 +381,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpPut]
         [Route("members/{id:Guid}/update")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> UpdateMember([FromRoute] Guid id, [FromBody] MemberUpdateRequest reqObj)
         {
             // convert to member model <- extension method
@@ -683,6 +684,8 @@ namespace DriverLicenseLearningSupport.Controllers
         [Route("members/license-form")]
         public async Task<IActionResult> LicenseFormRegister([FromForm] LicenseRegisterFormRequest reqObj)
         {
+            // generate license form register
+            var licenseRegisterFormModel = reqObj.ToLicenseFormRegisterModel();
             // validator 
             var validator = new Validation.LicenseRegisterFormValidator();
             // validate fields
@@ -699,7 +702,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
             // check exist image file
             if(reqObj.Image is null 
-                || reqObj.IdentityImage is null 
+                || reqObj.IdentityCardImage is null 
                 || reqObj.HealthCertificationImage is null)
             {
                 return BadRequest(new BaseResponse { 
@@ -726,15 +729,13 @@ namespace DriverLicenseLearningSupport.Controllers
             // generate identity image id
             var identityImageId = Guid.NewGuid();
             // upload image
-            //await _imageService.UploadImageAsync(identityImageId, reqObj.IdentityImage);
+            //await _imageService.UploadImageAsync(identityImageId, reqObj.IdentityCardImage);
 
             // generate health certification image id
             // upload image
             var healthCerImageId = Guid.NewGuid();
             //await _imageService.UploadImageAsync(healthCerImageId, reqObj.HealthCertificationImage);
 
-            // generate license form register
-            var licenseRegisterFormModel = reqObj.ToLicenseFormRegisterModel();
             // set images id
             licenseRegisterFormModel.Image = imageId.ToString();
             licenseRegisterFormModel.IdentityCardImage = identityImageId.ToString();
@@ -756,6 +757,8 @@ namespace DriverLicenseLearningSupport.Controllers
         public async Task<IActionResult> UpdateLicenseFormRegister([FromRoute] int id,
             [FromForm] LicenseRegisterFormUpdate reqObj) 
         {
+            // generate license form register
+            var licenseRegisterFormModel = reqObj.ToLicenseFormRegisterModel();
             // get license register form by id
             var lfRegister = await _licenseRegisterFormService.GetAsync(id);
             // 404 Not Found <- not found any id match
@@ -771,10 +774,25 @@ namespace DriverLicenseLearningSupport.Controllers
                 });
             }
 
-            // update license register form
-            // update privacy image
-            if(reqObj.Image is not null)
+            // validator 
+            var validator = new Validation.LicenseRegisterFormUpdateValidator();
+            // validate fields
+            var result = await validator.ValidateAsync(reqObj);
+            if (!result.IsValid) // cause errors
             {
+                // generate ValidationProblemDetails and return error resp
+                return BadRequest(new ErrorResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Errors = result.ToProblemDetails()
+                });
+            }
+
+            // update privacy image
+            if (reqObj.Image is not null)
+            {
+                var imageId = Guid.NewGuid().ToString();
+                licenseRegisterFormModel.Image = imageId;
                 // remove prev image
                 //await _imageService.DeleteImageAsync(Guid.Parse(lfRegister.Image));
                 // upload new image to clound
@@ -782,28 +800,49 @@ namespace DriverLicenseLearningSupport.Controllers
                 //    reqObj.Image);
             }
             // update identity image
-            if (reqObj.IdentityImage is not null)
+            if (reqObj.IdentityCardImage is not null)
             {
+                var identityImageId = Guid.NewGuid().ToString();
+                licenseRegisterFormModel.IdentityCardImage = identityImageId;
                 // remove prev image
                 //await _imageService.DeleteImageAsync(Guid.Parse(lfRegister.IdentityCardImage));
                 // upload new image to clound
                 //await _imageService.UploadImageAsync(Guid.Parse(lfRegister.IdentityCardImage),
-                    //reqObj.IdentityImage);
+                //reqObj.IdentityImage);
             }
             // update health certification image
             if (reqObj.HealthCertificationImage is not null)
             {
+                var healthCareImageId = Guid.NewGuid().ToString();
+                licenseRegisterFormModel.HealthCertificationImage = healthCareImageId;
                 // remove prev image
                 //await _imageService.DeleteImageAsync(Guid.Parse(lfRegister.HealthCertificationImage));
                 // upload new image to clound
                 //await _imageService.UploadImageAsync(Guid.Parse(lfRegister.HealthCertificationImage),
-                    //reqObj.HealthCertificationImage);
+                //reqObj.HealthCertificationImage);
             }
 
-            return Ok(new BaseResponse { 
-                StatusCode = StatusCodes.Status200OK,
-                Message = $"Sửa hồ sơ thành công"
-            });
+
+            // update license register form
+            var isSucess = await _licenseRegisterFormService.UpdateAsync(id, licenseRegisterFormModel);
+
+            if (isSucess) 
+            {
+                return Ok(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = $"Sửa hồ sơ thành công"
+                });
+            }
+
+            return new ObjectResult(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status500InternalServerError,
+                Message = "Sửa hồ sơ thất bại"
+            })
+            {
+                StatusCode = StatusCodes.Status500InternalServerError,
+            };
         }
 
         [HttpGet]
@@ -1025,7 +1064,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 return BadRequest(new BaseResponse
                 {
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = $"Not found any learning schedule"
+                    Message = $"Hiện chưa có lịch học"
                 });
             }
 
@@ -1157,7 +1196,7 @@ namespace DriverLicenseLearningSupport.Controllers
             {
                 return BadRequest(new BaseResponse { 
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = $"Not found any learning schedule"
+                    Message = $"Hiện chưa có lịch học"
                 });
             }
 

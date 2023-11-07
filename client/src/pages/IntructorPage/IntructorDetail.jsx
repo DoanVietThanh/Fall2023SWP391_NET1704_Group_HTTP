@@ -24,7 +24,7 @@ const IntructorDetail = () => {
   const [instructor, setInstructor] = useState();
   useEffect(() => {
     async function getInstructor() {
-      const res = await axiosClient.get(`${url_server}/staffs/${idInstructor}`);
+      const res = await axios.get(`/staffs/${idInstructor}`);
       setInstructor(res?.data?.data);
       console.log(
         ' ~ file: IntructorDetail.jsx:28 ~ getInstructor ~ res:',

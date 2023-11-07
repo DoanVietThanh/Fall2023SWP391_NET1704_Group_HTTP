@@ -45,13 +45,13 @@ builder.Services.Configure<VnPayConfig>(vnpayConfig);
 // Add Theory Exam config
 var theoryExamConfig = builder.Configuration.GetSection("TheoryExamSettings");
 builder.Services.Configure<TheoryExamSettings>(theoryExamConfig); 
-
 // Add AppSettings Json config
 var appSettingsConfig = builder.Configuration
     .AddJsonFile("appsettings.json")
     .SetBasePath(Directory.GetCurrentDirectory())
     .Build();
 builder.Services.Configure<AppSettingsConfig>(appSettingsConfig);
+
 
 // Add Authentication
 var secretKey = builder.Configuration.GetValue<string>("AppSettings:SecretKey");
@@ -96,9 +96,10 @@ builder.Services.AddScoped<IExamGradeService, ExamGradeService>();
 builder.Services.AddScoped<IExamHistoryService, ExamHistoryService>();
 builder.Services.AddScoped<IRollCallBookService, RollCallBookService>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
-builder.Services.AddScoped<IBlogService, BlogService>();
-builder.Services.AddScoped<ITagService , TagService>(); 
-
+builder.Services.AddScoped<IBlogService,BlogService>();
+builder.Services.AddScoped<ITagService, TagService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<ISimulationSituationService, SimulationSituationService>();
 
 // Add Repositories
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
@@ -126,7 +127,8 @@ builder.Services.AddScoped<IExamHistoryRepository, ExamHistoryRepostory>();
 builder.Services.AddScoped<IRollCallBookRepository, RollCallBookRepository>();
 builder.Services.AddScoped<IBlogRepository, BlogRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
-
+builder.Services.AddScoped<ICommentRepository,CommentRepository>();
+builder.Services.AddScoped<ISimulationSituationRepo,SimulationSituationRepo>();
 
 
 // Add Mediator

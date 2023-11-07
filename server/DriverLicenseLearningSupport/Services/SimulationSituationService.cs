@@ -11,7 +11,7 @@ namespace DriverLicenseLearningSupport.Services
         private readonly ISimulationSituationRepo _ssrepo;
         private readonly IMapper _mapper;
 
-        public SimulationSituationService(ISimulationSituationRepo ssrepo, IMapper mapper) 
+        public SimulationSituationService(ISimulationSituationRepo ssrepo, IMapper mapper)
         {
             _ssrepo = ssrepo;
             _mapper = mapper;
@@ -21,7 +21,7 @@ namespace DriverLicenseLearningSupport.Services
             return await _ssrepo.GettAllAsync();
         }
 
-        public async Task<SimulationSituationModel> GetById(int id) 
+        public async Task<SimulationSituationModel> GetById(int id)
         {
             return await _ssrepo.GetById(id);
         }
@@ -29,7 +29,7 @@ namespace DriverLicenseLearningSupport.Services
         public async Task<SimulationSituationModel> CreateAsync(SimulationSituationModel simulationSituation)
         {
             var ssEntity = _mapper.Map<SimulationSituation>(simulationSituation);
-            return await  _ssrepo.CreateAsync(ssEntity);
+            return await _ssrepo.CreateAsync(ssEntity);
         }
 
         public async Task<bool> DeleteAsync(int id)

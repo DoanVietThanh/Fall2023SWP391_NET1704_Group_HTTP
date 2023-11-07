@@ -1,6 +1,6 @@
 import * as dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import Header from '../../components/Header';
 import theme from '../../theme';
@@ -36,6 +36,7 @@ import { toastError } from './../../components/Toastify';
 import DialogReservation from './components/DialogReservation';
 
 const DetailCourse = () => {
+  const navigate = useNavigate();
   const { memberId } = useSelector((state) => state?.auth?.user?.accountInfo);
   const { idCourse } = useParams();
   const [course, setCourse] = useState();
@@ -66,15 +67,23 @@ const DetailCourse = () => {
 
   useEffect(() => {
     async function courseDetail() {
-      const res = await axiosClient.get(`/courses/${idCourse}`);
+      const res = await axiosClient
+        .get(`/courses/${idCourse}`)
+        .catch((error) => {
+          toastError(error?.response?.data?.message);
+          navigate('/home');
+        });
       setCoursePackage(res?.data?.data.course.coursePackages);
-      const payment = await axiosClient.get(`/courses/packages/reservation`);
+      const payment = await axiosClient
+        .get(`/courses/packages/reservation`)
+        .catch((error) => {
+          toastError(error?.response?.data?.message);
+          navigate('/home');
+        });
       if (res?.data.statusCode === 200 && payment?.data.statusCode === 200) {
         setTotalMember(res?.data?.data.totalMember);
         setCourse(res?.data?.data?.course);
         setPaymentList(payment?.data?.data);
-      } else {
-        toastError('Lỗi load chi tiết khóa học');
       }
     }
     courseDetail();
