@@ -1098,16 +1098,20 @@ namespace DriverLicenseLearningSupport.Controllers
             // get calendar by current date
             var weekday = await _weekDayScheduleService.GetByDateAndCourseId(currDate, 
                 Guid.Parse(courseReservation.CoursePackage.CourseId));
-            if(weekday is null)
-            {
+            /*if(weekday is null)
+            /{
                 return BadRequest(new BaseResponse { 
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = "Not found any learning schedule"
                 });
-            }
+            }*/
             // get all weekday of calendar
             var weekdays = await _weekDayScheduleService.GetAllByCourseId(
                 Guid.Parse(courseReservation.CoursePackage.CourseId));
+            if (weekday is null)
+            {
+                weekday = weekdays.FirstOrDefault();
+            }
             // get all slots 
             var slots = await _slotService.GetAllAsync();
             // convert to list of course

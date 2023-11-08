@@ -11,8 +11,8 @@ import CoursePage from '../pages/CoursePage/CoursePage';
 import DetailCourse from '../pages/CoursePage/DetailCourse';
 import Payment from '../pages/CoursePage/Payment';
 import DocumentPage from '../pages/DocumentPage/DocumentPage';
-import AllQuestionPage from "../pages/DocumentPage/AllQuestionPage";
-import ImportantQuestionPage from "../pages/DocumentPage/ImportantQuestionPage";
+import AllQuestionPage from '../pages/DocumentPage/AllQuestionPage';
+import ImportantQuestionPage from '../pages/DocumentPage/ImportantQuestionPage';
 import HomePage from '../pages/HomePage/HomePage';
 
 import IntructorDetail from '../pages/IntructorPage/IntructorDetail';
@@ -27,7 +27,6 @@ import HistoryTest from '../pages/PrivatePage/HistoryTest';
 import ManageBankTest from '../pages/PrivatePage/ManageBankTest';
 import ManageQuestion from '../pages/PrivatePage/ManageQuestion';
 import ManageUser from '../pages/PrivatePage/ManageUser';
-import Profile from '../pages/PrivatePage/Profile';
 import WeekSchedule from '../pages/PrivatePage/WeekSchedule';
 import WeekScheduleMentor from '../pages/PrivatePage/WeekScheduleMentor';
 import SimulationSituation from '../pages/SimulationSituationPage/SimulationSituation';
@@ -36,29 +35,28 @@ import TestTheory from '../pages/TheoryPage/TestTheory';
 import TheoryPage from '../pages/TheoryPage/TheoryPage';
 import ErrorPage from './../pages/ErrorPage/ErrorPage';
 
-// import ManageAwaitSchedule from '../pages/PrivatePage/ManageAwaitSchedule';
-
 import ApproveSchedule from '../pages/PrivatePage/ApproveSchedule';
 import ManageDenySchedule from '../pages/PrivatePage/ManageDenySchedule';
+import ManageAwaitSchedule from '../pages/PrivatePage/ManageAwaitSchedule';
 import ManageCourse from '../pages/PrivatePage/ManageCourse/ManageCourse';
 import ManageStaff from '../pages/PrivatePage/ManageStaff/ManageStaff';
+import Profile from '../pages/PrivatePage/ProfilePage/Profile';
 
 const RouterApp = () => {
   const router = createBrowserRouter([
-    { path: "/", element: <HomePage /> },
-    { path: "/home", element: <HomePage /> },
-    { path: "/login", element: <LoginPage /> },
-    { path: "/register", element: <RegisterPage /> },
-    { path: "/forgot-password", element: <ForgotPassword /> },
-    { path: "/authentication/reset-password", element: <ShowForgetPass /> },
-    { path: "/instructor", element: <IntructorPage /> },
-    { path: "/instructor/detail/:idInstructor", element: <IntructorDetail /> },
-    { path: "/instructor/detail", element: <IntructorDetail /> },
+    { path: '/', element: <HomePage /> },
+    { path: '/home', element: <HomePage /> },
+    { path: '/login', element: <LoginPage /> },
+    { path: '/register', element: <RegisterPage /> },
+    { path: '/forgot-password', element: <ForgotPassword /> },
+    { path: '/authentication/reset-password', element: <ShowForgetPass /> },
+    { path: '/instructor', element: <IntructorPage /> },
+    { path: '/instructor/detail/:idInstructor', element: <IntructorDetail /> },
+    { path: '/instructor/detail', element: <IntructorDetail /> },
     {
-      path: "/instructor/teaching-schedule/:idInstructor/:idCourse",
+      path: '/instructor/teaching-schedule/:idInstructor/:idCourse',
       element: <InstructorSchedule />,
     },
-    // { path: '/private-information', element: <PrivatePage /> },
     { path: '/profile', element: <Profile /> },
     { path: '/week-schedule', element: <WeekSchedule /> },
     { path: '/history-test', element: <HistoryTest /> },
@@ -73,18 +71,20 @@ const RouterApp = () => {
     { path: '/manage-deny-schedule', element: <ManageDenySchedule /> },
     { path: '/manage-course', element: <ManageCourse /> },
     {
-      path: "/manage-await-schedule/:idMentor",
+      path: '/manage-await-schedule/:idMentor',
       element: <ApproveSchedule />,
     },
 
-    { path: "/course", element: <CoursePage /> },
-    { path: "/course/detail/:idCourse", element: <DetailCourse /> },
-    { path: "/api/payment/notification", element: <Payment /> },
-    // { path: '/test2', element: <Payment /> },
+    { path: '/course', element: <CoursePage /> },
+    { path: '/course/detail/:idCourse', element: <DetailCourse /> },
+    { path: '/api/payment/notification', element: <Payment /> },
 
-    { path: "/document", element: <DocumentPage /> },
-    { path: "/document/important-question", element: <ImportantQuestionPage /> },
-    { path: "/document/all-question", element: <AllQuestionPage /> },
+    { path: '/document', element: <DocumentPage /> },
+    {
+      path: '/document/important-question',
+      element: <ImportantQuestionPage />,
+    },
+    { path: '/document/all-question', element: <AllQuestionPage /> },
 
     { path: '/theory', element: <TheoryPage /> },
     { path: '/theory/test/:theoryExamId', element: <TestTheory /> },
@@ -93,17 +93,16 @@ const RouterApp = () => {
       element: <ResultTheory />,
     },
 
-    { path: "/simulationSituation", element: <SimulationSituation /> },
+    { path: '/simulationSituation', element: <SimulationSituation /> },
 
-    { path: "/blog", element: <BlogPage /> },
-    { path: "/blog/:blogId", element: <BlogDetail /> },
-    { path: "/contact", element: <ContactPage /> },
+    { path: '/blog', element: <BlogPage /> },
+    { path: '/blog/:blogId', element: <BlogDetail /> },
+    { path: '/contact', element: <ContactPage /> },
 
-    //
-    { path: "/aboutus", element: <AboutUsPage /> },
-    { path: "/test", element: <SideBar /> },
+    { path: '/aboutus', element: <AboutUsPage /> },
+    { path: '/test', element: <SideBar /> },
 
-    { path: "*", element: <ErrorPage /> },
+    { path: '*', element: <ErrorPage /> },
   ]);
   return <RouterProvider router={router} fallbackElement={<Loading />} />;
 };
