@@ -2,6 +2,7 @@
 using DriverLicenseLearningSupport.Entities;
 using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Payloads.Filters;
+using DriverLicenseLearningSupport.Payloads.Response;
 using DriverLicenseLearningSupport.Repositories.Impl;
 using DriverLicenseLearningSupport.Services.Impl;
 using System.Runtime.InteropServices;
@@ -131,6 +132,36 @@ namespace DriverLicenseLearningSupport.Services
         public async Task<IEnumerable<TeachingScheduleModel>> GetAllWeekdayScheduleAsync(int weekDayScheduleId)
         {
             return await _teachingScheduleRepo.GetAllWeekdayScheduleAsync(weekDayScheduleId);
+        }
+
+        public async Task<bool> CancelAsync(int teachingScheduleId)
+        {
+            return await _teachingScheduleRepo.CancelAsync(teachingScheduleId);
+        }
+
+        public async Task<IEnumerable<TeachingScheduleModel>> GetAllAwaitCancelScheduleAsync()
+        {
+            return await _teachingScheduleRepo.GetAllAwaitCancelScheduleAsync();
+        }
+
+        public async Task<bool> ApproveCancelScheduleAsync(int teachingScheduleId)
+        {
+            return await _teachingScheduleRepo.ApproveCancelScheduleAsync(teachingScheduleId);
+        }
+
+        public async Task<bool> DenyCancelScheduleAsync(int teachingScheduleId, string cancelMessage)
+        {
+            return await _teachingScheduleRepo.DenyCancelScheduleAsync(teachingScheduleId, cancelMessage);
+        }
+
+        public async Task<bool> ReregisterCancelScheduleAsync(int teachingScheduleId)
+        {
+            return await _teachingScheduleRepo.ReregisterCancelScheduleAsync(teachingScheduleId);
+        }
+
+        public async Task<IEnumerable<TeachingScheduleModel>> GetAllMentorRelatedScheduleAsync(Guid mentorId)
+        {
+            return await _teachingScheduleRepo.GetAllMentorRelatedScheduleAsync(mentorId);
         }
     }
 }

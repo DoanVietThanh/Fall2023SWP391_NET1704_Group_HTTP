@@ -169,7 +169,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     new BaseResponse()
                     {
                         StatusCode = StatusCodes.Status403Forbidden,
-                        Message = "Username đăng nhập đã tồn tại"
+                        Message = "Tên đăng nhập đã tồn tại"
                     });
             }
 
@@ -249,7 +249,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     new BaseResponse()
                     {
                         StatusCode = StatusCodes.Status403Forbidden,
-                        Message = "Username đăng nhập đã tồn tại"
+                        Message = "Tên đăng nhập đã tồn tại"
                     });
             }
 

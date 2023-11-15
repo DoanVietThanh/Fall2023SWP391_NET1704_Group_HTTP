@@ -22,6 +22,7 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly ICoursePackageReservationService _reservationService;
         private readonly IWeekDayScheduleService _weekdayService;
         private readonly IAccountService _accountService;
+        private readonly IExamHistoryService _examHistoryService;
         private readonly AppSettings _appSettings;
 
         public AdminController(IMemberService memberService,
@@ -31,6 +32,7 @@ namespace DriverLicenseLearningSupport.Controllers
             ICoursePackageReservationService reservationService,
             IWeekDayScheduleService weekdayService,
             IAccountService accountService,
+            IExamHistoryService examHistoryService,
             IOptionsMonitor<AppSettings> monitor)
         {
             _memberService = memberService;
@@ -40,6 +42,7 @@ namespace DriverLicenseLearningSupport.Controllers
             _reservationService = reservationService;
             _weekdayService = weekdayService;
             _accountService = accountService;
+            _examHistoryService = examHistoryService;
             _appSettings = monitor.CurrentValue;
         }
 
@@ -193,6 +196,10 @@ namespace DriverLicenseLearningSupport.Controllers
             // total staff
             var staffs = await _staffService.GetAllAsync();
             var totalStaff = staffs.Count();
+            // total admin 
+            var totalAdmin = staffs.Select(x => x.JobTitle.Equals("Admin")).Count();
+            // total mentor
+            var totalMentor = staffs.Select(x => x.JobTitle.Equals("Mentor")).Count();
             // total course
             var courses = await _courseService.GetAllAsync();
             var totalCourse = courses.Count();
@@ -267,6 +274,10 @@ namespace DriverLicenseLearningSupport.Controllers
                         prevWeekSchedules.ToList());
                 }
             }
+
+            // get all theory history
+            var theoryHistories = await _examHistoryService.GetAllExamHistory();
+            var totalTheoryHistory = theoryHistories.Count();
 
             // total blog
             //var blogs = await _blogService.GetAllAsync();

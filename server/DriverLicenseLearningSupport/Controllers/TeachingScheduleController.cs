@@ -27,8 +27,9 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly IRollCallBookService _rollCallBookService;
         private readonly IEmailService _emailService;
         private readonly IVehicleService _vehicleService;
+        private readonly ICoursePackageReservationService _coursePackageService;
         private readonly AppSettings _appSettings;
-
+        private readonly CourseSettings _courseSettings;
 
         public TeachingScheduleController(ITeachingScheduleService teachingScheduleService,
             IRollCallBookService rollCallBookService,
@@ -38,6 +39,8 @@ namespace DriverLicenseLearningSupport.Controllers
             IStaffService staffService,
             IEmailService emailService,
             IVehicleService vehicleService,
+            ICoursePackageReservationService coursePackageService,
+            IOptionsMonitor<CourseSettings> monitor1,
             IOptionsMonitor<AppSettings> monitor)
         {
             _teachingScheduleService = teachingScheduleService;
@@ -48,8 +51,10 @@ namespace DriverLicenseLearningSupport.Controllers
             _rollCallBookService = rollCallBookService;
             _emailService = emailService;
             _vehicleService = vehicleService;
+            _coursePackageService = coursePackageService;
             _appSettings = monitor.CurrentValue;
-        }
+            _courseSettings = monitor1.CurrentValue;
+       }
 
         /// <summary>
         /// Get teaching schedule by id
@@ -267,6 +272,50 @@ namespace DriverLicenseLearningSupport.Controllers
             // get all inactive vehicle by vehicle type
             var inactiveVehicles = await _vehicleService.GetAllInActiveVehicleByType(vehicleType.VehicleTypeId);
 
+            // get all related teaching schedule
+            var relatedSchedules = await _teachingScheduleService.GetAllMentorRelatedScheduleAsync(id);
+            // get all realated mentors
+            var relatedMentors = relatedSchedules.Select(x => x.Staff).GroupBy(x => x.StaffId).Select(x => x.First());
+
+            foreach(var mtor in relatedMentors)
+            {
+                // get all mentor schedule
+                var mentorSchedules = relatedSchedules.Where(x => x.StaffId == mtor.StaffId).ToList();
+
+                // get mentor teaching course
+                var mentorCourse = await _courseService.GetByMentorIdAsync(
+                    Guid.Parse(mtor.StaffId));
+
+                // get first teaching date
+                var dayOfWeek = Convert.ToInt32(mentorSchedules[0].TeachingDate.DayOfWeek);
+
+                // get all required total
+                var requiredTeachingTotal = 0;
+                if(dayOfWeek == 1) // first teaching date is monday
+                {
+                    requiredTeachingTotal = Convert.ToInt32(mentorCourse.TotalMonth) * 3 * 4;
+                }else if(dayOfWeek == 2) // first teaching date is tuesday
+                {
+                    requiredTeachingTotal = Convert.ToInt32(mentorCourse.TotalMonth) * 3 * 4;
+                }
+                else if(dayOfWeek == 6) // first teaching date is saturday
+                {
+                    requiredTeachingTotal = Convert.ToInt32(mentorCourse.TotalMonth) * 2 * 4;
+                }
+
+                // get all teaching member
+                mtor.TotalMember = await _coursePackageService.GetTotalMemberByMentorIdAsync(
+                    Guid.Parse(mtor.StaffId));
+
+                // set total required schedule
+                mtor.TotalTeachingScheduleRequired = requiredTeachingTotal;
+                // set total taught schedule
+                var totalTaught = mentorSchedules.Where(x => x?.RollCallBooks.FirstOrDefault()?.IsAbsence == false).ToList().Count;
+                mtor.TotalTaughtSchedule = totalTaught;
+                // 
+                mtor.TotalCanceledSchedule = mentorSchedules.Where(x => x.IsCancel == true).ToList().Count;
+            }
+
             // response
             return Ok(new BaseResponse
             {
@@ -282,11 +331,13 @@ namespace DriverLicenseLearningSupport.Controllers
                     SlotSchedules = listOfSlotSchedule,
                     ActiveVehicles = activeVehicles,
                     MentorScheduleVehicle = mentorScheduleVehicle,
-                    TotalInActiveVehicle = inactiveVehicles.Count()
+                    TotalInActiveVehicle = inactiveVehicles.Count(),
+                    RelatedMentors = relatedMentors
                 }
             });
         }
 
+        
         [HttpGet]
         [Route("teaching-schedules/mentors/{id:Guid}/await-schedule/filter")]
         public async Task<IActionResult> GetAwaitScheduleDetail([FromRoute] Guid id,
@@ -357,6 +408,51 @@ namespace DriverLicenseLearningSupport.Controllers
             // get all inactive vehicle by vehicle type
             var inactiveVehicles = await _vehicleService.GetAllInActiveVehicleByType(vehicleType.VehicleTypeId);
 
+            // get all related teaching schedule
+            var relatedSchedules = await _teachingScheduleService.GetAllMentorRelatedScheduleAsync(id);
+            // get all realated mentors
+            var relatedMentors = relatedSchedules.Select(x => x.Staff).GroupBy(x => x.StaffId).Select(x => x.First());
+
+            foreach (var mtor in relatedMentors)
+            {
+                // get all mentor schedule
+                var mentorSchedules = relatedSchedules.Where(x => x.StaffId == mtor.StaffId).ToList();
+
+                // get mentor teaching course
+                var mentorCourse = await _courseService.GetByMentorIdAsync(
+                    Guid.Parse(mtor.StaffId));
+
+                // get first teaching date
+                var dayOfWeek = Convert.ToInt32(mentorSchedules[0].TeachingDate.DayOfWeek);
+
+                // get all required total
+                var requiredTeachingTotal = 0;
+                if (dayOfWeek == 1) // first teaching date is monday
+                {
+                    requiredTeachingTotal = Convert.ToInt32(mentorCourse.TotalMonth) * 3 * 4;
+                }
+                else if (dayOfWeek == 2) // first teaching date is tuesday
+                {
+                    requiredTeachingTotal = Convert.ToInt32(mentorCourse.TotalMonth) * 3 * 4;
+                }
+                else if (dayOfWeek == 6) // first teaching date is saturday
+                {
+                    requiredTeachingTotal = Convert.ToInt32(mentorCourse.TotalMonth) * 2 * 4;
+                }
+
+                // get all teaching member
+                mtor.TotalMember = await _coursePackageService.GetTotalMemberByMentorIdAsync(
+                    Guid.Parse(mtor.StaffId));
+
+                // set total required schedule
+                mtor.TotalTeachingScheduleRequired = requiredTeachingTotal;
+                // set total taught schedule
+                var totalTaught = mentorSchedules.Where(x => x?.RollCallBooks.FirstOrDefault()?.IsAbsence == false).ToList().Count;
+                mtor.TotalTaughtSchedule = totalTaught;
+                // 
+                mtor.TotalCanceledSchedule = mentorSchedules.Where(x => x.IsCancel == true).ToList().Count;
+            }
+
             // response
             return Ok(new BaseResponse
             {
@@ -372,7 +468,8 @@ namespace DriverLicenseLearningSupport.Controllers
                     SlotSchedules = listOfSlotSchedule,
                     ActiveVehicles = activeVehicles,
                     MentorScheduleVehicle = mentorScheduleVehicle,
-                    TotalInActiveVehicle = inactiveVehicles.Count()
+                    TotalInActiveVehicle = inactiveVehicles.Count(),
+                    RelatedMentors = relatedMentors
                 }
             });
         }
@@ -516,6 +613,209 @@ namespace DriverLicenseLearningSupport.Controllers
             {
                 StatusCode = StatusCodes.Status500InternalServerError,
                 Message = "Xảy ra lỗi"
+            })
+            {
+                StatusCode = StatusCodes.Status500InternalServerError
+            };
+        }
+
+
+        /// <summary>
+        /// Cancel teaching schedule
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("teaching-schedule/{id:int}/cancel")]
+        public async Task<IActionResult> CancelTeachingSchedule([FromRoute] int id)
+        {
+            // get by id 
+            var teachingSchedule = await _teachingScheduleService.GetAsync(id);
+            if (teachingSchedule is null)
+            {
+                return NotFound(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = "Không tìm thấy lịch dạy"
+                });
+            }
+
+            // cancel teaching schedule
+            bool isSucess = await _teachingScheduleService.CancelAsync(id);
+
+            if (isSucess)
+            {
+                return Ok(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = "Yêu cầu hủy buổi dạy thành công"
+                });
+            }
+
+            return new ObjectResult(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status500InternalServerError,
+                Message = "Yêu cầu hủy buổi dạy thất bại"
+            })
+            {
+                StatusCode = StatusCodes.Status500InternalServerError
+            };
+        }
+
+        /// <summary>
+        /// Get all await cancel schedule
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("teaching-schedule/await-cancel")]
+        public async Task<IActionResult> GetAllAwaitCancelSchedule()
+        {
+            var teachingSchedules = await _teachingScheduleService.GetAllAwaitCancelScheduleAsync();
+
+            if(teachingSchedules.Count() == 0)
+            {
+                return NotFound(new BaseResponse { 
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = "Hiện chưa có yêu cầu hủy lịch dạy"
+                });
+            }
+
+            return Ok(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Data = teachingSchedules
+            });
+        }
+
+        /// <summary>
+        /// Approve cancel schedule
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("teaching-schedule/{id:int}/approve-cancel")]
+        public async Task<IActionResult> ApproveCancelSchedule([FromRoute] int id)
+        {
+            // get by id 
+            var teachingSchedule = await _teachingScheduleService.GetAsync(id);
+            if (teachingSchedule is null)
+            {
+                return NotFound(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = "Không tìm thấy lịch dạy"
+                });
+            }
+
+            // approve cancel schedule
+            bool isSuccess = await _teachingScheduleService.ApproveCancelScheduleAsync(id);
+
+            if (isSuccess)
+            {
+                return Ok(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = "Hủy buổi dạy thành công"
+                });
+            }
+
+            return new ObjectResult(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status500InternalServerError,
+                Message = "Hủy buổi dạy thất bại"
+            })
+            {
+                StatusCode = StatusCodes.Status500InternalServerError
+            };
+        }
+
+        /// <summary>
+        /// Deny cancel schedule
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("teaching-schedule/{id:int}/deny-cancel")]
+        public async Task<IActionResult> DenyCancelSchedule([FromRoute] int id, [FromRoute] string? message)
+        {
+            if(message is null)
+            {
+                return BadRequest(new BaseResponse { 
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Vui lòng nhập lý do"
+                });
+            }
+
+            // get by id 
+            var teachingSchedule = await _teachingScheduleService.GetAsync(id);
+            if (teachingSchedule is null)
+            {
+                return NotFound(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = "Không tìm thấy lịch dạy"
+                });
+            }
+
+            // deny cancel schedule
+            bool isSuccess = await _teachingScheduleService.DenyCancelScheduleAsync(id, message);
+
+            if (isSuccess)
+            {
+                return Ok(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = "Hủy buổi dạy thành công"
+                });
+            }
+
+            return new ObjectResult(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status500InternalServerError,
+                Message = "Hủy buổi dạy thất bại"
+            })
+            {
+                StatusCode = StatusCodes.Status500InternalServerError
+            };
+        }
+
+
+        /// <summary>
+        /// Re-register canceled schedule
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("teaching-schedule/{id:int}/re-register")]
+        public async Task<IActionResult> ReregisterCanceledSchedule([FromRoute] int id)
+        {
+            // get by id 
+            var teachingSchedule = await _teachingScheduleService.GetAsync(id);
+            if (teachingSchedule is null)
+            {
+                return NotFound(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = "Không tìm thấy lịch dạy"
+                });
+            }
+
+            // re-register cancel schedule
+            bool isSuccess = await _teachingScheduleService.ReregisterCancelScheduleAsync(id);
+
+            if (isSuccess)
+            {
+                return Ok(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status200OK,
+                    Message = "Đăng ký lại buổi dạy thành công"
+                });
+            }
+
+            return new ObjectResult(new BaseResponse
+            {
+                StatusCode = StatusCodes.Status500InternalServerError,
+                Message = "Đăng ký lại buổi dạy thất bại"
             })
             {
                 StatusCode = StatusCodes.Status500InternalServerError

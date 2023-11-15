@@ -30,6 +30,11 @@ namespace DriverLicenseLearningSupport.Services
             return _examHistoryRepository.GetAllByMemberIdAsysn(memberId);
         }
 
+        public async Task<IEnumerable<ExamHistoryModel>> GetAllExamHistory()
+        {
+            return await _examHistoryRepository.GetAllExamHistory();
+        }
+
         public async Task<ExamHistoryModel> GetHistoryDetailAsync(string MemberId, int TheoryExamId, DateTime joinDate)
         {
             return await _examHistoryRepository.GetHistoryDetailAsync(MemberId, TheoryExamId, joinDate);

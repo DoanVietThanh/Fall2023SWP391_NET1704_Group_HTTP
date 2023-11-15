@@ -111,7 +111,7 @@ namespace DriverLicenseLearningSupport.Controllers
             }
 
             // check valid date
-            if(!DateTime.TryParse(courseModel.StartDate.ToString(), out var date))
+            if(DateTime.TryParse(courseModel.StartDate.ToString(), out var date))
             {
                 var startDateFormat = DateTime.ParseExact(date.ToString(_appSettings.DateFormat),
                     _appSettings.DateFormat, CultureInfo.InvariantCulture);
@@ -127,13 +127,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     });
                 }
             }
-            else
-            {
-                return BadRequest(new BaseResponse() { 
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = "Ngày khai giảng không hợp lệ"
-                });
-            }
+            
 
             // create course 
             var createdCourse = await _courseService.CreateAsync(courseModel);
@@ -458,9 +452,10 @@ namespace DriverLicenseLearningSupport.Controllers
         public async Task<IActionResult> GetCourse([FromRoute] Guid id)
         {
             var course = await _courseService.GetAsync(id);
-            if (course is null) return NotFound(new BaseResponse {
+            if (course is null) return NotFound(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status404NotFound,
-                Message = $"Không tìm thấy khóa học"
+                //Message = $"Không tìm thấy khóa học"
             });
 
             // get course total member

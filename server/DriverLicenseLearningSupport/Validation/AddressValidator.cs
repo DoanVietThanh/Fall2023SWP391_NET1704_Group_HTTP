@@ -10,13 +10,13 @@ namespace DriverLicenseLearningSupport.Validation
         public AddressValidator()
         {
             RuleFor(x => x.Street)
-               .Matches("^[a-zA-Z0-9 ]+$")
+               .NotNull()
                .WithMessage("Đường không chứa ký tự đặc biệt");
             RuleFor(x => x.District)
-               .Matches("^[a-zA-Z0-9 ]+$")
+               .NotNull()
                .WithMessage("Quận không chứa ký tự đặc biệt");
             RuleFor(x => x.City)
-               .Matches("^[a-zA-Z ]+$")
+               .NotNull()
                .WithMessage("Thành phố không chứa số hoặc ký tự đặc biệt");
         }
     }
