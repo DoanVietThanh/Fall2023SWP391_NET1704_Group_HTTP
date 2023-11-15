@@ -12,8 +12,8 @@ import { testJson } from '../../data';
 
 const IntructorPage = () => {
   const url =
-    'https://themeholy.com/wordpress/edura/wp-content/uploads/2023/07/breadcumb-bg.png';
-  const breadcrumbs = 'Instructors';
+    '/img/backgroundSlide.png';
+  const breadcrumbs = 'Giảng viên';
   const url_server = process.env.REACT_APP_SERVER_API;
   const [instructorList, setInstructorList] = useState([]);
   useEffect(() => {

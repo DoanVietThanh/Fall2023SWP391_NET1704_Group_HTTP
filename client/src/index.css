@@ -273,7 +273,22 @@ tr td:first-child {
   justify-content: center;
   align-items: center;
 }
-
+.bannerCourse{
+position: relative;
+}
+.btnRegister{
+  font-weight: 600;
+  font-size: 20px;
+padding-left: 30px;
+padding-right: 30px;
+padding-bottom: 10px;
+padding-top: 10px;
+text-transform: uppercase;
+color: white;
+background-color: #0097d8;
+border-radius: 30px;
+  transform: translate(40px, -120px);
+}
 
 
 

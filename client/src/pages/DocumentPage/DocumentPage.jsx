@@ -3,23 +3,40 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import BackgroundSlider from "../../components/BackgroundSlider";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import axios from "axios";
+import { useState } from "react";
+import { toastError } from "../../components/Toastify";
 
 const DocumentPage = () => {
-  const url =
-    "https://themeholy.com/wordpress/edura/wp-content/uploads/2023/07/breadcumb-bg.png";
-  const breadcrumbs = "Document";
+  const url = "/img/backgroundSlide.png";
+  const breadcrumbs = "Tài liệu lý thuyết";
+  const [listLicense, setListLicense] = useState([]);
+  const urlService = process.env.REACT_APP_SERVER_API;
+  useEffect(() => {
+    async function getListLicense() {
+      await axios
+        .get(`${urlService}/theory/add-question`)
+        .then((res) => {
+          console.log("res: ", res);
+          setListLicense(res.data?.data);
+        })
+        .catch((error) => {
+          console.log("error: ", error);
+          toastError(error?.response?.data?.message);
+        });
+    }
+    getListLicense();
+  }, []);
+  console.log("listLicense", listLicense);
   return (
     <div>
       <Header />
       <BackgroundSlider url={url} breadcrumbs={breadcrumbs} />
       <div className="flex justify-center gap-10 my-12">
-        <button className="btn">Bằng lái A1</button>
-
-        <button className="btn">Bằng lái A2</button>
-
-        <button className="btn">Bằng lái B1</button>
-
-        <button className="btn">Bằng lái B2</button>
+        {listLicense.map((license, index) => (
+          <button key={license.licenseTypeId} className="btn">Bằng lái {license.licenseTypeDesc}</button>
+        ))}
       </div>
       <div className="flex">
         <div className="w-[20%] border-r-2 border-gray-200 flex flex-col gap-10 ">
@@ -27,14 +44,14 @@ const DocumentPage = () => {
             Lý thuyết bằng lái A1
           </div>
           <div className="flex flex-col gap-5 ">
-            <Link to={"/document/toanbocauhoi"}>
+            <Link to={"/document/all-question"}>
               <div className="ml-10 pb-3 border-b-2 border-gray-200 mr-10 flex flex-col ">
                 <div className="font-semibold text-md">Toàn bộ câu hỏi</div>
                 <div className="text-md text-gray-500">200 câu</div>
               </div>
             </Link>
 
-            <Link to={"/document/cauhoidiemliet"}>
+            <Link to={"/document/important-question"}>
               <div className="ml-10 pb-3 border-b-2 border-gray-200 mr-10 flex flex-col ">
                 <div className="font-semibold text-md">Câu hỏi điểm liệt</div>
                 <div className="text-md text-gray-500">20 câu</div>

@@ -54,7 +54,7 @@ const WeekSchedule = () => {
       }
     }
     getDataCourse();
-  }, [isLoading]);
+  }, []);
 
   const getInitDataCourse = async () => {
     try {

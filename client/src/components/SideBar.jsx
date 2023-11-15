@@ -21,6 +21,8 @@ import {
   BsPerson,
   BsPeople,
   BsBarChartLine,
+  BsFilePost,
+  BsFillFilePostFill,
 } from 'react-icons/bs';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { logout } from '../features/auth/authSlice';
@@ -49,7 +51,7 @@ const listNavbar = [
   },
 ];
 
-const listNavbarManage = [
+const listMentorNavbar = [
   {
     id: 1,
     title: 'Thông tin cá nhân',
@@ -58,51 +60,72 @@ const listNavbarManage = [
   },
   {
     id: 2,
+    title: 'Lịch dạy theo tuần',
+    icon: <BsCalendarEvent size={24} />,
+    navigate: '/week-schedule-mentor',
+  },
+];
+
+const listNavbarManage = [
+  {
+    id: 1,
+    title: 'Thông tin cá nhân',
+    icon: <BsPerson size={24} />,
+    navigate: '/profile',
+  },
+  {
+    id: 2,
     title: 'Quản lí người dùng',
-    icon: <BsPeople size={20} />,
+    icon: <BsPeople size={24} />,
     navigate: '/manage-user',
   },
   {
     id: 3,
     title: 'Lịch dạy theo tuần',
-    icon: <BsCalendarEvent size={20} />,
+    icon: <BsCalendarEvent size={24} />,
     navigate: '/week-schedule-mentor',
   },
   {
     id: 4,
     title: 'Lịch sử kiểm tra',
-    icon: <BsClockHistory size={20} />,
+    icon: <BsClockHistory size={24} />,
     navigate: '/history-test',
   },
   {
     id: 5,
     title: 'Quản lí câu hỏi',
-    icon: <AiOutlineQuestionCircle size={20} />,
+    icon: <AiOutlineQuestionCircle size={24} />,
     navigate: '/manage-question',
   },
   {
     id: 6,
     title: 'Quản lí đề thi',
-    icon: <BsEnvelopePaper size={20} />,
+    icon: <BsEnvelopePaper size={24} />,
     navigate: '/manage-banktest',
   },
   {
     id: 7,
-    title: 'Thống kê hệ thống',
-    icon: <BsBarChartLine size={20} />,
-    navigate: '/dashboard',
+    title: 'Quản lí bài đăng',
+    icon: <BsFillFilePostFill size={24} />,
+    navigate: '/manage-blog',
   },
   {
     id: 8,
     title: 'Quản lí lịch chờ',
-    icon: <BsEnvelopePaper size={20} />,
+    icon: <BsEnvelopePaper size={24} />,
     navigate: '/manage-await-schedule',
   },
   {
     id: 9,
     title: 'Quản lí lịch hủy',
-    icon: <BsEnvelopePaper size={20} />,
+    icon: <BsEnvelopePaper size={24} />,
     navigate: '/manage-deny-schedule',
+  },
+  {
+    id: 10,
+    title: 'Thống kê',
+    icon: <BsBarChartLine size={24} />,
+    navigate: '/dashboard',
   },
   {
     id: 13,
@@ -204,6 +227,11 @@ export default function SideBar() {
     navigate('/login');
   };
 
+  console.log(
+    'accountInfo?.emailNavigation.role.roleId: ',
+    accountInfo?.emailNavigation.role.roleId
+  );
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -226,13 +254,25 @@ export default function SideBar() {
           </IconButton>
           <div className='w-full flex justify-between'>
             <div className='font-medium capitalize flex-x'>
-              {accountInfo?.emailNavigation.role.roleId === 4
-                ? listNavbar.map((itemNav, index) =>
-                    location.pathname === itemNav.navigate ? itemNav.title : ''
-                  )
-                : listNavbarManage.map((itemNav, index) =>
-                    location.pathname === itemNav.navigate ? itemNav.title : ''
-                  )}
+              {accountInfo?.emailNavigation.role.roleId == 1 &&
+                listNavbarManage.map((itemNav, index) =>
+                  location.pathname === itemNav.navigate ? itemNav.title : ''
+                )}
+
+              {accountInfo?.emailNavigation.role.roleId == 2 &&
+                listNavbarManage.map((itemNav, index) =>
+                  location.pathname === itemNav.navigate ? itemNav.title : ''
+                )}
+
+              {accountInfo?.emailNavigation.role.roleId == 3 &&
+                listMentorNavbar.map((itemNav, index) =>
+                  location.pathname === itemNav.navigate ? itemNav.title : ''
+                )}
+
+              {accountInfo?.emailNavigation.role.roleId == 4 &&
+                listNavbar.map((itemNav, index) =>
+                  location.pathname === itemNav.navigate ? itemNav.title : ''
+                )}
             </div>
             <div className='flex-x gap-2'>
               <div>
@@ -302,35 +342,69 @@ export default function SideBar() {
         </DrawerHeader>
         <div className='flex flex-col justify-between h-full'>
           <div>
-            {accountInfo?.emailNavigation.role.roleId === 4
-              ? listNavbar.map((item, index) => (
-                  <div
-                    key={item.id}
-                    onClick={() => navigate(item.navigate)}
-                    className={`min-h-[48px] flex-x px-[20px] py-[8px] hover:opacity-80 hover:cursor-pointer `}
-                  >
-                    <div className='flex-x gap-[30px]'>
-                      {item.icon}
-                      <p className='cappitalize font-medium capitalize'>
-                        {item.title}
-                      </p>
-                    </div>
+            {accountInfo?.emailNavigation.role.roleId == 1 &&
+              listNavbarManage.map((item, index) => (
+                <div
+                  key={item.id}
+                  onClick={() => navigate(item.navigate)}
+                  className={`min-h-[48px] flex-x px-[20px] py-[8px] hover:opacity-80 hover:cursor-pointer `}
+                >
+                  <div className='flex-x gap-[30px]'>
+                    {item.icon}
+                    <p className='cappitalize font-medium capitalize'>
+                      {item.title}
+                    </p>
                   </div>
-                ))
-              : listNavbarManage.map((item, index) => (
-                  <div
-                    key={item.id}
-                    onClick={() => navigate(item.navigate)}
-                    className={`min-h-[48px] flex-x px-[20px] py-[8px] hover:opacity-80 hover:cursor-pointer `}
-                  >
-                    <div className='flex-x gap-[30px]'>
-                      {item.icon}
-                      <p className='cappitalize font-medium capitalize'>
-                        {item.title}
-                      </p>
-                    </div>
+                </div>
+              ))}
+
+            {accountInfo?.emailNavigation.role.roleId == 2 &&
+              listNavbarManage.map((item, index) => (
+                <div
+                  key={item.id}
+                  onClick={() => navigate(item.navigate)}
+                  className={`min-h-[48px] flex-x px-[20px] py-[8px] hover:opacity-80 hover:cursor-pointer `}
+                >
+                  <div className='flex-x gap-[30px]'>
+                    {item.icon}
+                    <p className='cappitalize font-medium capitalize'>
+                      {item.title}
+                    </p>
                   </div>
-                ))}
+                </div>
+              ))}
+
+            {accountInfo?.emailNavigation.role.roleId == 3 &&
+              listMentorNavbar.map((item, index) => (
+                <div
+                  key={item.id}
+                  onClick={() => navigate(item.navigate)}
+                  className={`min-h-[48px] flex-x px-[20px] py-[8px] hover:opacity-80 hover:cursor-pointer `}
+                >
+                  <div className='flex-x gap-[30px]'>
+                    {item.icon}
+                    <p className='cappitalize font-medium capitalize'>
+                      {item.title}
+                    </p>
+                  </div>
+                </div>
+              ))}
+
+            {accountInfo?.emailNavigation.role.roleId == 4 &&
+              listNavbar.map((item, index) => (
+                <div
+                  key={item.id}
+                  onClick={() => navigate(item.navigate)}
+                  className={`min-h-[48px] flex-x px-[20px] py-[8px] hover:opacity-80 hover:cursor-pointer `}
+                >
+                  <div className='flex-x gap-[30px]'>
+                    {item.icon}
+                    <p className='cappitalize font-medium capitalize'>
+                      {item.title}
+                    </p>
+                  </div>
+                </div>
+              ))}
           </div>
           <div
             className={`min-h-[48px] flex-x px-[20px] py-[8px] mb-4 hover:opacity-80 hover:cursor-pointer btn rounded-none`}

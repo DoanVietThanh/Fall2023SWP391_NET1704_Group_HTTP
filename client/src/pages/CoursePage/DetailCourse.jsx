@@ -118,6 +118,16 @@ const DetailCourse = () => {
   };
 
   console.log(coursePackage);
+
+  const scrollToSection = () => {
+    //phan tu muon cuon den
+    const section = document.getElementById('targetSection');
+    
+    if (section) {
+      //cuon den
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
   return (
     <>
       <Header />
@@ -138,12 +148,15 @@ const DetailCourse = () => {
                   className='rounded-lg'
                 ></iframe>
               </div> */}
-              <div>
+              <div className='bannerCourse'>
                 <img
-                  className='w-full'
-                  src='https://daylaixethanhcong.vn/wp-content/uploads/2023/02/khoa-hoc-B1-giam-2.900-scaled.jpg'
+                  className='w-full h-full object-cover'
+                  src='/img/courseB1Pic.png'
                   alt='hinhdemo'
                 />
+                <button className='btnRegister' onClick={scrollToSection}>
+                  Đăng ký ngay
+                </button>
               </div>
               <div className='py-6 flex gap-8'>
                 <div className='flex-x gap-2 border-r-2 pr-8'>
@@ -479,12 +492,12 @@ const DetailCourse = () => {
 
           {coursePackage && (
             <div className='my-4'>
-              <h1 className='font-bold text-[30px] text-yellow-700 text-center cappitalize'>
+              <h1 id="targetSection" className='font-bold text-[30px] text-yellow-700 text-center cappitalize '>
                 Chọn gói liên quan
               </h1>
               <div className='flex gap-4'>
                 {coursePackage?.map((item, index) => (
-                  <div className='p-4 border flex-1'>
+                  <div className='p-8 border flex-1 shadow-md'>
                     <h1 className='text-center font-bold text-[26px]'>
                       {item?.coursePackageDesc}
                     </h1>

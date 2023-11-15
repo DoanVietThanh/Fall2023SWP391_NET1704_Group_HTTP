@@ -104,12 +104,15 @@ const ManageDenySchedule = () => {
       ),
     },
   ];
+
   useEffect(() => {
     async function getCancelRcb() {
       await axiosClient
         .get(`/rollcallbooks/cancel`)
         .then((res) => setRows(res?.data?.data))
-        .catch((error) => toastError(error?.response?.data?.message));
+        .catch((error) => {
+          toastError(error?.response?.data?.message);
+        });
     }
     getCancelRcb();
   }, []);
@@ -123,7 +126,7 @@ const ManageDenySchedule = () => {
       .then((res) => {
         console.log('res: ', res);
         toastSuccess(res?.data?.message);
-        // navigate('/manage-deny-schedule');
+        // getData();
         window.location.reload();
       })
       .catch((error) => {
@@ -140,12 +143,28 @@ const ManageDenySchedule = () => {
       .then((res) => {
         console.log('res: ', res);
         toastSuccess(res?.data?.message);
-        // navigate('/manage-deny-schedule');
+        // getData();
         window.location.reload();
       })
-      .catch((error) => toastError(error?.response?.data?.message));
+      .catch((error) => {
+        toastError(error?.response?.data?.message);
+      });
     console.log(response);
   };
+
+  async function getData() {
+    await axiosClient
+      .get(`/rollcallbooks/cancel`)
+      .then((res) => {
+        console.log('res: ', res);
+        if (res?.data?.data == null) {
+          setRows([]);
+        } else {
+          setRows(res?.data?.data);
+        }
+      })
+      .catch((error) => toastError(error?.response?.data?.message));
+  }
 
   return (
     <div className='flex'>

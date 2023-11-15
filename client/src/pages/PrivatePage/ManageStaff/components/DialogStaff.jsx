@@ -31,12 +31,10 @@ let schema = yup.object().shape({
   firstName: yup
     .string()
     .max(10, 'Firstname có nhiều nhất 10 kí tự')
-    .matches('^[a-zA-Z ]+$', 'Không chứa số hay kí tự đặc biệt')
     .required('Vui lòng nhập họ'),
   lastName: yup
     .string()
     .max(10, 'Lastname có nhiều nhất 10 kí tự')
-    .matches('^[a-zA-Z ]+$', 'Không chứa số hay kí tự đặc biệt')
     .required('Vui lòng nhập tên'),
   password: yup
     .string()

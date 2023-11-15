@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 export const toastSuccess = (messages) => {
   toast.success(`${messages}`, {
     position: 'top-right',
-    autoClose: 1500,
+    autoClose: 2000,
     hideProgressBar: false,
     closeOnClick: true,
     pauseOnHover: true,
@@ -20,7 +20,7 @@ export const toastSuccess = (messages) => {
 export const toastWarning = (messages) => {
   toast.warn(`${messages}`, {
     position: 'top-right',
-    autoClose: 1500,
+    autoClose: 2000,
     hideProgressBar: false,
     closeOnClick: true,
     pauseOnHover: true,

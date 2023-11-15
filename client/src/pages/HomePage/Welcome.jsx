@@ -5,9 +5,9 @@ import { BsBookmarkStarFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 const Welcome = () => {
   return (
-    <div className="m-20 flex gap-6">
-      <div className="flex-1 border border-1 overflow-hidden rounded-md">
-        <div className="relative w-full h-[460px]">
+    <div className="m-20 flex">
+      <div className="flex-1 overflow-hidden rounded-md">
+        <div className="relative w-[90%] h-[400px]">
           <div className="absolute rounded-lg w-full ">
             <img
               src="/img/about2.png"
@@ -17,7 +17,7 @@ const Welcome = () => {
           </div>
 
           <div className="absolute right-0">
-            <img src="/img/about4.png" alt="About" className="rounded-md"/>
+            <img src="/img/about4.png" alt="About" className="w-[150px] h-[200px] rounded-md" />
           </div>
         </div>
       </div>
@@ -27,32 +27,34 @@ const Welcome = () => {
           className={`text-[16px] text-[${theme.color.mainColor}] flex items-center gap-2 font-bold`}
         >
           <BsBookmarkStarFill />
-          About Our Application
+          Thông tin ứng dụng
         </h3>
-        <div className="text-[36px] font-semibold capitalize">About us</div>
+        <div className="text-2xl font-semibold capitalize mt-4">Về chúng tôi</div>
         <p className="leading-6 mt-2 text-lg">
-          Collaboratively simplify user friendly networks after principle
-          centered coordinate effective methods of empowerment distributed niche
-          markets pursue market positioning web-readiness after resource sucking
-          applications.
+          Tự hào giới thiệu trang web của chúng tôi, nơi bạn có thể dễ dàng học
+          và thi bằng lái xe. Chúng tôi cung cấp tài liệu đa dạng về luật giao
+          thông, quy tắc an toàn khi lái xe, và kiến thức cho kỳ thi. Dành cho
+          cả người mới học lái và người muốn cập nhật kiến thức.
         </p>
         <p className="leading-6 mt-2 text-lg">
-          Online education, also known as e-learning, is a method of learning
-          that takes place over the internet. It offers individuals the
-          opportunity to acquire knowledge, skills.
+          Khám phá ngay và sở hữu bằng lái xe một cách tự tin.
         </p>
         <div className="flex items-center gap-4 my-4 text-lg">
-          <img src="/img/about1.png" alt="class" className="w-[180] h-[120px] object-cover rounded-md"/>
+          <img
+            src="/img/about1.png"
+            alt="class"
+            className="w-[180] h-[120px] object-cover rounded-md"
+          />
           <ul>
             <li className="flex items-center gap-2">
               <AiFillCheckCircle className="text-blue-400" />
               <span className="font-medium ">
-                Kết nối với 4,000+ khóa học của chúng tôi
+                Kết nối khóa học của chúng tôi
               </span>
             </li>
             <li className="flex items-center gap-2">
               <AiFillCheckCircle className="text-blue-400" />
-              <span className="font-medium ">Chủ đề phổ biến hiện nay</span>
+              <span className="font-medium ">Làm bài kiểm tra lí thuyết miễn phí</span>
             </li>
             <li className="flex items-center gap-2">
               <AiFillCheckCircle className="text-blue-400" />

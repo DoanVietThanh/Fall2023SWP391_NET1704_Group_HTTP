@@ -7,8 +7,8 @@ import Header from '../../components/Header';
 import theme from '../../theme';
 const TheoryPage = () => {
   const url =
-    'https://themeholy.com/wordpress/edura/wp-content/uploads/2023/07/breadcumb-bg.png';
-  const breadcrumbs = 'Theory';
+    '/img/backgroundSlide.png';
+  const breadcrumbs = 'Thi thử lý thuyết';
 
   const [listTypeTest, setListTypeTest] = useState();
   const [infoTypeTest, setInfoTypeTest] = useState();

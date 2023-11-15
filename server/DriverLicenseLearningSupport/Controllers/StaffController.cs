@@ -257,7 +257,8 @@ namespace DriverLicenseLearningSupport.Controllers
                     });
                 }
 
-                return new ObjectResult(new BaseResponse {
+                return new ObjectResult(new BaseResponse
+                {
                     StatusCode = StatusCodes.Status500InternalServerError,
                     Message = "Tạo người hướng dẫn thất bại"
                 })
@@ -306,14 +307,16 @@ namespace DriverLicenseLearningSupport.Controllers
             // not found
             if (staff is null)
             {
-                return NotFound(new BaseResponse {
+                return NotFound(new BaseResponse
+                {
                     StatusCode = StatusCodes.Status404NotFound,
                     Message = $"Không tìm thấy nhân viên"
                 });
             }
 
             // 200 OK <- found
-            return Ok(new BaseResponse {
+            return Ok(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status200OK,
                 Data = staff
             });
@@ -389,9 +392,11 @@ namespace DriverLicenseLearningSupport.Controllers
             var result = PaginatedList<StaffModel>.CreateByIEnumerable(staffs, page, _appSettings.PageSize);
 
             // 200 Ok <- found
-            return Ok(new BaseResponse {
+            return Ok(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status200OK,
-                Data = new {
+                Data = new
+                {
                     Staffs = result,
                     PageIndex = result.PageIndex,
                     TotalPage = result.TotalPage
@@ -414,7 +419,8 @@ namespace DriverLicenseLearningSupport.Controllers
             var staffs = await _staffService.GetAllByFilterAsync(filters);
 
             // 404 Not Found <- not found any staff match filters
-            if (staffs is null) return NotFound(new BaseResponse {
+            if (staffs is null) return NotFound(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status404NotFound,
                 Message = $"Không tìm thấy nhân viên"
             });
@@ -426,7 +432,8 @@ namespace DriverLicenseLearningSupport.Controllers
             return Ok(new BaseResponse
             {
                 StatusCode = StatusCodes.Status200OK,
-                Data = new {
+                Data = new
+                {
                     Staffs = result,
                     PageIndex = result.PageIndex,
                     TotalPage = result.TotalPage
@@ -456,7 +463,8 @@ namespace DriverLicenseLearningSupport.Controllers
             // check exist
             if (mentors is null)
             {
-                return NotFound(new BaseResponse {
+                return NotFound(new BaseResponse
+                {
                     StatusCode = StatusCodes.Status404NotFound,
                     Message = "Không tìm thấy người hướng dẫn"
                 });
@@ -465,9 +473,11 @@ namespace DriverLicenseLearningSupport.Controllers
             // paging
             //var result = PaginatedList<StaffModel>.CreateByIEnumerable(mentors, page, _appSettings.PageSize);
 
-            return Ok(new BaseResponse {
+            return Ok(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status200OK,
-                Data = new {
+                Data = new
+                {
                     Mentors = mentors,
                     //PageIndex = result.PageIndex,
                     //TotalPage = result.TotalPage
@@ -489,13 +499,15 @@ namespace DriverLicenseLearningSupport.Controllers
 
             if (courseMentor is null)
             {
-                return BadRequest(new BaseResponse {
+                return BadRequest(new BaseResponse
+                {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = $"Không tìm thấy lịch của người hướng dẫn"
                 });
             }
 
-            return Ok(new BaseResponse {
+            return Ok(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status200OK,
                 Data = courseMentor
             });
@@ -517,7 +529,8 @@ namespace DriverLicenseLearningSupport.Controllers
             // check teaching course exist
             if (course is null)
             {
-                return BadRequest(new BaseResponse {
+                return BadRequest(new BaseResponse
+                {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = $"Không tìm thấy lịch của người hướng dẫn"
                 });
@@ -581,7 +594,8 @@ namespace DriverLicenseLearningSupport.Controllers
                                                   .Count();
 
             // response
-            return Ok(new BaseResponse {
+            return Ok(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status200OK,
                 Data = new
                 {
@@ -625,7 +639,8 @@ namespace DriverLicenseLearningSupport.Controllers
 
                 if (teachingDate is null)
                 {
-                    return BadRequest(new BaseResponse {
+                    return BadRequest(new BaseResponse
+                    {
                         StatusCode = StatusCodes.Status400BadRequest,
                         Message = $"Không tìm thấy lịch dạy ngày {filters.TeachingDate}"
                     });
@@ -808,14 +823,16 @@ namespace DriverLicenseLearningSupport.Controllers
             // 404 Not found 
             if (slots is null)
             {
-                return NotFound(new BaseResponse {
+                return NotFound(new BaseResponse
+                {
                     StatusCode = StatusCodes.Status404NotFound,
                     Message = "Không tìm thấy slot học"
                 });
             }
 
             // 200Ok <- found
-            return Ok(new BaseResponse {
+            return Ok(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status200OK,
                 Data = new
                 {
@@ -864,7 +881,8 @@ namespace DriverLicenseLearningSupport.Controllers
                 Guid.Parse(reqObj.CourseId));
             if (course is null)
             {
-                return BadRequest(new BaseResponse {
+                return BadRequest(new BaseResponse
+                {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = $"Người hướng dẫn không được phép đăng ký lịch"
                 });
@@ -876,11 +894,13 @@ namespace DriverLicenseLearningSupport.Controllers
             if (reqObj.TeachingDate < courseStartDate ||
                reqObj.TeachingDate > courseEndDate)
             {
-                return BadRequest(new BaseResponse {
+                return BadRequest(new BaseResponse
+                {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = $"Không thể tạo lịch dạy, Khóa học chỉ diễn ra từ {courseStartDate.ToString("dd/MM/yyyy")}" +
                     $" đến {courseEndDate.ToString("dd/MM/yyyy")}",
-                    Data = new {
+                    Data = new
+                    {
                         StartDate = courseStartDate,
                         EndDate = courseEndDate
                     }
@@ -913,7 +933,8 @@ namespace DriverLicenseLearningSupport.Controllers
                 Guid.Parse(reqObj.CourseId));
             if (otherCourseSchedule is not null)
             {
-                return BadRequest(new BaseResponse {
+                return BadRequest(new BaseResponse
+                {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = $"Ngày dạy và buổi học đã được đăng ký"
                 });
@@ -977,12 +998,14 @@ namespace DriverLicenseLearningSupport.Controllers
                             TotalSchedule = totalSchedule,
                             SlotSchedules = listOfSlotSchedule
                         }
-                    }) { StatusCode = StatusCodes.Status200OK };
+                    })
+                    { StatusCode = StatusCodes.Status200OK };
                 }
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            return BadRequest(new BaseResponse {
+            return BadRequest(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status400BadRequest,
                 Message = $"Ngày đăng ký và slot đăng ký đã có trong lịch dạy, vui lòng chọn lại"
             });
@@ -1205,7 +1228,8 @@ namespace DriverLicenseLearningSupport.Controllers
                 });
             }
 
-            return new ObjectResult(new BaseResponse {
+            return new ObjectResult(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status500InternalServerError,
                 Message = "Xảy ra lỗi"
             })
@@ -1345,7 +1369,8 @@ namespace DriverLicenseLearningSupport.Controllers
                 });
             }
 
-            return new ObjectResult(new BaseResponse {
+            return new ObjectResult(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status500InternalServerError,
                 Message = "Xóa thật bại"
             })
@@ -1375,7 +1400,8 @@ namespace DriverLicenseLearningSupport.Controllers
                 });
             }
 
-            return BadRequest(new BaseResponse { 
+            return BadRequest(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status400BadRequest,
                 Message = "Không tìm thấy loại công việc"
             });
@@ -1439,7 +1465,8 @@ namespace DriverLicenseLearningSupport.Controllers
 
                         // check exist email
                         var existEmail = await _accountService.GetByEmailAsync(email);
-                        if (existEmail is not null) return BadRequest(new BaseResponse {
+                        if (existEmail is not null) return BadRequest(new BaseResponse
+                        {
                             StatusCode = StatusCodes.Status400BadRequest,
                             Message = $"Email của nhân viên {firstName} {lastName}, tại hàng {row} đã tồn tại",
                         });
@@ -1554,7 +1581,8 @@ namespace DriverLicenseLearningSupport.Controllers
             var staffs = await _staffService.GetAllByFilterAsync(filters);
             if (staffs is null)
             {
-                return NotFound(new BaseResponse {
+                return NotFound(new BaseResponse
+                {
                     StatusCode = StatusCodes.Status404NotFound,
                     Message = "Không tìm thấy nhân viên để export excel"
                 });

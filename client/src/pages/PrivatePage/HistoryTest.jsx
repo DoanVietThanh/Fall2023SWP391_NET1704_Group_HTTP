@@ -154,8 +154,7 @@ const HistoryTest = () => {
       <Box component='main' sx={{ flexGrow: 1, p: 3 }}>
         <div className='h-[80vh] w-full rounded overflow-y-auto mt-[64px]'>
           <div className='w-full'>
-            {listHistoryTest ? (
-              <DataGrid
+            {listHistoryTest && <DataGrid
                 rows={listHistoryTest}
                 columns={columns}
                 initialState={{
@@ -165,10 +164,7 @@ const HistoryTest = () => {
                 }}
                 pageSizeOptions={[5, 10, 20, 50]}
                 // checkboxSelection
-              />
-            ) : (
-              <Loading />
-            )}
+              />} 
           </div>
         </div>
       </Box>
