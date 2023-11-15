@@ -104,6 +104,7 @@ const ManageDenySchedule = () => {
       ),
     },
   ];
+
   useEffect(() => {
     async function getCancelRcb() {
       await axiosClient
@@ -125,7 +126,8 @@ const ManageDenySchedule = () => {
       .then((res) => {
         console.log('res: ', res);
         toastSuccess(res?.data?.message);
-        getData();
+        // getData();
+        window.location.reload();
       })
       .catch((error) => {
         console.log(error);
@@ -141,7 +143,8 @@ const ManageDenySchedule = () => {
       .then((res) => {
         console.log('res: ', res);
         toastSuccess(res?.data?.message);
-        getData();
+        // getData();
+        window.location.reload();
       })
       .catch((error) => {
         toastError(error?.response?.data?.message);
@@ -149,10 +152,17 @@ const ManageDenySchedule = () => {
     console.log(response);
   };
 
-  async function getData(){
+  async function getData() {
     await axiosClient
       .get(`/rollcallbooks/cancel`)
-      .then((res) => setRows(res?.data?.data))
+      .then((res) => {
+        console.log('res: ', res);
+        if (res?.data?.data == null) {
+          setRows([]);
+        } else {
+          setRows(res?.data?.data);
+        }
+      })
       .catch((error) => toastError(error?.response?.data?.message));
   }
 
