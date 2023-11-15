@@ -18,6 +18,8 @@ namespace DriverLicenseLearningSupport.Entities
         public int? WeekdayScheduleId { get; set; }
         public string? CoursePackageId { get; set; } 
         public bool? IsActive { get; set; }
+        public bool? IsCancel { get; set; }
+        public string? CancelMessage { get; set; }
         public virtual CoursePackage? CoursePackage { get; set; }
         public virtual Slot Slot { get; set; }
         public virtual Staff Staff { get; set; }

@@ -10,5 +10,6 @@ namespace DriverLicenseLearningSupport.Repositories.Impl
         Task<ExamHistoryModel> GetHistoryDetailAsync(string MemberId, int TheoryExamId, DateTime joinDate);
 
         Task<IEnumerable<ExamHistoryModel>> GetAllByMemberIdAsysn(string memberId);
+        Task<IEnumerable<ExamHistoryModel>> GetAllExamHistory();
     }
 }

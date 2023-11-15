@@ -16,7 +16,9 @@ namespace DriverLicenseLearningSupport.Models
         public int? JobTitleId { get; set; }
         public string? SelfDescription { get; set; }
         public int? TotalMember { get; set; }
-
+        public int? TotalTeachingScheduleRequired { get; set; }
+        public int? TotalTaughtSchedule { get; set; }
+        public int? TotalCanceledSchedule { get; set; }
         public virtual AddressModel Address { get; set; }
         public virtual AccountModel EmailNavigation { get; set; }
         public virtual JobTitleModel JobTitle { get; set; }

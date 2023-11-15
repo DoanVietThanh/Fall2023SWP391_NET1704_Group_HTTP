@@ -8,6 +8,7 @@ using DriverLicenseLearningSupport.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Org.BouncyCastle.Security.Certificates;
+using System.Formats.Asn1;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 
@@ -204,6 +205,8 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                         TeachingScheduleId = x.TeachingScheduleId,
                                                                         TeachingDate = x.TeachingDate,
                                                                         Vehicle = x.Vehicle,
+                                                                        IsCancel = x.IsCancel,
+                                                                        CancelMessage = x.CancelMessage,
                                                                         RollCallBooks = x.RollCallBooks.Select(x => new RollCallBook
                                                                         {
                                                                             RollCallBookId = x.RollCallBookId,
@@ -335,6 +338,8 @@ namespace DriverLicenseLearningSupport.Repositories
                 TeachingScheduleId = x.TeachingScheduleId,
                 TeachingDate = x.TeachingDate,
                 Vehicle = x.Vehicle,
+                IsCancel = x.IsCancel,
+                CancelMessage = x.CancelMessage,
                 RollCallBooks = x.RollCallBooks.Select(x => new RollCallBook { 
                     RollCallBookId = x.RollCallBookId,
                     TeachingScheduleId = x.TeachingScheduleId,
@@ -385,6 +390,8 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                    TeachingScheduleId = x.TeachingScheduleId,
                                                                    TeachingDate = x.TeachingDate,
                                                                    Vehicle = x.Vehicle,
+                                                                   IsCancel = x.IsCancel,
+                                                                   CancelMessage = x.CancelMessage,
                                                                    CoursePackageId = x.CoursePackageId,
                                                                    CoursePackage = new CoursePackage { 
                                                                         CoursePackageId = x.CoursePackageId,
@@ -450,6 +457,8 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                 TeachingDate = x.TeachingDate,
                                                                 Vehicle = x.Vehicle,
                                                                 IsActive = x.IsActive,
+                                                                IsCancel = x.IsCancel,
+                                                                CancelMessage = x.CancelMessage,
                                                                 RollCallBooks = x.RollCallBooks
                                                                 .Where(x => x.MemberId == memberId.ToString())
                                                                 .Select(
@@ -501,6 +510,8 @@ namespace DriverLicenseLearningSupport.Repositories
                                                                    TeachingDate = x.TeachingDate,
                                                                    Vehicle = x.Vehicle,
                                                                    IsActive = x.IsActive,
+                                                                   IsCancel = x.IsCancel,
+                                                                   CancelMessage = x.CancelMessage,
                                                                    CoursePackageId = x.CoursePackageId,
                                                                    CoursePackage = new CoursePackage
                                                                    {
@@ -540,6 +551,19 @@ namespace DriverLicenseLearningSupport.Repositories
                 }
             }
             return teachingSchedules;
+        }
+        public async Task<IEnumerable<TeachingScheduleModel>> GetAllMentorRelatedScheduleAsync(Guid mentorId) 
+        {
+            // get first teaching date of mentor 
+            var teachingSchedule = await _context.TeachingSchedules.Where(x => x.StaffId == mentorId.ToString())
+                                                                   .Include(x => x.Slot)
+                                                                   .FirstOrDefaultAsync();
+            if (teachingSchedule is null) return null!;
+
+            // get all related schedule by slot
+            var teachingSchedules = await _context.TeachingSchedules.Where(x => x.SlotId == teachingSchedule.SlotId).ToListAsync();
+
+            return _mapper.Map<IEnumerable<TeachingScheduleModel>>(teachingSchedules);
         }
         public async Task<IEnumerable<TeachingScheduleModel>> GetAllAwaitScheduleMentor() 
         {
@@ -622,6 +646,74 @@ namespace DriverLicenseLearningSupport.Repositories
             var schedules = await _context.TeachingSchedules.Where(x => x.WeekdayScheduleId == weekDayScheduleId)
                                                             .ToListAsync();
             return _mapper.Map<IEnumerable<TeachingScheduleModel>>(schedules);
+        }
+
+        public async Task<bool> CancelAsync(int teachingScheduleId)
+        {
+            var schedule = await _context.TeachingSchedules.Where(x => x.TeachingScheduleId == teachingScheduleId)
+                                                           .FirstOrDefaultAsync();
+
+            if (schedule is null) return false;
+
+            // request cancel schedule
+            schedule.IsCancel = false;
+
+            // save changes
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<IEnumerable<TeachingScheduleModel>> GetAllAwaitCancelScheduleAsync()
+        {
+            var cancelSchedules = await _context.TeachingSchedules
+                .Include(x => x.Staff)
+                .Where(x => x.IsCancel == false).ToListAsync();
+
+            return _mapper.Map<IEnumerable<TeachingScheduleModel>>(cancelSchedules);
+        }
+
+        public async Task<bool> ApproveCancelScheduleAsync(int teachingScheduleId)
+        {
+            var schedule = await _context.TeachingSchedules.Where(x => x.TeachingScheduleId == teachingScheduleId)
+                                                           .FirstOrDefaultAsync();
+
+            if (schedule is null) return false;
+
+            // approve cancel schedule
+            schedule.IsCancel = true;
+
+            // save changes
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> DenyCancelScheduleAsync(int teachingScheduleId, string cancelMessage)
+        {
+            var schedule = await _context.TeachingSchedules.Where(x => x.TeachingScheduleId == teachingScheduleId)
+                                                           .FirstOrDefaultAsync();
+
+            if (schedule is null) return false;
+
+            // deny cancel schedule
+            schedule.IsCancel = false;
+            schedule.CancelMessage = cancelMessage;
+
+            // save changes
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> ReregisterCancelScheduleAsync(int teachingScheduleId)
+        {
+            var schedule = await _context.TeachingSchedules.Where(x => x.TeachingScheduleId == teachingScheduleId)
+                                                           .FirstOrDefaultAsync();
+
+            if (schedule is null) return false;
+
+            // re-reigster schedule
+            schedule.IsCancel = null!;
+            schedule.CancelMessage = null!;
+            schedule.IsActive = false;
+
+            // save changes
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }

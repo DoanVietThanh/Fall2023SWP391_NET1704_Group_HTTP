@@ -13,8 +13,9 @@ namespace DriverLicenseLearningSupport.Models
         public int? WeekdayScheduleId { get; set; }
         public string? CoursePackageId { get; set; }
         public bool? IsActive { get; set; }
+        public bool? IsCancel { get; set; }
+        public string? CancelMessage { get; set; }
         public virtual CoursePackageModel? CoursePackage { get; set; }
-
         //public virtual SlotModel Slot { get; set; }
         public virtual StaffModel? Staff { get; set; }
         public virtual VehicleModel? Vehicle { get; set; }

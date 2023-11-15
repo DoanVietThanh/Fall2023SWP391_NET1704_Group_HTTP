@@ -62,6 +62,10 @@ namespace DriverLicenseLearningSupport.Repositories
             return _mapper.Map<IEnumerable<ExamHistoryModel>>(MyHistories);
         }
 
-        
+        public async Task<IEnumerable<ExamHistoryModel>> GetAllExamHistory()
+        {
+            var examHistories = await _context.ExamHistories.Include(x => x.TheoryExam).ToListAsync();
+            return _mapper.Map<IEnumerable<ExamHistoryModel>>(examHistories);
+        }
     }
 }

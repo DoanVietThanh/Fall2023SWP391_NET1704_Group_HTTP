@@ -155,7 +155,7 @@ namespace DriverLicenseLearningSupport.Repositories
                     Role = x.EmailNavigation.Role
                 }
             }).ToListAsync();
-            return _mapper.Map<IEnumerable<StaffModel>>(staffEntities);
+            return _mapper.Map<IEnumerable<StaffModel>>(staffEntities.Where(x => x.JobTitleId != 1).ToList());
         }
         public async Task<IEnumerable<StaffModel>> GetAllByFilterAsync(StaffFilter filters)
         {

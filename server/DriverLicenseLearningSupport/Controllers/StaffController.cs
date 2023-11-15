@@ -199,34 +199,24 @@ namespace DriverLicenseLearningSupport.Controllers
             // is mentor 
             if (staff.JobTitle.JobTitleDesc.Equals("Mentor"))
             {
-                // check exist course 
-                if (reqObj.CourseId is null
-                || String.IsNullOrEmpty(reqObj.CourseId))
-                {
-                    return BadRequest(new BaseResponse
-                    {
-                        StatusCode = StatusCodes.Status400BadRequest,
-                        Message = "Vui lòng chọn khóa học cho người hướng dẫn"
-                    });
-                }
-                var course = await _courseService.GetAsync(
-                    Guid.Parse(reqObj.CourseId));
-                if (course is null)
-                {
-                    return BadRequest(new BaseResponse
-                    {
-                        StatusCode = StatusCodes.Status400BadRequest,
-                        Message = "Không tìm thấy khóa học"
-                    });
-                }
-
                 // set empty Job Title
                 staff.JobTitle = null!;
                 // create mentor
                 var createdMentor = await _staffService.CreateAsync(staff);
 
-                if (createdMentor)
+
+                if (createdMentor && !String.IsNullOrEmpty(reqObj.CourseId))
                 {
+                    var course = await _courseService.GetAsync(
+                        Guid.Parse(reqObj.CourseId));
+                    if(course is null)
+                    {
+                        return NotFound(new BaseResponse { 
+                            StatusCode = StatusCodes.Status404NotFound,
+                            Message = "Không tìm thấy khóa học"
+                        });
+                    }
+
                     // already taught this course
                     var courseMentor = await _courseService.GetByMentorIdAndCourseIdAsync(
                         Guid.Parse(staff.StaffId),
@@ -245,6 +235,17 @@ namespace DriverLicenseLearningSupport.Controllers
                         Guid.Parse(course.CourseId),
                         Guid.Parse(staff.StaffId));
 
+                    return Ok(new BaseResponse
+                    {
+                        StatusCode = StatusCodes.Status200OK,
+                        Message = "Tạo mới người hướng dẫn thành công",
+                        Data = new
+                        {
+                            Staff = staff
+                        }
+                    });
+                }else if(createdMentor && String.IsNullOrEmpty(reqObj.CourseId))
+                {
                     return Ok(new BaseResponse
                     {
                         StatusCode = StatusCodes.Status200OK,
@@ -341,8 +342,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 });
             }
 
-            return BadRequest(new BaseResponse
-            {
+            return BadRequest(new BaseResponse {
                 StatusCode = StatusCodes.Status400BadRequest,
                 Message = "Hiện chưa có nhân viên"
             });
@@ -569,7 +569,7 @@ namespace DriverLicenseLearningSupport.Controllers
             // get all weekday of calendar
             var weekdays = await _weekDayScheduleService.GetAllByCourseId(courseId);
 
-            if (weekday is null)
+            if(weekday is null)
             {
                 weekday = weekdays.FirstOrDefault();
             }
@@ -707,14 +707,24 @@ namespace DriverLicenseLearningSupport.Controllers
         [Authorize(Roles = "Mentor")]
         public async Task<IActionResult> RollCallBookSchedule([FromRoute] Guid id,
             [FromRoute] int rcbId,
-            RollCallBookRequest reqObj)
-        {
+            RollCallBookRequest reqObj) {
+            
+            // rollcallbook without hours, km
+            if (String.IsNullOrEmpty(reqObj.TotalHoursDriven.ToString())
+                && String.IsNullOrEmpty(reqObj.TotalHoursDriven.ToString()))
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Vui lòng nhập tổng quảng đường đi được và thời gian đã đi"
+                });
+            }
+
             // get mentor by id
             var mentor = await _staffService.GetAsync(id);
             if (mentor is null)
             {
-                return BadRequest(new BaseResponse
-                {
+                return BadRequest(new BaseResponse {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = $"Không tìm thấy người hướng dẫn"
                 });
@@ -768,8 +778,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     });
                 }
 
-                return Ok(new BaseResponse
-                {
+                return Ok(new BaseResponse {
                     StatusCode = StatusCodes.Status200OK,
                     Message = "Điểm danh thành công",
                     Data = new
@@ -780,8 +789,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 });
 
             }
-            return new ObjectResult(new BaseResponse
-            {
+            return new ObjectResult(new BaseResponse {
                 StatusCode = StatusCodes.Status500InternalServerError,
                 Message = "Điểm danh thất bại"
             });
@@ -846,8 +854,7 @@ namespace DriverLicenseLearningSupport.Controllers
         {
             if (!DateTime.TryParse(reqObj.TeachingDate.ToString(), out var date))
             {
-                return BadRequest(new BaseResponse
-                {
+                return BadRequest(new BaseResponse {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = "Vui lòng chọn ngày đăng ký"
                 });
@@ -859,8 +866,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
             if (existSchedules.Count() == 0)
             {
-                return BadRequest(new BaseResponse
-                {
+                return BadRequest(new BaseResponse {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = $"Vui lòng đăng ký lịch dạy cả khóa " +
                     $"trước khi đăng ký lịch dạy theo tuần"
@@ -1109,8 +1115,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 Guid.Parse(reqObj.MentorId));
             if (teachingSchedules.Count() > 0)
             {
-                return BadRequest(new BaseResponse
-                {
+                return BadRequest(new BaseResponse {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = $"Người hướng dẫn `{mentor.FirstName} {mentor.LastName}` đã " +
                     $"đăng ký lịch cả khóa cho khóa học `{course.CourseTitle}`"
@@ -1145,8 +1150,7 @@ namespace DriverLicenseLearningSupport.Controllers
             var slots = await _slotService.GetAllAsync();
             if (slots.Count() == 0)
             {
-                return BadRequest(new BaseResponse
-                {
+                return BadRequest(new BaseResponse {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = "Không tìm thấy slot học"
                 });
@@ -1298,6 +1302,19 @@ namespace DriverLicenseLearningSupport.Controllers
             //await _imageService.UploadImageAsync(imageId, reqObj.AvatarImage);
             // 4. save db
             staffModel.AvatarImage = imageId.ToString();
+
+            // validate birthdate
+            var currDate = DateTime.ParseExact(DateTime.Now.ToString(_appSettings.DateFormat),
+                _appSettings.DateFormat, CultureInfo.InvariantCulture);
+            var birthdate = DateTime.Parse(reqObj.DateBirth);
+            if (birthdate >= currDate)
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Ngày sinh không hợp lệ"
+                });
+            }
 
             // update staff
             var isSucess = await _staffService.UpdateAsync(id, staffModel);
