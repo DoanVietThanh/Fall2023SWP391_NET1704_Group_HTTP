@@ -126,7 +126,8 @@ const ManageDenySchedule = () => {
       .then((res) => {
         console.log('res: ', res);
         toastSuccess(res?.data?.message);
-        getData();
+        // getData();
+        window.location.reload();
       })
       .catch((error) => {
         console.log(error);
@@ -142,7 +143,8 @@ const ManageDenySchedule = () => {
       .then((res) => {
         console.log('res: ', res);
         toastSuccess(res?.data?.message);
-        getData();
+        // getData();
+        window.location.reload();
       })
       .catch((error) => {
         toastError(error?.response?.data?.message);
