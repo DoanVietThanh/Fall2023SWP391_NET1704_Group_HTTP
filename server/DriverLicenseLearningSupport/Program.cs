@@ -32,6 +32,10 @@ builder.Services.AddDbContext<DriverLicenseLearningSupportContext>(options =>
     options.UseSqlServer(connectionStr)
 );
 
+// Add Profiles
+var profileConfig = builder.Configuration.GetSection("ProfileConfig");
+builder.Services.Configure<ProfileConfig>(profileConfig);
+
 // Add AppSettings 
 var appSettings = builder.Configuration.GetSection("AppSettings");
 builder.Services.Configure<AppSettings>(appSettings);

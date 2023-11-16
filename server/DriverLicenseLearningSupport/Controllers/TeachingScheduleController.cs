@@ -528,7 +528,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 $" đến {date.AddMonths(totalMonth).ToString("dd/MM/yyyy")} đã được duyệt thành công. \n " +
                 $"Mọi thắc mắc xin liên hệ để được điều chỉnh sớm nhất \n" +
                 $"Xin cảm ơn.");
-           //_emailService.SendEmail(message);
+           _emailService.SendEmail(message);
 
             if (isApproved)
             {
@@ -598,7 +598,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 $"{date.ToString("dd/MM/yyyy")} đến {date.AddMonths(totalMonth).ToString("dd/MM/yyyy")} \n" + 
                 $"Lý do từ chối: \n" +
                 message + "\n Xin cảm ơn.");
-            //_emailService.SendEmail(emailMessage);
+            _emailService.SendEmail(emailMessage);
 
             if (emailMessage is not null)
             {

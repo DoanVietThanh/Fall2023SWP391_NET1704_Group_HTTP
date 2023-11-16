@@ -66,6 +66,7 @@ namespace DriverLicenseLearningSupport.Repositories
             {
                 TheoryExamId = x.TheoryExamId,
                 LicenseTypeId = x.LicenseTypeId,
+                LicenseType = x.LicenseType,
                 TotalAnswerRequired = x.TotalAnswerRequired,
                 TotalTime = x.TotalTime,
                 TotalQuestion = x.TotalQuestion,

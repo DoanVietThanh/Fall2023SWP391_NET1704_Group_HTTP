@@ -25,12 +25,14 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly IQuestionService _questionService;
         private readonly IAnswerService _answerService;
         private readonly IMemoryCache _memoryCache;
+        private readonly IImageService _imageService;
         private readonly AppSettings _appSettings;
         private readonly TheoryExamSettings _theoryExamSettings;
 
         public TheoryExamController(ITheoryExamService theoryExamService, IAnswerService answerService,
             ILicenseTypeService licenseTypeService, IQuestionService questionService,
             IMemoryCache memoryCache, IOptionsMonitor<AppSettings> monitor,
+            IImageService imageService,
             IOptionsMonitor<TheoryExamSettings> monitor1)
         {
             _theoryExamService = theoryExamService;
@@ -38,6 +40,7 @@ namespace DriverLicenseLearningSupport.Controllers
             _questionService = questionService;
             _answerService = answerService;
             _memoryCache = memoryCache;
+            _imageService = imageService;
             _appSettings = monitor.CurrentValue;
             _theoryExamSettings = monitor1.CurrentValue;
         }
@@ -219,6 +222,7 @@ namespace DriverLicenseLearningSupport.Controllers
         public async Task<IActionResult> GetQuestionByTheoryId([FromRoute] int theoryExamId)
         {
             var theoryExam = await _theoryExamService.GetByIdAsync(theoryExamId);
+            
             if (theoryExam is null)
             {
                 return NotFound(new ErrorResponse()

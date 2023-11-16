@@ -211,7 +211,7 @@ namespace DriverLicenseLearningSupport.Controllers
         // HttpGet courses/mentor/add -> list all mentor not teaching any course]
         [HttpGet]
         [Route("courses/mentor/add")]
-        public async Task<IActionResult> AddCourseMentor([FromRoute] Guid courseId)
+        public async Task<IActionResult> AddCourseMentor([FromQuery] Guid courseId)
         {
             // get course by id
             var course = await _courseService.GetAsync(courseId);

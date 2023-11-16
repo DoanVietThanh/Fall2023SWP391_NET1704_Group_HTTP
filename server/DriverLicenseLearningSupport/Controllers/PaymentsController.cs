@@ -23,17 +23,20 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly IMediator _mediator;
         private readonly ICoursePackageReservationService _courseReservationService;
         private readonly VnPayConfig _vnPayConfig;
+        private readonly ProfileConfig _profileConfig;
 
         /// <summary>
         /// Constructor
         /// </summary>
         public PaymentsController(IMediator mediator,
             ICoursePackageReservationService coureReservationService,
-            IOptionsMonitor<VnPayConfig> monitor)
+            IOptionsMonitor<VnPayConfig> monitor,
+            IOptionsMonitor<ProfileConfig> monitor1)
         {
             _mediator = mediator;
             _courseReservationService = coureReservationService; 
             _vnPayConfig = monitor.CurrentValue;
+            _profileConfig = monitor1.CurrentValue;
         }
 
         /// <summary>
@@ -63,30 +66,28 @@ namespace DriverLicenseLearningSupport.Controllers
 
             var returnModel = new PaymentReturnResponse();
 
-
-            //update course Reservation Status
-            var courseReservation = await _courseReservationService.UpdatePaymentStatusAsync(
-                Guid.Parse(response?.vnp_TxnRef),
-                Convert.ToDouble(response.vnp_Amount));
-
             var processResult = await _mediator.Send(response.Adapt(new ProcessVnpayResponse()));
-
 
             if (processResult.Success)
             {
                 returnModel = processResult.Data.Item1 as PaymentReturnResponse;
 
+                //update course Reservation Status
+                await _courseReservationService.UpdatePaymentStatusAsync(
+                    Guid.Parse(response?.vnp_TxnRef),
+                    Convert.ToDouble(response.vnp_Amount));
+
                 returnUrl = Url.Action("PaymentNotification", "Payments",
-                    string.Empty,
-                    //values: new { Success = true },
-                    Request.Scheme, host: "localhost:3000");
+                    //string.Empty,
+                    values: new { Success = true },
+                    Request.Scheme, host: _profileConfig.VercelDeployUrl);
             }
             else
             {
                 returnUrl = Url.Action("PaymentNotification", "Payments",
-                    string.Empty,
-                    //values: new { Sucess = false },
-                    Request.Scheme, host: "localhost:3000");
+                    //string.Empty,
+                    values: new { Sucess = false },
+                    Request.Scheme, host: _profileConfig.VercelDeployUrl);
             }
 
             //if (returnUrl.EndsWith("/")){

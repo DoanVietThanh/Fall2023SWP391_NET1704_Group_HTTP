@@ -47,8 +47,12 @@ namespace DriverLicenseLearningSupport.Services
             if (question is not null && answers is not null)
             {
                 question.LicenseType = await _licenseTypeService.GetAsync(question.LicenseTypeId);
-                //question.Image = await _imageService.GetPreSignedURL(Guid.Parse(question.Image));
                 question.QuestionAnswers = answers.ToList();
+
+                if(question.Image is not null)
+                {
+                    question.Image = await _imageService.GetPreSignedURL(Guid.Parse(question.Image));
+                }
             }
             return question;
         }

@@ -5,6 +5,7 @@ import BackgroundSlider from '../../components/BackgroundSlider';
 import Footer from '../../components/Footer';
 import Header from '../../components/Header';
 import theme from '../../theme';
+import axiosClient from '../../utils/axiosClient';
 const TheoryPage = () => {
   const url =
     '/img/backgroundSlide.png';

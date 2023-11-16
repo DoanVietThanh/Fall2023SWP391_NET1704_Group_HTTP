@@ -1073,7 +1073,6 @@ namespace DriverLicenseLearningSupport.Controllers
         {
             // get mentor by id
             var mentor = await _staffService.GetAsync(Guid.Parse(reqObj.MentorId));
-            mentor.FeedBacks = null;
             if (mentor is null)
             {
                 return BadRequest(new BaseResponse
@@ -1083,6 +1082,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 });
             }
 
+            mentor.FeedBacks = null;
             // get course by id
             var course = await _courseService.GetAsync(Guid.Parse(reqObj.CourseId));
             if (course is null)
@@ -1293,15 +1293,18 @@ namespace DriverLicenseLearningSupport.Controllers
             staffModel.Address = address;
             staffModel.IsActive = true;
 
-            // update avatar image
-            // 1. generate image id
-            var imageId = Guid.NewGuid();
-            // 2. remove prev image
-            //await _imageService.DeleteImageAsync(Guid.Parse(staff.AvatarImage));
-            // 3. upload new image
-            //await _imageService.UploadImageAsync(imageId, reqObj.AvatarImage);
-            // 4. save db
-            staffModel.AvatarImage = imageId.ToString();
+            if(reqObj.AvatarImage is not null)
+            {
+                // update avatar image
+                // 1. generate image id
+                var imageId = Guid.NewGuid();
+                // 2. remove prev image
+                await _imageService.DeleteImageAsync(Guid.Parse(staff.AvatarImage));
+                // 3. upload new image
+                await _imageService.UploadImageAsync(imageId, reqObj.AvatarImage);
+                // 4. save db
+                staffModel.AvatarImage = imageId.ToString();
+            }
 
             // validate birthdate
             var currDate = DateTime.ParseExact(DateTime.Now.ToString(_appSettings.DateFormat),

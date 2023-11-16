@@ -6,7 +6,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { AiOutlineArrowLeft } from 'react-icons/ai';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import CountdownTimer from './CountdownTimer';
-import axiosClient from '../../utils/axiosClient';
 import { useSelector } from 'react-redux';
 import * as dayjs from 'dayjs';
 import { toastError, toastSuccess } from '../../components/Toastify';

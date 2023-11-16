@@ -23,6 +23,7 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly IWeekDayScheduleService _weekdayService;
         private readonly IAccountService _accountService;
         private readonly IExamHistoryService _examHistoryService;
+        private readonly IBlogService _blogService;
         private readonly AppSettings _appSettings;
 
         public AdminController(IMemberService memberService,
@@ -33,6 +34,7 @@ namespace DriverLicenseLearningSupport.Controllers
             IWeekDayScheduleService weekdayService,
             IAccountService accountService,
             IExamHistoryService examHistoryService,
+            IBlogService blogService,
             IOptionsMonitor<AppSettings> monitor)
         {
             _memberService = memberService;
@@ -43,6 +45,7 @@ namespace DriverLicenseLearningSupport.Controllers
             _weekdayService = weekdayService;
             _accountService = accountService;
             _examHistoryService = examHistoryService;
+            _blogService = blogService;
             _appSettings = monitor.CurrentValue;
         }
 
@@ -279,10 +282,8 @@ namespace DriverLicenseLearningSupport.Controllers
             var theoryHistories = await _examHistoryService.GetAllExamHistory();
             var totalTheoryHistory = theoryHistories.Count();
 
-            // total blog
+            //// total blog
             //var blogs = await _blogService.GetAllAsync();
-            //var totalBlog = blogs.Count();
-            // statistics by daily date
 
             return Ok(new BaseResponse
             {
@@ -297,7 +298,9 @@ namespace DriverLicenseLearningSupport.Controllers
                     TotalIncome = totalIncome,
                     MonthlyIncomes = monthlyIncomes,
                     TotalSlotsCurrWeekday = totalSlotsCurrWeekday,
-                    TotalSlotsPrevWeekday = totalSlotsPrevWeekday
+                    TotalSlotsPrevWeekday = totalSlotsPrevWeekday,
+                    TotalTheoryHistory = totalTheoryHistory,
+                    //Blogs = blogs
                 }
             });
         }

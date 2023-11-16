@@ -34,7 +34,7 @@ namespace DriverLicenseLearningSupport.Repositories
         public async Task<ExamHistoryModel> GetHistoryDetailAsync(string MemberId, int TheoryExamId, DateTime joinDate)
         {
             var ExamHistory = await _context.ExamHistories.Where(eh => eh.MemberId.Equals(MemberId)
-            && eh.TheoryExamId == TheoryExamId && eh.Date.Equals(joinDate)).FirstOrDefaultAsync();
+            && eh.TheoryExamId == TheoryExamId && eh.Date.Equals(joinDate)).Include(x => x.TheoryExam).FirstOrDefaultAsync();
             return _mapper.Map<ExamHistoryModel>(ExamHistory);
         }
 
@@ -53,7 +53,8 @@ namespace DriverLicenseLearningSupport.Repositories
                     Date = x.Date,
                     TheoryExam = new TheoryExam { 
                         TheoryExamId = x.TheoryExam.TheoryExamId,
-                        LicenseType = x.TheoryExam.LicenseType
+                        LicenseType = x.TheoryExam.LicenseType,
+                        LicenseTypeId = x.TheoryExam.LicenseTypeId
                     }
                 })
                 .ToListAsync();
