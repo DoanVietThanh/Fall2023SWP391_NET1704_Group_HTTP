@@ -232,7 +232,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     Question = createdQuestionModel,
                     Answers = createdAnswerModel,
                 },
-                Message = "Tạo câu hỏi thành công"
+                Message = "Create successfully"
             });
         }
 
@@ -358,7 +358,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     return BadRequest(new ErrorResponse()
                     {
                         StatusCode = StatusCodes.Status400BadRequest,
-                        Message = "Xảy ra lỗi"
+                        Message = "Something was wrong"
                     });
                 }
                 questionWithAnswersModel.Add(new QuestionWithAnswersModel
@@ -375,7 +375,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 return BadRequest(new ErrorResponse()
                 {
                     StatusCode = StatusCodes.Status400BadRequest,
-                    Message = "Không tìm thấy câu hỏi thích hợp"
+                    Message = "Not found any suitable question-answers pair"
                 });
             }
             return Ok(new BaseResponse()
@@ -425,7 +425,7 @@ namespace DriverLicenseLearningSupport.Controllers
             return Ok(new BaseResponse
             {
                 StatusCode = StatusCodes.Status200OK,
-                Message = "Xóa câu hỏi thành công"
+                Message = "Delete Question Successfully"
             });
         }
 
@@ -456,7 +456,7 @@ namespace DriverLicenseLearningSupport.Controllers
                         return BadRequest(new ErrorResponse()
                         {
                             StatusCode = StatusCodes.Status400BadRequest,
-                            Message = "Xảy ra lỗi"
+                            Message = "Something was wrong"
                         });
                     }
                     result.Add(new QuestionWithAnswersModel
@@ -540,7 +540,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     return BadRequest(new ErrorResponse()
                     {
                         StatusCode = StatusCodes.Status400BadRequest,
-                        Message = "Xảy ra lỗi"
+                        Message = "Something was wrong"
                     });
                 }
                 result.Add(new QuestionWithAnswersModel
@@ -574,6 +574,31 @@ namespace DriverLicenseLearningSupport.Controllers
                 Data = theoryExams
             });
 
+        }
+
+
+        [HttpGet]
+        [Route("theory/license-type/{licenseTypeId:int}/isParalysis")]
+        public async Task<IActionResult> GetAllParalysisQuestionsByLicenseId([FromRoute] int licenseTypeId) 
+        {
+            var questions = await _questionService.GetParalysisQuesitons(licenseTypeId);
+            if (questions is null)
+            {
+                return NotFound(new ErrorResponse()
+                {
+                    Message = "Không tìm thấy câu hỏi điểm liệt trong bộ đề",
+                    StatusCode = StatusCodes.Status404NotFound
+                });
+            }
+            else 
+            {
+                return Ok(new BaseResponse()
+                {
+                    StatusCode = StatusCodes.Status200OK,
+                    Data = questions,
+                    Message = "Tải thành công"
+                });
+            }
         }
 
     }

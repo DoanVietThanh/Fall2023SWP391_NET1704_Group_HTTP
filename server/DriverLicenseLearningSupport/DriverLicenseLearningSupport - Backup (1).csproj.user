@@ -2,7 +2,7 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
 <<<<<<< HEAD
-    <NameOfLastUsedPublishProfile>D:\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\Properties\PublishProfiles\FolderProfile.pubxml</NameOfLastUsedPublishProfile>
+    <NameOfLastUsedPublishProfile>E:\SWP391\Project\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\Properties\PublishProfiles\FolderProfile4.pubxml</NameOfLastUsedPublishProfile>
     <ActiveDebugProfile>DriverLicenseLearningSupport</ActiveDebugProfile>
     <Controller_SelectedScaffolderID>ApiControllerEmptyScaffolder</Controller_SelectedScaffolderID>
     <Controller_SelectedScaffolderCategoryPath>root/Common/Api</Controller_SelectedScaffolderCategoryPath>
@@ -10,7 +10,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
 =======
-    <NameOfLastUsedPublishProfile>E:\SWP391\Project\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\Properties\PublishProfiles\FolderProfile5.pubxml</NameOfLastUsedPublishProfile>
->>>>>>> 71563e36b7d32ae0abd318727849092e4c445c44
+    <NameOfLastUsedPublishProfile>D:\FPT\Kì 5\SWP\Fall2023SWP391_NET1704_Group_HTTP\server\DriverLicenseLearningSupport\Properties\PublishProfiles\FolderProfile.pubxml</NameOfLastUsedPublishProfile>
+>>>>>>> main
   </PropertyGroup>
 </Project>

@@ -97,6 +97,16 @@ namespace DriverLicenseLearningSupport.Repositories
 
         }
 
+        public async Task<IEnumerable<QuestionModel>> GetParalysisQuesitons(int licenseId)
+        {
+            var questions =await _context.Questions.Include(x => x.QuestionAnswers).Where(x => x.LicenseTypeId == licenseId && x.IsParalysis == true).ToListAsync();
+            if (questions is null) 
+            {
+                return null;
+            }
+            return _mapper.Map<IEnumerable<QuestionModel>>(questions);
+        }
+
         public async Task<QuestionModel> UpdateQuestionAsync(QuestionModel updatedModel, int questionId)
         {
             var question = await _context.Questions.Where(x => x.QuestionId ==  questionId).FirstOrDefaultAsync();

@@ -82,5 +82,9 @@ namespace DriverLicenseLearningSupport.Services
             return await _questionRepository.GetAllInExam(theoryExamId);
         }
 
+        public async Task<IEnumerable<QuestionModel>> GetParalysisQuesitons(int licenseId)
+        {
+            return await _questionRepository.GetParalysisQuesitons(licenseId);
+        }
     }
 }

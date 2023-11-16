@@ -34,10 +34,12 @@ import Loading from '../../components/Loading';
 import axiosClient from '../../utils/axiosClient';
 import { toastError } from './../../components/Toastify';
 import DialogReservation from './components/DialogReservation';
+import axios from 'axios';
 
 const DetailCourse = () => {
   const navigate = useNavigate();
-  const { memberId } = useSelector((state) => state?.auth?.user?.accountInfo);
+  const { memberId } =
+    useSelector((state) => state?.auth?.user?.accountInfo) || '';
   const { idCourse } = useParams();
   const [course, setCourse] = useState();
 
@@ -67,14 +69,12 @@ const DetailCourse = () => {
 
   useEffect(() => {
     async function courseDetail() {
-      const res = await axiosClient
-        .get(`/courses/${idCourse}`)
-        .catch((error) => {
-          toastError(error?.response?.data?.message);
-          navigate('/home');
-        });
+      const res = await axios.get(`/courses/${idCourse}`).catch((error) => {
+        toastError(error?.response?.data?.message);
+        navigate('/home');
+      });
       setCoursePackage(res?.data?.data.course.coursePackages);
-      const payment = await axiosClient
+      const payment = await axios
         .get(`/courses/packages/reservation`)
         .catch((error) => {
           toastError(error?.response?.data?.message);
@@ -92,37 +92,35 @@ const DetailCourse = () => {
   console.log('course: ', course);
   console.log('paymentList: ', paymentList);
 
-  const submitPayment = async () => {
-    // window.location.href =
-    //   'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=12000000&vnp_Command=pay&vnp_CreateDate=20231013232532&vnp_CurrCode=VND&vnp_IpAddr=%3A%3A1&vnp_Locale=vn&vnp_OrderInfo=Thanh+to%C3%A1n+Kh%C3%B3a+h%E1%BB%8Dc+b%E1%BA%B1ng+l%C3%A1i+B1&vnp_OrderType=other&vnp_ReturnUrl=http%3A%2F%2Flocalhost%3A8082%2Fapi%2Fpayment%2Fvnpay-return&vnp_TmnCode=WR9WZI0K&vnp_TxnRef=5c908503-4a66-45fb-ab59-5422cdc54427&vnp_Version=2.1.0&vnp_SecureHash=734d39f3aa6032940e853936afe4c12526407e39e324871740eee1a413182af996ef479f97c4778bd04c8fbde7e7d2fe0e6d61250a07d1944c8a111fc57bae61';
-    try {
-      const resReservation = await axiosClient
-        .post(`/courses/packages/reservation`, {
-          memberId,
-          mentorId: selectedMentor,
-          paymentTypeId: typePayment,
-          paymentAmount: course?.cost,
-          courseId: course?.courseId,
-        })
-        .catch((error) => toastError(error?.response?.data?.message));
-      console.log('resReservation: ', resReservation);
-      const resPayment = await axiosClient.post(
-        `/api/payment`,
-        resReservation?.data?.data
-      );
-      console.log('resPayment:', resPayment);
-      window.location.href = resPayment?.data?.data.paymentUrl;
-    } catch (error) {
-      // toastError(error);
-    }
-  };
+  // const submitPayment = async () => {
+  //   try {
+  //     const resReservation = await axiosClient
+  //       .post(`/courses/packages/reservation`, {
+  //         memberId,
+  //         mentorId: selectedMentor,
+  //         paymentTypeId: typePayment,
+  //         paymentAmount: course?.cost,
+  //         courseId: course?.courseId,
+  //       })
+  //       .catch((error) => toastError(error?.response?.data?.message));
+  //     console.log('resReservation: ', resReservation);
+  //     const resPayment = await axiosClient.post(
+  //       `/api/payment`,
+  //       resReservation?.data?.data
+  //     );
+  //     console.log('resPayment:', resPayment);
+  //     window.location.href = resPayment?.data?.data.paymentUrl;
+  //   } catch (error) {
+  //     // toastError(error);
+  //   }
+  // };
 
   console.log(coursePackage);
 
   const scrollToSection = () => {
     //phan tu muon cuon den
     const section = document.getElementById('targetSection');
-    
+
     if (section) {
       //cuon den
       section.scrollIntoView({ behavior: 'smooth' });
@@ -492,7 +490,10 @@ const DetailCourse = () => {
 
           {coursePackage && (
             <div className='my-4'>
-              <h1 id="targetSection" className='font-bold text-[30px] text-yellow-700 text-center cappitalize '>
+              <h1
+                id='targetSection'
+                className='font-bold text-[30px] text-yellow-700 text-center cappitalize '
+              >
                 Chọn gói liên quan
               </h1>
               <div className='flex gap-4'>

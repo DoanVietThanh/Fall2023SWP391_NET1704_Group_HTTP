@@ -14,22 +14,18 @@ import { Menu, MenuItem } from '@mui/material';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import DialogCoursePackage from './components/DialogCoursePackage';
 import DialogCurriculum from './components/DialogCurriculum';
-import { Button } from '@mui/base';
+import DialogAddMentor from './components/DialogAddMentor';
 
 const ManageCourse = () => {
   const [listCourses, setListCourses] = useState([]);
+  const [selectedIdCourse, setSelectedIdCourse] = useState('');
+  const [anchorEl, setAnchorEl] = useState(null);
   const [openCreateCourse, setOpenCreateCourse] = useState(false);
   const [openEditCourse, setOpenEditCourse] = useState(false);
   const [openCoursePackage, setOpenCoursePackage] = useState(false);
   const [openCurriculum, setOpenCurriculum] = useState(false);
+  const [openAddMentor, setOpenAddMentor] = useState(false);
 
-  const [selectedIdCourse, setSelectedIdCourse] = useState('');
-  console.log(
-    '🚀 ~ file: ManageCourse.jsx:26 ~ ManageCourse ~ selectedIdCourse:',
-    selectedIdCourse
-  );
-
-  const [anchorEl, setAnchorEl] = useState(null);
   const openMenu = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -37,32 +33,30 @@ const ManageCourse = () => {
   };
   const handleClose = () => setAnchorEl(null);
 
-  // const [test, setTest] = useState('');
-
   const columns = [
     { field: 'courseId', headerName: 'ID', width: 140 },
-    { field: 'courseTitle', headerName: 'courseTitle', width: 240 },
-    { field: 'courseDesc', headerName: 'courseDesc', width: 140 },
+    { field: 'courseTitle', headerName: 'Tên khóa học', width: 200 },
+    { field: 'courseDesc', headerName: 'Mô tả khóa học', width: 140 },
     {
       field: 'startDate',
-      headerName: 'startDate',
+      headerName: 'Ngày bắt đầu',
       width: 140,
-      renderCell: (params, record) => {
+      renderCell: (params) => {
         return <div>{dayjs(params.row.startDate).format('DD/MM/YYYY')}</div>;
       },
     },
-    { field: 'isActive', headerName: 'isActive', width: 80 },
+    { field: 'isActive', headerName: 'Trạng thái', width: 80 },
     {
       field: 'totalHoursRequired',
-      headerName: 'totalHoursRequired',
+      headerName: 'Tổng giờ yêu cầu',
       width: 140,
     },
     {
       field: 'totalKmRequired',
-      headerName: 'totalKmRequired',
+      headerName: 'Tổng km yêu cấu',
       width: 140,
     },
-    { field: 'totalMonth', headerName: 'totalMonth', width: 140 },
+    { field: 'totalMonth', headerName: 'Tổng tháng', width: 140 },
     {
       field: 'licenseTypeId',
       headerName: 'Loại bằng',
@@ -136,6 +130,14 @@ const ManageCourse = () => {
                   }}
                 >
                   Quản lí Chương trình
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setOpenAddMentor(true);
+                    handleClose();
+                  }}
+                >
+                  Thêm giảng viên
                 </MenuItem>
               </Menu>
             </div>
@@ -258,6 +260,14 @@ const ManageCourse = () => {
         <DialogCurriculum
           open={openCurriculum}
           setOpen={setOpenCurriculum}
+          selectedIdCourse={selectedIdCourse}
+        />
+      )}
+
+      {openAddMentor && (
+        <DialogAddMentor
+          open={openAddMentor}
+          setOpen={setOpenAddMentor}
           selectedIdCourse={selectedIdCourse}
         />
       )}

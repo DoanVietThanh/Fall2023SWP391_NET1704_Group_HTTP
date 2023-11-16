@@ -1,4 +1,5 @@
-﻿using DriverLicenseLearningSupport.Models;
+﻿using DocumentFormat.OpenXml.Drawing;
+using DriverLicenseLearningSupport.Models;
 using DriverLicenseLearningSupport.Models.Config;
 using DriverLicenseLearningSupport.Payloads.Request;
 using DriverLicenseLearningSupport.Payloads.Response;
@@ -7,11 +8,13 @@ using DriverLicenseLearningSupport.Services.Impl;
 using DriverLicenseLearningSupport.Utils;
 using DriverLicenseLearningSupport.Validation;
 using FluentValidation;
+using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using Org.BouncyCastle.Bcpg.OpenPgp;
 using System.Globalization;
 using System.Runtime.InteropServices;
@@ -27,13 +30,19 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly ITagService _tagService;
         private readonly AppSettings _appSettings;
         private readonly IMemoryCache _memoryCache;
+        private readonly AppSettingsConfig _appSettingConfig;
+        private readonly ICommentService _commentService;
+        private readonly IStaffService _staffService;
 
-        public BlogController(IBlogService blogService, ITagService tagService, IOptionsMonitor<AppSettings> monitor, IMemoryCache memoryCache)
+        public BlogController(IBlogService blogService, ITagService tagService, IOptionsMonitor<AppSettings> monitor, IMemoryCache memoryCache, IOptionsMonitor<AppSettingsConfig> monitor1, ICommentService commentService, IStaffService staffService)
         {
             _blogService = blogService;
             _tagService = tagService;
             _appSettings = monitor.CurrentValue;
             _memoryCache = memoryCache;
+            _appSettingConfig = monitor1.CurrentValue;
+            _commentService = commentService;
+            _staffService = staffService;
         }
         [HttpGet]
         [Route("/blog/tags")]
@@ -61,7 +70,7 @@ namespace DriverLicenseLearningSupport.Controllers
         [HttpPost]
         [Route("/blog")]
 
-        public async Task<IActionResult> CreateBlog([FromBody] BlogCreateRequest reqObj)
+        public async Task<IActionResult> CreateBlog([FromForm] BlogCreateRequest reqObj)
         {
             //to Blog Model
             var blog = reqObj.ToBlogModel();
@@ -77,7 +86,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     Message = "Vui lòng điền lại form"
                 });
             }
-            if (reqObj.Image is not null) 
+            if (reqObj.Image is not null)
             {
                 //check validaiton of picture input from the request
                 var imageFileValidator = new Validation.CreateNewBlogValidator();
@@ -114,6 +123,17 @@ namespace DriverLicenseLearningSupport.Controllers
             blog.Tags = tagModels.ToList();
             var createdBlog = await _blogService.CreateAsync(blog);
 
+            //Get StaffInf
+            Guid Sid = Guid.Parse(reqObj.StaffId);
+            var staffInfo = await _staffService.GetAsync(Sid);
+            if (staffInfo is null)
+            {
+                return NotFound(new ErrorResponse()
+                {
+                    StatusCode = StatusCodes.Status404NotFound,
+                    Message = "Không tìm thấy người đăng"
+                });
+            }
 
             if (createdBlog is null)
             {
@@ -128,12 +148,16 @@ namespace DriverLicenseLearningSupport.Controllers
             }
             else
             {
+
                 return Ok(new BaseResponse()
                 {
                     StatusCode = StatusCodes.Status200OK,
-                    Data = createdBlog,
+                    Data = new
+                    {
+                        blogs = createdBlog,
+                    },
                     Message = "Tạo thành công"
-                });
+                }); ;
             }
 
         }
@@ -167,14 +191,14 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpGet]
         [Route("/blog/{page:int}")]
-        public async Task<IActionResult> GetAllBlogWithPage([FromRoute] int page = 1) 
+        public async Task<IActionResult> GetAllBlogWithPage([FromRoute] int page = 1)
         {
             if (!_memoryCache.TryGetValue(_appSettings.TheoryCacheKey,
                 out IEnumerable<BlogModel> blogs))
             {
 
                 blogs = await _blogService.GetAllBlogWithoutCmt();
-               
+
 
                 // cache options
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
@@ -207,7 +231,7 @@ namespace DriverLicenseLearningSupport.Controllers
             {
                 return Ok(new BaseResponse()
                 {
-                    Data = new 
+                    Data = new
                     {
                         blogs = blogs,
                         TotalPage = list.TotalPage,
@@ -217,12 +241,12 @@ namespace DriverLicenseLearningSupport.Controllers
                     Message = "Tải bài đăng thành công"
                 });
             }
-        }   
+        }
 
         #region Xem blog cá nhân
         [HttpGet]
         [Route("/blog/{staffId:Guid}")]
-        public async Task<IActionResult> GetBlogByStaffId([FromRoute]Guid StaffId)
+        public async Task<IActionResult> GetBlogByStaffId([FromRoute] Guid StaffId)
         {
             var blogs = await _blogService.GetBlogsByStaffId(StaffId);
             if (blogs is null)
@@ -236,17 +260,18 @@ namespace DriverLicenseLearningSupport.Controllers
             return Ok(new BaseResponse
             {
                 Message = "Tải bài đăng cá nhân thành công",
-                StatusCode = StatusCodes.Status200OK
+                StatusCode = StatusCodes.Status200OK,
+                Data = blogs
             });
         }
         #endregion
 
         [HttpPut]
         [Route("/blog")]
-        public async Task<IActionResult> UpdateBlogAsync([FromBody] UpdateBlogRequest reqObj)
+        public async Task<IActionResult> UpdateBlogAsync([FromForm] UpdateBlogRequest reqObj)
         {
             BlogModel blog = new BlogModel();
-            if (reqObj.Image!= null) 
+            if (reqObj.Image != null)
             {
                 //check validaiton of picture input from the request
                 var imageFileValidator = new Validation.UpdateBlogValidator();
@@ -268,7 +293,7 @@ namespace DriverLicenseLearningSupport.Controllers
             blog.Content = HttpUtility.HtmlEncode(reqObj.Content);
             blog.Title = HttpUtility.HtmlEncode(reqObj.Title);
             DateTime lastModifiedDate = DateTime.UtcNow;
-            
+
             List<TagModel> tagModels = new List<TagModel>();
 
             foreach (int id in reqObj.TagIds)
@@ -298,11 +323,11 @@ namespace DriverLicenseLearningSupport.Controllers
         }
 
         [HttpDelete]
-        [Route("/blog")]
-        public async Task<IActionResult> DeleteBlogAsync(int blogId) 
+        [Route("/blog/{blogId:int}")]
+        public async Task<IActionResult> DeleteBlogAsync(int blogId)
         {
             var blog = await _blogService.GetBlogByIdAsync(blogId);
-            if (blog == null) 
+            if (blog == null)
             {
                 return NotFound(new ErrorResponse
                 {
@@ -319,7 +344,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     Message = "Xóa thành công"
                 });
             }
-            else 
+            else
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new BaseResponse
                 {
@@ -345,10 +370,11 @@ namespace DriverLicenseLearningSupport.Controllers
                     StatusCode = StatusCodes.Status404NotFound
                 });
             }
-            else {
+            else
+            {
                 return Ok(new BaseResponse()
                 {
-                    Message ="Tìm kiếm thành công",
+                    Message = "Tìm kiếm thành công",
                     StatusCode = StatusCodes.Status200OK,
                     Data = searchBlogs
                 });
@@ -358,7 +384,7 @@ namespace DriverLicenseLearningSupport.Controllers
 
         [HttpGet]
         [Route("/blog/blog_id/{id:int}")]
-        public async Task<IActionResult> GetBlogById([FromRoute] int id) 
+        public async Task<IActionResult> GetBlogById([FromRoute] int id)
         {
             var blog = await _blogService.GetBlogByIdAsync(id);
             if (blog is null)
@@ -369,11 +395,30 @@ namespace DriverLicenseLearningSupport.Controllers
                     StatusCode = StatusCodes.Status404NotFound
                 });
             }
-            else 
+            else
             {
+                //var configList = _appSettingConfig.BlogSettings.BlogAccessData.ToList();
+                //var comments = await _commentService.GetAllInBlogAsync(id);
+                //int countCmt = comments.Count();
+                //var countList = _appSettingConfig.BlogSettings.BlogAccessData.ToList();
+                //BlogCountModel model = countList.FirstOrDefault(x => x.BlogId == id);
+                //if (model is null)
+                //{
+                //    model = new BlogCountModel
+                //    {
+                //        BlogId = id,
+                //        Comment = countCmt > 0 ? countCmt : 0,
+                //        View = model.View + 1
+                //    };
+                //}
+
+                //string json = JsonSerializer.Serialize();
+                //await System.IO.File.WriteAllTextAsync(Path.Combine(Directory.GetCurrentDirectory(), "test.json"), json);
+
+
                 return Ok(new BaseResponse()
                 {
-                    Message ="Thành công",
+                    Message = "Thành công",
                     StatusCode = StatusCodes.Status200OK,
                     Data = blog
                 });
@@ -381,22 +426,23 @@ namespace DriverLicenseLearningSupport.Controllers
         }
         [HttpGet]
         [Route("/blog/tags/{id:int}")]
-        public async Task<IActionResult> SearchByTagId([FromRoute] int id) 
+        public async Task<IActionResult> SearchByTagId([FromRoute] int id)
         {
             var blogs = await _blogService.SearchBlogByTagId(id);
-            if (blogs is null) 
+            if (blogs is null)
             {
                 return NotFound(new ErrorResponse()
                 {
-                    Message ="Không có bài viết nào cho thẻ",
+                    Message = "Không có bài viết nào cho thẻ",
                     StatusCode = StatusCodes.Status404NotFound
                 });
             }
-            else 
+            else
             {
+
                 return Ok(new BaseResponse()
                 {
-                    Message ="Tải thành công",
+                    Message = "Tải thành công",
                     StatusCode = StatusCodes.Status200OK,
                     Data = blogs
                 });
