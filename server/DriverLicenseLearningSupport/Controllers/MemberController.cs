@@ -1357,6 +1357,13 @@ namespace DriverLicenseLearningSupport.Controllers
             var course = await _courseService.GetAsync(
                 Guid.Parse(courseReservation.CoursePackage.CourseId));
 
+            if(course is not null)
+            {
+                course.Mentors = null;
+                course.FeedBacks = null;
+                course.Curricula = null;
+            }
+
             // get course package by id
             var coursePackage = await _courseService.GetPackageAsync(
                 Guid.Parse(courseReservation.CoursePackageId));
@@ -1471,6 +1478,9 @@ namespace DriverLicenseLearningSupport.Controllers
             /// TODO: Get Created Schedule 
             if (isSuccess)
             {
+                rcbooks = await _rollCallBookService.GetAllByMemberIdAsync(
+                    Guid.Parse(courseReservation.MemberId));
+
                 // add course package to teaching schedule id
                 await _teachingScheduleService.AddCoursePackageAsync(teachingSchedule.TeachingScheduleId,
                     Guid.Parse(courseReservation.CoursePackageId));
@@ -1480,8 +1490,88 @@ namespace DriverLicenseLearningSupport.Controllers
                 //    teachingSchedule.TeachingScheduleId, 
                 //    Convert.ToInt32(courseReservation.VehicleId));
 
-                return Ok(new BaseResponse { 
+                // get all weekday of calendar
+                var weekdays = await _weekDayScheduleService.GetAllByCourseId(
+                    Guid.Parse(courseReservation.CoursePackage.CourseId));
+                // get all slots 
+                var slots = await _slotService.GetAllAsync();
+                // convert to list of course
+                var listOfSlotSchedule = slots.ToList();
+                // get teaching schedule for each slot
+                foreach (var s in slots)
+                {
+                    /*
+                    var teachingSchedules
+                        = await _teachingScheduleService.GetBySlotAndWeekDayScheduleOfMemberAsync(s.SlotId,
+                            weekday.WeekdayScheduleId,
+                            Guid.Parse(courseReservation.StaffId), id);
+                    s.TeachingSchedules = teachingSchedules.ToList();*/
+                    var teachingSchedules
+                        = await _teachingScheduleService.GetBySlotAndWeekDayScheduleAsync(s.SlotId,
+                            weekday.WeekdayScheduleId,
+                            Guid.Parse(courseReservation.StaffId));
+                    s.TeachingSchedules = teachingSchedules.ToList();
+                }
+
+                // get staff by id
+                var staff = await _staffService.GetAsync(Guid.Parse(courseReservation.StaffId));
+                staff.Courses = null;
+                staff.SelfDescription = string.Empty;
+                staff.FeedBacks = null;
+                staff.EmailNavigation = null;
+
+                // total hours driven 
+                var totalHoursDriven = rcbooks.Select(x => x.TotalHoursDriven).Sum();
+                // total km driven
+                var totalKmDriven = rcbooks.Select(x => x.TotalKmDriven).Sum();
+
+                var remainingHour = course.TotalHoursRequired - totalHoursDriven;
+                var remainingKm = course.TotalKmRequired - totalKmDriven;
+
+                var registeredSession = rcbooks.Count();
+
+                if (registeredSession > 0 && coursePackage?.TotalSession != null)
+                {
+                    // response
+                    return Ok(new BaseResponse
+                    {
+                        StatusCode = StatusCodes.Status200OK,
+                        Data = new
+                        {
+                            Course = course,
+                            Mentor = staff,
+                            Filter = weekdays.Select(x => new {
+                                Id = x.WeekdayScheduleId,
+                                Desc = x.WeekdayScheduleDesc
+                            }),
+                            Weekdays = weekday,
+                            SlotSchedules = listOfSlotSchedule,
+                            RemainingRequiredHour = (remainingHour > 0) ? remainingHour : 0,
+                            RemainingRequiredKm = (remainingKm > 0) ? remainingKm : 0,
+                            RegisteredSession = registeredSession,
+                            PackageTotalSession = coursePackage.TotalSession
+                        },
+                        Message = $"Đăng ký lịch vào ngày " +
+                        $"{teachingSchedule.TeachingDate.ToString("dd/MM/yyyy")} thành công"
+                    });
+                }
+
+                return Ok(new BaseResponse
+                {
                     StatusCode = StatusCodes.Status200OK,
+                    Data = new
+                    {
+                        Course = course,
+                        Mentor = staff,
+                        Filter = weekdays.Select(x => new {
+                            Id = x.WeekdayScheduleId,
+                            Desc = x.WeekdayScheduleDesc
+                        }),
+                        Weekdays = weekday,
+                        SlotSchedules = listOfSlotSchedule,
+                        RemainingRequiredHour = (remainingHour > 0) ? remainingHour : 0,
+                        RemainingRequiredKm = (remainingKm > 0) ? remainingKm : 0
+                    },
                     Message = $"Đăng ký lịch vào ngày " +
                     $"{teachingSchedule.TeachingDate.ToString("dd/MM/yyyy")} thành công"
                 });
