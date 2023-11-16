@@ -9,7 +9,7 @@ namespace DriverLicenseLearningSupport.Models
         public string Content { get; set; }
         public string Title { get; set; }
 
-        public string Image { get;set; }
+        public string? Image { get;set; }
         public DateTime? CreateDate { get; set; }
         public DateTime? LastModifiedDate { get; set; }
         public virtual StaffModel Staff { get; set; }

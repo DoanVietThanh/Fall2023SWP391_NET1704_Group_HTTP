@@ -13,6 +13,8 @@ namespace DriverLicenseLearningSupport.Models
         public bool? IsMockExam { get; set; }
         public DateTime? StartDate { get; set; }
         public TimeSpan? StartTime { get; set; }
+
+        public virtual LicenseTypeModel LicenseType { get; set; }
         public virtual ICollection<QuestionModel> Questions { get; set; } = new List<QuestionModel>();
     }
 }

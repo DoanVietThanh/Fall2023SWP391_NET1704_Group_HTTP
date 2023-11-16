@@ -72,7 +72,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 vehicle.VehicleImage = imageId.ToString();
 
                 // upload image to cloud
-                //await _imageService.UploadImageAsync(imageId, reqObj.VehicleImage);
+                await _imageService.UploadImageAsync(imageId, reqObj.VehicleImage);
             }
 
             // validate
@@ -162,16 +162,19 @@ namespace DriverLicenseLearningSupport.Controllers
             // generate vehicle model
             var vehicleModel = reqObj.ToVehicleModel(_appSettings.DateFormat);
 
-            // update image (if any)
-            var imageId = Guid.NewGuid().ToString();
-            vehicleModel.VehicleImage = imageId;
+            if(reqObj.Image is not null)
+            {
+                // update image (if any)
+                var imageId = Guid.NewGuid().ToString();
+                vehicleModel.VehicleImage = imageId;
 
-            // remove prev image
-            await _imageService.DeleteImageAsync(
-                    Guid.Parse(vehicle.VehicleImage));
-            // update load new image
-            await _imageService.UploadImageAsync(Guid.Parse(imageId),
-                reqObj.Image);
+                // remove prev image
+                await _imageService.DeleteImageAsync(
+                        Guid.Parse(vehicle.VehicleImage));
+                // update load new image
+                await _imageService.UploadImageAsync(Guid.Parse(imageId),
+                    reqObj.Image);
+            }
 
             // update vehicle
             bool isSucess = await _vehicleService.UpdateAsync(id, vehicleModel);

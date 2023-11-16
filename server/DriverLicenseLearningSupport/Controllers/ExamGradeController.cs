@@ -26,13 +26,15 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly AppSettings _appSettings;
         private readonly IStaffService _staffService;
         private readonly TheoryExamSettings _theoryConfig;
+        private readonly IImageService _imageService;
         private readonly ILicenseTypeService _licenseTypeService;
 
         public ExamGradeController(IExamGradeService examGradeService, IAnswerService answerService
             , ITheoryExamService theoryExamService, IExamHistoryService examHistoryService
             , IQuestionService questionService, IMemberService memberService, IOptionsMonitor<AppSettings> monitor
             , IStaffService staffService, IOptionsMonitor<TheoryExamSettings>monitor1
-            , ILicenseTypeService licenseTypeService)
+            , ILicenseTypeService licenseTypeService,
+            IImageService imageService)
         {
             _examGradeService = examGradeService;
             _answerService = answerService;
@@ -43,6 +45,7 @@ namespace DriverLicenseLearningSupport.Controllers
             _appSettings = monitor.CurrentValue;
             _staffService = staffService;
             _theoryConfig = monitor1.CurrentValue;
+            _imageService = imageService;
             _licenseTypeService = licenseTypeService;
         }
 
@@ -231,12 +234,14 @@ namespace DriverLicenseLearningSupport.Controllers
             }
 
             var theoryExams = await _theoryExamService.GetAllAsync();
-            var theoryExamIds = theoryExams.Select(x => x.TheoryExamId).ToList();
             var Histories = await _examHistoryService.GetAllByMemberIdAsysn(memberModel.MemberId);
-
+            //var theoryExamIds = theoryExams.Select(x => x.TheoryExamId).ToList();
             foreach (var history in Histories)
             {
-                var index = theoryExamIds.IndexOf(history.TheoryExam.TheoryExamId);
+                var listIdByLicenseType = theoryExams.Where(x => Convert.ToInt32(x.LicenseTypeId)
+                    == history.TheoryExam.LicenseTypeId).Select(x => x.TheoryExamId).ToList();
+
+                var index = listIdByLicenseType.IndexOf(history.TheoryExam.TheoryExamId);
                 history.TheoryExamDesc = $"Đề {index + 1}";
             }
 
@@ -287,6 +292,8 @@ namespace DriverLicenseLearningSupport.Controllers
                 });
             }
             var theoryExam = await _theoryExamService.GetByIdAsync(examGrades[0].TheoryExamId);
+
+
             int totalAnswerRequired = theoryExam.TotalAnswerRequired.Value;
             // cần TotalQuestion = totalQuesiton,
             //TotalRightAnswer = countRightAnswers,
@@ -328,6 +335,13 @@ namespace DriverLicenseLearningSupport.Controllers
                 ExamHistoryModel history = await _examHistoryService.GetHistoryDetailAsync(memberModel.MemberId
                     , reqObj.MockTestId, joinDate);
 
+                var theoryExams = await _theoryExamService.GetAllAsync();
+                var listIdByLicenseType = theoryExams.Where(x => Convert.ToInt32(x.LicenseTypeId)
+                        == history.TheoryExam.LicenseTypeId).Select(x => x.TheoryExamId).ToList();
+
+                var index = listIdByLicenseType.IndexOf(history.TheoryExam.TheoryExamId);
+                history.TheoryExamId = index + 1;
+
                 if (history is null)
                 {
                     return BadRequest(new ErrorResponse()
@@ -364,14 +378,13 @@ namespace DriverLicenseLearningSupport.Controllers
                         });
                     }
                 }
-
                 return Ok(new BaseResponse()
                 {
                     StatusCode = StatusCodes.Status200OK,
                     Data = new
                     {
                         ExamResult = resultExam,
-                        History = new ExamHistoryModel()
+                        History = new
                         {
                             IsPassed = isPassed,
                             TotalRightAnswer = Convert.ToInt32(grade),

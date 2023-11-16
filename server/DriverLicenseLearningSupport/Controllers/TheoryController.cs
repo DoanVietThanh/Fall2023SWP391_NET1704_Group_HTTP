@@ -53,6 +53,7 @@ namespace DriverLicenseLearningSupport.Controllers
         public async Task<IActionResult> LicenseFormRegister()
         {
             var licenseTypes = await _licenseTypeService.GetAllAsync();
+            licenseTypes = licenseTypes.Where(x => x.LicenseTypeId == 1 || x.LicenseTypeId == 3).ToList();
 
             if (licenseTypes is null) return StatusCode(StatusCodes.Status500InternalServerError, new BaseResponse
             {
@@ -168,7 +169,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 //   generate guid id
                 var imageId = Guid.NewGuid();
                 //upload image to cloud
-                //await _imageService.UploadImageAsync(imageId, reqObj.imageLink);
+                await _imageService.UploadImageAsync(imageId, reqObj.imageLink);
 
                 //Set image Id to question model 
                 questionModel.Image = imageId.ToString();

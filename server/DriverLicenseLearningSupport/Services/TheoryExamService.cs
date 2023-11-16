@@ -10,12 +10,15 @@ namespace DriverLicenseLearningSupport.Services
     {
         private readonly ITheoryExamRepository _theoryExamRepository;
         private readonly IMapper _mapper;
+        private readonly IImageService _imageService;
 
         public TheoryExamService(ITheoryExamRepository theoryExamRepository,
-            IMapper mapper) 
+            IMapper mapper,
+            IImageService imageService) 
         {
             _theoryExamRepository= theoryExamRepository;
             _mapper = mapper;
+            _imageService = imageService; 
         }
 
         public async Task<bool> AddQuestionAsync(int theoryExamId, int quesitonId)
@@ -61,6 +64,11 @@ namespace DriverLicenseLearningSupport.Services
                 }
                 // set answers list
                 question.QuestionAnswers = answers;
+
+                if(question.Image is not null)
+                {
+                    question.Image = await _imageService.GetPreSignedURL(Guid.Parse(question.Image));
+                }
             }
 
             return theoryExamModel;

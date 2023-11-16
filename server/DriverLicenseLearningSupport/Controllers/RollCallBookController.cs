@@ -148,7 +148,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     $"Lịch học của bạn ngày {teachingSchedule.TeachingDate.ToString("dd/MM/yyyy")} " +
                     $"đã được hủy thành công.");
 
-                //_emailService.SendEmail(message);
+                _emailService.SendEmail(message);
 
                 return Ok(new BaseResponse { 
                     StatusCode = StatusCodes.Status200OK,
@@ -213,7 +213,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     $"Lịch học ngày {teachingSchedule.TeachingDate.ToString("dd/MM/yyyy")}" +
                     $"Lý do từ chối: \n" +
                     message + "\n Xin cảm ơn.");
-                //_emailService.SendEmail(emailMessage);
+                _emailService.SendEmail(emailMessage);
 
                 return Ok(new BaseResponse { 
                     StatusCode = StatusCodes.Status200OK,

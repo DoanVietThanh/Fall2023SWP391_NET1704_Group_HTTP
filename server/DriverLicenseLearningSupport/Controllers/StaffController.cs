@@ -1293,15 +1293,18 @@ namespace DriverLicenseLearningSupport.Controllers
             staffModel.Address = address;
             staffModel.IsActive = true;
 
-            // update avatar image
-            // 1. generate image id
-            var imageId = Guid.NewGuid();
-            // 2. remove prev image
-            //await _imageService.DeleteImageAsync(Guid.Parse(staff.AvatarImage));
-            // 3. upload new image
-            //await _imageService.UploadImageAsync(imageId, reqObj.AvatarImage);
-            // 4. save db
-            staffModel.AvatarImage = imageId.ToString();
+            if(reqObj.AvatarImage is not null)
+            {
+                // update avatar image
+                // 1. generate image id
+                var imageId = Guid.NewGuid();
+                // 2. remove prev image
+                await _imageService.DeleteImageAsync(Guid.Parse(staff.AvatarImage));
+                // 3. upload new image
+                await _imageService.UploadImageAsync(imageId, reqObj.AvatarImage);
+                // 4. save db
+                staffModel.AvatarImage = imageId.ToString();
+            }
 
             // validate birthdate
             var currDate = DateTime.ParseExact(DateTime.Now.ToString(_appSettings.DateFormat),

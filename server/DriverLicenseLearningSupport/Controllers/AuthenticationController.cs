@@ -45,6 +45,7 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly IImageService _imageService;
         private readonly AppSettingsConfig _appSettingsConfig;
         private readonly AppSettings _appSettings;
+        private readonly ProfileConfig _profileConfig;
 
         public AuthenticationController(IAccountService accountService,
             IMemberService memberService,
@@ -56,7 +57,8 @@ namespace DriverLicenseLearningSupport.Controllers
             IMemoryCache cache,
             IOptionsMonitor<AppSettings> monitor,
             IImageService imageService,
-            IOptionsMonitor<AppSettingsConfig> monitor1)
+            IOptionsMonitor<AppSettingsConfig> monitor1,
+            IOptionsMonitor<ProfileConfig> monitor2)
         {
             _accountService = accountService;
             _memberService = memberService;
@@ -69,14 +71,17 @@ namespace DriverLicenseLearningSupport.Controllers
             _imageService = imageService;
             _appSettingsConfig = monitor1.CurrentValue;
             _appSettings = monitor.CurrentValue;
+            _profileConfig = monitor2.CurrentValue;
         }
 
-        [HttpGet]
-        [Route("authentication/test")]
-        public async Task<IActionResult> DemoImage()
+
+        [HttpPost("authentication/test")]
+        public async Task<IActionResult> DemoTest(IFormFile file)
         {
-            return Ok(_imageService.GetPreSignedURL(Guid.Parse("be668e07-1366-4c82-942c-68d93640d546")));
-        } 
+            var imageId = Guid.NewGuid();
+            await _imageService.UploadImageAsync(imageId, file);
+            return Ok(imageId);
+        }
 
         [HttpPost("authentication/login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest reqObj)
@@ -288,7 +293,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 // Url + Action + Controller 
                 //var forgotPasswordLink = Url.Action("ResetPassword", "Authentication", new { passwordResetToken, email = account.Email }, Request.Scheme);
                 var forgotPasswordLink = Url.Action("ResetPassword", "Authentication",
-                    values: new { passwordResetToken, email = account.Email }, Request.Scheme, host: "localhost:3000");
+                    values: new { passwordResetToken, email = account.Email }, Request.Scheme, host: _profileConfig.VercelDeployUrl);
                 var message = new EmailMessage(new string[] { account.Email! }, "Quên Mật Khẩu", forgotPasswordLink!);
                 _emailService.SendEmail(message);
 

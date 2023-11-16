@@ -724,17 +724,17 @@ namespace DriverLicenseLearningSupport.Controllers
             // generate image id
             var imageId = Guid.NewGuid();
             // upload image
-            //await _imageService.UploadImageAsync(imageId, reqObj.Image);
+            await _imageService.UploadImageAsync(imageId, reqObj.Image);
 
             // generate identity image id
             var identityImageId = Guid.NewGuid();
             // upload image
-            //await _imageService.UploadImageAsync(identityImageId, reqObj.IdentityCardImage);
+            await _imageService.UploadImageAsync(identityImageId, reqObj.IdentityCardImage);
 
             // generate health certification image id
             // upload image
             var healthCerImageId = Guid.NewGuid();
-            //await _imageService.UploadImageAsync(healthCerImageId, reqObj.HealthCertificationImage);
+            await _imageService.UploadImageAsync(healthCerImageId, reqObj.HealthCertificationImage);
 
             // set images id
             licenseRegisterFormModel.Image = imageId.ToString();
@@ -794,10 +794,9 @@ namespace DriverLicenseLearningSupport.Controllers
                 var imageId = Guid.NewGuid().ToString();
                 licenseRegisterFormModel.Image = imageId;
                 // remove prev image
-                //await _imageService.DeleteImageAsync(Guid.Parse(lfRegister.Image));
+                await _imageService.DeleteImageAsync(Guid.Parse(lfRegister.Image));
                 // upload new image to clound
-                //await _imageService.UploadImageAsync(Guid.Parse(lfRegister.Image),
-                //    reqObj.Image);
+                await _imageService.UploadImageAsync(Guid.Parse(lfRegister.Image), reqObj.Image);
             }
             // update identity image
             if (reqObj.IdentityCardImage is not null)
@@ -805,10 +804,9 @@ namespace DriverLicenseLearningSupport.Controllers
                 var identityImageId = Guid.NewGuid().ToString();
                 licenseRegisterFormModel.IdentityCardImage = identityImageId;
                 // remove prev image
-                //await _imageService.DeleteImageAsync(Guid.Parse(lfRegister.IdentityCardImage));
+                await _imageService.DeleteImageAsync(Guid.Parse(lfRegister.IdentityCardImage));
                 // upload new image to clound
-                //await _imageService.UploadImageAsync(Guid.Parse(lfRegister.IdentityCardImage),
-                //reqObj.IdentityImage);
+                await _imageService.UploadImageAsync(Guid.Parse(lfRegister.IdentityCardImage),reqObj.IdentityCardImage);
             }
             // update health certification image
             if (reqObj.HealthCertificationImage is not null)
@@ -816,10 +814,10 @@ namespace DriverLicenseLearningSupport.Controllers
                 var healthCareImageId = Guid.NewGuid().ToString();
                 licenseRegisterFormModel.HealthCertificationImage = healthCareImageId;
                 // remove prev image
-                //await _imageService.DeleteImageAsync(Guid.Parse(lfRegister.HealthCertificationImage));
+                await _imageService.DeleteImageAsync(Guid.Parse(lfRegister.HealthCertificationImage));
                 // upload new image to clound
-                //await _imageService.UploadImageAsync(Guid.Parse(lfRegister.HealthCertificationImage),
-                //reqObj.HealthCertificationImage);
+                await _imageService.UploadImageAsync(Guid.Parse(lfRegister.HealthCertificationImage),
+                reqObj.HealthCertificationImage);
             }
 
 
@@ -903,7 +901,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 var emailMessage = new EmailMessage(new string[] { member.Email! }, "Đơn đăng ký hồ sơ thi",
                     "Đơn đăng ký hồ sơ dự thi được duyệt thành công \n" + 
                     "Vui Lòng xem lại tất cả thông tin, nếu sai xót xin liên hệ sớm nhất");
-                //_emailService.SendEmail(emailMessage);
+                _emailService.SendEmail(emailMessage);
 
                 return Ok(new BaseResponse { 
                     StatusCode = StatusCodes.Status200OK,
@@ -950,7 +948,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 // send email with deny message 
                 var emailMessage = new EmailMessage(new string[] { member.Email! }, "Đơn đăng ký hồ sơ dự thi đã bị từ chối",
                     message);
-                //_emailService.SendEmail(emailMessage);
+                _emailService.SendEmail(emailMessage);
                 return Ok(new BaseResponse { 
                     StatusCode = StatusCodes.Status200OK,
                     Message = "Từ chối hồ sơ thành công"
