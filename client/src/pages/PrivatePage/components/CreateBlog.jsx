@@ -1,12 +1,34 @@
+import axios from "axios";
 import { EditorState, convertToRaw } from "draft-js";
 import draftToHtml from "draftjs-to-html";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import { toastError } from "../../../components/Toastify";
+import { useRef } from "react";
 
 const CreateBlog = () => {
-  const handleTagChange = (e) => {
-    const tagValue = e.target.value;
+  const urlService = process.env.REACT_APP_SERVER_API;
+  const [tagList, setTagList] = useState([]);
+
+  useEffect(() => {
+    async function getTagList() {
+      await axios
+        .get(`${urlService}/blog/tags`)
+        .then((res) => {
+          console.log("res: ", res);
+          setTagList(res.data?.data);
+        })
+        .catch((error) => {
+          console.log("error: ", error);
+          toastError(error?.response?.data?.message);
+        });
+    }
+    getTagList();
+  }, []);
+
+  const [selectedTags, setSelectedTags] = useState([]);
+  const handleTagChange = (tagValue) => {
     if (selectedTags.includes(tagValue)) {
       // Nếu tag đã được chọn, loại bỏ nó
       setSelectedTags(selectedTags.filter((tag) => tag !== tagValue));
@@ -15,16 +37,7 @@ const CreateBlog = () => {
       setSelectedTags([...selectedTags, tagValue]);
     }
   };
-  const [selectedTags, setSelectedTags] = useState([]);
-  const tags = [
-    "BangLaiA1",
-    "ThucHanh",
-    "LyThuyet",
-    "GiangVien",
-    "WebXin",
-    "HocVien",
-  ];
-  const listTag = [];
+
   const [title, setTitle] = useState("");
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
@@ -34,9 +47,26 @@ const CreateBlog = () => {
   const onEditorStateChange = (newEditorState) => {
     setEditorState(newEditorState);
   };
+  const fileInputRef = useRef();
+  const [imageData, setImageData] = useState(null);
 
+  const handleFileChange = () => {
+    const file = fileInputRef.current.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const imageData = reader.result;
+        setImageData(imageData);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  console.log("list tag", tagList);
+  console.log("select tag", selectedTags);
+  console.log("img data", imageData)
   return (
-    <div className="flex flex-col gap-4 m-4 text-lg">
+    <div className="flex flex-col gap-6 mx-8 text-lg">
       <div className="flex flex-col gap-2">
         <label className="text-xl text-gray-900">Tiêu đề bài đăng:</label>
         <textarea
@@ -50,24 +80,43 @@ const CreateBlog = () => {
       <div className="flex flex-col gap-2">
         <label className="text-xl text-gray-900">Chọn tag cho bài đăng:</label>
         <div className="flex flex-wrap gap-4 w-[50%] ">
-          {tags.map((tag) => (
-            <span key={tag}>
+          {tagList.map((tag, index) => (
+            <span key={index}>
               <div className="items-center">
                 <input
                   type="checkbox"
                   value={tag}
                   checked={selectedTags.includes(tag)}
-                  onChange={handleTagChange}
+                  onChange={() => handleTagChange(tag)}
                   className="w-[20px] h-[20px]"
                 />
-                
-                {tag}
+                {tag.tagName}
               </div>
             </span>
           ))}
         </div>
       </div>
 
+      <div className="flex flex-col gap-2">
+        <label className="text-xl text-gray-900">Chọn ảnh cho bài đăng:</label>
+        <input
+          type="file"
+          id="fileToUpload"
+          accept=".img, .png, .jpg"
+          onChange={handleFileChange}
+          ref={fileInputRef}
+        />
+        {imageData && (
+          <div>
+            <h2>Ảnh đã chọn:</h2>
+            <img
+              src={imageData}
+              alt="Selected img"
+              style={{ maxWidth: '100%', maxHeight: '300px', margin: '10px 0' }}
+            />
+          </div>
+        )}
+      </div>
       <div className="flex flex-col gap-2">
         <label className="text-xl text-gray-900">Nội dung bài đăng:</label>
         <div className="border p-2">
@@ -102,12 +151,9 @@ const CreateBlog = () => {
               history: { inDropdown: true },
             }}
           />
-          <textarea
-            disable
-            value={draftToHtml(convertToRaw(editorState.getCurrentContent()))}
-            className="w-full "
-            rows={5}
-          />
+          <div>
+            {draftToHtml(convertToRaw(editorState.getCurrentContent()))}
+          </div>
         </div>
       </div>
     </div>

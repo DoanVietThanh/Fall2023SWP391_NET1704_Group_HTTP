@@ -1,14 +1,12 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import {
-  AiOutlineCalendar
-} from "react-icons/ai";
+import { AiOutlineCalendar } from "react-icons/ai";
 import { BiSearch } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import BackgroundSlider from "../../components/BackgroundSlider";
 import Footer from "./../../components/Footer";
 import Header from "./../../components/Header";
-import BlogList from './component/BlogList';
+import BlogList from "./component/BlogList";
 import { toastError } from "../../components/Toastify";
 import theme from "../../theme";
 
@@ -16,7 +14,7 @@ const BlogPage = () => {
   const url = "/img/backgroundSlide.png";
   const breadcrumbs = "Bài đăng";
   const urlService = process.env.REACT_APP_SERVER_API;
-  const [searchInput, setSearchInput] = useState('');
+  const [searchInput, setSearchInput] = useState("");
   // const listBlog = [
   //   {
   //     id: "1",
@@ -56,7 +54,7 @@ const BlogPage = () => {
       <BackgroundSlider url={url} breadcrumbs={breadcrumbs} />
       <div className="flex justify-center m-20">
         <div className="w-[70%]">
-          <BlogList/>
+          <BlogList />
           {/* {listBlog?.map((blog, index) => (
             <div className="border drop-shadow-md rounded-lg p-20 ">
               <div className="center pb-10">
@@ -115,31 +113,23 @@ const BlogPage = () => {
             <div className="border-b-[4px] text-2xl font-bold pb-2 ">
               Bài đăng gần đây
             </div>
-            {listBlog.map((lilBlog, index) => (
+            {listBlog.map((blog, index) => (
               <div className="flex pt-10 gap-3">
-                <div className="w-[30%]">
-                  <img
-                    src={lilBlog.img}
-                    alt="Pic1"
-                    className="rounded-lg w-[80px] h-[80px] object-cover"
-                  />
-                </div>
-                <div className="flex flex-col w-[70%] gap-2">
-                  <Link to={lilBlog.link}>
+                <div className="flex flex-col gap-2">
+                  <Link to={blog.link}>
                     <div className="text-lg font-bold hover:text-blue-500 overflow-hidden whitespace-nowrap overflow-ellipsis max-w-xs">
-                      {lilBlog.title}
+                      {blog?.title}
                     </div>
                   </Link>
                   <div className="flex items-center text-md font-light gap-2 text-blue-500 hover:text-blue-900 ">
                     <AiOutlineCalendar />
-                    {lilBlog.time}
+                    {blog?.createDate}
                   </div>
                 </div>
               </div>
             ))}
           </div>
         </div>
-
       </div>
       <Footer />
     </div>

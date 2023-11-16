@@ -18,5 +18,7 @@ namespace DriverLicenseLearningSupport.Repositories.Impl
         Task<QuestionModel> UpdateQuestionAsync(QuestionModel updatedModel, int quesitonId);
         Task<bool> CheckExistedQuestion(string questionDesc,int lisenceId);
 
+        Task<IEnumerable<QuestionModel>> GetParalysisQuesitons(int licenseId);
+
     }
 }

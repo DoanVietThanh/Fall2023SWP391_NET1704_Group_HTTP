@@ -12,6 +12,7 @@ namespace DriverLicenseLearningSupport.Models
         public string Image { get;set; }
         public DateTime? CreateDate { get; set; }
         public DateTime? LastModifiedDate { get; set; }
+        public virtual StaffModel Staff { get; set; }
 
         public virtual ICollection<CommentModel> Comments { get; set; } = new List<CommentModel>();
 
