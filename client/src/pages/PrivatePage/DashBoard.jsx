@@ -414,7 +414,7 @@ const DashBoard = () => {
               {/* Line */}
               <div className="p-6 w-[60%] bg-white border-gray-500 rounded-md shadow-md mr-10">
                 <h1 className="font-semibold text-lg">
-                  Số lượt làm bài thi lý thuyết
+                  Số lượt đăng kí học thực hành theo tuần
                 </h1>
                 <Line data={dataLine} options={optionsBar} />
               </div>
