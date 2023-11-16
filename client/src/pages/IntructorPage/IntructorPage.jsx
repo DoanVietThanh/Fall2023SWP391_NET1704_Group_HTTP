@@ -1,24 +1,22 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
 import { AiFillStar } from 'react-icons/ai';
-import BackgroundSlider from '../../components/BackgroundSlider';
-import { Link } from 'react-router-dom';
 import { BiSearch } from 'react-icons/bi';
+import { Link } from 'react-router-dom';
+import BackgroundSlider from '../../components/BackgroundSlider';
+import Footer from '../../components/Footer';
+import Header from '../../components/Header';
 import theme from '../../theme';
-import axiosClient from './../../utils/axiosClient';
 import Loading from './../../components/Loading';
-import { testJson } from '../../data';
 
 const IntructorPage = () => {
-  const url =
-    '/img/backgroundSlide.png';
+  const url = '/img/backgroundSlide.png';
   const breadcrumbs = 'Giảng viên';
   const url_server = process.env.REACT_APP_SERVER_API;
   const [instructorList, setInstructorList] = useState([]);
   useEffect(() => {
     async function getListMentors() {
-      const res = await axiosClient.get(`${url_server}/staffs/mentors`);
+      const res = await axios.get(`${url_server}/staffs/mentors`);
       setInstructorList(res?.data?.data.mentors);
     }
     getListMentors();

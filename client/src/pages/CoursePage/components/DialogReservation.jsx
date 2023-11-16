@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import axiosClient from '../../../utils/axiosClient';
 import { toastError, toastSuccess } from '../../../components/Toastify';
+import axios from 'axios';
 
 const DialogReservation = ({
   open,
@@ -12,7 +13,8 @@ const DialogReservation = ({
   course = null,
   selectedCoursePackage = null,
 }) => {
-  const { memberId } = useSelector((state) => state?.auth?.user?.accountInfo);
+  const { memberId } =
+    useSelector((state) => state?.auth?.user?.accountInfo) || '';
   const [paymentList, setPaymentList] = useState([]);
   const [typePayment, setTypePayment] = useState(1);
 
@@ -22,7 +24,7 @@ const DialogReservation = ({
 
   useEffect(() => {
     async function getListTypePayment() {
-      await axiosClient
+      await axios
         .get('/courses/packages/reservation')
         .then((res) => setPaymentList(res?.data?.data));
     }

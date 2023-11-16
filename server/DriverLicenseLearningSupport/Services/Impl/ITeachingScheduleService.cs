@@ -17,6 +17,7 @@ namespace DriverLicenseLearningSupport.Services.Impl
         Task<IEnumerable<TeachingScheduleModel>> GetAllByTeachingDateAsync(DateTime date);
         Task<IEnumerable<TeachingScheduleModel>> GetAllAwaitScheduleByMentorAsync(int slotId, int weekDayScheduleId, Guid mentorId);
         Task<IEnumerable<TeachingScheduleModel>> GetAllWeekdayScheduleAsync(int weekDayScheduleId);
+        Task<IEnumerable<TeachingScheduleModel>> GetAllMentorRelatedScheduleAsync(Guid mentorId);
         Task<IEnumerable<StaffModel>> GetAllAwaitScheduleMentor();
         Task<TeachingScheduleModel> GetByMentorIdAndTeachingDateAsync(int weekdayScheduleId, Guid mentorId, DateTime date, int slotId);
         Task<TeachingScheduleModel> GetByFilterAsync(TeachingScheduleFilter filters);
@@ -28,5 +29,10 @@ namespace DriverLicenseLearningSupport.Services.Impl
         Task<bool> ApproveMentorAwaitSchedule(Guid mentorId);
         Task<bool> AddRangeVehicleMentorSchedule(Guid mentorId, int vehicleId);
         Task<bool> DenyMentorAwaitSchedule(Guid mentorId);
+        Task<bool> CancelAsync(int teachingScheduleId);
+        Task<IEnumerable<TeachingScheduleModel>> GetAllAwaitCancelScheduleAsync();
+        Task<bool> ApproveCancelScheduleAsync(int teachingScheduleId);
+        Task<bool> DenyCancelScheduleAsync(int teachingScheduleId, string cancelMessage);
+        Task<bool> ReregisterCancelScheduleAsync(int teachingScheduleId);
     }
 }

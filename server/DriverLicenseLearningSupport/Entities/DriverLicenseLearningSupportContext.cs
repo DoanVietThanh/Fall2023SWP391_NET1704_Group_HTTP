@@ -877,6 +877,12 @@ namespace DriverLicenseLearningSupport.Entities
 
                 entity.Property(e => e.CoursePackageId).HasColumnName("course_package_id");
 
+                entity.Property(e => e.IsCancel).HasColumnName("is_cancel");
+
+                entity.Property(e => e.CancelMessage)
+                      .HasMaxLength(200)      
+                      .HasColumnName("cancel_message");
+
                 entity.HasOne(d => d.Slot)
                     .WithMany(p => p.TeachingSchedules)
                     .HasForeignKey(d => d.SlotId)

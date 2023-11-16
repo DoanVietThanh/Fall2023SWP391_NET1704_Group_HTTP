@@ -175,7 +175,9 @@ CREATE TABLE [dbo].Teaching_Schedule(
 	vehicle_id INT,
 	weekday_schedule_id INT,
 	course_package_id NVARCHAR(200),
-	is_active BIT
+	is_active BIT,
+	is_cancel BIT,
+	cancel_message NVARCHAR(200)
 )
 GO
 CREATE TABLE [dbo].Roll_Call_Book(
@@ -894,7 +896,7 @@ hợp dưới đây?',0,null,1,1),
 (N'Biển nào dưới đây xe gắn máy được phép đi vào?',0,
 'https://video.vietjack.com/upload2/quiz_source1/2022/06/18-1655570112.png',1,1),
 (N'Biển nào báo hiệu cấm xe mô tô hai bánh đi vào?',0,
-'https://cdn.thuvienphapluat.vn/uploads/xlvb/ithong2023/15312.png',1,1),
+ N'8ed77d63-f818-412d-ab9f-9a9ba2b08f8d',1,1),
 (N'Khi gặp biển nào thì xe mô tô hai bánh được đi vào?',0,
 'https://cdn.thuvienphapluat.vn/uploads/xlvb/ithong2023/15312.png',1,1),
 (N'Biển nào cấm quay xe?',0,
@@ -1136,7 +1138,7 @@ từ bên phải và phía trước đi tới',0,8),
 (N'Biển 1 và 2',0,38),
 (N'Biển 2 và 3',0,38),
 (N'Cả 3 biển',1,38),
-(N'Biển 1',0,39),
+(N'Biển 1',1,39),
 (N'Biển 2 và 3',0,39),
 (N'Biển 3',0,39),
 (N'Biển 1',0,40),
@@ -1255,7 +1257,7 @@ Bật đèn chiếu xa, tăng tốc độ điều khiển ô tô qua khỏi khu 
 (N'Quan sát bên trái và phía trước của xe và lùi xe với tốc độ nhanh.',0,70)
 GO
 INSERT INTO [dbo].Theory_Exam(total_question, total_time, total_answer_required, license_type_id)
-VALUES(25, 15, 24, 2)
+VALUES(25, 15, 24, 1)
 GO
 -- Exam Questions
 INSERT INTO [dbo].Exam_Question(question_id, theory_exam_id)

@@ -30,21 +30,21 @@ const ApproveSchedule = () => {
   const [selectedVehicle, setSelectedVehicle] = useState();
   const [mentorScheduleVehicle, setMentorScheduleVehicle] = useState();
   const [message, setMessage] = useState('');
+  const [relatedMentors, setRelatedMentors] = useState('');
 
   useEffect(() => {
     async function getAwaitSchedule() {
-      try {
-        const response = await axiosClient
-          .get(`/teaching-schedules/mentors/${idMentor}/await-schedule`)
-          .catch((error) => toastError(error?.response?.data?.message));
-        console.log('response: ', response);
-        setMentorScheduleVehicle(response?.data.data?.mentorScheduleVehicle);
-        setActiveVehicles(response?.data.data?.activeVehicles);
-        setDataWeek(response?.data);
-        setCurrentWeek(response?.data.data?.weekdays.weekdayScheduleId);
-      } catch (error) {
-        // toastError(error.response?.data.message);
-      }
+      await axiosClient
+        .get(`/teaching-schedules/mentors/${idMentor}/await-schedule`)
+        .then((response) => {
+          setRelatedMentors(response?.data.data?.relatedMentors);
+          setMentorScheduleVehicle(response?.data.data?.mentorScheduleVehicle);
+          setActiveVehicles(response?.data.data?.activeVehicles);
+          setDataWeek(response?.data);
+          setCurrentWeek(response?.data.data?.weekdays.weekdayScheduleId);
+          console.log('response: ', response);
+        })
+        .catch((error) => toastError(error?.response?.data?.message));
     }
     getAwaitSchedule();
   }, []);
@@ -55,7 +55,6 @@ const ApproveSchedule = () => {
       const response = await axiosClient.get(
         `/teaching-schedules/mentors/${idMentor}/await-schedule/filter?weekdayScheduleId=${event.target.value}`
       );
-
       setDataWeek(response?.data);
     }
     selectedWeek();
@@ -135,8 +134,6 @@ const ApproveSchedule = () => {
     }
   };
 
-  // /teaching-schedule/mentors/:id/deny?message=ahihi
-
   const handleCancelAwait = async (e) => {
     console.log(message);
     console.log(idMentor);
@@ -153,14 +150,67 @@ const ApproveSchedule = () => {
     console.log('response: ', response);
   };
 
-  console.log('mentorScheduleVehicle: ', mentorScheduleVehicle);
-
+  // console.log('mentorScheduleVehicle: ', mentorScheduleVehicle);
+  console.log('relatedMentors: ', relatedMentors);
   return (
     <div className='flex'>
       <SideBar />
       <div className='flex flex-col mt-[64px] h-[90vh] w-full border rounded overflow-y-auto p-4'>
         <div className='flex-1 w-[100%]'>
           <div>
+            {relatedMentors && (
+              <div>
+                <h1 class='font-semibold text-[24px] text-yellow-700'>
+                  Các giảng viên liên quan
+                </h1>
+                <div className='grid grid-cols-3 gap-2 mb-8'>
+                  {relatedMentors?.map((mentor, index) => (
+                    <div key={mentor?.staffId} className={`border-l-2 p-4`}>
+                      <p>
+                        <span className='font-semibold'>
+                          Họ tên giảng viên:{' '}
+                        </span>
+                        {`${mentor?.firstName} ${mentor?.lastName}`}
+                        <span className='text-red-400'>
+                          {mentor?.staffId == idMentor
+                            ? '(người gửi yêu cầu)'
+                            : ''}
+                        </span>
+                      </p>
+                      <p>
+                        <span className='font-semibold'>Tổng học viên: </span>
+                        {mentor?.totalMember}
+                      </p>
+                      <p>
+                        <span className='font-semibold'>
+                          Tổng số buổi yêu cầu:{' '}
+                        </span>
+                        <span className='text-yellow-700 font-semibold'>
+                          {mentor?.totalTeachingScheduleRequired}
+                        </span>
+                      </p>
+                      <p>
+                        <span className='font-semibold'>
+                          Tổng số buổi đã dạy:{' '}
+                        </span>
+                        <span className='text-green-700 font-semibold'>
+                          {mentor?.totalTaughtSchedule}
+                        </span>
+                      </p>
+                      <p>
+                        <span className='font-semibold'>
+                          Tổng số buổi hủy:{' '}
+                        </span>
+                        <span className='text-red-700 font-semibold'>
+                          {mentor?.totalCanceledSchedule}
+                        </span>
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <table className='w-full border-2 border-black'>
               <thead>
                 <tr>

@@ -65,6 +65,8 @@ const DialogDetailSchedule = ({
     initialCheckAttendance();
   }, [teachingScheduleId]);
 
+  console.log('vehicle: ', vehicle);
+
   return (
     <div>
       <Dialog
@@ -116,7 +118,7 @@ const DialogDetailSchedule = ({
                   </div>
                   <div className='w-full'>
                     <img
-                      src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Land_Rover_Range_Rover_Autobiography_2016.jpg/1200px-Land_Rover_Range_Rover_Autobiography_2016.jpg'
+                      src={vehicle?.vehicleImage}
                       alt='transport'
                       className='w-[300px]'
                     />

@@ -265,6 +265,11 @@ namespace DriverLicenseLearningSupport.Controllers
             bool isPassed = true;
             MemberModel memberModel = await _memberService.GetByEmailAsync(reqObj.Email);
             StaffModel staffModel = await _staffService.GetByEmailAsync(reqObj.Email);
+            if(staffModel is not null)
+            {
+                staffModel.Courses = null!;
+                staffModel.FeedBacks = null!;
+            }
 
             var joinDate = DateTime.ParseExact(reqObj.JoinDate,
                 _appSettings.DateTimeFormat, CultureInfo.InvariantCulture);

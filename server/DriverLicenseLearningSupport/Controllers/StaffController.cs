@@ -1,4 +1,6 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
+﻿using Amazon.S3.Model;
+using Amazon.S3.Model.Internal.MarshallTransformations;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Presentation;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DriverLicenseLearningSupport.Entities;
@@ -19,6 +21,7 @@ using OfficeOpenXml;
 using RestSharp;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace DriverLicenseLearningSupport.Controllers
 {
@@ -80,7 +83,7 @@ namespace DriverLicenseLearningSupport.Controllers
             _vehicleService = vehicleService;
             _cache = cache;
             _appSettings = monitor.CurrentValue;
-            _courseSettings = courseMonitor.CurrentValue; 
+            _courseSettings = courseMonitor.CurrentValue;
         }
 
 
@@ -194,35 +197,26 @@ namespace DriverLicenseLearningSupport.Controllers
             }
 
             // is mentor 
-            if (staff.JobTitle.JobTitleDesc.Equals("Mentor")) 
+            if (staff.JobTitle.JobTitleDesc.Equals("Mentor"))
             {
-                // check exist course 
-                if(reqObj.CourseId is null
-                || String.IsNullOrEmpty(reqObj.CourseId))
-                {
-                    return BadRequest(new BaseResponse {
-                        StatusCode = StatusCodes.Status400BadRequest,
-                        Message = "Vui lòng chọn khóa học cho người hướng dẫn"
-                    });
-                }
-                var course = await _courseService.GetAsync(
-                    Guid.Parse(reqObj.CourseId));
-                if(course is null)
-                {
-                    return BadRequest(new BaseResponse
-                    {
-                        StatusCode = StatusCodes.Status400BadRequest,
-                        Message = "Không tìm thấy khóa học"
-                    });
-                }
-
                 // set empty Job Title
                 staff.JobTitle = null!;
                 // create mentor
                 var createdMentor = await _staffService.CreateAsync(staff);
 
-                if (createdMentor)
+
+                if (createdMentor && !String.IsNullOrEmpty(reqObj.CourseId))
                 {
+                    var course = await _courseService.GetAsync(
+                        Guid.Parse(reqObj.CourseId));
+                    if(course is null)
+                    {
+                        return NotFound(new BaseResponse { 
+                            StatusCode = StatusCodes.Status404NotFound,
+                            Message = "Không tìm thấy khóa học"
+                        });
+                    }
+
                     // already taught this course
                     var courseMentor = await _courseService.GetByMentorIdAndCourseIdAsync(
                         Guid.Parse(staff.StaffId),
@@ -250,12 +244,24 @@ namespace DriverLicenseLearningSupport.Controllers
                             Staff = staff
                         }
                     });
+                }else if(createdMentor && String.IsNullOrEmpty(reqObj.CourseId))
+                {
+                    return Ok(new BaseResponse
+                    {
+                        StatusCode = StatusCodes.Status200OK,
+                        Message = "Tạo mới người hướng dẫn thành công",
+                        Data = new
+                        {
+                            Staff = staff
+                        }
+                    });
                 }
 
-                return new ObjectResult(new BaseResponse {
+                return new ObjectResult(new BaseResponse
+                {
                     StatusCode = StatusCodes.Status500InternalServerError,
                     Message = "Tạo người hướng dẫn thất bại"
-                }) 
+                })
                 {
                     StatusCode = StatusCodes.Status500InternalServerError
                 };
@@ -294,21 +300,23 @@ namespace DriverLicenseLearningSupport.Controllers
         [HttpGet]
         [Route("staffs/{id:Guid}")]
         //[Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> GetStaff([FromRoute] Guid id) 
+        public async Task<IActionResult> GetStaff([FromRoute] Guid id)
         {
             // get staff by id
             var staff = await _staffService.GetAsync(id);
             // not found
             if (staff is null)
             {
-                return NotFound(new BaseResponse {
+                return NotFound(new BaseResponse
+                {
                     StatusCode = StatusCodes.Status404NotFound,
                     Message = $"Không tìm thấy nhân viên"
                 });
             }
 
             // 200 OK <- found
-            return Ok(new BaseResponse {
+            return Ok(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status200OK,
                 Data = staff
             });
@@ -325,7 +333,7 @@ namespace DriverLicenseLearningSupport.Controllers
         {
             var staffs = await _staffService.GetAllAsync();
 
-            if(staffs.Count() > 0)
+            if (staffs.Count() > 0)
             {
                 return Ok(new BaseResponse
                 {
@@ -334,7 +342,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 });
             }
 
-            return BadRequest(new BaseResponse { 
+            return BadRequest(new BaseResponse {
                 StatusCode = StatusCodes.Status400BadRequest,
                 Message = "Hiện chưa có nhân viên"
             });
@@ -384,9 +392,11 @@ namespace DriverLicenseLearningSupport.Controllers
             var result = PaginatedList<StaffModel>.CreateByIEnumerable(staffs, page, _appSettings.PageSize);
 
             // 200 Ok <- found
-            return Ok(new BaseResponse {
+            return Ok(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status200OK,
-                Data = new {
+                Data = new
+                {
                     Staffs = result,
                     PageIndex = result.PageIndex,
                     TotalPage = result.TotalPage
@@ -409,7 +419,8 @@ namespace DriverLicenseLearningSupport.Controllers
             var staffs = await _staffService.GetAllByFilterAsync(filters);
 
             // 404 Not Found <- not found any staff match filters
-            if (staffs is null) return NotFound(new BaseResponse {
+            if (staffs is null) return NotFound(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status404NotFound,
                 Message = $"Không tìm thấy nhân viên"
             });
@@ -421,7 +432,8 @@ namespace DriverLicenseLearningSupport.Controllers
             return Ok(new BaseResponse
             {
                 StatusCode = StatusCodes.Status200OK,
-                Data = new {
+                Data = new
+                {
                     Staffs = result,
                     PageIndex = result.PageIndex,
                     TotalPage = result.TotalPage
@@ -451,7 +463,8 @@ namespace DriverLicenseLearningSupport.Controllers
             // check exist
             if (mentors is null)
             {
-                return NotFound(new BaseResponse {
+                return NotFound(new BaseResponse
+                {
                     StatusCode = StatusCodes.Status404NotFound,
                     Message = "Không tìm thấy người hướng dẫn"
                 });
@@ -460,9 +473,11 @@ namespace DriverLicenseLearningSupport.Controllers
             // paging
             //var result = PaginatedList<StaffModel>.CreateByIEnumerable(mentors, page, _appSettings.PageSize);
 
-            return Ok(new BaseResponse {
+            return Ok(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status200OK,
-                Data = new {
+                Data = new
+                {
                     Mentors = mentors,
                     //PageIndex = result.PageIndex,
                     //TotalPage = result.TotalPage
@@ -484,13 +499,15 @@ namespace DriverLicenseLearningSupport.Controllers
 
             if (courseMentor is null)
             {
-                return BadRequest(new BaseResponse {
+                return BadRequest(new BaseResponse
+                {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = $"Không tìm thấy lịch của người hướng dẫn"
                 });
             }
 
-            return Ok(new BaseResponse {
+            return Ok(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status200OK,
                 Data = courseMentor
             });
@@ -512,7 +529,8 @@ namespace DriverLicenseLearningSupport.Controllers
             // check teaching course exist
             if (course is null)
             {
-                return BadRequest(new BaseResponse {
+                return BadRequest(new BaseResponse
+                {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = $"Không tìm thấy lịch của người hướng dẫn"
                 });
@@ -539,16 +557,23 @@ namespace DriverLicenseLearningSupport.Controllers
             // get calendar by current date
             var weekday = await _weekDayScheduleService.GetByDateAndCourseId(currDate,
                 Guid.Parse(course.CourseId));
-            if (weekday is null)
-            {
-                return BadRequest(new BaseResponse
-                {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Message = "Không tìm thấy lịch"
-                });
-            }
+            //if (weekday is null)
+            //{
+            //    return BadRequest(new BaseResponse
+            //    {
+            //        StatusCode = StatusCodes.Status400BadRequest,
+            //        Message = "Không tìm thấy lịch"
+            //    });
+            //}
+
             // get all weekday of calendar
             var weekdays = await _weekDayScheduleService.GetAllByCourseId(courseId);
+
+            if(weekday is null)
+            {
+                weekday = weekdays.FirstOrDefault();
+            }
+
             // get all slots 
             var slots = await _slotService.GetAllAsync();
             // convert to list of course
@@ -569,7 +594,8 @@ namespace DriverLicenseLearningSupport.Controllers
                                                   .Count();
 
             // response
-            return Ok(new BaseResponse {
+            return Ok(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status200OK,
                 Data = new
                 {
@@ -584,7 +610,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 }
             });
         }
-        
+
         /// <summary>
         /// Filtering mentor schedule
         /// </summary>
@@ -613,7 +639,8 @@ namespace DriverLicenseLearningSupport.Controllers
 
                 if (teachingDate is null)
                 {
-                    return BadRequest(new BaseResponse {
+                    return BadRequest(new BaseResponse
+                    {
                         StatusCode = StatusCodes.Status400BadRequest,
                         Message = $"Không tìm thấy lịch dạy ngày {filters.TeachingDate}"
                     });
@@ -678,14 +705,26 @@ namespace DriverLicenseLearningSupport.Controllers
         [HttpPut]
         [Route("staffs/mentors/{id:Guid}/schedule/rollcallbook/{rcbId:int}")]
         [Authorize(Roles = "Mentor")]
-        public async Task<IActionResult> RollCallBookSchedule([FromRoute] Guid id, 
+        public async Task<IActionResult> RollCallBookSchedule([FromRoute] Guid id,
             [FromRoute] int rcbId,
             RollCallBookRequest reqObj) {
+            
+            // rollcallbook without hours, km
+            if (String.IsNullOrEmpty(reqObj.TotalHoursDriven.ToString())
+                && String.IsNullOrEmpty(reqObj.TotalHoursDriven.ToString()))
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = $"Vui lòng nhập tổng quảng đường đi được và thời gian đã đi"
+                });
+            }
+
             // get mentor by id
             var mentor = await _staffService.GetAsync(id);
-            if(mentor is null)
+            if (mentor is null)
             {
-                return BadRequest(new BaseResponse { 
+                return BadRequest(new BaseResponse {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = $"Không tìm thấy người hướng dẫn"
                 });
@@ -728,18 +767,18 @@ namespace DriverLicenseLearningSupport.Controllers
 
                 var remainingHour = course.TotalHoursRequired - totalHoursDriven;
                 var remainingKm = course.TotalKmRequired - totalKmDriven;
-                
-                if(remainingHour < 0 && remainingKm < 0)
+
+                if (remainingHour < 0 && remainingKm < 0)
                 {
                     return Ok(new BaseResponse
-                {
-                    StatusCode = StatusCodes.Status200OK,
-                    Message = "Điểm danh thành công, học viên đã hoàn thành " +
+                    {
+                        StatusCode = StatusCodes.Status200OK,
+                        Message = "Điểm danh thành công, học viên đã hoàn thành " +
                     "đủ số giờ học và số km yêu cầu"
-                });
+                    });
                 }
-                
-                return Ok(new BaseResponse { 
+
+                return Ok(new BaseResponse {
                     StatusCode = StatusCodes.Status200OK,
                     Message = "Điểm danh thành công",
                     Data = new
@@ -750,12 +789,12 @@ namespace DriverLicenseLearningSupport.Controllers
                 });
 
             }
-            return new ObjectResult(new BaseResponse { 
+            return new ObjectResult(new BaseResponse {
                 StatusCode = StatusCodes.Status500InternalServerError,
                 Message = "Điểm danh thất bại"
             });
         }
-        
+
         /// <summary>
         /// Get all neccesary features to register teaching schedule
         /// </summary>
@@ -784,14 +823,16 @@ namespace DriverLicenseLearningSupport.Controllers
             // 404 Not found 
             if (slots is null)
             {
-                return NotFound(new BaseResponse {
+                return NotFound(new BaseResponse
+                {
                     StatusCode = StatusCodes.Status404NotFound,
                     Message = "Không tìm thấy slot học"
                 });
             }
 
             // 200Ok <- found
-            return Ok(new BaseResponse {
+            return Ok(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status200OK,
                 Data = new
                 {
@@ -800,7 +841,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 }
             });
         }
-        
+
         /// <summary>
         /// Teaching schedule register, with await status
         /// </summary>
@@ -811,21 +852,21 @@ namespace DriverLicenseLearningSupport.Controllers
         [Authorize(Roles = "Admin,Staff,Mentor")]
         public async Task<IActionResult> TeachingScheduleRegister([FromBody] TeachingScheduleRequest reqObj)
         {
-            if(!DateTime.TryParse(reqObj.TeachingDate.ToString(), out var date))
+            if (!DateTime.TryParse(reqObj.TeachingDate.ToString(), out var date))
             {
-                return BadRequest(new BaseResponse { 
+                return BadRequest(new BaseResponse {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = "Vui lòng chọn ngày đăng ký"
                 });
             }
-            
+
             // get mentor teaching schedule exist
             var existSchedules = await _teachingScheduleService.GetAllByMentorIdAsync(
                 Guid.Parse(reqObj.MentorId));
 
-            if(existSchedules.Count() == 0)
+            if (existSchedules.Count() == 0)
             {
-                return BadRequest(new BaseResponse { 
+                return BadRequest(new BaseResponse {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = $"Vui lòng đăng ký lịch dạy cả khóa " +
                     $"trước khi đăng ký lịch dạy theo tuần"
@@ -840,7 +881,8 @@ namespace DriverLicenseLearningSupport.Controllers
                 Guid.Parse(reqObj.CourseId));
             if (course is null)
             {
-                return BadRequest(new BaseResponse {
+                return BadRequest(new BaseResponse
+                {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = $"Người hướng dẫn không được phép đăng ký lịch"
                 });
@@ -852,11 +894,13 @@ namespace DriverLicenseLearningSupport.Controllers
             if (reqObj.TeachingDate < courseStartDate ||
                reqObj.TeachingDate > courseEndDate)
             {
-                return BadRequest(new BaseResponse {
+                return BadRequest(new BaseResponse
+                {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = $"Không thể tạo lịch dạy, Khóa học chỉ diễn ra từ {courseStartDate.ToString("dd/MM/yyyy")}" +
                     $" đến {courseEndDate.ToString("dd/MM/yyyy")}",
-                    Data = new {
+                    Data = new
+                    {
                         StartDate = courseStartDate,
                         EndDate = courseEndDate
                     }
@@ -889,7 +933,8 @@ namespace DriverLicenseLearningSupport.Controllers
                 Guid.Parse(reqObj.CourseId));
             if (otherCourseSchedule is not null)
             {
-                return BadRequest(new BaseResponse {
+                return BadRequest(new BaseResponse
+                {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = $"Ngày dạy và buổi học đã được đăng ký"
                 });
@@ -924,7 +969,7 @@ namespace DriverLicenseLearningSupport.Controllers
                     {
                         var teachingSchedules
                             = await _teachingScheduleService.GetBySlotAndWeekDayScheduleAsync(s.SlotId,
-                                weekday.WeekdayScheduleId, 
+                                weekday.WeekdayScheduleId,
                                 Guid.Parse(reqObj.MentorId));
                         s.TeachingSchedules = teachingSchedules.ToList();
                     }
@@ -953,12 +998,14 @@ namespace DriverLicenseLearningSupport.Controllers
                             TotalSchedule = totalSchedule,
                             SlotSchedules = listOfSlotSchedule
                         }
-                    }) { StatusCode = StatusCodes.Status200OK };
+                    })
+                    { StatusCode = StatusCodes.Status200OK };
                 }
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
-            return BadRequest(new BaseResponse {
+            return BadRequest(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status400BadRequest,
                 Message = $"Ngày đăng ký và slot đăng ký đã có trong lịch dạy, vui lòng chọn lại"
             });
@@ -1026,7 +1073,6 @@ namespace DriverLicenseLearningSupport.Controllers
         {
             // get mentor by id
             var mentor = await _staffService.GetAsync(Guid.Parse(reqObj.MentorId));
-            mentor.FeedBacks = null;
             if (mentor is null)
             {
                 return BadRequest(new BaseResponse
@@ -1035,7 +1081,8 @@ namespace DriverLicenseLearningSupport.Controllers
                     Message = $"Không tìm thấy người hướng dẫn"
                 });
             }
-            
+
+            mentor.FeedBacks = null;
             // get course by id
             var course = await _courseService.GetAsync(Guid.Parse(reqObj.CourseId));
             if (course is null)
@@ -1066,9 +1113,9 @@ namespace DriverLicenseLearningSupport.Controllers
             // get mentor teaching schedule exist
             var teachingSchedules = await _teachingScheduleService.GetAllByMentorIdAsync(
                 Guid.Parse(reqObj.MentorId));
-            if(teachingSchedules.Count() > 0)
+            if (teachingSchedules.Count() > 0)
             {
-                return BadRequest(new BaseResponse { 
+                return BadRequest(new BaseResponse {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = $"Người hướng dẫn `{mentor.FirstName} {mentor.LastName}` đã " +
                     $"đăng ký lịch cả khóa cho khóa học `{course.CourseTitle}`"
@@ -1101,9 +1148,9 @@ namespace DriverLicenseLearningSupport.Controllers
 
             // check slot exist
             var slots = await _slotService.GetAllAsync();
-            if(slots.Count() == 0)
+            if (slots.Count() == 0)
             {
-                return BadRequest(new BaseResponse { 
+                return BadRequest(new BaseResponse {
                     StatusCode = StatusCodes.Status400BadRequest,
                     Message = "Không tìm thấy slot học"
                 });
@@ -1136,20 +1183,20 @@ namespace DriverLicenseLearningSupport.Controllers
                     Message = "Không tìm thấy lịch"
                 });
             }
-            
+
             // get all weekday of calendar
             var weekdays = await _weekDayScheduleService.GetAllByCourseId(
                 Guid.Parse(course.CourseId));
-            
+
             // convert to list of course
             var listOfSlotSchedule = slots.ToList();
-            
+
             // get teaching schedule for each slot
             foreach (var s in slots)
             {
                 teachingSchedules
                     = await _teachingScheduleService.GetBySlotAndWeekDayScheduleAsync(s.SlotId,
-                        weekday.WeekdayScheduleId, 
+                        weekday.WeekdayScheduleId,
                         Guid.Parse(reqObj.MentorId));
                 s.TeachingSchedules = teachingSchedules.ToList();
             }
@@ -1181,7 +1228,8 @@ namespace DriverLicenseLearningSupport.Controllers
                 });
             }
 
-            return new ObjectResult(new BaseResponse {
+            return new ObjectResult(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status500InternalServerError,
                 Message = "Xảy ra lỗi"
             })
@@ -1255,6 +1303,19 @@ namespace DriverLicenseLearningSupport.Controllers
             // 4. save db
             staffModel.AvatarImage = imageId.ToString();
 
+            // validate birthdate
+            var currDate = DateTime.ParseExact(DateTime.Now.ToString(_appSettings.DateFormat),
+                _appSettings.DateFormat, CultureInfo.InvariantCulture);
+            var birthdate = DateTime.Parse(reqObj.DateBirth);
+            if (birthdate >= currDate)
+            {
+                return BadRequest(new BaseResponse
+                {
+                    StatusCode = StatusCodes.Status400BadRequest,
+                    Message = "Ngày sinh không hợp lệ"
+                });
+            }
+
             // update staff
             var isSucess = await _staffService.UpdateAsync(id, staffModel);
 
@@ -1308,7 +1369,8 @@ namespace DriverLicenseLearningSupport.Controllers
                 });
             }
 
-            return new ObjectResult(new BaseResponse {
+            return new ObjectResult(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status500InternalServerError,
                 Message = "Xóa thật bại"
             })
@@ -1338,7 +1400,8 @@ namespace DriverLicenseLearningSupport.Controllers
                 });
             }
 
-            return BadRequest(new BaseResponse { 
+            return BadRequest(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status400BadRequest,
                 Message = "Không tìm thấy loại công việc"
             });
@@ -1402,7 +1465,8 @@ namespace DriverLicenseLearningSupport.Controllers
 
                         // check exist email
                         var existEmail = await _accountService.GetByEmailAsync(email);
-                        if (existEmail is not null) return BadRequest(new BaseResponse {
+                        if (existEmail is not null) return BadRequest(new BaseResponse
+                        {
                             StatusCode = StatusCodes.Status400BadRequest,
                             Message = $"Email của nhân viên {firstName} {lastName}, tại hàng {row} đã tồn tại",
                         });
@@ -1499,7 +1563,7 @@ namespace DriverLicenseLearningSupport.Controllers
             return BadRequest(new BaseResponse
             {
                 StatusCode = StatusCodes.Status400BadRequest,
-                Message = "Import excel file failed."
+                Message = "Import excel không thành công"
             });
         }
 
@@ -1517,7 +1581,8 @@ namespace DriverLicenseLearningSupport.Controllers
             var staffs = await _staffService.GetAllByFilterAsync(filters);
             if (staffs is null)
             {
-                return NotFound(new BaseResponse {
+                return NotFound(new BaseResponse
+                {
                     StatusCode = StatusCodes.Status404NotFound,
                     Message = "Không tìm thấy nhân viên để export excel"
                 });
