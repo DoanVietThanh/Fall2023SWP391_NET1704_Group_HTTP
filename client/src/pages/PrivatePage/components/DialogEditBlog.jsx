@@ -1,10 +1,10 @@
-import { Dialog, TextField } from "@mui/material";
-import { EditorState, convertToRaw } from "draft-js";
-import { Editor } from "react-draft-wysiwyg";
-import draftToHtml from "draftjs-to-html";
-import React, { useEffect, useRef, useState } from "react";
-import { toastError } from "../../../components/Toastify";
-import axios from "axios";
+import { Dialog, TextField } from '@mui/material';
+import { EditorState, convertToRaw } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import draftToHtml from 'draftjs-to-html';
+import React, { useEffect, useRef, useState } from 'react';
+import { toastError } from '../../../components/Toastify';
+import axios from 'axios';
 
 const DialogEditBlog = ({ open, setOpen }) => {
   const urlService = process.env.REACT_APP_SERVER_API;
@@ -15,11 +15,11 @@ const DialogEditBlog = ({ open, setOpen }) => {
       await axios
         .get(`${urlService}/blog/tags`)
         .then((res) => {
-          console.log("res: ", res);
+          console.log('res: ', res);
           setTagList(res.data?.data);
         })
         .catch((error) => {
-          console.log("error: ", error);
+          console.log('error: ', error);
           toastError(error?.response?.data?.message);
         });
     }
@@ -37,7 +37,7 @@ const DialogEditBlog = ({ open, setOpen }) => {
     }
   };
 
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState('');
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
   };
@@ -63,33 +63,33 @@ const DialogEditBlog = ({ open, setOpen }) => {
   };
   return (
     <div>
-      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md">
-        <div className="p-8 flex flex-col gap-6">
-          <div className="dialogTit">Chỉnh sửa bài đăng</div>
-          <div className="flex flex-col gap-2">
-            <label className="text-xl text-gray-900">Tiêu đề bài đăng:</label>
+      <Dialog open={open} onClose={() => setOpen(false)} maxWidth='md'>
+        <div className='p-8 flex flex-col gap-6'>
+          <div className='dialogTit'>Chỉnh sửa bài đăng</div>
+          <div className='flex flex-col gap-2'>
+            <label className='text-xl text-gray-900'>Tiêu đề bài đăng:</label>
             <textarea
               value={title}
-              rows="1"
-              className="border p-2"
+              rows='1'
+              className='border p-2'
               onChange={handleTitleChange}
             />
           </div>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-xl text-gray-900">
+          <div className='flex flex-col gap-2'>
+            <label className='text-xl text-gray-900'>
               Chọn tag cho bài đăng:
             </label>
-            <div className="flex flex-wrap gap-4 w-[50%] ">
+            <div className='flex flex-wrap gap-6'>
               {tagList.map((tag, index) => (
                 <span key={index}>
-                  <div className="items-center">
+                  <div className='flex gap-2 items-center'>
                     <input
-                      type="checkbox"
+                      type='checkbox'
                       value={tag}
                       checked={selectedTags.includes(tag)}
                       onChange={() => handleTagChange(tag)}
-                      className="w-[20px] h-[20px]"
+                      className='w-[20px] h-[20px]'
                     />
                     {tag.tagName}
                   </div>
@@ -98,14 +98,14 @@ const DialogEditBlog = ({ open, setOpen }) => {
             </div>
           </div>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-xl text-gray-900">
+          <div className='flex flex-col gap-2'>
+            <label className='text-xl text-gray-900'>
               Chọn ảnh cho bài đăng:
             </label>
             <input
-              type="file"
-              id="fileToUpload"
-              accept=".img, .png, .jpg"
+              type='file'
+              id='fileToUpload'
+              accept='.img, .png, .jpg'
               onChange={handleFileChange}
               ref={fileInputRef}
             />
@@ -114,41 +114,41 @@ const DialogEditBlog = ({ open, setOpen }) => {
                 <h2>Ảnh đã chọn:</h2>
                 <img
                   src={imageData}
-                  alt="Selected img"
+                  alt='Selected img'
                   style={{
-                    maxWidth: "100%",
-                    maxHeight: "300px",
-                    margin: "10px 0",
+                    maxWidth: '100%',
+                    maxHeight: '300px',
+                    margin: '10px 0',
                   }}
                 />
               </div>
             )}
           </div>
-          <div className="flex flex-col gap-2">
-            <label className="text-xl text-gray-900">Nội dung bài đăng:</label>
-            <div className="border p-2">
+          <div className='flex flex-col gap-2'>
+            <label className='text-xl text-gray-900'>Nội dung bài đăng:</label>
+            <div className='border p-2'>
               <Editor
                 editorState={editorState}
                 onEditorStateChange={onEditorStateChange}
-                wrapperClassName=""
-                editorClassName=""
+                wrapperClassName=''
+                editorClassName=''
                 toolbar={{
                   inlineStyles: true,
                   blockType: {
                     inDropdown: true,
-                    options: ["Normal", "H1", "H2", "H3", "H4", "H5", "H6"],
+                    options: ['Normal', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6'],
                   },
                   fontSize: {
                     options: [10, 12, 14, 16, 18, 24, 30, 36],
                   },
                   fontFamily: {
                     options: [
-                      "Arial",
-                      "Georgia",
-                      "Impact",
-                      "Tahoma",
-                      "Times New Roman",
-                      "Verdana",
+                      'Arial',
+                      'Georgia',
+                      'Impact',
+                      'Tahoma',
+                      'Times New Roman',
+                      'Verdana',
                     ],
                   },
                   inline: { inDropdown: true },
@@ -158,16 +158,16 @@ const DialogEditBlog = ({ open, setOpen }) => {
                   history: { inDropdown: true },
                 }}
               />
-              <div>
+              <div className='hidden'>
                 {draftToHtml(convertToRaw(editorState.getCurrentContent()))}
               </div>
             </div>
           </div>
-          <div className="flex gap-2 justify-end">
-            <button className="btnCancel" onClick={() => setOpen(false)}>
+          <div className='flex gap-2 justify-end'>
+            <button className='btnCancel' onClick={() => setOpen(false)}>
               Hủy
             </button>
-            <button className="btn" onClick={() => setOpen(false)}>
+            <button className='btn' onClick={() => setOpen(false)}>
               Hoàn tất
             </button>
           </div>
