@@ -1073,7 +1073,6 @@ namespace DriverLicenseLearningSupport.Controllers
         {
             // get mentor by id
             var mentor = await _staffService.GetAsync(Guid.Parse(reqObj.MentorId));
-            mentor.FeedBacks = null;
             if (mentor is null)
             {
                 return BadRequest(new BaseResponse
@@ -1083,6 +1082,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 });
             }
 
+            mentor.FeedBacks = null;
             // get course by id
             var course = await _courseService.GetAsync(Guid.Parse(reqObj.CourseId));
             if (course is null)

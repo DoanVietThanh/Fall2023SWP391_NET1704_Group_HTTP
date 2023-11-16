@@ -40,24 +40,6 @@ const WeekSchedule = () => {
 
   useEffect(() => {
     async function getDataCourse() {
-      try {
-        const response = await axiosClient
-          .get(`/members/${user.accountInfo.memberId}/schedule`)
-          .catch((error) => toastError(error?.response?.data?.message));
-        console.log('response: ', response);
-        setIsLoading(false);
-        setMentorId(response?.data.data.mentor.staffId);
-        setDataWeek(response?.data);
-        setCurrentWeek(response?.data.data?.weekdays.weekdayScheduleId);
-      } catch (error) {
-        // toastError(error?.response?.data.message);
-      }
-    }
-    getDataCourse();
-  }, []);
-
-  const getInitDataCourse = async () => {
-    try {
       const response = await axiosClient
         .get(`/members/${user.accountInfo.memberId}/schedule`)
         .catch((error) => toastError(error?.response?.data?.message));
@@ -66,9 +48,19 @@ const WeekSchedule = () => {
       setMentorId(response?.data.data.mentor.staffId);
       setDataWeek(response?.data);
       setCurrentWeek(response?.data.data?.weekdays.weekdayScheduleId);
-    } catch (error) {
-      // toastError(error?.response?.data.message);
     }
+    getDataCourse();
+  }, []);
+
+  const getInitDataCourse = async () => {
+    const response = await axiosClient
+      .get(`/members/${user.accountInfo.memberId}/schedule`)
+      .catch((error) => toastError(error?.response?.data?.message));
+    console.log('response: ', response);
+    setIsLoading(false);
+    setMentorId(response?.data.data.mentor.staffId);
+    setDataWeek(response?.data);
+    setCurrentWeek(response?.data.data?.weekdays.weekdayScheduleId);
   };
 
   const handleClickOpen = async (teachingScheduleId) => {
@@ -103,11 +95,14 @@ const WeekSchedule = () => {
   const handleSubmitSchedule = () => {
     try {
       async function submitForm() {
-        //setIsLoading(true);
         const response = await axiosClient
           .post(`/members/schedule`, {
             memberId: user?.accountInfo.memberId,
             teachingScheduleId: idSchedule,
+          })
+          .then((res) => {
+            setDataWeek(res?.data);
+            setOpenRegister(false);
           })
           .catch((e) => {
             console.log(e);
@@ -115,7 +110,6 @@ const WeekSchedule = () => {
             setOpenRegister(false);
           });
         if (response?.data.statusCode === 200) {
-          setIsLoading(!isLoading);
           setOpenRegister(false);
           toastSuccess(response.data.message);
         }
@@ -143,10 +137,6 @@ const WeekSchedule = () => {
       .catch((error) => toastError(error?.response?.data.message));
   };
 
-  // console.log('dataWeek: ', dataWeek);
-  // console.log(dayjs(new Date()).format('YYYY-MM-DDTHH:MM:SS'));
-  console.log('cancelRckId: ', cancelRckId);
-  console.log('messageCancel: ', messageCancel);
   return (
     <div className='flex'>
       <SideBar />
@@ -183,11 +173,13 @@ const WeekSchedule = () => {
                                   label='Tuần'
                                   onChange={handleChange}
                                 >
-                                  {dataWeek.data.filter?.map((item, index) => (
-                                    <MenuItem value={item.id} key={index}>
-                                      {item.desc}
-                                    </MenuItem>
-                                  ))}
+                                  {dataWeek?.data?.filter?.map(
+                                    (item, index) => (
+                                      <MenuItem value={item.id} key={index}>
+                                        {item.desc}
+                                      </MenuItem>
+                                    )
+                                  )}
                                 </Select>
                               </FormControl>
                             </th>

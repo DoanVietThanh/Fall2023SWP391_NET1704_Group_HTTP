@@ -52,17 +52,14 @@ const DialogRegisterSchedule = ({
           toastSuccess('Đăng kí thành công');
           setDataWeek(res?.data);
         })
-        .catch((error) =>{
-          console.log("ERROR", error);
+        .catch((error) => {
+          console.log('ERROR', error);
           toastError(error?.response?.data?.message);
         });
       console.log(res);
-      //   toastSuccess(res?.data?.data?.message);
-      
+
       setOpenRegisterSchedule(false);
     } catch (error) {
-      console.log(error);
-      // toastError(error?.response?.data?.message);
       setOpenRegisterSchedule(false);
     }
   };
@@ -74,6 +71,8 @@ const DialogRegisterSchedule = ({
         onClose={() => setOpenRegisterSchedule(false)}
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
+        fullWidth
+        maxWidth='md'
       >
         <form action=''>
           <div className='p-4 min-w-[36vw]'>
@@ -121,10 +120,3 @@ const DialogRegisterSchedule = ({
 };
 
 export default DialogRegisterSchedule;
-
-// {
-//     "teachingDate": "2023-10-23",
-//     "mentorId": "d1b02d31-da3f-42c7-a317-7045b94824b7",
-//     "courseId":"1d115018-d16d-4834-9e56-6d6925658666",
-//     "slotId": 1
-//   }
