@@ -40,6 +40,7 @@ import ManageDenySchedule from '../pages/PrivatePage/ManageDenySchedule';
 import ManageCourse from '../pages/PrivatePage/ManageCourse/ManageCourse';
 import ManageStaff from '../pages/PrivatePage/ManageStaff/ManageStaff';
 import ManageBlog from './../pages/PrivatePage/ManageBlog';
+import PaymentFail from '../pages/CoursePage/PaymentFail';
 
 const RouterApp = () => {
   const router = createBrowserRouter([
@@ -78,10 +79,12 @@ const RouterApp = () => {
     { path: '/course', element: <CoursePage /> },
     { path: '/course/detail/:idCourse', element: <DetailCourse /> },
     { path: '/api/payment/notification', element: <Payment /> },
+    {
+      path: '/api/payment/notification-fail',
+      element: <PaymentFail />,
+    },
 
-    { path: "/document", element: <DocumentPage /> },
-
-    
+    { path: '/document', element: <DocumentPage /> },
 
     { path: '/theory', element: <TheoryPage /> },
     { path: '/theory/test/:theoryExamId', element: <TestTheory /> },

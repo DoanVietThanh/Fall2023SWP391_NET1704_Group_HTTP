@@ -45,7 +45,7 @@ const Profile = () => {
                 className='h-[40vh] object-cover w-full rounded-lg'
               />
               <img
-                src={`/img/avtThanh.jpg`}
+                src={user.accountInfo?.avatarImage}
                 alt='avt'
                 className='absolute bottom-[-90px] left-16 w-[180px] h-[180px] object-cover rounded-full border-8 border-white'
               />
@@ -115,7 +115,9 @@ const Profile = () => {
                 </button>
               ) : (
                 <button
-                  className='btn mt-4'
+                  className={`btn mt-4 ${
+                    accInfo?.emailNavigation.role.roleId != 4 ? 'hidden' : ''
+                  }`}
                   onClick={() => setOpenRegisterForm(true)}
                 >
                   Tạo hồ sơ thi

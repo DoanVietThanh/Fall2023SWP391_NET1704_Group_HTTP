@@ -84,7 +84,7 @@ namespace DriverLicenseLearningSupport.Controllers
             }
             else
             {
-                returnUrl = Url.Action("PaymentNotification", "Payments",
+                returnUrl = Url.Action("FailPaymentNotification", "Payments",
                     //string.Empty,
                     values: new { Sucess = false },
                     Request.Scheme, host: _profileConfig.VercelDeployUrl);
@@ -99,10 +99,30 @@ namespace DriverLicenseLearningSupport.Controllers
         }
 
         [HttpGet]
+        [Route("notification-fail")]
+        public async Task<IActionResult> FailPaymentNotification(int statusCode, string message)
+        {
+            if (statusCode == 200)
+            {
+                return Ok(new
+                {
+                    Success = true,
+                });
+            }
+            else
+            {
+                return BadRequest(new
+                {
+                    Success = false,
+                });
+            }
+        }
+
+        [HttpGet]
         [Route("notification")]
         public async Task<IActionResult> PaymentNotification(int statusCode, string message)
         {
-            if(statusCode == 200)
+            if (statusCode == 200)
             {
                 return Ok(new
                 {

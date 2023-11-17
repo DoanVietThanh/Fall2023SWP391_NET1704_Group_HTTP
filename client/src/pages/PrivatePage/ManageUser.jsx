@@ -36,7 +36,7 @@ const ManageUser = () => {
       renderCell: ({ row: { avatarImage } }) => (
         <div>
           <img
-            src='/img/avtThanh.jpg'
+            src={avatarImage}
             alt='avt'
             className='w-[40px] h-[40px] rounded-full object-cover'
           />
@@ -53,11 +53,6 @@ const ManageUser = () => {
     },
     { field: 'phone', headerName: 'Số điện thoại', width: 130 },
     { field: 'email', headerName: 'Email', width: 130 },
-    {
-      field: 'licenseTypeId',
-      headerName: 'Loại bằng',
-      width: 130,
-    },
     {
       field: 'edit',
       headerName: 'Chỉnh sửa',
@@ -95,6 +90,7 @@ const ManageUser = () => {
       .catch((error) => toastError(error?.response?.data?.message));
   }
 
+  console.log('listMembers: ', listMembers);
   return (
     <div className='flex'>
       <SideBar />

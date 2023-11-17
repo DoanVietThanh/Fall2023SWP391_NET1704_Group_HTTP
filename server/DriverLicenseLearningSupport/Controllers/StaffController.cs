@@ -586,6 +586,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 var teachingSchedules
                     = await _teachingScheduleService.GetBySlotAndWeekDayScheduleAsync(s.SlotId,
                         weekday.WeekdayScheduleId, id);
+
                 s.TeachingSchedules = teachingSchedules.ToList();
             }
 

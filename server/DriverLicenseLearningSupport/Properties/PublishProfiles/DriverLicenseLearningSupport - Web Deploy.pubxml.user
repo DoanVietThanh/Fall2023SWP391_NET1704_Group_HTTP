@@ -7,8 +7,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
     <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAxPrktRB210ilapCWG12RdAAAAAACAAAAAAAQZgAAAAEAACAAAAAKpLWQEKmVYXhBgDHs0odqBYJcwlNtG3bh6H+TsfQesAAAAAAOgAAAAAIAACAAAACguWxXPx8nEi/bJFzxAJOqY99ImWVpcwMEMM07z1PSTIAAAACI4H0Z2JF8Uo29tQJWZJy5UyHXGKeOST5TVq9Uf3E62La4ztTIesMzSARbZazzT7jGeYP2aTYvJMN9kZUNhpW/7be0620tb1ct8Z8h2haqwtleXL5UX0evYVK03jH4lWzWnFzPBaIXk9FmcsVjMDZaOWHTtCTvZwNCC7b0H03+RUAAAACthxv7gQQDEoARJxRwPTaTi3tB0WVoQTcyBgrPropFIb/bGA3oTiaGiHcOhLKroJ3hzwkk3K/syeJDyyAn57MF</EncryptedPassword>
-    <History>True|2023-09-18T11:34:20.4736908Z;False|2023-09-18T18:33:11.2817539+07:00;</History>
+    <History>True|2023-11-16T17:01:11.3121794Z;True|2023-09-18T18:34:20.4736908+07:00;False|2023-09-18T18:33:11.2817539+07:00;</History>
     <LastFailureDetails />
-    <IsBasicAuthAllowed>True</IsBasicAuthAllowed>
   </PropertyGroup>
 </Project>

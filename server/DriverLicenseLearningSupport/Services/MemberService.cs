@@ -82,7 +82,19 @@ namespace DriverLicenseLearningSupport.Services
         }
         public async Task<IEnumerable<MemberModel>> GetAllAsync()
         {
-            return await _memberRepository.GetAllAsync();
+            var members =  await _memberRepository.GetAllAsync();
+            if(members.Count() > 0)
+            {
+                foreach(var member in members)
+                {
+                    if(member.AvatarImage is not null)
+                    {
+                        member.AvatarImage = await _imageService.GetPreSignedURL(Guid.Parse(member.AvatarImage));
+                    }
+                }
+            }
+
+            return members;
         }
         public async Task<IEnumerable<MemberModel>> GetAllByFilterAsync(MemberFilter filters)
         {

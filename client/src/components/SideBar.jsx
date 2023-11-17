@@ -27,7 +27,8 @@ import {
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { logout } from '../features/auth/authSlice';
 import { Button, Menu, MenuItem } from '@mui/material';
-
+import { MdFreeCancellation, MdOutlineManageHistory } from 'react-icons/md';
+import { FaBook } from 'react-icons/fa';
 const drawerWidth = 240;
 
 const listNavbar = [
@@ -80,29 +81,17 @@ const listNavbarManage = [
     navigate: '/manage-user',
   },
   {
-    id: 3,
-    title: 'Lịch dạy theo tuần',
-    icon: <BsCalendarEvent size={24} />,
-    navigate: '/week-schedule-mentor',
-  },
-  {
-    id: 4,
-    title: 'Lịch sử kiểm tra',
-    icon: <BsClockHistory size={24} />,
-    navigate: '/history-test',
-  },
-  {
     id: 5,
     title: 'Quản lí câu hỏi',
     icon: <AiOutlineQuestionCircle size={24} />,
     navigate: '/manage-question',
   },
-  {
-    id: 6,
-    title: 'Quản lí đề thi',
-    icon: <BsEnvelopePaper size={24} />,
-    navigate: '/manage-banktest',
-  },
+  // {
+  //   id: 6,
+  //   title: 'Quản lí đề thi',
+  //   icon: <BsEnvelopePaper size={24} />,
+  //   navigate: '/manage-banktest',
+  // },
   {
     id: 7,
     title: 'Quản lí bài đăng',
@@ -112,29 +101,39 @@ const listNavbarManage = [
   {
     id: 8,
     title: 'Quản lí lịch chờ',
-    icon: <BsEnvelopePaper size={24} />,
+    icon: <MdOutlineManageHistory size={24} />,
     navigate: '/manage-await-schedule',
   },
+
   {
     id: 9,
     title: 'Quản lí lịch hủy',
-    icon: <BsEnvelopePaper size={24} />,
+    icon: <MdFreeCancellation size={24} />,
     navigate: '/manage-deny-schedule',
   },
   {
-    id: 10,
+    id: 13,
+    title: 'Quản lí khóa học',
+    icon: <FaBook size={20} />,
+    navigate: '/manage-course',
+  },
+];
+
+const listNavbarAdmin = [
+  {
+    id: 1,
+    title: 'Thông tin cá nhân',
+    icon: <BsPerson size={24} />,
+    navigate: '/profile',
+  },
+  {
+    id: 2,
     title: 'Thống kê',
     icon: <BsBarChartLine size={24} />,
     navigate: '/dashboard',
   },
   {
-    id: 13,
-    title: 'Quản lí khóa học',
-    icon: <BsEnvelopePaper size={20} />,
-    navigate: '/manage-course',
-  },
-  {
-    id: 14,
+    id: 4,
     title: 'Quản lí nhân viên',
     icon: <BsEnvelopePaper size={20} />,
     navigate: '/manage-staff',
@@ -255,7 +254,7 @@ export default function SideBar() {
           <div className='w-full flex justify-between'>
             <div className='font-medium capitalize flex-x'>
               {accountInfo?.emailNavigation.role.roleId == 1 &&
-                listNavbarManage.map((itemNav, index) =>
+                listNavbarAdmin.map((itemNav, index) =>
                   location.pathname === itemNav.navigate ? itemNav.title : ''
                 )}
 
@@ -286,7 +285,7 @@ export default function SideBar() {
                   <div className='flex justify-center items-center'>
                     <div className='flex justify-center items-center'>
                       <img
-                        src='/img/avtThanh.jpg'
+                        src={user.accountInfo?.avatarImage}
                         alt='Avatar'
                         className='rounded-full w-[36px] h-[36px] object-cover'
                       />
@@ -343,7 +342,7 @@ export default function SideBar() {
         <div className='flex flex-col justify-between h-full'>
           <div>
             {accountInfo?.emailNavigation.role.roleId == 1 &&
-              listNavbarManage.map((item, index) => (
+              listNavbarAdmin.map((item, index) => (
                 <div
                   key={item.id}
                   onClick={() => navigate(item.navigate)}

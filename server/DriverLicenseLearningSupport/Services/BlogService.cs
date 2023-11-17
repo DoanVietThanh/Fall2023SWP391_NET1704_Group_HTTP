@@ -10,11 +10,13 @@ namespace DriverLicenseLearningSupport.Services
     {
         private readonly IBlogRepository _blogRepo;
         private readonly IMapper _mapper;
+        private readonly IImageService _imageService;
 
-        public BlogService(IBlogRepository blogRepo, IMapper mapper) 
+        public BlogService(IBlogRepository blogRepo, IMapper mapper, IImageService imageService) 
         {
             _blogRepo = blogRepo;
             _mapper = mapper;
+            _imageService = imageService;
         }
 
         public async Task<BlogModel> CreateAsync(BlogModel blog)
@@ -35,12 +37,30 @@ namespace DriverLicenseLearningSupport.Services
 
         public async Task<IEnumerable<BlogModel>> GetAllBlogWithoutCmt()
         {
-            return await _blogRepo.GetAllBlogWithoutCmt(); 
+            var blogs =  await _blogRepo.GetAllBlogWithoutCmt(); 
+            foreach(var b in blogs)
+            {
+                if(b.Image is not null)
+                {
+                    b.Image = await _imageService.GetPreSignedURL(Guid.Parse(b.Image));
+                }
+            }
+
+            return blogs;
         }
 
         public async Task<IEnumerable<BlogModel>> GetBlogByIdAsync(int id)
         {
-            return await _blogRepo.GetBlogByIdAsync(id);
+            var blogs = await _blogRepo.GetBlogByIdAsync(id);
+            foreach (var b in blogs)
+            {
+                if (b.Image is not null)
+                {
+                    b.Image = await _imageService.GetPreSignedURL(Guid.Parse(b.Image));
+                }
+            }
+
+            return blogs;
         }
 
         public async Task<IEnumerable<BlogModel>> GetBlogsByStaffId(Guid id)

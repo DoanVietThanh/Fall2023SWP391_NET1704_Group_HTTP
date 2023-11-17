@@ -482,7 +482,7 @@ VALUES (N'Chưa duyệt'), (N'Đã duyệt'), (N'Đã hủy')
 INSERT INTO [dbo].Reservation_Status(reservation_status_desc)
 VALUES (N'Chưa thanh toán'), (N'Đã thanh toán')
 INSERT INTO [dbo].Payment_Type(payment_type_desc)
-VALUES (N'Thanh toán trực tiếp'), (N'Credit Card'), (N'VNPAY')
+VALUES (N'Thanh toán trực tiếp'),(N'Credit Card'),(N'VNPAY')
 INSERT INTO [dbo].Vehicle_Type(vehicle_type_desc, license_type_id)
 VALUES (N'Xe số sàn', 3), (N'Xe số tự động', 4)
 INSERT INTO [dbo].Vehicle(vehicle_name, register_date, vehicle_image, vehicle_license_plate, is_active, vehicle_type_id)
@@ -693,13 +693,13 @@ N'29/01 To 04/01'
 INSERT INTO [dbo].Course_Package(course_package_id, course_package_desc, course_id, cost, age_required,session_hour,total_session)
 VALUES
 (N'069af18a-54b3-4de7-bac2-27d778431cc3',
- N'Học bằng lái B1 cơ bản',
+ N'Học bằng lái B1 bổ túc',
  N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e',
  14500000,18,2,6)
 INSERT INTO [dbo].Course_Package(course_package_id, course_package_desc, course_id, cost, age_required)
 VALUES
 (N'825e8a00-ae5a-404e-994b-ebef5028e1ab',
- N'Học bằng lái B1 bổ túc',
+ N'Học bằng lái B1 cơ bản',
  N'c91a27ee-ab5a-473b-a5b5-5fce7652c50e',
  4200000,18)
 GO
@@ -865,12 +865,12 @@ GO
 INSERT INTO [dbo].Course_Package_Reservation(course_package_reservation_id,course_package_id, create_date, member_id, staff_id,
 payment_ammount, payment_type_id, reservation_status_id)
 VALUES
-(N'0343c03c-0d01-4ae9-83ab-8e08ce599646',
+/*(N'0343c03c-0d01-4ae9-83ab-8e08ce599646',
  N'069af18a-54b3-4de7-bac2-27d778431cc3',
  CAST(('2023/11/15') AS DATE),
  N'f5c63634-1858-4ad5-8d0e-38c73f8ef8a8',
  N'c5708f3c-daf1-444e-bed7-240c2ed6ad50',
- 14500000, 3, 2),
+ 14500000, 3, 2),*/
  (N'638d59a5-2ab7-4e85-9ae2-aecdbc5b8a60',
  N'069af18a-54b3-4de7-bac2-27d778431cc3',
  CAST(('2023/12/02') AS DATE),

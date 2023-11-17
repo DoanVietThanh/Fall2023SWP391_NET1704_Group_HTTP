@@ -16,7 +16,7 @@ const DialogReservation = ({
   const { memberId } =
     useSelector((state) => state?.auth?.user?.accountInfo) || '';
   const [paymentList, setPaymentList] = useState([]);
-  const [typePayment, setTypePayment] = useState(1);
+  const [typePayment, setTypePayment] = useState('3');
 
   const [selectedMentor, setSelectedMentor] = useState(
     course?.mentors[0]?.staffId

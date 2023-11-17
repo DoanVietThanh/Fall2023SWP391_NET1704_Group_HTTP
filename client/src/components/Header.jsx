@@ -73,7 +73,7 @@ const Header = () => {
       id: 7,
       title: 'Bài đăng',
       link: '/blog',
-    }
+    },
   ];
 
   return (
@@ -113,7 +113,7 @@ const Header = () => {
                 <div className='flex justify-center items-center'>
                   <div className='flex justify-center items-center'>
                     <img
-                      src='/img/avtThanh.jpg'
+                      src={user.accountInfo?.avatarImage}
                       alt='Avatar'
                       className='rounded-full w-[40px] h-[40px] object-cover'
                     />
@@ -161,8 +161,7 @@ const Header = () => {
         <div className='flex gap-10 text-[20px] font-medium uppercase'>
           {listNavigate.map((item, index) =>
             //kiem tra duong dan
-            (currentLocation.startsWith(item.link)) 
-            ? (
+            currentLocation.startsWith(item.link) ? (
               <Link to={item.link} className='curNav' key={index}>
                 {item.title}
               </Link>

@@ -13,12 +13,15 @@ namespace DriverLicenseLearningSupport.Services
     {
         private ITeachingScheduleRepository _teachingScheduleRepo;
         private IMapper _mapper;
+        private readonly IImageService _imageService;
 
         public TeachingScheduleService(ITeachingScheduleRepository teachingScheduleRepo,
-            IMapper mapper)
+            IMapper mapper,
+            IImageService imageService)
         {
             _teachingScheduleRepo = teachingScheduleRepo;
             _mapper = mapper;
+            _imageService = imageService;
         }
 
         public async Task<bool> AddRollCallBookAsync(int teachingScheduleId, RollCallBookModel rcbModel)
@@ -58,7 +61,16 @@ namespace DriverLicenseLearningSupport.Services
 
         public async Task<TeachingScheduleModel> GetAsync(int teachingScheduleId)
         {
-            return await _teachingScheduleRepo.GetAsync(teachingScheduleId);
+            var schedule =  await _teachingScheduleRepo.GetAsync(teachingScheduleId);
+            if(schedule is not null)
+            {
+                if(schedule.Vehicle is not null)
+                {
+                    schedule.Vehicle.VehicleImage =  await _imageService.GetPreSignedURL(
+                        Guid.Parse(schedule.Vehicle.VehicleImage));
+                }
+            }
+            return schedule;
         }
 
         public async Task<TeachingScheduleModel> GetByFilterAsync(TeachingScheduleFilter filters)
@@ -74,7 +86,7 @@ namespace DriverLicenseLearningSupport.Services
         public async Task<IEnumerable<TeachingScheduleModel>> GetBySlotAndWeekDayScheduleAsync(int slotId,
             int weekDayScheduleId, Guid mentorId)
         {
-            return await _teachingScheduleRepo.GetBySlotAndWeekDayScheduleAsync(slotId, weekDayScheduleId, mentorId);
+            return await _teachingScheduleRepo.GetBySlotAndWeekDayScheduleAsync(slotId, weekDayScheduleId, mentorId);   
         }
 
         public async Task<IEnumerable<TeachingScheduleModel>> GetBySlotAndWeekDayScheduleOfMemberAsync(int slotId, int weekDayScheduleId,

@@ -88,7 +88,7 @@ namespace DriverLicenseLearningSupport.Repositories
         public async Task<IEnumerable<BlogModel>> GetBlogByIdAsync(int id)
         {
             var blogs = await _context.Blogs.Include(blog => blog.Tags)
-                                            .Include(blog => blog.Comments).Where(x => x.BlogId == id).ToListAsync();
+                                            .Include(blog => blog.Comments).Include(Blog => Blog.Staff).Where(x => x.BlogId == id).ToListAsync();
             foreach (var blog in blogs)
             {
                 blog.Title = HttpUtility.HtmlDecode(blog.Title);

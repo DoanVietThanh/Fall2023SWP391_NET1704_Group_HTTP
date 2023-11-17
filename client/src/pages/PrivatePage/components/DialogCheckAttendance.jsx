@@ -87,6 +87,8 @@ const DialogCheckAttendance = ({
     setOpen(false);
   };
 
+  console.log('vehicle: ', vehicle);
+
   return (
     <div>
       <Dialog

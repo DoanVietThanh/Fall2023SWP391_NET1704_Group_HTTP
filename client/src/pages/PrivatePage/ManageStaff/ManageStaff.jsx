@@ -19,13 +19,11 @@ const ManageStaff = () => {
     { field: 'firstName', headerName: 'Họ', width: 130, editable: true },
     { field: 'lastName', headerName: 'Tên', width: 130 },
     {
-      field: 'fullName',
-      headerName: 'Họ và tên',
-      description: 'This column has a value getter and is not sortable.',
+      field: 'role',
+      headerName: 'Công việc',
       sortable: false,
       width: 160,
-      valueGetter: (params) =>
-        `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+      valueGetter: (params) => ` ${params.row.jobTitle?.jobTitleDesc}`,
     },
     {
       field: 'addressStaff',
@@ -42,7 +40,7 @@ const ManageStaff = () => {
       renderCell: ({ row: { avatarImage } }) => (
         <div>
           <img
-            src='/img/avtThanh.jpg'
+            src={avatarImage}
             alt='avt'
             className='w-[40px] h-[40px] rounded-full object-cover'
           />
@@ -100,7 +98,10 @@ const ManageStaff = () => {
     async function getAllStaffs() {
       await axiosClient
         .get(`/staffs`)
-        .then((res) => setListStaff(res?.data.data))
+        .then((res) => {
+          console.log('res: ', res?.data?.data);
+          setListStaff(res?.data.data);
+        })
         .catch((error) => toastError(error?.response?.data?.message));
     }
     getAllStaffs();

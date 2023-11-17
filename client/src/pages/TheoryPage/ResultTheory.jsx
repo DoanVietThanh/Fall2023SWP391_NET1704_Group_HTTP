@@ -18,7 +18,7 @@ const ResultTheory = () => {
   const charOption = ['A', 'B', 'C', 'D', 'E'];
   useEffect(() => {
     async function getReview() {
-      const response = await axios
+      await axios
         .post(`/theory/review`, {
           email,
           mockTestId,
@@ -76,7 +76,7 @@ const ResultTheory = () => {
               <p>
                 Số câu sai:{' '}
                 <span className='text-[20px] text-red-400'>
-                     {examResult?.history?.totalQuestion -
+                  {examResult?.history?.totalQuestion -
                     examResult?.history?.totalRightAnswer}
                 </span>
               </p>
@@ -138,10 +138,9 @@ const ResultTheory = () => {
               <div className='flex gap-2 h-full mt-2 flex-1'>
                 <div className='flex-1 h-full'>
                   {itemQuestion?.question?.questionAnswerDesc}
-                  {/* <img
-                    alt='img'
-                    src='https://hocthilaixeoto.com/upload/images/cau-hoi-ly-thuyet-lai-xe-b1.png'
-                  /> */}
+                  {itemQuestion?.question?.image && (
+                    <img alt='img' src={itemQuestion?.question?.image} />
+                  )}
                 </div>
 
                 <div className='flex-1 h-full px-2'>

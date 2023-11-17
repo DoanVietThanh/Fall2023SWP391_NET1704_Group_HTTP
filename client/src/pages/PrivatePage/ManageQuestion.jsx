@@ -676,7 +676,7 @@ const ManageQuestion = () => {
                         )}
                       </div>
                     </div>
-                    <div className='flex justify-start gap-4 items-center'>
+                    {/* <div className='flex justify-start gap-4 items-center'>
                       <label htmlFor='isMockTest' className='cursor-pointer'>
                         Xác nhận Mock Test:
                       </label>
@@ -689,7 +689,7 @@ const ManageQuestion = () => {
                         className='p-2 w-[20px] h-[20px] cursor-pointer'
                         size={20}
                       />
-                    </div>
+                    </div> */}
                     {isMockTest && (
                       <div className='flex gap-4 justify-start'>
                         <label htmlFor='dateTest'>Chọn ngày kiểm tra</label>

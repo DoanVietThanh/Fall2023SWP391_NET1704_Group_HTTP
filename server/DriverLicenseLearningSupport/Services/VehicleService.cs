@@ -12,16 +12,19 @@ namespace DriverLicenseLearningSupport.Services
         private readonly IVehicleRepository _vehicleRepo;
         private readonly ITeachingScheduleService _teachingScheduleService;
         private readonly IWeekDayScheduleService _weekdayService;
+        private readonly IImageService _imageService;
         private readonly IMapper _mapper;
 
         public VehicleService(IVehicleRepository vehicleRepo,
             ITeachingScheduleService teachingScheduleService,
             IWeekDayScheduleService weekdayService,
+            IImageService imageService,
             IMapper mapper)
         {
             _vehicleRepo = vehicleRepo;
             _teachingScheduleService = teachingScheduleService;
             _weekdayService = weekdayService;
+            _imageService = imageService;
             _mapper = mapper;
         }
 
@@ -86,7 +89,15 @@ namespace DriverLicenseLearningSupport.Services
 
         public async Task<IEnumerable<VehicleModel>> GetAllActiveVehicleByType(int vehicleTypeId)
         {
-            return await _vehicleRepo.GetAllActiveVehicleByType(vehicleTypeId);
+            var vehicles = await _vehicleRepo.GetAllActiveVehicleByType(vehicleTypeId);
+            foreach(var v in vehicles)
+            {
+                if(v.VehicleImage is not null)
+                {
+                    v.VehicleImage = await _imageService.GetPreSignedURL(Guid.Parse(v.VehicleImage));
+                }
+            }
+            return vehicles;
         }
 
         public async Task<IEnumerable<VehicleModel>> GetAllInActiveVehicleByType(int vehicleTypeId)

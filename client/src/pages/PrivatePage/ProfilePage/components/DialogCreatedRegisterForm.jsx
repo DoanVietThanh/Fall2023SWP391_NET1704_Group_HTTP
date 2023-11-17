@@ -129,7 +129,7 @@ export default function DialogCreatedRegisterForm({ open, setOpen, accInfo }) {
                       <span className='font-semibold'>
                         {dayjs(
                           accInfo?.licenseForm?.identityCardIssuedDate
-                        ).format('DD / MM / YYYY')}
+                        ).format('DD/MM/YYYY')}
                       </span>
                     </div>
                   </div>
@@ -170,7 +170,9 @@ export default function DialogCreatedRegisterForm({ open, setOpen, accInfo }) {
                       <div className='flex gap-2 justify-between items-center '>
                         <p className='whitespace-nowrap'>Cấp ngày</p>
                         <span className='font-semibold'>
-                          {accInfo?.licenseForm?.licenseTypeIssuedDate}
+                          {dayjs(
+                            accInfo?.licenseForm?.licenseTypeIssuedDate
+                          ).format('DD/MM/YYYY')}
                         </span>
                       </div>
                     </div>

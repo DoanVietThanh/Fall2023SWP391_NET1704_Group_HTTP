@@ -213,3 +213,27 @@ const CreateBlog = () => {
 };
 
 export default CreateBlog;
+
+// useEffect(() => {
+//   async function getData() {
+//     await axios
+//       .get(`${urlService}/blog/tags`)
+//       .then((res) => {
+//         setTagList(res.data?.data);
+//       })
+//       .catch((error) => {
+//         toastError(error?.response?.data?.message);
+//       });
+
+//     await axios
+//       .get(`/blog/blog_id/${selectedBlog}`)
+//       .then((res) => {
+//         console.log(res);
+//         setBlog(res?.data?.data[0]);
+//         setTitle(res?.data?.data[0].title);
+//         setSelectedTags(res?.data?.data[0].tags);
+//       })
+//       .catch((error) => toastError(error?.response?.data?.message));
+//   }
+//   getData();
+// }, []);
