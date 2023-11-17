@@ -9,6 +9,7 @@ import Header from './../../components/Header';
 import BlogList from './component/BlogList';
 import { toastError } from '../../components/Toastify';
 import theme from '../../theme';
+import * as dayjs from 'dayjs';
 
 const BlogPage = () => {
   const url = '/img/backgroundSlide.png';
@@ -82,17 +83,26 @@ const BlogPage = () => {
             <div className='border-b-[4px] text-2xl font-bold pb-2 '>
               Bài đăng gần đây
             </div>
-            {listBlog.map((blog, index) => (
-              <div className='flex pt-10 gap-3'>
-                <div className='flex flex-col gap-2'>
+            {listBlog.slice(0, 5).map((blog, index) => (
+              <div className='flex pt-10 gap-3 items-center'>
+                <img
+                  src={blog.image}
+                  alt='blogPic'
+                  className='w-[25%] object-cover'
+                />
+                <div className='flex-1 flex-col gap-2'>
                   <Link to={blog.link}>
-                    <div className='text-lg font-bold hover:text-blue-500 overflow-hidden whitespace-nowrap overflow-ellipsis max-w-xs'>
-                      {blog?.title}
+                    <div className='text-xl font-bold hover:text-blue-500 overflow-hidden whitespace-nowrap overflow-ellipsis max-w-xs'>
+                      {/* {blog?.title.split(" ").slice(0, 5).join(" ")}
+                      {blog?.title.split(" ").length > 5 && "..."} */}
+                      {blog?.title.length > 25
+                        ? `${blog?.title.slice(0, 25)}...`
+                        : blog?.title}
                     </div>
                   </Link>
-                  <div className='flex items-center text-md font-light gap-2 text-blue-500 hover:text-blue-900 '>
-                    <AiOutlineCalendar />
-                    {blog?.createDate}
+                  <div className='flex items-center text-lg font-light gap-2 text-blue-500 hover:text-blue-900 '>
+                    <AiOutlineCalendar size={24} />{' '}
+                    {dayjs(blog?.createDate).format('DD/MM/YYYY')}
                   </div>
                 </div>
               </div>

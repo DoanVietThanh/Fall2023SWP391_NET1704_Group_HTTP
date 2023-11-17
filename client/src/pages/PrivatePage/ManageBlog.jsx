@@ -55,26 +55,21 @@ const ManageBlog = () => {
   const columns = [
     { field: 'blogId', headerName: 'ID', width: 100 },
     { field: 'title', headerName: 'Tiêu đề', width: 200, editable: true },
-    {
-      field: 'image',
-      headerName: 'Ảnh',
-      width: 130,
-      renderCell: ({ row }) => (
-        <div>
-          <img
-            src={row.blogImg}
-            alt='Ảnh'
-            className='w-[40px] h-[40px] rounded-full object-cover'
-          />
-        </div>
-      ),
-    },
-    {
-      field: 'comments',
-      headerName: 'Số bình luận',
-      width: 200,
-      renderCell: ({ row }) => <p>{row.comments.length}</p>,
-    },
+    // {
+    //   field: 'image',
+    //   headerName: 'Ảnh',
+    //   width: 130,
+    //   renderCell: ({ row }) => (
+    //     <div>
+    //       <img
+    //         src={row.blogImg}
+    //         alt='Ảnh'
+    //         className='w-[40px] h-[40px] rounded-full object-cover'
+    //       />
+    //     </div>
+    //   ),
+    // },
+
     {
       field: 'createDate',
       headerName: 'Ngày đăng',
