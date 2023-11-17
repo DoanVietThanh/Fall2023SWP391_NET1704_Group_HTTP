@@ -16,8 +16,7 @@ import Loading from '../../components/Loading';
 
 const IntructorDetail = () => {
   const url_server = process.env.REACT_APP_SERVER_API;
-  const url =
-    '/img/backgroundSlide.png';
+  const url = '/img/backgroundSlide.png';
   const breadcrumbs = 'Thông tin giảng viên';
 
   const { idInstructor } = useParams();
@@ -59,9 +58,13 @@ const IntructorDetail = () => {
 
             <div className='flex flex-col gap-2'>
               <div className='font-semibold text-2xl mb-4'>Giới thiệu</div>
-              <div className='font-light text-xl text-gray-600 max-h-[40vh] overflow-y-auto'>
-                {instructor?.selfDescription}
-              </div>
+
+              <div
+                className='font-light text-lg pb-8'
+                dangerouslySetInnerHTML={{
+                  __html: `${instructor?.selfDescription}`,
+                }}
+              ></div>
             </div>
 
             <div className='flex flex-col gap-2'>
@@ -95,7 +98,7 @@ const IntructorDetail = () => {
               </div>
             </div>
 
-            <div className='flex flex-col gap-2'>
+            {/* <div className=' flex flex-col gap-2'>
               <div className='font-semibold text-2xl'>Đánh giá</div>
               <div className='flex gap-1 items-center'>
                 <AiFillStar size={26} color='#F6F669'></AiFillStar>
@@ -104,7 +107,7 @@ const IntructorDetail = () => {
                 <AiFillStar size={26} color='#F6F669'></AiFillStar>
                 <AiFillStar size={26} color='#F6F669'></AiFillStar>
               </div>
-            </div>
+            </div> */}
 
             <div className='flex flex-col gap-2'>
               <div className='font-semibold text-2xl'>Liên lạc</div>

@@ -41,17 +41,22 @@ namespace DriverLicenseLearningSupport.Services
 
         public async Task<StaffModel> GetByEmailAsync(string email)
         {
-            var staff =  await _staffRepository.GetByEmailAsync(email);
-            if(staff is not null)
+            var staff = await _staffRepository.GetByEmailAsync(email);
+            if (staff is not null)
             {
-                //staff.AvatarImage = await _imageService.GetPreSignedURL(Guid.Parse(staff.AvatarImage));
+                staff.AvatarImage = await _imageService.GetPreSignedURL(Guid.Parse(staff.AvatarImage));
             }
             return staff;
         }
 
         public async Task<StaffModel> GetAsync(Guid id)
         {
-            return await _staffRepository.GetAsync(id);
+            var staff = await _staffRepository.GetAsync(id);
+            if (staff.AvatarImage is not null)
+            {
+                staff.AvatarImage = await _imageService.GetPreSignedURL(Guid.Parse(staff.AvatarImage));
+            }
+            return staff;
         }
 
         public async Task<StaffModel> GetMentorAsync(Guid id)
@@ -61,7 +66,19 @@ namespace DriverLicenseLearningSupport.Services
         
         public async Task<IEnumerable<StaffModel>> GetAllAsync()
         {
-            return await _staffRepository.GetAllAsync();
+            var staffs = await _staffRepository.GetAllAsync();
+
+            if (staffs.Count() > 0)
+            {
+                foreach (var staff in staffs)
+                {
+                    if (staff.AvatarImage is not null)
+                    {
+                        staff.AvatarImage = await _imageService.GetPreSignedURL(Guid.Parse(staff.AvatarImage));
+                    }
+                }
+            }
+            return staffs;
         }
 
         public async Task<IEnumerable<StaffModel>> GetAllByFilterAsync(StaffFilter filters)
@@ -82,7 +99,19 @@ namespace DriverLicenseLearningSupport.Services
 
         public async Task<IEnumerable<StaffModel>> GetAllMentorAsync()
         {
-            return await _staffRepository.GetAllMentorAsync();
+            var staffs = await _staffRepository.GetAllMentorAsync();
+
+            if (staffs.Count() > 0)
+            {
+                foreach (var staff in staffs)
+                {
+                    if (staff.AvatarImage is not null)
+                    {
+                        staff.AvatarImage = await _imageService.GetPreSignedURL(Guid.Parse(staff.AvatarImage));
+                    }
+                }
+            }
+            return staffs;
         }
 
         public async Task<IEnumerable<StaffModel>> GetAllMentorNoCourse()

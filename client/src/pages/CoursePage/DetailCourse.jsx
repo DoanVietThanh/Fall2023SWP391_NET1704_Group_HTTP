@@ -134,18 +134,6 @@ const DetailCourse = () => {
         <div className='p-8'>
           <div className='p-4 border'>
             <div className='min-h-[300px]'>
-              {/* <div>
-                <iframe
-                  width='100%'
-                  height='600px'
-                  src='https://www.youtube.com/embed/Do-W6ccKqCw?si=XXx0R-j2lMot57QO'
-                  title='YouTube video player'
-                  frameborder='0'
-                  allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
-                  allowfullscreen
-                  className='rounded-lg'
-                ></iframe>
-              </div> */}
               <div className='bannerCourse'>
                 <img
                   className='w-full h-full object-cover'
@@ -159,30 +147,17 @@ const DetailCourse = () => {
               <div className='py-6 flex gap-8'>
                 <div className='flex-x gap-2 border-r-2 pr-8'>
                   <MdOutlinePeopleAlt className='text-blue-700' size={20} />{' '}
-                  Student : {totalMember}
+                  Tổng số học sinh : {totalMember}
                 </div>
-                {/* <div className='flex-x gap-2'>
-                  <AiFillEye className='text-blue-700' size={20} />
-                </div> */}
               </div>
 
               <h1 className='font-bold text-[30px]'>{course.courseTitle}</h1>
 
               <div className='pt-4 flex gap-8'>
-                {/* <div className='flex-x gap-2 border-r-2 pr-8'>
-                  <BsPersonCircle className='text-blue-700' size={30} />
-                  <div>
-                    <p className='font-medium'>Giảng viên:</p>
-                    <p>{`${course?.mentors[0].firstName} ${course?.mentors[0].lastName}`}</p>
-                  </div>
-                </div> */}
                 <div className='flex-x gap-2 border-r-2 pr-8'>
                   <div>
                     <p className='font-medium'>Loại bằng:</p>
-                    <p className='text-center'>
-                      {/* {course?.licenseType?.licenseTypeDesc} */}
-                      B1
-                    </p>
+                    <p className='text-center'>B1</p>
                   </div>
                 </div>
                 <div className='flex-x gap-2 border-r-2 pr-8'>
@@ -191,7 +166,7 @@ const DetailCourse = () => {
                     <p>{dayjs(course?.startDate).format('DD / MM / YYYY')}</p>
                   </div>
                 </div>
-                <div className='flex-x gap-2'>
+                {/* <div className='hidden flex-x gap-2'>
                   <BsPersonCircle className='text-blue-700' size={30} />
                   <div>
                     <p className='font-medium'>Rating:</p>
@@ -203,7 +178,7 @@ const DetailCourse = () => {
                       <AiOutlineStar />
                     </p>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
 
@@ -226,7 +201,7 @@ const DetailCourse = () => {
                         className='uppercase'
                       />
                       <Tab label='Giảng viên' value='3' className='uppercase' />
-                      <Tab label='Phản hồi' value='4' className='uppercase' />
+                      {/* <Tab label='Phản hồi' value='4' className='uppercase' /> */}
                     </TabList>
                   </Box>
                   <TabPanel value='1'>
@@ -364,7 +339,7 @@ const DetailCourse = () => {
                             </div>
 
                             <div className='flex-x gap-4'>
-                              <span className='font-bold'> Contact:</span>{' '}
+                              <span className='font-bold'> Tương tác:</span>{' '}
                               <Link to={`#`}>
                                 <AiFillFacebook
                                   className={`text-[${theme.color.mainColor}]`}
@@ -400,87 +375,88 @@ const DetailCourse = () => {
                   </TabPanel>
 
                   <TabPanel value='4'>
-                    <div className='flex-x gap-4'>
-                      <div className='flex flex-col gap-4 items-center border-r-2 px-8'>
-                        <div className='text-[50px]'>4.0</div>
-                        <div className='flex-x gap-2 text-blue-500'>
-                          <AiFillStar size={20} />
-                          <AiFillStar size={20} />
-                          <AiFillStar size={20} />
-                          <AiFillStar size={20} />
-                          <AiOutlineStar size={20} />
-                        </div>
-                        <div>Tổng: {course?.feedBacks.length} đánh giá</div>
-                      </div>
-                      <div className='flex-1 flex flex-col gap-2'>
-                        {[...Array(5)].map((item, index) => (
-                          <div className='flex-x gap-4 ' key={index}>
-                            <div className='flex-x gap-2'>
-                              <AiOutlineStar className='text-blue-500' />{' '}
-                              {index + 1}
-                            </div>
-                            <div className='flex-1 rounded-lg bg-gray-200'>
-                              <div className='w-[70%] border rounded-lg border h-[10px] bg-[#0D5EF4]'></div>
-                            </div>
-                            <span>4 đánh giá </span>
+                    <div className='hidden'>
+                      <div className=' flex-x gap-4'>
+                        <div className='flex flex-col gap-4 items-center border-r-2 px-8'>
+                          <div className='text-[50px]'>4.0</div>
+                          <div className='flex-x gap-2 text-blue-500'>
+                            <AiFillStar size={20} />
+                            <AiFillStar size={20} />
+                            <AiFillStar size={20} />
+                            <AiFillStar size={20} />
+                            <AiOutlineStar size={20} />
                           </div>
-                        ))}
+                          <div>Tổng: {course?.feedBacks.length} đánh giá</div>
+                        </div>
+                        <div className='flex-1 flex flex-col gap-2'>
+                          {[...Array(5)].map((item, index) => (
+                            <div className='flex-x gap-4 ' key={index}>
+                              <div className='flex-x gap-2'>
+                                <AiOutlineStar className='text-blue-500' />{' '}
+                                {index + 1}
+                              </div>
+                              <div className='flex-1 rounded-lg bg-gray-200'>
+                                <div className='w-[70%] border rounded-lg border h-[10px] bg-[#0D5EF4]'></div>
+                              </div>
+                              <span>4 đánh giá </span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
+                      {course?.feedBacks.map((itemFeedback, index) => (
+                        <div className='flex-x gap-4 p-4' key={index}>
+                          <div>
+                            <img
+                              src='/img/avtThanh.jpg'
+                              alt='avt'
+                              className='w-[140px] h-[140px] object-cover rou nded-lg'
+                            />
+                          </div>
+                          <div className='flex-1 border flex flex-col gap-2 p-4'>
+                            <div className='flex-x justify-between w-full'>
+                              <h1 className='font-bold text-[18px] '>{`${itemFeedback.member.firstName} ${itemFeedback.member.lastName}`}</h1>
+                              <div className='flex-x gap-2 text-blue-500'>
+                                {[
+                                  ...Array.from(
+                                    { length: itemFeedback?.ratingStar },
+                                    (_, index) => <AiFillStar size={20} />
+                                  ),
+                                ]}
+                                {[
+                                  ...Array.from(
+                                    { length: 5 - itemFeedback?.ratingStar },
+                                    (_, index) => <AiOutlineStar size={20} />
+                                  ),
+                                ]}
+                              </div>
+                            </div>
+                            <div className='italic'>
+                              {dayjs(itemFeedback?.createDate).format(
+                                'DD-MM-YYYY'
+                              )}
+                            </div>
+                            <div>{itemFeedback?.content}</div>
+                          </div>
+                        </div>
+                      ))}
 
-                    {course?.feedBacks.map((itemFeedback, index) => (
-                      <div className='flex-x gap-4 p-4' key={index}>
-                        <div>
-                          <img
-                            src='/img/avtThanh.jpg'
-                            alt='avt'
-                            className='w-[140px] h-[140px] object-cover rou nded-lg'
+                      <div className='my-4'>
+                        <h1 className='font-bold text-[24px] capitalize'>
+                          Bình luận
+                        </h1>
+                        <form action=''>
+                          <Textarea
+                            minRows={3}
+                            size='lg'
+                            placeholder='Nhập bình luận...'
                           />
-                        </div>
-                        <div className='flex-1 border flex flex-col gap-2 p-4'>
-                          <div className='flex-x justify-between w-full'>
-                            <h1 className='font-bold text-[18px] '>{`${itemFeedback.member.firstName} ${itemFeedback.member.lastName}`}</h1>
-                            <div className='flex-x gap-2 text-blue-500'>
-                              {[
-                                ...Array.from(
-                                  { length: itemFeedback?.ratingStar },
-                                  (_, index) => <AiFillStar size={20} />
-                                ),
-                              ]}
-                              {[
-                                ...Array.from(
-                                  { length: 5 - itemFeedback?.ratingStar },
-                                  (_, index) => <AiOutlineStar size={20} />
-                                ),
-                              ]}
-                            </div>
+                          <div className='flex justify-end mt-4'>
+                            <button className='btn' type='submit'>
+                              Submit
+                            </button>
                           </div>
-                          <div className='italic'>
-                            {dayjs(itemFeedback?.createDate).format(
-                              'DD-MM-YYYY'
-                            )}
-                          </div>
-                          <div>{itemFeedback?.content}</div>
-                        </div>
+                        </form>
                       </div>
-                    ))}
-
-                    <div className='my-4'>
-                      <h1 className='font-bold text-[24px] capitalize'>
-                        Bình luận
-                      </h1>
-                      <form action=''>
-                        <Textarea
-                          minRows={3}
-                          size='lg'
-                          placeholder='Nhập bình luận...'
-                        />
-                        <div className='flex justify-end mt-4'>
-                          <button className='btn' type='submit'>
-                            Submit
-                          </button>
-                        </div>
-                      </form>
                     </div>
                   </TabPanel>
                 </TabContext>

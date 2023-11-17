@@ -145,19 +145,22 @@ const BlogDetail = () => {
     getBlogAndComments();
   }, []);
   console.log('list tag', blog?.tags);
+  console.log('Blog: ', blog);
   return (
     <div>
       <Header />
       <BackgroundSlider url={url} breadcrumbs={breadcrumbs} />
       <div className='flex justify-center m-20'>
         <div className='flex flex-col border drop-shadow-md rounded-lg p-20 gap-10'>
-          <div className='flex justify-center h-[60vh]'>
-            <img
-              src='https://media.vov.vn/sites/default/files/styles/large/public/2022-10/4_6.jpeg.jpg'
-              alt='blogPic'
-              className='w-full object-cover'
-            />
-          </div>
+          {blog?.image && (
+            <div className='flex justify-center h-[60vh]'>
+              <img
+                src={blog?.image}
+                alt='blogPic'
+                className='w-full object-cover'
+              />
+            </div>
+          )}
           <div className='mt-8'>
             <div
               className={`flex text-xl pb-8 text-[${theme.color.mainColor}] `}

@@ -33,8 +33,12 @@ namespace DriverLicenseLearningSupport.Controllers
         private readonly AppSettingsConfig _appSettingConfig;
         private readonly ICommentService _commentService;
         private readonly IStaffService _staffService;
+        private readonly IImageService _imageService;
 
-        public BlogController(IBlogService blogService, ITagService tagService, IOptionsMonitor<AppSettings> monitor, IMemoryCache memoryCache, IOptionsMonitor<AppSettingsConfig> monitor1, ICommentService commentService, IStaffService staffService)
+        public BlogController(IBlogService blogService, ITagService tagService, IOptionsMonitor<AppSettings> monitor,
+            IMemoryCache memoryCache, IOptionsMonitor<AppSettingsConfig> monitor1, ICommentService commentService,
+            IStaffService staffService,
+            IImageService imageService)
         {
             _blogService = blogService;
             _tagService = tagService;
@@ -43,6 +47,7 @@ namespace DriverLicenseLearningSupport.Controllers
             _appSettingConfig = monitor1.CurrentValue;
             _commentService = commentService;
             _staffService = staffService;
+            _imageService = imageService;
         }
         [HttpGet]
         [Route("/blog/tags")]
@@ -99,7 +104,7 @@ namespace DriverLicenseLearningSupport.Controllers
                 //   generate guid id
                 var imageId = Guid.NewGuid();
                 //upload image to cloud
-                //await _imageService.UploadImageAsync(imageId, reqObj.imageLink);
+                await _imageService.UploadImageAsync(imageId, reqObj.Image);
 
                 //Set image Id to question model 
                 blog.Image = imageId.ToString();

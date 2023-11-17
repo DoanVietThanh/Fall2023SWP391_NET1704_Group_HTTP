@@ -14,7 +14,7 @@ const BlogList = ({ listBlog }) => {
         <div className='border drop-shadow-md rounded-lg p-8 '>
           <div className='flex justify-center h-[60vh]'>
             <img
-              src='https://media.vov.vn/sites/default/files/styles/large/public/2022-10/4_6.jpeg.jpg'
+              src={blog?.image}
               alt='blogPic'
               className='w-full object-cover'
             />

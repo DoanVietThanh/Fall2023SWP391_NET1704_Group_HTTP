@@ -11,16 +11,19 @@ namespace DriverLicenseLearningSupport.Services
         private readonly ICourseRepository _courseRepo;
         private readonly ICurriculumService _curriculumService;
         private readonly IMapper _mapper;
+        private readonly IImageService _imageService;
 
         public CourseService(ICourseRepository courseRepo,
             ICurriculumService curriculumService,
+            IImageService imageService,
             IMapper mapper)
         {
             _courseRepo = courseRepo;
             _curriculumService = curriculumService;
             _mapper = mapper;
+            _imageService = imageService;
         }
-
+       
         public async Task<CourseModel> CreateAsync(CourseModel course)
         {
             var courseEntity = _mapper.Map<Course>(course);
@@ -28,7 +31,17 @@ namespace DriverLicenseLearningSupport.Services
         }
         public async Task<CourseModel> GetAsync(Guid id)
         {
-            return await _courseRepo.GetAsync(id);
+            var course = await _courseRepo.GetAsync(id);
+            if (course.Mentors.Count() > 0)
+            {
+                foreach (var mentor in course.Mentors)
+                {
+                    mentor.AvatarImage = await _imageService.GetPreSignedURL(
+                        Guid.Parse(mentor.AvatarImage));
+                }
+            }
+
+            return course;
         }
         public async Task<CourseModel> GetHiddenCourseAsync(Guid id) 
         {

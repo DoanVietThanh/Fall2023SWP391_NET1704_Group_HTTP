@@ -21,6 +21,7 @@ const ManageBlog = () => {
   const [openEditBlog, setOpenEditBlog] = useState(false);
   const [showCreateBlog, setShowCreateBlog] = useState(false);
   const [showManageBlog, setShowManageBlog] = useState(true);
+  const [selectedBlog, setSelectedBlog] = useState();
 
   const handleShowCreateBlog = () => {
     setShowCreateBlog(true);
@@ -101,7 +102,7 @@ const ManageBlog = () => {
             size={20}
             className='text-yellow-700 cursor-pointer'
             onClick={() => {
-              // setUserId(params.row.memberId);
+              setSelectedBlog(params?.row?.blogId);
               setOpenEditBlog(true);
             }}
           />
@@ -155,7 +156,14 @@ const ManageBlog = () => {
           </div>
         )}
         {showCreateBlog && <CreateBlog />}
-        <DialogEditBlog open={openEditBlog} setOpen={setOpenEditBlog} />
+
+        {selectedBlog && (
+          <DialogEditBlog
+            open={openEditBlog}
+            setOpen={setOpenEditBlog}
+            selectedBlog={selectedBlog}
+          />
+        )}
       </div>
     </div>
   );

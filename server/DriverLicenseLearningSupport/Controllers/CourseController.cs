@@ -323,7 +323,9 @@ namespace DriverLicenseLearningSupport.Controllers
             // 500 Internal <- null <- cause error
             if (paymentTypes is null) { return StatusCode(StatusCodes.Status500InternalServerError); }
             // 200 OK <- found
-            return Ok(new BaseResponse {
+            paymentTypes = paymentTypes.Where(x => x.PaymentTypeId == 3).ToList();
+            return Ok(new BaseResponse
+            {
                 StatusCode = StatusCodes.Status200OK,
                 Data = paymentTypes
             });
