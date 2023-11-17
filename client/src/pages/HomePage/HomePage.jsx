@@ -13,8 +13,8 @@ const HomePage = () => {
       <Slider />
       <div className=''>
         <Welcome />
-        <RatedMentor />
-        <LastestBlog />
+        {/* <RatedMentor />
+        <LastestBlog /> */}
       </div>
       <Footer />
     </>

@@ -24,7 +24,7 @@ const BlogList = ({ listBlog }) => {
               className={`flex text-xl pb-8 text-[${theme.color.mainColor}] `}
             >
               <div className='flex items-center gap-3 pr-4'>
-                <BsPerson size={24} /> by{' '}
+                <BsPerson size={24} />
                 {`${blog?.staff?.firstName} ${blog?.staff?.lastName}`}
               </div>
               <div className='flex items-center gap-3 border-l-[2px] px-4'>
@@ -32,7 +32,7 @@ const BlogList = ({ listBlog }) => {
                 {dayjs(blog?.createDate).format('DD/MM/YYYY')}
               </div>
               <div className='flex items-center gap-3 border-l-[2px] px-4'>
-                <BsTags size={24} /> Tags:
+                <BsTags size={24} /> Thẻ:
                 {blog?.tags?.map((tag, index) => (
                   <span className='border-l-2' key={tag.tagId}>
                     {tag.tagName}
